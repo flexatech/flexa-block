@@ -161,7 +161,6 @@ flexa-block/
 - **Dark mode:** each color is a `{ light, dark }` pair. Dark CSS is emitted via `@media (prefers-color-scheme: dark)` and/or `[data-theme="dark"]`, depending on the `Dark_Mode_Settings` configuration.
 - **Design tokens (global styles):** `Global_Styles` prints a shared set of CSS variables on `:root` (`--flexa-color-*`, `--flexa-space-*`, `--flexa-font-size-*`, `--flexa-radius-*`) plus a dark override block. Blocks reference `var(--flexa-...)` for consistency. Customizable via the `flexa_block_design_tokens` (light) and `flexa_block_design_tokens_dark` (dark) filters.
 - **Lazy background images:** enable the "Lazy load image" toggle in the Background panel; `view.js` uses `IntersectionObserver` to load the image only as it approaches the viewport (the URL is gated behind the `.flexa-bg-loaded` class).
-- **Extensibility (adding blocks):** each block declares a `name` + `generator` entry in `Block_Manager::BASE_BLOCKS`; `CSS_Generator_Service` builds the CSS-generation map **from that catalog** (no hardcoding). Generators in `includes/css-generators/` are **auto-loaded via glob**. External add-ons register blocks via the `flexa_block_blocks` filter and attach generators via the `flexa_block_css_generators` filter. Adding a block = adding one catalog entry + dropping one generator file into the directory. **Detailed checklist:** [docs/huong-dan-nhan-ban-block.md](docs/huong-dan-nhan-ban-block.md).
 
 ### Settings page
 
