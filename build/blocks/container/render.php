@@ -1,6 +1,6 @@
 <?php
 /**
- * Container block — server-side render.
+ * Container block - server-side render.
  *
  * CSS is generated at save time by Container_CSS and printed inline on the front end.
  * This file only outputs the HTML wrapper around InnerBlocks content.

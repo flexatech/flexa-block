@@ -1,5 +1,5 @@
 /**
- * Inspector tab strip (Layout / Style / Advanced) — shared across blocks.
+ * Inspector tab strip (Layout / Style / Advanced) - shared across blocks.
  *
  * @package Flexa\Block
  */

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * Block Manager — registers blocks and the editor category.
+ * Block Manager - registers blocks and the editor category.
  *
  * @package Flexa\Block
  */
@@ -94,7 +94,6 @@ class Block_Manager {
 	 *           'title'       => 'Hero',
 	 *           'description' => '…',
 	 *           'category'    => 'layout',
-	 *           'path'        => FLEXA_BLOCK_PRO_DIR . 'build/blocks/hero',
 	 *       ];
 	 *       return $blocks;
 	 *   } );

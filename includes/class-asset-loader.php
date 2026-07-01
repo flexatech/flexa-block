@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * Asset Loader — editor script, save-time CSS hooks, and conditional frontend CSS.
+ * Asset Loader - editor script, save-time CSS hooks, and conditional frontend CSS.
  *
  * @package Flexa\Block
  */
@@ -46,7 +46,7 @@ class Asset_Loader {
 	 * Expose runtime settings to the editor as `window.flexaBlockEditor`.
 	 *
 	 * Lets controls (e.g. the light/dark color picker) react to the dark-mode
-	 * setting — when dark mode is off, the dark swatch is hidden.
+	 * setting - when dark mode is off, the dark swatch is hidden.
 	 */
 	public static function editor_settings() {
 		$data = wp_json_encode(

@@ -1,5 +1,5 @@
 /**
- * Container block — editor component.
+ * Container block - editor component.
  *
  * Assembles the shared inspector panels (@components) plus a container-specific
  * panel. Responsive values follow the editor's active device preview.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for Global_Styles — the shared `:root` design-token stylesheet.
+ * Tests for Global_Styles - the shared `:root` design-token stylesheet.
  *
  * @package Flexa\Block
  */

@@ -1,5 +1,5 @@
 /**
- * Flexa Block — admin settings app.
+ * Flexa Block - admin settings app.
  *
  * A small dashboard to toggle dark mode, the CSS specificity boost, and
  * enable/disable blocks. Reads bootstrap data from `window.flexaBlockAdmin`
@@ -145,7 +145,7 @@ function App(): JSX.Element {
 							<ToggleControl
 								__nextHasNoMarginBottom
 								label={ block.title || block.slug }
-								help={ block.is_core ? __( 'Core block — always enabled.', 'flexa-block' ) : block.description }
+								help={ block.is_core ? __( 'Core block - always enabled.', 'flexa-block' ) : block.description }
 								checked={ ! disabled.includes( block.slug ) }
 								disabled={ !! block.is_core }
 								onChange={ ( v: boolean ) => toggleBlock( block.slug, v ) }

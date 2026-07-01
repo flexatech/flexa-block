@@ -42,7 +42,7 @@ export const useDevice = (): [ DeviceKey, ( device: DeviceType | string ) => voi
 };
 
 /**
- * Device switcher — three segmented icon buttons synced to the editor preview.
+ * Device switcher - three segmented icon buttons synced to the editor preview.
  */
 export const DeviceSwitcher = (): JSX.Element => {
 	const deviceType = useDeviceType();
@@ -117,7 +117,7 @@ interface DimensionsProps {
 
 /**
  * Dimensions control (padding / margin / border width / radius) on our
- * { top, right, bottom, left, unit } shape — four side inputs, a unit dropdown,
+ * { top, right, bottom, left, unit } shape - four side inputs, a unit dropdown,
  * a link toggle (sync all sides) and an optional responsive device toggle.
  */
 export const Dimensions = ( { label, value = {}, onChange, units, responsive = false }: DimensionsProps ): JSX.Element => {
@@ -235,7 +235,7 @@ const MODE_LIST: Array< { key: ColorMode; icon: JSX.Element; label: string } > =
 ];
 
 /**
- * Light / Dark mode toggle (mirrors the responsive DeviceTag) — picks which
+ * Light / Dark mode toggle (mirrors the responsive DeviceTag) - picks which
  * colour (light or dark) the swatch edits.
  */
 const ModeTag = ( { mode, onChange }: { mode: ColorMode; onChange: ( m: ColorMode ) => void } ): JSX.Element => {
@@ -289,7 +289,7 @@ interface DualColorProps {
 }
 
 /**
- * Colour control — one swatch with a light/dark mode toggle (when dark mode is
+ * Colour control - one swatch with a light/dark mode toggle (when dark mode is
  * enabled) and a reset button. Clicking the swatch opens the colour picker.
  */
 export const DualColor = ( { label, value = {}, onChange, palette = DEFAULT_PALETTE }: DualColorProps ): JSX.Element => {
@@ -332,7 +332,7 @@ interface GradientControlProps {
 }
 
 /**
- * Gradient control — visual gradient builder (stops, type, angle) with a
+ * Gradient control - visual gradient builder (stops, type, angle) with a
  * light/dark mode toggle (when dark mode is enabled) and a reset button.
  */
 export const GradientControl = ( { label, value = {}, onChange }: GradientControlProps ): JSX.Element => {
@@ -392,7 +392,7 @@ const DEVICE_LIST: Array< { key: DeviceKey; type: DeviceType; label: string } > 
 ];
 
 /**
- * Clickable responsive indicator — opens a dropdown to pick the active editor
+ * Clickable responsive indicator - opens a dropdown to pick the active editor
  * device (Desktop / Tablet / Mobile). Responsive attributes are stored per
  * device, so picking one lets a control hold a different value per breakpoint.
  */
@@ -404,7 +404,7 @@ export const DeviceTag = (): JSX.Element => {
 			contentClassName="flexa-device-menu__popover"
 			popoverProps={ { placement: 'bottom-end' } }
 			renderToggle={ ( { isOpen, onToggle }: { isOpen: boolean; onToggle: () => void } ) => (
-				<Tooltip text={ __( 'Responsive — choose device', 'flexa-block' ) }>
+				<Tooltip text={ __( 'Responsive - choose device', 'flexa-block' ) }>
 					<button
 						type="button"
 						className={ 'flexa-device-tag' + ( device !== 'desktop' ? ' is-active' : '' ) }

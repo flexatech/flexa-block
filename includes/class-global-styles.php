@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * Global Styles — shared design tokens emitted as CSS custom properties.
+ * Global Styles - shared design tokens emitted as CSS custom properties.
  *
  * Provides one set of `--flexa-*` variables (colors, spacing, typography,
  * radius) so every block references the SAME design language instead of each

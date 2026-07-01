@@ -56,7 +56,7 @@ export const effective = < T >(
 };
 
 /**
- * Raw value for the active device (no cascade) — empty means "inherit".
+ * Raw value for the active device (no cascade) - empty means "inherit".
  *
  * @param group  Responsive group.
  * @param device Device key.
@@ -185,7 +185,7 @@ export const JUSTIFY_OPTIONS_ROW: ControlOption[] = [
 	{ value: 'space-around', label: 'Space around', icon: HAroundIcon },
 ];
 
-/** Default (column) — kept for backward compatibility. */
+/** Default (column) - kept for backward compatibility. */
 export const JUSTIFY_OPTIONS = JUSTIFY_OPTIONS_COLUMN;
 
 /** Align icons for a COLUMN container (cross axis horizontal → H bars). */
@@ -204,7 +204,7 @@ export const ALIGN_OPTIONS_ROW: ControlOption[] = [
 	{ value: 'stretch', label: 'Stretch', icon: VAroundIcon },
 ];
 
-/** Default (column) — kept for backward compatibility. */
+/** Default (column) - kept for backward compatibility. */
 export const ALIGN_OPTIONS = ALIGN_OPTIONS_COLUMN;
 
 export const WRAP_OPTIONS: ControlOption[] = [

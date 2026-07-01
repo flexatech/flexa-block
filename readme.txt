@@ -51,22 +51,19 @@ No. Everything is controlled through the WordPress Block Editor. Just insert a b
 Flexa Block works with any theme that supports the Block Editor, including classic themes and Full Site Editing (FSE) themes.
 
 = What blocks are included? =
-Version 1.0.0 ships with the **Container** block — a powerful layout wrapper that supports boxed and full-width layouts, custom backgrounds (including lazy-loaded images), dark mode, and responsive controls. More blocks will be added in future releases.
+Version 1.0.0 ships with the **Container** block - a powerful layout wrapper that supports boxed and full-width layouts, custom backgrounds (including lazy-loaded images), dark mode, and responsive controls. More blocks will be added in future releases.
 
 = Will Flexa Block slow down my site? =
-No. CSS is generated once at save time and cached per post. Only the styles actually used on a given page are loaded — there are no large catch-all stylesheets.
+No. CSS is generated once at save time and cached per post. Only the styles actually used on a given page are loaded - there are no large catch-all stylesheets.
 
 = Does Flexa Block support dark mode? =
 Yes. The Container block integrates with a site-wide dark mode toggle, which you can enable or disable from the **Flexa Block** settings page in the admin.
 
 = How do I disable a block I don't need? =
-Go to **Flexa Block** in the admin sidebar and open the **Blocks** tab. You can toggle individual blocks off — disabled blocks are removed from the Block Editor inserter.
+Go to **Flexa Block** in the admin sidebar and open the **Blocks** tab. You can toggle individual blocks off - disabled blocks are removed from the Block Editor inserter.
 
 = Where are the plugin settings? =
 In the WordPress admin sidebar, click **Flexa Block** (located below Settings). From there you can control dark mode, CSS specificity, and which blocks are active.
-
-= Is there a Pro version? =
-Yes. Flexa Block Pro adds additional blocks and advanced features. It works alongside this free plugin.
 
 == Changelog ==
 

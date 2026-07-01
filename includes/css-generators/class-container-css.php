@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * Container block — server-side CSS generator.
+ * Container block - server-side CSS generator.
  *
  * Produces responsive, dark-mode-aware CSS for one container instance.
  *

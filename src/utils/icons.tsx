@@ -31,7 +31,7 @@ export const MobileIcon = svg(
 	</>
 );
 
-/* Flex direction — simple arrows (row = →, column = ↓). */
+/* Flex direction - simple arrows (row = →, column = ↓). */
 export const RowIcon = svg(
 	<>
 		<line x1="4" y1="12" x2="19" y2="12" />
@@ -46,7 +46,7 @@ export const ColumnIcon = svg(
 );
 
 /*
- * Layout glyphs (filled) — one canonical set per axis, reused by both Justify
+ * Layout glyphs (filled) - one canonical set per axis, reused by both Justify
  * and Align (the icon meaning only depends on which axis the bar moves along,
  * not on which control uses it):
  *
@@ -122,7 +122,7 @@ export const HAroundIcon = (
 	</svg>
 );
 
-/* Reset (circular arrow) — used by the slider+unit control. */
+/* Reset (circular arrow) - used by the slider+unit control. */
 export const ResetIcon = svg(
 	<>
 		<path d="M5 12a7 7 0 1 0 2-4.9" />
@@ -130,7 +130,7 @@ export const ResetIcon = svg(
 	</>
 );
 
-/* Link (chain) — used by the box (4-side) control to sync all sides. */
+/* Link (chain) - used by the box (4-side) control to sync all sides. */
 export const LinkIcon = svg(
 	<>
 		<path d="M10 13a3 3 0 0 0 4.2 0l2.3-2.3a3 3 0 0 0-4.2-4.2l-1 1" />
@@ -138,7 +138,7 @@ export const LinkIcon = svg(
 	</>
 );
 
-/* Light (sun) / Dark (moon) — used by the colour control's mode toggle. */
+/* Light (sun) / Dark (moon) - used by the colour control's mode toggle. */
 export const LightIcon = svg(
 	<>
 		<circle cx="12" cy="12" r="4" />

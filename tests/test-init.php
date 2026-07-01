@@ -2,7 +2,7 @@
 /**
  * PHPUnit "init" file (a.k.a. bootstrap) for Flexa Block.
  *
- * Note: this is NOT the Bootstrap CSS framework — it is simply the file PHPUnit
+ * Note: this is NOT the Bootstrap CSS framework - it is simply the file PHPUnit
  * runs once *before* any test. Its only jobs:
  *   1. Define ABSPATH so the plugin's `if ( ! defined( 'ABSPATH' ) ) exit;`
  *      guards do not abort when we include the source files.
@@ -21,7 +21,7 @@ if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
 }
 
 /* -----------------------------------------------------------------------------
- * Minimal WordPress stubs — only what the CSS core actually calls.
+ * Minimal WordPress stubs - only what the CSS core actually calls.
  * -------------------------------------------------------------------------- */
 
 if ( ! function_exists( 'apply_filters' ) ) {

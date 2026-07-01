@@ -1,7 +1,7 @@
 <?php
 /**
  * Tests that CSS_Generator_Service derives its generator map from the block
- * catalog (Block_Manager) rather than a hard-coded list — this is what lets a
+ * catalog (Block_Manager) rather than a hard-coded list - this is what lets a
  * new block be wired up by declaring it in ONE place.
  *
  * @package Flexa\Block

@@ -3,12 +3,12 @@
  *
  * The @wordpress/* packages ship without bundled type definitions in this
  * install, so we treat them as loosely typed. Our own data shapes (see
- * types.ts) are the source of truth and ARE fully type-checked — that is where
+ * types.ts) are the source of truth and ARE fully type-checked - that is where
  * the long-term safety (catching wrong attribute names, safe refactors) comes
  * from. WordPress component props are intentionally left as `any`.
  */
 
-/* WordPress packages — loose. */
+/* WordPress packages - loose. */
 declare module '@wordpress/*';
 
 /* Style + asset imports are handled by webpack, not the type system. */

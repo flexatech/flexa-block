@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * CSS Builder — fluent generator with responsive media queries and minification.
+ * CSS Builder - fluent generator with responsive media queries and minification.
  *
  * @package Flexa\Block
  */

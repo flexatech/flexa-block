@@ -1,6 +1,6 @@
 <?php
 /**
- * PHPStan bootstrap — declares plugin constants so static analysis of includes/
+ * PHPStan bootstrap - declares plugin constants so static analysis of includes/
  * does not report them as undefined. Not loaded at runtime.
  *
  * @package Flexa\Block

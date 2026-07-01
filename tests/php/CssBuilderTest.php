@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the CSS_Builder engine — the core every block reuses.
+ * Tests for the CSS_Builder engine - the core every block reuses.
  *
  * @package Flexa\Block
  */

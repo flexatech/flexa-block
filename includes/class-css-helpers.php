@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * CSS Helpers — convert attribute data into CSS declarations on a CSS_Builder.
+ * CSS Helpers - convert attribute data into CSS declarations on a CSS_Builder.
  *
  * @package Flexa\Block
  */
@@ -165,7 +165,7 @@ class CSS_Helpers {
 	 * @param CSS_Builder $css            Builder.
 	 * @param array       $background     Background object.
 	 * @param bool        $skip_image_url When true, emit image position/size/etc.
-	 *                                    but NOT the `background-image: url()` — used
+	 *                                    but NOT the `background-image: url()` - used
 	 *                                    for lazy loading where the url rule is gated
 	 *                                    behind a `.flexa-bg-loaded` class elsewhere.
 	 */

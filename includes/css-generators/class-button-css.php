@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * Button block — server-side CSS generator.
+ * Button block - server-side CSS generator.
  *
  * Produces responsive spacing plus dark-mode-aware color / radius / hover CSS
  * for one button instance (selector: .flexa-button-<id>).

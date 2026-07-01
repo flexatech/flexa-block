@@ -1,5 +1,5 @@
 /**
- * Container structure picker — shown for a new top-level container.
+ * Container structure picker - shown for a new top-level container.
  *
  * Renders the registered block variations as a grid of structure choices.
  * Picking one applies the variation attributes and inserts its child containers.

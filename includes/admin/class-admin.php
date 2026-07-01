@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 /**
- * Admin — settings page, REST API, and option-backed behaviour wiring.
+ * Admin - settings page, REST API, and option-backed behaviour wiring.
  *
  * One small dashboard that lets users toggle dark mode, the CSS specificity
- * boost, and enable/disable individual blocks — stored in a single option and
+ * boost, and enable/disable individual blocks - stored in a single option and
  * fed back into the engine via filters.
  *
  * @package Flexa\Block

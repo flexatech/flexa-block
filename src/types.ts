@@ -4,7 +4,7 @@
  * These describe the block attribute shapes. Typing them once here is the main
  * payoff of the TypeScript move: every panel, control and CSS-related helper
  * reads/writes these, so a wrong field name or shape is caught at compile time
- * across all blocks — and refactors become safe.
+ * across all blocks - and refactors become safe.
  *
  * @package Flexa\Block
  */

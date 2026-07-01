@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Auto-load every block CSS generator in this directory.
  *
- * Drop a new `class-*-css.php` file here and it is picked up automatically —
+ * Drop a new `class-*-css.php` file here and it is picked up automatically -
  * no manual require list to keep in sync.
  *
  * @package Flexa\Block

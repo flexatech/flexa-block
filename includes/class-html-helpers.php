@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * HTML Helpers — render helpers shared by block render.php files.
+ * HTML Helpers - render helpers shared by block render.php files.
  *
  * @package Flexa\Block
  */

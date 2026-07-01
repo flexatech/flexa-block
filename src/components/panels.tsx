@@ -49,7 +49,7 @@ import type {
 } from '../types';
 
 /**
- * Layout panel — flex display, direction, alignment, gap.
+ * Layout panel - flex display, direction, alignment, gap.
  */
 export const LayoutPanel = ( { attributes, setAttributes, initialOpen = true }: PanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
@@ -104,7 +104,7 @@ export const LayoutPanel = ( { attributes, setAttributes, initialOpen = true }: 
 };
 
 /**
- * Spacing panel — padding + margin.
+ * Spacing panel - padding + margin.
  */
 export const SpacingPanel = ( { attributes, setAttributes, initialOpen = false }: PanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
@@ -120,7 +120,7 @@ export const SpacingPanel = ( { attributes, setAttributes, initialOpen = false }
 };
 
 /**
- * Background panel — color / gradient / image with light & dark colors.
+ * Background panel - color / gradient / image with light & dark colors.
  */
 export const BackgroundPanel = ( { attributes, setAttributes, initialOpen = false }: PanelProps ): JSX.Element => {
 	const bg: BackgroundAttr = attributes.background || {};
@@ -197,7 +197,7 @@ const mapRadiusToBox = ( r: RadiusValue = {} ): BoxValue => ( { top: r.topLeft ?
 const mapBoxToRadius = ( b: BoxValue = {} ): RadiusValue => ( { topLeft: b.top ?? '', topRight: b.right ?? '', bottomRight: b.bottom ?? '', bottomLeft: b.left ?? '', unit: b.unit || 'px' } );
 
 /**
- * Border panel — style, width, color, radius (responsive width/radius).
+ * Border panel - style, width, color, radius (responsive width/radius).
  */
 export const BorderPanel = ( { attributes, setAttributes, initialOpen = false }: PanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
@@ -246,7 +246,7 @@ export const ShadowPanel = ( { attributes, setAttributes, initialOpen = false }:
 };
 
 /**
- * Position panel — overflow + z-index (responsive).
+ * Position panel - overflow + z-index (responsive).
  */
 export const PositionPanel = ( { attributes, setAttributes, initialOpen = true }: PanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
@@ -262,7 +262,7 @@ export const PositionPanel = ( { attributes, setAttributes, initialOpen = true }
 };
 
 /**
- * Visibility panel — hide per device.
+ * Visibility panel - hide per device.
  */
 export const VisibilityPanel = ( { attributes, setAttributes, initialOpen = false }: PanelProps ): JSX.Element => {
 	const vis = attributes.responsiveVisibility || {};

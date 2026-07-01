@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * CSS Generator Service — orchestrates save-time CSS generation for a post.
+ * CSS Generator Service - orchestrates save-time CSS generation for a post.
  *
  * @package Flexa\Block
  */

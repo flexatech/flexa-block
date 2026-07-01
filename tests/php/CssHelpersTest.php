@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for CSS_Helpers — pure attribute-to-CSS converters shared by all blocks.
+ * Tests for CSS_Helpers - pure attribute-to-CSS converters shared by all blocks.
  *
  * @package Flexa\Block
  */

@@ -1,5 +1,5 @@
 /**
- * Shared component library — controls + reusable panels.
+ * Shared component library - controls + reusable panels.
  *
  * @package Flexa\Block
  */

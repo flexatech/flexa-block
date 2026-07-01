@@ -1,7 +1,7 @@
 /**
  * Shared inspector design system.
  *
- * Visual polish only — no markup or option changes. Aims for a clean, compact
+ * Visual polish only - no markup or option changes. Aims for a clean, compact
  * look: muted uppercase labels, pill segmented controls with a dark active
  * state, consistent spacing and rounded inputs.
  *
@@ -19,7 +19,7 @@ $f-active: #1e1e1e;
 $f-active-text: #fff;
 $f-radius: 6px;
 $f-gap: 16px;
-$f-accent: #2563eb; /* sea blue — primary accent */
+$f-accent: #2563eb; /* sea blue - primary accent */
 $f-accent-soft: rgba( 37, 99, 235, 0.12 );
 $f-accent-border: rgba( 37, 99, 235, 0.5 );
 
@@ -108,7 +108,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
  * ------------------------------------------------------------------------ */
 .flexa-container-inspector {
 
-	/* Section header (panel title) — compact and bold. */
+	/* Section header (panel title) - compact and bold. */
 	.components-panel__body-title .components-button {
 		font-weight: 600;
 		font-size: 13px;
@@ -130,7 +130,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 		margin-bottom: $f-gap;
 	}
 
-	/* Field labels — small, uppercase, muted. */
+	/* Field labels - small, uppercase, muted. */
 	.components-base-control__label,
 	.components-input-control__label,
 	.components-toggle-group-control + .components-base-control__label {
@@ -142,7 +142,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 		margin-bottom: 6px;
 	}
 
-	/* Inputs / selects — rounded, consistent height. */
+	/* Inputs / selects - rounded, consistent height. */
 	.components-input-control__container,
 	.components-select-control__input,
 	.components-text-control__input {
@@ -166,7 +166,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 	background: $f-bg-alt; /* soft grey track */
 
 	/* WordPress draws the control's border AND focus ring with box-shadow, not
-	   the border property — so kill box-shadow/outline in every state, on the
+	   the border property - so kill box-shadow/outline in every state, on the
 	   control itself and on every descendant (label, hidden radio, option). */
 	&,
 	&:focus,
@@ -181,7 +181,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 	}
 
 	/* The active "pill" in this WP build is drawn as a ::before pseudo-element on
-	   the control root (emotion), carrying a 1px grey border + outline — that is
+	   the control root (emotion), carrying a 1px grey border + outline - that is
 	   the line we kept seeing. Recolour it to our blue and strip the border. */
 	&::before {
 		border: none !important;
@@ -190,7 +190,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 		background: #dcf2ff !important;
 	}
 
-	/* Older builds use a separate backdrop element instead — hide it. */
+	/* Older builds use a separate backdrop element instead - hide it. */
 	.components-toggle-group-control__backdrop {
 		display: none !important;
 	}
@@ -465,7 +465,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 	}
 }
 
-/* Device picker dropdown content — icons only, horizontal. */
+/* Device picker dropdown content - icons only, horizontal. */
 .flexa-device-menu {
 	display: flex;
 	flex-direction: row;
