@@ -1,0 +1,77 @@
+/**
+ * Container block — editor-only styles.
+ */
+
+.flexa-container,
+.flexa-container__inner {
+	min-height: 40px;
+}
+
+/* Subtle outline so empty containers are visible while editing. */
+.flexa-container:not(.has-child-selected) {
+	outline: 1px dashed rgba( 120, 120, 120, 0.4 );
+	outline-offset: -1px;
+}
+
+.flexa-device-switcher {
+	border-bottom: 1px solid #e0e0e0;
+}
+
+/* Structure picker placeholder. */
+.flexa-structure {
+	width: 100%;
+	padding: 32px 24px;
+	text-align: center;
+	background: #f6f7f7;
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+
+	&__title {
+		font-size: 13px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+		margin-bottom: 20px;
+		color: #6d7882;
+	}
+
+	&__grid {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 12px;
+		max-width: 600px;
+		margin: 0 auto;
+	}
+
+	&__item.components-button {
+		width: 72px;
+		height: 56px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+		border: 1px solid #dcdcde;
+		border-radius: 8px;
+		background: #fff;
+		color: #1e1e1e;
+		box-shadow: 0 1px 2px rgba( 0, 0, 0, 0.04 );
+		transition: border-color 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease, color 0.12s ease;
+
+		&:hover {
+			border-color: #2563eb;
+			box-shadow: 0 0 0 1px #2563eb, 0 4px 10px rgba( 0, 0, 0, 0.08 );
+			transform: translateY( -2px );
+			color: #2563eb;
+		}
+
+		&:focus-visible {
+			outline: 2px solid #2563eb;
+			outline-offset: 2px;
+		}
+	}
+
+	&__skip.components-button {
+		margin-top: 20px;
+	}
+}

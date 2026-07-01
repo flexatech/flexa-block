@@ -1,0 +1,40 @@
+# Dependencies
+/node_modules
+/vendor
+
+# Composer / tooling binaries
+/phpunit.phar
+/composer.phar
+/composer-setup.php
+/php-cli.ini
+/composer.lock
+
+# Test & tooling caches
+.phpunit.result.cache
+.phpunit.cache
+/.php-cs-fixer.cache
+/.phpcs.cache
+.cache/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editor / IDE
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# Env
+.env
+.env.local
+
+# built zip file
+flexa-block.zip

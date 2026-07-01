@@ -1,0 +1,27 @@
+{
+	"name": "flexa-block",
+	"version": "1.0.0",
+	"description": "Gutenberg Container block with per-device flex layout, light/dark colors and save-time CSS generation.",
+	"author": "Flexa",
+	"license": "GPL-3.0-or-later",
+	"main": "build/index.js",
+	"scripts": {
+		"build": "wp-scripts build",
+		"start": "wp-scripts start",
+		"format": "wp-scripts format",
+		"lint:js": "wp-scripts lint-js",
+		"lint:css": "wp-scripts lint-style",
+		"typecheck": "tsc --noEmit",
+		"test": "wp-scripts test-unit-js",
+		"test:watch": "wp-scripts test-unit-js --watch",
+		"check": "npm run typecheck && npm run test"
+	},
+	"devDependencies": {
+		"@babel/runtime": "^8.0.0",
+		"@wordpress/scripts": "^28.6.0",
+		"typescript": "^6.0.0"
+	},
+	"dependencies": {
+		"classnames": "^2.5.0"
+	}
+}

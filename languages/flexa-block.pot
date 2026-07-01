@@ -1,0 +1,245 @@
+# Copyright (C) 2026 Flexa
+# This file is distributed under the GPLv3.
+#
+# Regenerate with WP-CLI:  wp i18n make-pot . languages/flexa-block.pot
+msgid ""
+msgstr ""
+"Project-Id-Version: Flexa Block 1.0.0\n"
+"Report-Msgid-Bugs-To: https://flexa.dev/flexa-block\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-29T00:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: hand-authored\n"
+"X-Domain: flexa-block\n"
+
+#. Plugin Name of the plugin
+msgid "Flexa Block"
+msgstr ""
+
+#. translators: %s: minimum WordPress version
+msgid "Flexa Block requires WordPress %s or higher."
+msgstr ""
+
+#. Inserter category title
+msgid "Flexa"
+msgstr ""
+
+# Inspector tabs
+msgid "Layout"
+msgstr ""
+
+msgid "Style"
+msgstr ""
+
+msgid "Advanced"
+msgstr ""
+
+# Layout panel
+msgid "Display"
+msgstr ""
+
+msgid "Flex"
+msgstr ""
+
+msgid "Block"
+msgstr ""
+
+msgid "Direction"
+msgstr ""
+
+msgid "Justify"
+msgstr ""
+
+msgid "Align"
+msgstr ""
+
+msgid "Wrap"
+msgstr ""
+
+msgid "Gap"
+msgstr ""
+
+msgid "Column"
+msgstr ""
+
+msgid "Row"
+msgstr ""
+
+# Spacing panel
+msgid "Spacing"
+msgstr ""
+
+msgid "Padding"
+msgstr ""
+
+msgid "Margin"
+msgstr ""
+
+# Background panel
+msgid "Background"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Color"
+msgstr ""
+
+msgid "Gradient"
+msgstr ""
+
+msgid "Image"
+msgstr ""
+
+msgid "Gradient (Light)"
+msgstr ""
+
+msgid "e.g. linear-gradient(90deg,#a,#b)"
+msgstr ""
+
+msgid "Gradient (Dark)"
+msgstr ""
+
+msgid "Replace"
+msgstr ""
+
+msgid "Select Image"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+# Border panel
+msgid "Border"
+msgstr ""
+
+msgid "Style"
+msgstr ""
+
+msgid "Width"
+msgstr ""
+
+msgid "Radius"
+msgstr ""
+
+# Box shadow panel
+msgid "Box Shadow"
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+msgid "X offset"
+msgstr ""
+
+msgid "Y offset"
+msgstr ""
+
+msgid "Blur"
+msgstr ""
+
+msgid "Spread"
+msgstr ""
+
+msgid "Inset"
+msgstr ""
+
+# Position & visibility panels
+msgid "Position & Overflow"
+msgstr ""
+
+msgid "Overflow"
+msgstr ""
+
+msgid "Z-Index"
+msgstr ""
+
+msgid "Visibility"
+msgstr ""
+
+msgid "Hide on Desktop"
+msgstr ""
+
+msgid "Hide on Tablet"
+msgstr ""
+
+msgid "Hide on Mobile"
+msgstr ""
+
+# Device switcher
+msgid "Desktop"
+msgstr ""
+
+msgid "Tablet"
+msgstr ""
+
+msgid "Mobile"
+msgstr ""
+
+# Dual color
+msgid "Light"
+msgstr ""
+
+msgid "Dark"
+msgstr ""
+
+# Container panel
+msgid "Container"
+msgstr ""
+
+msgid "Content Width"
+msgstr ""
+
+msgid "Boxed"
+msgstr ""
+
+msgid "Full Width"
+msgstr ""
+
+msgid "Max Width"
+msgstr ""
+
+msgid "Min Height"
+msgstr ""
+
+msgid "HTML Tag"
+msgstr ""
+
+# Container variations
+msgid "Single Column"
+msgstr ""
+
+msgid "One column; inner blocks stack top to bottom."
+msgstr ""
+
+msgid "Two Columns (50/50)"
+msgstr ""
+
+msgid "Two side-by-side columns of equal width."
+msgstr ""
+
+msgid "Three Columns (33/33/33)"
+msgstr ""
+
+msgid "Three side-by-side columns of equal width."
+msgstr ""
+
+msgid "Two Columns (25/75)"
+msgstr ""
+
+msgid "Slim left column beside a wide right column."
+msgstr ""
+
+# Structure picker
+msgid "Choose a starting layout"
+msgstr ""
+
+msgid "Skip"
+msgstr ""
