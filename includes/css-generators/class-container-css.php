@@ -36,7 +36,7 @@ class Container_CSS {
 	 * @param CSS_Builder $css   Shared builder.
 	 */
 	public static function generate( $attrs, $css ) {
-		$id = $attrs['blockId'] ?? '';
+		$id = sanitize_html_class( $attrs['blockId'] ?? '' );
 		if ( '' === $id ) {
 			return;
 		}
