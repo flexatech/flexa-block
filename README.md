@@ -1,207 +1,207 @@
 # Flexa Block
 
-Bộ block Gutenberg responsive, hỗ trợ **dark mode** và **sinh CSS lúc lưu bài** (save-time CSS). Hiện ship block **Container** làm **block chuẩn** (khuôn mẫu kiến trúc) cho các block phát triển sau này.
+A responsive Gutenberg block collection with **dark mode** support and **save-time CSS generation**. Ships the **Container** block as the canonical architecture reference for all future blocks.
 
 - **Version:** 1.0.0
-- **Yêu cầu:** WordPress 6.4+, PHP 7.4+
+- **Requires:** WordPress 6.4+, PHP 7.4+
 - **License:** GPLv3
 
 ---
 
-## Mục lục
-1. [Cách chạy plugin](#1-cách-chạy-plugin)
-2. [Cách build](#2-cách-build)
-3. [Cách test](#3-cách-test)
-4. [Cấu trúc thư mục](#4-cấu-trúc-thư-mục)
-5. [Cơ chế hoạt động (tóm tắt)](#5-cơ-chế-hoạt-động-tóm-tắt)
+## Table of Contents
+1. [Running the plugin](#1-running-the-plugin)
+2. [Building](#2-building)
+3. [Testing](#3-testing)
+4. [Directory structure](#4-directory-structure)
+5. [How it works](#5-how-it-works)
 
 ---
 
-## 1. Cách chạy plugin
+## 1. Running the plugin
 
-Plugin chạy như mọi plugin WordPress. Có 2 trường hợp:
+The plugin works like any WordPress plugin. Two cases:
 
-### A. Chỉ dùng (không sửa code)
-Thư mục `build/` đã có sẵn asset đã build, nên chỉ cần:
-1. Đặt thư mục `flexa-block/` vào `wp-content/plugins/`.
-2. Vào **WordPress Admin → Plugins → Flexa Block → Activate**.
-3. Mở trình soạn thảo (post/page hoặc Site Editor), thêm block **Container** (nhóm Flexa).
+### A. Use only (no code changes)
+The `build/` directory already contains compiled assets, so just:
+1. Place the `flexa-block/` folder in `wp-content/plugins/`.
+2. Go to **WordPress Admin → Plugins → Flexa Block → Activate**.
+3. Open the editor (post/page or Site Editor), insert the **Container** block (Flexa group).
 
-### B. Vừa dùng vừa phát triển
-Cần cài dependency và build lại asset trước khi kích hoạt — xem [phần 2](#2-cách-build).
+### B. Use and develop
+Install dependencies and rebuild assets before activating — see [section 2](#2-building).
 
-> **Lưu ý môi trường:** dự án này đang chạy trên **Local by Flywheel**. Local đóng gói sẵn PHP/MySQL nhưng **không expose `php`/`composer` ra PATH hệ thống**. Vì vậy lệnh `npm` chạy bình thường, còn lệnh `composer`/`phpunit` cần cấu hình thêm — xem [phần 3](#3-cách-test).
+> **Environment note:** this project runs on **Local by Flywheel**. Local bundles PHP/MySQL but does **not expose `php`/`composer` on the system PATH**. `npm` commands work normally; `composer`/`phpunit` commands need extra setup — see [section 3](#3-testing).
 
 ---
 
-## 2. Cách build
+## 2. Building
 
-Yêu cầu: **Node.js** (khuyến nghị ≥ 18) và **npm**.
+Requires: **Node.js** (≥ 18 recommended) and **npm**.
 
 ```bash
-# Từ thư mục plugin: wp-content/plugins/flexa-block
+# From the plugin directory: wp-content/plugins/flexa-block
 
-npm install          # cài dependency (1 lần đầu)
+npm install          # install dependencies (first time only)
 
-npm run build        # build production → xuất vào build/
-npm run start        # build dev + watch (tự build lại khi sửa src/)
+npm run build        # production build → outputs to build/
+npm run start        # dev build + watch (rebuilds on src/ changes)
 ```
 
-Các lệnh khác:
+Other commands:
 
 ```bash
-npm run format       # tự format code theo chuẩn WordPress
-npm run lint:js      # kiểm tra ESLint
-npm run lint:css     # kiểm tra Stylelint
-npm run typecheck    # kiểm type TypeScript (tsc --noEmit, không xuất file)
-npm run check        # typecheck + test JS
+npm run format       # auto-format code to WordPress standards
+npm run lint:js      # run ESLint
+npm run lint:css     # run Stylelint
+npm run typecheck    # TypeScript type check (tsc --noEmit, no output files)
+npm run check        # typecheck + JS tests
 ```
 
-> **Source viết bằng TypeScript** (`.tsx`/`.ts`). Babel (qua `@wordpress/scripts`) strip type lúc build nên `build/` vẫn ra `.js` như cũ; việc kiểm type là bước riêng `npm run typecheck`. Type cho attributes ở [`src/types.ts`](src/types.ts); WP packages khai báo loose ở [`src/global.d.ts`](src/global.d.ts).
+> **Source is TypeScript** (`.tsx`/`.ts`). Babel (via `@wordpress/scripts`) strips types at build time so `build/` still produces plain `.js`; type checking is a separate step with `npm run typecheck`. Attribute types live in [`src/types.ts`](src/types.ts); WP package declarations are loosely typed in [`src/global.d.ts`](src/global.d.ts).
 
-Asset sau khi build nằm ở `build/blocks/container/` và được PHP nạp ở runtime (chỉ trên trang thực sự dùng block).
+Built assets are placed in `build/blocks/container/` and loaded by PHP at runtime (only on pages that actually use the block).
 
 ---
 
-## 3. Cách test
+## 3. Testing
 
-Plugin có **2 lớp test**:
+The plugin has **two test layers**:
 
-| Lớp | Kiểm tra gì | Công cụ | Chạy được ngay? |
+| Layer | What it tests | Tool | Ready to run? |
 |---|---|---|---|
-| **JS** | Util editor: cascade responsive, format giá trị (`effective`, `withUnit`, `parseUnit`, `spacingShorthand`) | Jest (qua `@wordpress/scripts`) | ✅ Có (đã có Node) |
-| **PHP** | Lõi sinh CSS: `CSS_Builder`, `CSS_Helpers`, `Container_CSS` (selector, responsive, dark mode) | PHPUnit | ⚙️ Cần PHP + Composer |
+| **JS** | Editor utils: responsive cascade, value formatting (`effective`, `withUnit`, `parseUnit`, `spacingShorthand`) | Jest (via `@wordpress/scripts`) | ✅ Yes (Node already available) |
+| **PHP** | CSS generation core: `CSS_Builder`, `CSS_Helpers`, `Container_CSS` (selectors, responsive, dark mode) | PHPUnit | ⚙️ Requires PHP + Composer |
 
-### 3.1. Test JS — chạy ngay
-
-```bash
-npm install            # nếu chưa cài
-npm test               # chạy toàn bộ test JS
-npm run test:watch     # chế độ watch
-```
-
-File test đặt cạnh source: `src/**/*.test.ts` (ví dụ `src/utils/index.test.ts`). File test được loại khỏi `tsc` (chạy bằng Jest), nên không cần cài `@types/jest`.
-
-### 3.2. Test PHP
-
-Test PHP **không cần** cài WordPress hay MySQL. File `tests/test-init.php` đã stub sẵn vài hàm WordPress để test chạy độc lập, rất nhanh.
-
-Máy này đã cài **PHP 8.2 + Composer toàn cục** (ở `%USERPROFILE%\php`, đã thêm vào PATH). Chạy thẳng:
+### 3.1. JS tests — run immediately
 
 ```bash
-composer install     # cài PHPUnit + PHPStan vào vendor/ (1 lần)
-composer test        # chạy toàn bộ test PHP (= phpunit)
-
-vendor/bin/phpunit                                   # hoặc gọi phpunit trực tiếp
-vendor/bin/phpunit --filter test_box_shadow_rendered # lọc 1 test
+npm install            # if not already installed
+npm test               # run all JS tests
+npm run test:watch     # watch mode
 ```
 
-### 3.3. Phân tích tĩnh PHP (PHPStan)
+Test files live alongside source: `src/**/*.test.ts` (e.g. `src/utils/index.test.ts`). They are excluded from `tsc` (run by Jest instead), so `@types/jest` is not required.
 
-Ngoài test, plugin còn bật **kiểu chặt** (`declare(strict_types=1)` ở mọi file PHP) và **phân tích tĩnh** bằng PHPStan (level 5, kèm WordPress stubs). Công cụ này đọc code mà không cần chạy, bắt sớm lỗi sai kiểu / sai tham số / truy cập key mảng không tồn tại.
+### 3.2. PHP tests
+
+PHP tests **do not require** a WordPress install or MySQL. `tests/test-init.php` stubs the necessary WordPress functions so tests run in isolation, very fast.
+
+The machine has **PHP 8.2 + Composer installed globally** (at `%USERPROFILE%\php`, added to PATH). Run directly:
 
 ```bash
-composer analyse     # chạy PHPStan (cấu hình ở phpstan.neon.dist)
-composer check       # chạy cả PHPStan + PHPUnit
+composer install     # install PHPUnit + PHPStan into vendor/ (first time only)
+composer test        # run all PHP tests (= phpunit)
+
+vendor/bin/phpunit                                   # or call phpunit directly
+vendor/bin/phpunit --filter test_box_shadow_rendered # run a single test
 ```
 
-> **Lưu ý:** PHP đứng riêng ở `%USERPROFILE%\php` (độc lập với PHP của Local). Cấu hình extension nằm ở `%USERPROFILE%\php\php.ini`. Nếu mở terminal đang chạy từ trước khi cài, hãy **mở terminal mới** để nhận PATH.
+### 3.3. Static analysis (PHPStan)
 
-### 3.4. Thêm test cho một block mới
+Beyond tests, the plugin uses **strict typing** (`declare(strict_types=1)` in every PHP file) and **static analysis** via PHPStan (level 5, with WordPress stubs). PHPStan reads code without executing it, catching type errors, wrong parameter types, and missing array keys early.
 
-Test được thiết kế để **tái sử dụng**:
-- `CssBuilderTest` và `CssHelpersTest` kiểm lõi mà **mọi block dùng chung** → không cần viết lại.
-- Để test block mới: copy `tests/php/ContainerCssTest.php`, kế thừa `CssTestCase`, dùng sẵn `genCss()` + `assertCssHas()`, rồi đổi generator + attribute. Nhớ thêm 1 dòng `require_once` generator mới vào `tests/test-init.php`.
+```bash
+composer analyse     # run PHPStan (configured in phpstan.neon.dist)
+composer check       # run PHPStan + PHPUnit together
+```
+
+> **Note:** PHP is installed at `%USERPROFILE%\php` (separate from Local's bundled PHP). Extension config is at `%USERPROFILE%\php\php.ini`. If your terminal was open before the install, **open a new terminal** to pick up the updated PATH.
+
+### 3.4. Adding tests for a new block
+
+Tests are designed for **reuse**:
+- `CssBuilderTest` and `CssHelpersTest` cover the shared core **all blocks use** — no need to rewrite them.
+- For a new block: copy `tests/php/ContainerCssTest.php`, extend `CssTestCase`, use the built-in `genCss()` + `assertCssHas()` helpers, then swap in the new generator and attributes. Add one `require_once` for the new generator to `tests/test-init.php`.
 
 ---
 
-## 4. Cấu trúc thư mục
+## 4. Directory structure
 
 ```
 flexa-block/
-├── flexa-block.php              # Entry point của plugin
-├── includes/                    # Backend PHP (namespace Flexa\Block)
-│   ├── class-css-builder.php        # Fluent CSS builder + media query + minify
-│   ├── class-css-helpers.php        # Attribute → CSS (spacing, border, background, shadow, dark)
+├── flexa-block.php              # Plugin entry point
+├── includes/                    # PHP backend (namespace Flexa\Block)
+│   ├── class-css-builder.php        # Fluent CSS builder + media queries + minify
+│   ├── class-css-helpers.php        # Attributes → CSS (spacing, border, background, shadow, dark)
 │   ├── class-css-generator-service.php
 │   ├── class-dark-mode-settings.php
 │   ├── class-global-styles.php      # Design tokens (:root --flexa-* + dark overrides)
 │   ├── admin/
-│   │   └── class-admin.php           # Trang settings + REST API + menu
+│   │   └── class-admin.php           # Settings page + REST API + menu
 │   └── css-generators/
-│       └── class-container-css.php  # Generator riêng của block Container
-├── src/                         # Source frontend/editor (React + TypeScript)
-│   ├── types.ts                     # Type cho attributes (dùng chung mọi block)
-│   ├── global.d.ts                  # Ambient: @wordpress/* (loose), *.scss, window.flexaBlock*
-│   ├── admin/                        # App React của trang settings (index.tsx)
-│   ├── blocks/container/             # Block Container (block.json, edit.tsx, render.php, view.ts, ...)
-│   ├── components/                   # Panel & control dùng chung (.tsx)
-│   ├── hooks/  ·  utils/             # Hook + util (có util/index.test.ts)
-├── build/                       # Asset đã build (do npm tạo)
-├── tsconfig.json                # Cấu hình TypeScript (strict, tsc --noEmit)
-├── tests/                       # Test PHP
-│   ├── test-init.php                 # "Bootstrap" PHPUnit (define ABSPATH + stub WP)
-│   ├── phpstan-bootstrap.php         # Khai báo hằng plugin cho PHPStan
-│   ├── CssTestCase.php               # Base class dùng chung cho test block
+│       └── class-container-css.php  # CSS generator for the Container block
+├── src/                         # Frontend/editor source (React + TypeScript)
+│   ├── types.ts                     # Attribute types (shared across all blocks)
+│   ├── global.d.ts                  # Ambient declarations: @wordpress/* (loose), *.scss, window.flexaBlock*
+│   ├── admin/                        # React app for the settings page (index.tsx)
+│   ├── blocks/container/             # Container block (block.json, edit.tsx, render.php, view.ts, …)
+│   ├── components/                   # Shared panels & controls (.tsx)
+│   ├── hooks/  ·  utils/             # Hooks + utils (includes utils/index.test.ts)
+├── build/                       # Compiled assets (generated by npm)
+├── tsconfig.json                # TypeScript config (strict, tsc --noEmit)
+├── tests/                       # PHP tests
+│   ├── test-init.php                 # PHPUnit bootstrap (defines ABSPATH + stubs WP functions)
+│   ├── phpstan-bootstrap.php         # Declares plugin constants for PHPStan
+│   ├── CssTestCase.php               # Shared base class for block CSS tests
 │   └── php/                          # CssBuilderTest, CssHelpersTest, ContainerCssTest
-├── composer.json                # Dev dep: phpunit, phpstan
-├── phpunit.xml.dist             # Cấu hình PHPUnit
-├── phpstan.neon.dist            # Cấu hình PHPStan (level 5 + WP stubs)
-├── package.json                 # Script build/lint/test JS
-├── README.md                    # File này
-└── readme.txt                   # Readme chuẩn WordPress.org
+├── composer.json                # Dev deps: phpunit, phpstan
+├── phpunit.xml.dist             # PHPUnit config
+├── phpstan.neon.dist            # PHPStan config (level 5 + WP stubs)
+├── package.json                 # JS build/lint/test scripts
+├── README.md                    # This file
+└── readme.txt                   # WordPress.org readme
 ```
 
 ---
 
-## 5. Cơ chế hoạt động (tóm tắt)
+## 5. How it works
 
-- **Save-time CSS:** khi lưu post/template, plugin phân tích nội dung, sinh CSS một lần và lưu vào post meta `_flexa_block_css`. Frontend chỉ in inline CSS này trên trang thực sự dùng block → không sinh CSS lại mỗi lần tải.
-- **Responsive cascade:** thuộc tính có cấu trúc `desktop / tablet / mobile`; tablet kế thừa desktop, mobile kế thừa tablet (đổ xuống). Breakpoint: tablet `max-width: 1024px`, mobile `max-width: 767px`.
-- **Dark mode:** mỗi màu là cặp `{ light, dark }`. CSS dark được phát qua `@media (prefers-color-scheme: dark)` và/hoặc `[data-theme="dark"]`, tùy cấu hình trong `Dark_Mode_Settings`.
-- **Design tokens (global styles):** `Global_Styles` in một bộ biến CSS dùng chung lên `:root` (`--flexa-color-*`, `--flexa-space-*`, `--flexa-font-size-*`, `--flexa-radius-*`) + bản dark override. Block tham chiếu `var(--flexa-...)` để nhất quán. Tùy biến qua filter `flexa_block_design_tokens` (light) và `flexa_block_design_tokens_dark` (dark).
-- **Lazy-load ảnh nền:** bật toggle "Lazy load image" trong panel Background; `view.js` dùng `IntersectionObserver` để chỉ tải ảnh khi gần khung nhìn (url được gate sau class `.flexa-bg-loaded`).
-- **Mở rộng (thêm block):** mỗi block khai báo `name` + `generator` trong `Block_Manager::BASE_BLOCKS`; `CSS_Generator_Service` build map sinh-CSS **từ catalog đó** (không hardcode). Generator trong `includes/css-generators/` được **auto-load bằng glob**. Add-on bên ngoài đăng ký block qua filter `flexa_block_blocks` và nối generator qua filter `flexa_block_css_generators`. → Thêm 1 block = thêm 1 entry catalog + thả 1 file generator vào thư mục. **Checklist chi tiết:** [docs/huong-dan-nhan-ban-block.md](docs/huong-dan-nhan-ban-block.md).
+- **Save-time CSS:** when a post or template is saved, the plugin parses the content, generates CSS once, and stores it in the `_flexa_block_css` post meta. The frontend prints this inline CSS only on pages that actually use the block — no CSS is generated on each page load.
+- **Responsive cascade:** attributes follow a `desktop / tablet / mobile` structure; tablet inherits from desktop, mobile inherits from tablet (cascade down). Breakpoints: tablet `max-width: 1024px`, mobile `max-width: 767px`.
+- **Dark mode:** each color is a `{ light, dark }` pair. Dark CSS is emitted via `@media (prefers-color-scheme: dark)` and/or `[data-theme="dark"]`, depending on the `Dark_Mode_Settings` configuration.
+- **Design tokens (global styles):** `Global_Styles` prints a shared set of CSS variables on `:root` (`--flexa-color-*`, `--flexa-space-*`, `--flexa-font-size-*`, `--flexa-radius-*`) plus a dark override block. Blocks reference `var(--flexa-...)` for consistency. Customizable via the `flexa_block_design_tokens` (light) and `flexa_block_design_tokens_dark` (dark) filters.
+- **Lazy background images:** enable the "Lazy load image" toggle in the Background panel; `view.js` uses `IntersectionObserver` to load the image only as it approaches the viewport (the URL is gated behind the `.flexa-bg-loaded` class).
+- **Extensibility (adding blocks):** each block declares a `name` + `generator` entry in `Block_Manager::BASE_BLOCKS`; `CSS_Generator_Service` builds the CSS-generation map **from that catalog** (no hardcoding). Generators in `includes/css-generators/` are **auto-loaded via glob**. External add-ons register blocks via the `flexa_block_blocks` filter and attach generators via the `flexa_block_css_generators` filter. Adding a block = adding one catalog entry + dropping one generator file into the directory. **Detailed checklist:** [docs/huong-dan-nhan-ban-block.md](docs/huong-dan-nhan-ban-block.md).
 
-### Trang Settings (admin)
+### Settings page
 
-Vào **WordPress Admin → menu "Flexa Block"** để:
-- Bật/tắt **dark mode** + chọn phương thức (`prefers-color-scheme` / `[data-theme="dark"]`).
-- Bật **CSS specificity boost** (thêm `body ` trước selector để chắc chắn đè theme).
-- **Bật/tắt từng block** (block lõi luôn bật).
+Go to **WordPress Admin → Flexa Block** to:
+- Enable/disable **dark mode** and choose the activation method (`prefers-color-scheme` / `[data-theme="dark"]`).
+- Enable **CSS specificity boost** (prepends `body ` to selectors to reliably override theme styles).
+- **Enable/disable individual blocks** (core blocks are always on).
 
-Cài đặt lưu trong option `flexa_block_settings` qua REST (`/wp-json/flexa-block/v1/settings`, yêu cầu quyền `manage_options`).
+Settings are stored in the `flexa_block_settings` option via REST (`/wp-json/flexa-block/v1/settings`, requires `manage_options` capability).
 
 ---
 
-## 6. Xử lý sự cố (troubleshooting)
+## 6. Troubleshooting
 
-### 6.1. CSS không xuất hiện / cũ ở frontend
+### 6.1. CSS missing or stale on the frontend
 
-CSS được sinh **lúc lưu bài** và cache vào post meta `_flexa_block_css` (kèm `_flexa_block_css_version`). Nếu frontend không thấy CSS hoặc thấy CSS cũ:
+CSS is generated **at save time** and cached in the `_flexa_block_css` post meta (alongside `_flexa_block_css_version`). If the frontend shows no CSS or stale CSS:
 
-1. **Mở lại bài và bấm Update** — đây là cách tái sinh CSS chắc chắn nhất.
-2. CSS chỉ in trên trang **thực sự chứa block** — kiểm tra block còn trong nội dung không.
-3. Sau khi **cập nhật phiên bản plugin**, CSS cũ tự được coi là hết hạn (`needs_regeneration()` so sánh version) và sinh lại ở lần lưu kế tiếp.
-4. Muốn xoá cache thủ công: xoá 2 post meta `_flexa_block_css` và `_flexa_block_css_version` của bài đó (hoặc lưu lại bài).
+1. **Re-open the post and click Update** — this is the most reliable way to regenerate CSS.
+2. CSS is only printed on pages **that actually contain the block** — verify the block is still in the content.
+3. After a **plugin version update**, old CSS is automatically treated as expired (`needs_regeneration()` compares versions) and regenerated on the next save.
+4. To clear the cache manually: delete the `_flexa_block_css` and `_flexa_block_css_version` post meta entries for that post (or simply re-save the post).
 
-### 6.2. Một block lỗi nhưng các block khác vẫn ổn
+### 6.2. One block errors but others are fine
 
-Mỗi block được **cách ly khi sinh CSS**: nếu một generator ném lỗi, plugin bỏ qua đúng block đó và vẫn sinh CSS cho phần còn lại — **không làm hỏng cả trang hay chặn việc lưu bài**.
+Each block's CSS generation is **isolated**: if a generator throws an error, the plugin skips that block and continues generating CSS for the rest — **without breaking the page or blocking the save**.
 
-Để xem block nào lỗi, bật `WP_DEBUG` trong `wp-config.php`:
+To see which block failed, enable `WP_DEBUG` in `wp-config.php`:
 
 ```php
 define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 ```
 
-Lỗi sẽ được ghi vào `wp-content/debug.log` theo dạng:
+Errors are written to `wp-content/debug.log` in the format:
 
 ```
-[Flexa Block] CSS generation failed for block "flexa/...": <thông điệp lỗi> in <file>:<dòng>
+[Flexa Block] CSS generation failed for block "flexa/...": <error message> in <file>:<line>
 ```
 
-### 6.3. Dark mode không hiển thị
+### 6.3. Dark mode not showing
 
-Xem điều kiện ở mục [Cơ chế hoạt động](#5-cơ-chế-hoạt-động-tóm-tắt): block phải có **giá trị màu Dark**, đã **lưu bài**, và trạng thái tối phải được kích hoạt (`@media (prefers-color-scheme: dark)` khi OS ở chế độ tối, hoặc có `[data-theme="dark"]` trên trang).
+See the conditions in [How it works](#5-how-it-works): the block must have a **Dark color value** set, the post must have been **saved**, and the dark state must be active (`@media (prefers-color-scheme: dark)` when the OS is in dark mode, or `[data-theme="dark"]` present on the page).
