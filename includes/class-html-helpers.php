@@ -77,7 +77,9 @@ class HTML_Helpers {
 			foreach ( $custom as $pair ) {
 				$key = isset( $pair['key'] ) ? sanitize_key( $pair['key'] ) : '';
 				$val = isset( $pair['value'] ) ? (string) $pair['value'] : '';
-				if ( '' === $key ) {
+				// Only data-* attributes: anything else (onclick, style, src, ...)
+				// would let attribute JSON inject live handlers past KSES.
+				if ( '' === $key || 0 !== strpos( $key, 'data-' ) ) {
 					continue;
 				}
 				$html .= ' ' . $key . '="' . esc_attr( $val ) . '"';

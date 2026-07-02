@@ -53,19 +53,19 @@ class Container_CSS {
 			if ( ! empty( $layout ) ) {
 				$css->set_selector( $styled );
 				if ( ! empty( $layout['display'] ) ) {
-					$css->add_property( 'display', $layout['display'] );
+					$css->add_property( 'display', CSS_Helpers::keyword( $layout['display'], [ 'flex', 'inline-flex', 'block', 'inline-block', 'grid', 'inline-grid', 'none' ] ) );
 				}
 				if ( ! empty( $layout['direction'] ) ) {
-					$css->add_property( 'flex-direction', $layout['direction'] );
+					$css->add_property( 'flex-direction', CSS_Helpers::keyword( $layout['direction'], [ 'row', 'row-reverse', 'column', 'column-reverse' ] ) );
 				}
 				if ( ! empty( $layout['justifyContent'] ) ) {
-					$css->add_property( 'justify-content', $layout['justifyContent'] );
+					$css->add_property( 'justify-content', CSS_Helpers::keyword( $layout['justifyContent'], [ 'flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly', 'start', 'end' ] ) );
 				}
 				if ( ! empty( $layout['alignItems'] ) ) {
-					$css->add_property( 'align-items', $layout['alignItems'] );
+					$css->add_property( 'align-items', CSS_Helpers::keyword( $layout['alignItems'], [ 'stretch', 'flex-start', 'flex-end', 'center', 'baseline', 'start', 'end' ] ) );
 				}
 				if ( ! empty( $layout['wrap'] ) ) {
-					$css->add_property( 'flex-wrap', $layout['wrap'] );
+					$css->add_property( 'flex-wrap', CSS_Helpers::keyword( $layout['wrap'], [ 'wrap', 'nowrap', 'wrap-reverse' ] ) );
 				}
 				$gap = $layout['gap'] ?? [];
 				if ( is_array( $gap ) ) {
@@ -119,13 +119,13 @@ class Container_CSS {
 			if ( ! empty( $advanced ) ) {
 				$css->set_selector( $styled );
 				if ( ! empty( $advanced['overflow'] ) ) {
-					$css->add_property( 'overflow', $advanced['overflow'] );
+					$css->add_property( 'overflow', CSS_Helpers::keyword( $advanced['overflow'], [ 'visible', 'hidden', 'clip', 'scroll', 'auto' ] ) );
 				}
 				if ( ! empty( $advanced['position'] ) ) {
-					$css->add_property( 'position', $advanced['position'] );
+					$css->add_property( 'position', CSS_Helpers::keyword( $advanced['position'], [ 'static', 'relative', 'absolute', 'fixed', 'sticky' ] ) );
 				}
-				if ( isset( $advanced['zIndex'] ) && '' !== (string) $advanced['zIndex'] ) {
-					$css->add_property( 'z-index', $advanced['zIndex'] );
+				if ( isset( $advanced['zIndex'] ) && is_numeric( $advanced['zIndex'] ) ) {
+					$css->add_property( 'z-index', (string) (int) $advanced['zIndex'] );
 				}
 			}
 
@@ -160,19 +160,19 @@ class Container_CSS {
 				// Background dark color / gradient.
 				$type = $background['type'] ?? 'none';
 				if ( 'classic' === $type || 'color' === $type ) {
-					$dark = CSS_Helpers::dark( $background['color'] ?? '' );
+					$dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $background['color'] ?? '' ) );
 					if ( '' !== $dark ) {
 						$css->add_property( 'background-color', $dark );
 					}
 				} elseif ( 'gradient' === $type ) {
-					$dark = CSS_Helpers::dark( $background['gradient'] ?? '' );
+					$dark = CSS_Helpers::sanitize_gradient( CSS_Helpers::dark( $background['gradient'] ?? '' ) );
 					if ( '' !== $dark ) {
 						$css->add_property( 'background-image', $dark );
 					}
 				}
 
 				// Border dark color (desktop only).
-				$border_dark = CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' );
+				$border_dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' ) );
 				if ( '' !== $border_dark ) {
 					$css->add_property( 'border-color', $border_dark );
 				}

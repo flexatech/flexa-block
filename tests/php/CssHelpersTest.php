@@ -30,6 +30,77 @@ class CssHelpersTest extends TestCase {
 		$this->assertSame( '0px', CSS_Helpers::with_unit( '0', 'px' ) );
 	}
 
+	public function test_with_unit_rejects_declaration_breakout(): void {
+		$this->assertSame( '', CSS_Helpers::with_unit( '10px;} body{display:none' ) );
+		$this->assertSame( '', CSS_Helpers::with_unit( 'url(javascript:alert(1))' ) ); // ends in ")" but has ":"
+		$this->assertSame( '10px', CSS_Helpers::with_unit( '10', 'px;}' ) );           // bad unit falls back to px
+		$this->assertSame( 'calc(100% - 20px)', CSS_Helpers::with_unit( 'calc(100% - 20px)' ) );
+		$this->assertSame( '100vh', CSS_Helpers::with_unit( '100', 'vh' ) );
+	}
+
+	public function test_sanitize_color(): void {
+		$this->assertSame( '#ff0000', CSS_Helpers::sanitize_color( '#ff0000' ) );
+		$this->assertSame( '#abc', CSS_Helpers::sanitize_color( '#abc' ) );
+		$this->assertSame( 'rgba(0, 0, 0, 0.5)', CSS_Helpers::sanitize_color( 'rgba(0, 0, 0, 0.5)' ) );
+		$this->assertSame( 'hsl(120deg 50% 50%)', CSS_Helpers::sanitize_color( 'hsl(120deg 50% 50%)' ) );
+		$this->assertSame( 'var(--flexa-color-primary)', CSS_Helpers::sanitize_color( 'var(--flexa-color-primary)' ) );
+		$this->assertSame( 'transparent', CSS_Helpers::sanitize_color( 'transparent' ) );
+		$this->assertSame( '', CSS_Helpers::sanitize_color( 'red;} body{display:none' ) );
+		$this->assertSame( '', CSS_Helpers::sanitize_color( 'url(https://evil.example)' ) );
+	}
+
+	public function test_sanitize_gradient(): void {
+		$this->assertSame(
+			'linear-gradient(90deg,#fff,#000)',
+			CSS_Helpers::sanitize_gradient( 'linear-gradient(90deg,#fff,#000)' )
+		);
+		$this->assertSame(
+			'radial-gradient(circle, rgba(6,147,227,1) 0%, rgb(155,81,224) 100%)',
+			CSS_Helpers::sanitize_gradient( 'radial-gradient(circle, rgba(6,147,227,1) 0%, rgb(155,81,224) 100%)' )
+		);
+		$this->assertSame( '', CSS_Helpers::sanitize_gradient( '#ff0000' ) );                       // not a gradient
+		$this->assertSame( '', CSS_Helpers::sanitize_gradient( 'linear-gradient(90deg,#fff);} x{' ) );
+		$this->assertSame( '', CSS_Helpers::sanitize_gradient( 'url(https://evil.example/a.png)' ) );
+	}
+
+	public function test_keyword_allowlist(): void {
+		$this->assertSame( 'solid', CSS_Helpers::keyword( 'solid', [ 'solid', 'dashed' ] ) );
+		$this->assertSame( 'solid', CSS_Helpers::keyword( ' SOLID ', [ 'solid', 'dashed' ] ) );
+		$this->assertSame( '', CSS_Helpers::keyword( 'solid;}', [ 'solid', 'dashed' ] ) );
+	}
+
+	public function test_add_background_drops_invalid_values(): void {
+		$css = $this->emit( function ( $b ) {
+			CSS_Helpers::add_background( $b, [
+				'type'  => 'image',
+				'image' => [
+					'url'        => 'https://example.com/a.jpg',
+					'position'   => 'top left;} body{display:none',
+					'size'       => 'cover;}',
+					'repeat'     => 'no-repeat;}',
+					'attachment' => 'fixed;}',
+				],
+			] );
+		} );
+		$this->assertStringNotContainsString( 'display:none', $css );
+		$this->assertStringContainsString( 'background-position:center center', $css ); // fell back
+		$this->assertStringContainsString( 'background-size:cover', $css );             // fell back
+		$this->assertStringNotContainsString( 'background-repeat', $css );              // dropped
+		$this->assertStringNotContainsString( 'background-attachment', $css );          // dropped
+	}
+
+	public function test_box_shadow_falls_back_on_invalid_color(): void {
+		$shadow = [
+			'enabled'    => true,
+			'horizontal' => '2',
+			'vertical'   => '4',
+			'blur'       => '6',
+			'spread'     => '0',
+			'color'      => [ 'light' => '#000;} body{display:none' ],
+		];
+		$this->assertSame( '2px 4px 6px 0px rgba(0,0,0,0.1)', CSS_Helpers::box_shadow( $shadow ) );
+	}
+
 	public function test_spacing_shorthand(): void {
 		$this->assertSame(
 			'10px 5px 10px 5px',

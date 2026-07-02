@@ -231,6 +231,7 @@ class Admin {
 			$version,
 			true
 		);
+		wp_set_script_translations( 'flexa-block-admin', 'flexa-block', FLEXA_BLOCK_DIR . 'languages' );
 		wp_enqueue_style( 'wp-components' );
 
 		wp_localize_script(

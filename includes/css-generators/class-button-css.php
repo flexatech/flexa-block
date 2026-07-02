@@ -37,7 +37,7 @@ class Button_CSS {
 	 * @param CSS_Builder $css   Shared builder.
 	 */
 	public static function generate( $attrs, $css ) {
-		$id = $attrs['blockId'] ?? '';
+		$id = sanitize_html_class( $attrs['blockId'] ?? '' );
 		if ( '' === $id ) {
 			return;
 		}
@@ -97,8 +97,8 @@ class Button_CSS {
 	 * @param mixed       $bg       Background color pair.
 	 */
 	private static function apply_colors( $css, $selector, $variant, $text, $bg ) {
-		$text_light = CSS_Helpers::light( $text );
-		$bg_light   = CSS_Helpers::light( $bg );
+		$text_light = CSS_Helpers::sanitize_color( CSS_Helpers::light( $text ) );
+		$bg_light   = CSS_Helpers::sanitize_color( CSS_Helpers::light( $bg ) );
 		if ( '' === $text_light && '' === $bg_light ) {
 			return;
 		}
@@ -129,8 +129,8 @@ class Button_CSS {
 			$css,
 			$selector,
 			function ( $css ) use ( $variant, $text, $bg ) {
-				$text_dark = CSS_Helpers::dark( $text );
-				$bg_dark   = CSS_Helpers::dark( $bg );
+				$text_dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $text ) );
+				$bg_dark   = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $bg ) );
 				if ( '' !== $text_dark ) {
 					$css->add_property( 'color', $text_dark );
 				}

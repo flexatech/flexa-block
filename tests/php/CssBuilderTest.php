@@ -43,6 +43,14 @@ class CssBuilderTest extends TestCase {
 		$this->assertStringNotContainsString( '>', $out );
 	}
 
+	public function test_strips_structural_chars_to_prevent_rule_breakout(): void {
+		$css = new CSS_Builder();
+		$css->set_selector( '.x' )->add_property( 'color', 'red;} body{display:none' );
+		$out = $css->get_output();
+		$this->assertStringNotContainsString( 'body{', $out );
+		$this->assertSame( '.x{color:red bodydisplay:none;}', $out );
+	}
+
 	public function test_tablet_wraps_in_max_width_media_query(): void {
 		$css = new CSS_Builder();
 		$css->start_media_query( 'tablet' );

@@ -75,6 +75,22 @@ if ( ! function_exists( 'sanitize_key' ) ) {
 	}
 }
 
+if ( ! function_exists( 'sanitize_html_class' ) ) {
+	/**
+	 * Stub: mirror WP core - strip percent-encoded octets, then anything that
+	 * is not alphanumeric, underscore or dash.
+	 *
+	 * @param string $classname Raw class name.
+	 * @param string $fallback  Fallback when nothing survives.
+	 * @return string
+	 */
+	function sanitize_html_class( $classname, $fallback = '' ) {
+		$sanitized = preg_replace( '/%[a-fA-F0-9][a-fA-F0-9]/', '', (string) $classname );
+		$sanitized = preg_replace( '/[^A-Za-z0-9_-]/', '', $sanitized );
+		return ( '' === $sanitized && '' !== $fallback ) ? sanitize_html_class( $fallback ) : $sanitized;
+	}
+}
+
 if ( ! class_exists( 'WP_Block_Type_Registry' ) ) {
 	/**
 	 * Stub: minimal block-type registry so CSS_Generator_Service::get_block_defaults

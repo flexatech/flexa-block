@@ -94,8 +94,9 @@ class CSS_Builder {
 		}
 
 		// Defensive: CSS values never legitimately contain these. Stripping them
-		// prevents breaking out of the inline <style> block (e.g. "</style>").
-		$value = str_replace( [ '<', '>' ], '', (string) $value );
+		// prevents breaking out of the inline <style> block (e.g. "</style>")
+		// or out of the declaration/rule (e.g. "red;} body{display:none").
+		$value = str_replace( [ '<', '>', '{', '}', ';' ], '', (string) $value );
 		if ( '' === $value ) {
 			return $this;
 		}
