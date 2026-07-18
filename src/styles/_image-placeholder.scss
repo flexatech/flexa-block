@@ -1,0 +1,27 @@
+// Shared "no image" placeholder — the framed picture glyph shown in place of a
+// missing thumbnail (`HTML_Helpers::image_placeholder()` on the front end, the
+// `ImagePlaceholder` component in the editor). Used by media-card blocks (Post
+// Grid, RSS) via `@use '../../styles/image-placeholder' as *; @include
+// flexa-image-placeholder();`. Structure only — a muted neutral fill and a
+// centred glyph that inherits the surrounding colour. The `aspect-ratio` here is
+// a fallback; the caller passes the block's chosen image ratio inline.
+
+@mixin flexa-image-placeholder() {
+	.flexa-image-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		background: rgba(100, 116, 139, 0.1);
+		color: rgba(100, 116, 139, 0.55);
+
+		svg {
+			width: 2.75em;
+			height: 2.75em;
+			max-width: 40%;
+			max-height: 60%;
+		}
+	}
+}

@@ -1,0 +1,76 @@
+/**
+ * Shared scrollbar styling — a thin, rounded, overlay-style scrollbar.
+ *
+ * Pure CSS (no JS, no dependency) so it works on the static front end. Reusable
+ * across blocks: each block compiles its own SCSS bundle, so pull this in with a
+ * relative `@use` from the block's style.scss / editor.scss, e.g. from
+ * `src/blocks/<block>/style.scss`:
+ *
+ *   @use '../../styles/scrollbar' as *;
+ *   .my-block__scroll { overflow: auto; @include flexa-scrollbar(); }
+ *
+ * — or just add the ready-made `.flexa-scroll` class (emitted below) to any
+ * scrollable element. The neutral greys read well on both light and dark
+ * backgrounds, with a prefers-color-scheme tweak for dark mode.
+ *
+ * Path note: this partial lives in `src/styles/` (a shared, non-block location);
+ * sass-loader resolves the relative `@use` path against the importing file, so
+ * `../../styles/scrollbar` works from any `src/blocks/<block>/` stylesheet.
+ */
+
+/**
+ * Emit a thin, rounded scrollbar on the current selector (Firefox + WebKit).
+ *
+ * @param {Length} $size        Scrollbar thickness (width/height). Default 8px.
+ * @param {Color}  $thumb       Thumb colour.
+ * @param {Color}  $thumb-hover Thumb colour on hover (subtle darken).
+ * @param {Color}  $track       Track colour (transparent = overlay look).
+ */
+@mixin flexa-scrollbar(
+	$size: 8px,
+	$thumb: rgba( 120, 120, 120, 0.5 ),
+	$thumb-hover: rgba( 120, 120, 120, 0.8 ),
+	$track: transparent
+) {
+	// Firefox.
+	scrollbar-width: thin;
+	scrollbar-color: $thumb $track;
+
+	// WebKit / Blink.
+	&::-webkit-scrollbar {
+		width: $size;
+		height: $size;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: $track;
+		border-radius: $size;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: $thumb;
+		border-radius: $size;
+
+		&:hover {
+			background: $thumb-hover;
+		}
+	}
+
+	// Lighter thumb on dark backgrounds so it stays visible.
+	@media (prefers-color-scheme: dark) {
+		scrollbar-color: rgba( 190, 190, 190, 0.45 ) $track;
+
+		&::-webkit-scrollbar-thumb {
+			background: rgba( 190, 190, 190, 0.4 );
+
+			&:hover {
+				background: rgba( 190, 190, 190, 0.7 );
+			}
+		}
+	}
+}
+
+/** Convenience class — add `.flexa-scroll` to any scrollable element. */
+.flexa-scroll {
+	@include flexa-scrollbar();
+}

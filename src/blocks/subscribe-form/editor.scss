@@ -1,0 +1,41 @@
+/**
+ * Subscribe Form — editor-only tweaks.
+ *
+ * The fields render live (InnerBlocks) so their labels/placeholders stay
+ * editable; the submit button + message region are inert previews.
+ */
+
+.flexa-subscribe-form--editing {
+	.flexa-subscribe-form__submit {
+		cursor: default;
+	}
+
+	// Disabled inputs still need to read as fields in the editor.
+	.flexa-field__control:disabled {
+		opacity: 1;
+		background: #fff;
+		color: #1e1e1e;
+	}
+}
+
+// Hidden field — invisible on the front end, shown as a chip in the editor.
+.flexa-field--hidden-edit {
+	display: block;
+}
+
+.flexa-field__hidden-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 10px;
+	border: 1px dashed #949494;
+	border-radius: 4px;
+	font-size: 12px;
+	color: #757575;
+	background: #f0f0f0;
+
+	code {
+		background: transparent;
+		padding: 0;
+	}
+}

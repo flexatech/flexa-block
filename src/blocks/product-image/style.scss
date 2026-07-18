@@ -1,0 +1,216 @@
+/**
+ * Product Image block — frontend + editor base styles.
+ *
+ * Structure and motion only. Instance values (thumbnails-per-view + gap, featured
+ * image height / scale / radius, wrapper spacing / background / border / shadow)
+ * are produced by the PHP CSS generator (as CSS vars) and mirrored inline in the
+ * editor. The thumbnail strip is a carousel: a fixed number of thumbnails are
+ * visible at once (a horizontal row under the featured image, or a vertical strip
+ * beside it) and prev / next arrows scroll through the rest.
+ */
+
+.flexa-product-image {
+	box-sizing: border-box;
+	display: flex;
+	gap: 12px;
+
+	* {
+		box-sizing: border-box;
+	}
+
+	&__main {
+		flex: 1 1 auto;
+		min-width: 0;
+		margin: 0;
+
+		img {
+			display: block;
+			width: 100%;
+			height: auto;
+		}
+	}
+
+	// The thumbnail carousel — the scrolling strip spans the full width of the
+	// featured image; the prev / next arrows float on top of its left/right edges.
+	&__thumbs-wrap {
+		position: relative;
+		min-width: 0;
+	}
+
+	&__nav {
+		position: absolute;
+		top: 50%;
+		z-index: 2;
+		transform: translateY(-50%);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 30px;
+		height: 30px;
+		padding: 0;
+		border: 0;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.9);
+		box-shadow: 0 1px 5px rgba(0, 0, 0, 0.25);
+		color: #222;
+		font-size: 18px;
+		line-height: 1;
+		cursor: pointer;
+		transition: background 0.2s ease, opacity 0.2s ease;
+
+		&--prev {
+			left: 6px;
+		}
+
+		&--next {
+			right: 6px;
+		}
+
+		&:hover {
+			background: #fff;
+		}
+
+		&:disabled {
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
+
+	&__thumbs {
+		display: flex;
+		flex: 1 1 auto;
+		flex-wrap: nowrap;
+		gap: var(--flexa-thumb-gap, 8px);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-behavior: smooth;
+		scrollbar-width: none; // Firefox — arrows drive the scroll.
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	&__thumb {
+		flex: 0 0 calc((100% - (var(--flexa-thumb-pv, 4) - 1) * var(--flexa-thumb-gap, 8px)) / var(--flexa-thumb-pv, 4));
+		aspect-ratio: 1 / 1;
+		cursor: pointer;
+		margin: 0;
+		min-width: 0;
+		overflow: hidden;
+		border: 1px solid rgba(127, 127, 127, 0.25);
+		border-radius: 4px;
+		transition: border-color 0.15s ease;
+
+		&:hover {
+			border-color: rgba(127, 127, 127, 0.6);
+		}
+
+		// The selected thumbnail is highlighted with an accent border (like the
+		// reference gallery); currentColor keeps it theme-neutral yet visible.
+		&.is-active {
+			border-width: 2px;
+			border-color: currentColor;
+		}
+
+		img {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+
+	// =====================================================================
+	// Thumbnail-strip position.
+	// =====================================================================
+	&--pos-bottom {
+		flex-direction: column;
+	}
+
+	&--pos-left,
+	&--pos-right {
+		flex-direction: row;
+		// Stretch both columns to the same height — the featured image sets it, and
+		// the thumbnail strip scrolls within that height instead of running taller.
+		align-items: stretch;
+
+		.flexa-product-image__thumbs-wrap {
+			position: relative;
+			flex: 0 0 84px;
+		}
+
+		// Beside the image the strip is a vertical column. The arrows sit at the
+		// top/bottom (glyphs rotated to point up/down) and scroll it vertically.
+		.flexa-product-image__nav {
+			top: auto;
+			left: 50%;
+			right: auto;
+			transform: translateX(-50%) rotate(90deg);
+		}
+
+		.flexa-product-image__nav--prev {
+			top: 4px;
+		}
+
+		.flexa-product-image__nav--next {
+			bottom: 4px;
+		}
+
+		.flexa-product-image__thumbs {
+			position: absolute;
+			inset: 0;
+			flex-direction: column;
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
+
+		.flexa-product-image__thumb {
+			flex: 0 0 auto;
+			width: 100%;
+		}
+	}
+
+	&--pos-left .flexa-product-image__thumbs-wrap {
+		order: -1;
+	}
+
+	&--pos-right .flexa-product-image__thumbs-wrap {
+		order: 1;
+	}
+}
+
+/* Zoom on hover (pure CSS → works in the editor; no generator :hover). */
+.flexa-product-image--zoom .flexa-product-image__main {
+	overflow: hidden;
+
+	img {
+		transition: transform 0.3s ease;
+	}
+}
+
+.flexa-product-image--zoom .flexa-product-image__main:hover img {
+	transform: scale(1.15);
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-product-image.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-product-image.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-product-image.flexa-hide-mobile {
+		display: none !important;
+	}
+}

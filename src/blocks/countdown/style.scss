@@ -1,0 +1,75 @@
+/**
+ * Countdown block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * digits carry the theme's look, and the PHP CSS generator emits declarations
+ * ONLY for values the user picks (mirrored as inline styles in the editor). The
+ * wrapper is a flex column so the timer can be aligned; the timer is a flex row
+ * of units, each stacking its digit and label.
+ */
+
+.flexa-countdown {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-sizing: border-box;
+
+	&__timer {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	// Groups a unit with the separator that follows it, so the separator sits on
+	// the digit baseline regardless of label position.
+	&__group {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: inherit;
+	}
+
+	&__unit {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+	}
+
+	&__digit {
+		display: block;
+		line-height: 1;
+		font-variant-numeric: tabular-nums;
+	}
+
+	&__label {
+		display: block;
+	}
+
+	&__separator {
+		line-height: 1;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-countdown.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-countdown.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-countdown.flexa-hide-mobile {
+		display: none !important;
+	}
+}

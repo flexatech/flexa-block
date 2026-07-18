@@ -1,0 +1,248 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/counter",
+	"version": "1.0.0",
+	"title": "Counter",
+	"category": "flexa",
+	"description": "Grid of stat counters that count up when scrolled into view — each with an icon, a prefixed/suffixed number and a label, plus per-device columns, typography, light/dark colours and a per-item box.",
+	"keywords": [ "flexa", "counter", "stats", "number", "milestone" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 600
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"htmlTag": {
+			"type": "string",
+			"default": "div"
+		},
+		"items": {
+			"type": "array",
+			"default": [
+				{
+					"number": { "value": "250", "prefix": "", "suffix": "+" },
+					"label": "Projects completed",
+					"icon": { "source": "builtin", "name": "briefcase", "markup": "<svg class=\"flexa-icon\" viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><rect x=\"3\" y=\"7\" width=\"18\" height=\"13\" rx=\"2\"/><path d=\"M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"/></svg>", "url": "", "id": null }
+				},
+				{
+					"number": { "value": "98", "prefix": "", "suffix": "%" },
+					"label": "Happy clients",
+					"icon": { "source": "builtin", "name": "heart", "markup": "<svg class=\"flexa-icon\" viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 3c0 4.5-9.5 12-9.5 12z\"/></svg>", "url": "", "id": null }
+				},
+				{
+					"number": { "value": "15", "prefix": "", "suffix": "K" },
+					"label": "Downloads",
+					"icon": { "source": "builtin", "name": "download", "markup": "<svg class=\"flexa-icon\" viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 4v11m0 0l-4-4m4 4l4-4\"/><path d=\"M5 19h14\"/></svg>", "url": "", "id": null }
+				}
+			]
+		},
+		"columns": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "3", "unit": "" },
+				"tablet": { "value": "2", "unit": "" },
+				"mobile": { "value": "1", "unit": "" }
+			}
+		},
+		"gap": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "32", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"alignment": {
+			"type": "object",
+			"default": { "desktop": "center", "tablet": "", "mobile": "" }
+		},
+		"contentGap": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "8", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"countUp": {
+			"type": "boolean",
+			"default": true
+		},
+		"countDuration": {
+			"type": "number",
+			"default": 2000
+		},
+		"showIcon": {
+			"type": "boolean",
+			"default": true
+		},
+		"iconPosition": {
+			"type": "string",
+			"default": "top",
+			"enum": [ "top", "inline" ]
+		},
+		"iconSize": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "40", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"iconColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"numberTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"numberColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"labelTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"labelColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"showSeparator": {
+			"type": "boolean",
+			"default": false
+		},
+		"separatorStyle": {
+			"type": "string",
+			"default": "solid"
+		},
+		"separatorColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"separatorWidth": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "40", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"separatorWeight": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "2", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"itemBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"itemPadding": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"itemBorderRadius": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

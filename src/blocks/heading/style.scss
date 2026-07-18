@@ -1,0 +1,67 @@
+/**
+ * Heading block — frontend + editor base styles.
+ *
+ * Structure only. No colours, sizes or typography defaults live here on purpose:
+ * the title carries the theme's heading look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). The wrapper is a flex column so the optional subheading and separator
+ * stack with a `gap`, and the separator can be aligned via `align-self`.
+ */
+
+.flexa-heading {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	box-sizing: border-box;
+
+	// Reset the browser's default heading margins so the Spacing / Gap controls
+	// fully govern the layout.
+	.flexa-heading__title {
+		margin: 0;
+	}
+
+	.flexa-heading__subheading {
+		display: block;
+	}
+
+	// Inline text-colour (core/text-color) wraps the selection in <mark>, which
+	// browsers paint with a yellow background by default. We only use the colour,
+	// so clear the background. No !important — an inline background (if ever set)
+	// still wins.
+	mark {
+		background-color: transparent;
+	}
+
+	// Links inside the title inherit the title colour instead of the theme's
+	// generic link colour, so a linked heading still looks like a heading.
+	.flexa-heading__link {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	// Structural only — width, weight, style and colour come from the generator.
+	.flexa-heading__separator {
+		border: 0;
+		border-top-style: solid;
+		max-width: 100%;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-heading.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-heading.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-heading.flexa-hide-mobile {
+		display: none !important;
+	}
+}

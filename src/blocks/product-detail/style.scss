@@ -1,0 +1,270 @@
+/**
+ * Product Details block — frontend + editor base styles.
+ *
+ * Structured like the Tabs block: a horizontal bar of tab-title buttons with an
+ * underline on the active tab, over content panels that show one at a time. No
+ * theme colours are hardcoded — the tab titles and content inherit the theme, and
+ * the PHP CSS generator emits declarations ONLY for values the user picks
+ * (mirrored inline in the editor). The only non-structural defaults are the
+ * neutral underline / active-indicator fallbacks, so the active tab is visible
+ * before the user picks a colour (same approach as the Tabs block).
+ */
+
+@use '../../styles/pagination' as *;
+
+.flexa-product-detail {
+	box-sizing: border-box;
+
+	&__nav {
+		position: relative;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: stretch;
+		gap: 4px;
+		margin: 0 0 16px;
+		padding: 0;
+		list-style: none;
+		border-bottom: 1px solid rgba(127, 127, 127, 0.2);
+
+		li {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+	}
+
+	&__tab {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		margin: 0 0 -1px;
+		padding: 12px 16px;
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		line-height: 1.4;
+		text-align: center;
+		cursor: pointer;
+		transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+
+		&:hover {
+			opacity: 0.85;
+		}
+
+		// Neutral active underline fallback (theme-agnostic) until the user picks
+		// colours — an inset bottom line so there is no layout shift. Once JS
+		// positions the sliding indicator this is dropped (see below) so the
+		// underline isn't drawn twice.
+		&.is-active {
+			font-weight: 600;
+			box-shadow: inset 0 -2px 0 0 currentColor;
+		}
+	}
+
+	// The single sliding underline that moves between tabs (positioned by view.js
+	// through the `--flexa-pd-ind-x` / `--flexa-pd-ind-w` vars). Hidden until JS
+	// measures the active tab; without JS the per-tab `.is-active` line is used.
+	&__indicator {
+		position: absolute;
+		left: 0;
+		bottom: -1px;
+		height: 2px;
+		width: var(--flexa-pd-ind-w, 0);
+		transform: translateX(var(--flexa-pd-ind-x, 0));
+		background: currentColor;
+		opacity: 0;
+		pointer-events: none;
+		list-style: none;
+		transition: transform 0.25s ease, width 0.25s ease;
+	}
+
+	&__nav.is-indicator-ready &__indicator {
+		opacity: 1;
+	}
+
+	// Once the sliding indicator is live, drop the per-tab underline so it isn't
+	// drawn twice — the indicator becomes the single source of truth.
+	&__nav.is-indicator-ready &__tab.is-active {
+		box-shadow: none;
+	}
+
+	&__panel {
+		box-sizing: border-box;
+		display: none;
+
+		&.is-active {
+			display: block;
+		}
+	}
+
+	&__content {
+		box-sizing: border-box;
+
+		// Review-form star rating — built by view.js from the native <select>.
+		.flexa-product-detail__stars {
+			display: inline-flex;
+			gap: 4px;
+			vertical-align: middle;
+		}
+
+		.flexa-product-detail__star {
+			padding: 0;
+			border: 0;
+			background: none;
+			font-size: 22px;
+			line-height: 1;
+			cursor: pointer;
+			color: rgba(127, 127, 127, 0.4);
+			transition: color 0.12s ease;
+
+			&.is-on {
+				color: #f5a623;
+			}
+		}
+
+		// ---- WooCommerce reviews (Reviews tab) — light, theme-neutral polish. ----
+
+		// Required-field marker in red.
+		.required {
+			color: #d63638;
+			border: 0;
+			text-decoration: none;
+		}
+
+		// Put the "Add a review" form above the review list.
+		#reviews {
+			display: flex;
+			flex-direction: column;
+		}
+
+		#review_form_wrapper {
+			order: -1;
+			margin: 0 0 28px;
+		}
+
+		#comments {
+			order: 0;
+		}
+
+		.woocommerce-Reviews-title {
+			margin: 0 0 16px;
+		}
+
+		.commentlist {
+			margin: 0 0 28px;
+			padding: 0;
+			list-style: none;
+		}
+
+		.commentlist li.review,
+		.commentlist li.comment {
+			margin: 0 0 14px;
+			padding: 16px;
+			border: 1px solid rgba(127, 127, 127, 0.18);
+			border-radius: 10px;
+			list-style: none;
+		}
+
+		.commentlist .comment_container {
+			display: flex;
+			gap: 14px;
+			align-items: flex-start;
+		}
+
+		.commentlist img.avatar {
+			width: 44px;
+			height: 44px;
+			margin: 0;
+			border: 0;
+			border-radius: 50%;
+			flex: 0 0 auto;
+			background: rgba(127, 127, 127, 0.12);
+		}
+
+		.commentlist .comment-text {
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+
+		.commentlist .comment-text .meta {
+			margin: 0 0 6px;
+			font-size: 0.9em;
+			opacity: 0.75;
+		}
+
+		.commentlist .comment-text .star-rating {
+			margin: 0 0 8px;
+		}
+
+		.commentlist .comment-text p {
+			margin: 0;
+		}
+
+		// "Add a review" form.
+		#review_form_wrapper,
+		#respond {
+			margin-top: 8px;
+		}
+
+		.comment-form-rating {
+			margin: 0 0 14px;
+
+			label {
+				display: block;
+				margin-bottom: 4px;
+			}
+		}
+
+		.comment-form-comment textarea,
+		.comment-form textarea {
+			width: 100%;
+			min-height: 120px;
+			padding: 10px 12px;
+			border: 1px solid rgba(127, 127, 127, 0.35);
+			border-radius: 8px;
+		}
+
+		.comment-form-author input,
+		.comment-form-email input {
+			padding: 8px 10px;
+			border: 1px solid rgba(127, 127, 127, 0.35);
+			border-radius: 8px;
+		}
+
+		.form-submit {
+			margin-top: 12px;
+		}
+	}
+}
+
+/* Shared numbered / load-more pagination structure for the reviews list. */
+@include flexa-pagination();
+
+/* Respect reduced-motion: show the indicator in place, don't animate it. */
+@media (prefers-reduced-motion: reduce) {
+	.flexa-product-detail__indicator {
+		transition: none;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-product-detail.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-product-detail.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-product-detail.flexa-hide-mobile {
+		display: none !important;
+	}
+}

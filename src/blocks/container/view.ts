@@ -9,6 +9,8 @@
  * Falls back to loading immediately when IntersectionObserver is unavailable.
  */
 
+export {}; // Treat as a module so top-level names don't collide with other view scripts.
+
 const LOADED_CLASS = 'flexa-bg-loaded';
 const SELECTOR = '[data-flexa-lazy-bg]';
 

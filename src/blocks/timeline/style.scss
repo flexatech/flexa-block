@@ -1,0 +1,218 @@
+/**
+ * Timeline block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * dates, titles and descriptions carry the theme's look, and the PHP CSS
+ * generator emits declarations ONLY for values the user picks (mirrored as
+ * inline styles in the editor). The marker and connector inherit `currentColor`
+ * so the timeline is visible on insert without hard-coding a palette.
+ *
+ * Three arrangements share one DOM (an `aside` marker column + a `content`
+ * block): `--left` / `--right` sit every entry on a single side; `--alternate`
+ * centres the line and zig-zags the content left/right (collapsing to a single
+ * left rail on mobile).
+ *
+ * Anything the generator can also emit — `text-align` is the only one today — is
+ * written here through `:where()` so it stays below the generated
+ * `.flexa-timeline-<blockId> …` selectors in the cascade. A structural default
+ * must never outrank a value the user picked.
+ */
+
+.flexa-timeline {
+	box-sizing: border-box;
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__item {
+		display: flex;
+		align-items: stretch;
+		gap: 16px;
+		box-sizing: border-box;
+	}
+
+	// The marker column: marker at the top, connector filling the rest.
+	&__aside {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		flex: 0 0 auto;
+	}
+
+	&__marker {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		flex: 0 0 auto;
+		width: 40px;
+		height: 40px;
+		line-height: 1;
+		// Visible without a chosen colour — inherits the surrounding text colour.
+		border: 2px solid currentColor;
+		background: transparent;
+
+		svg,
+		img {
+			width: 60%;
+			height: 60%;
+			display: block;
+			object-fit: contain;
+		}
+	}
+
+	// The line between one marker and the next; grows to fill the item height.
+	&__connector {
+		flex: 1 1 auto;
+		width: 0;
+		min-height: 16px;
+		margin-top: 4px;
+		border-left: 2px solid currentColor;
+	}
+
+	// The last entry never draws a connector.
+	&__item:last-child &__connector {
+		display: none;
+	}
+
+	&__content {
+		flex: 1 1 auto;
+		min-width: 0;
+		padding-bottom: 24px;
+	}
+
+	&__item:last-child &__content {
+		padding-bottom: 0;
+	}
+
+	// Per-entry card: wraps the text + image so an optional border/shadow boxes each
+	// event without swallowing the inter-event gap (which lives on __content).
+	&__card {
+		box-sizing: border-box;
+	}
+
+	&__date,
+	&__title,
+	&__description {
+		display: block;
+	}
+
+	// Optional per-entry image: fills the content width, sits above or below the text.
+	&__image {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		border-radius: inherit;
+	}
+
+	&__image--top {
+		margin-bottom: 0.75em;
+	}
+
+	&__image--bottom {
+		margin-top: 0.75em;
+	}
+
+	// Inline date: the date and title share a line.
+	&--date-inline &__date {
+		display: inline;
+		margin-right: 0.5em;
+	}
+
+	&--date-inline &__title {
+		display: inline;
+	}
+
+	// Marker shapes (structural — always applied from the wrapper modifier class).
+	&--marker-circle &__marker {
+		border-radius: 50%;
+	}
+
+	&--marker-rounded &__marker {
+		border-radius: 8px;
+	}
+
+	&--marker-square &__marker {
+		border-radius: 0;
+	}
+
+	// Single-side right: mirror the row and align text toward the line.
+	&--right &__item {
+		flex-direction: row-reverse;
+		text-align: right;
+	}
+
+	// Alternate: a centred line with content zig-zagging left/right.
+	&--alternate &__item {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		align-items: stretch;
+	}
+
+	&--alternate &__aside {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	&--alternate &__item.is-left &__content {
+		grid-column: 1;
+		grid-row: 1;
+	}
+
+	&--alternate &__item.is-right &__content {
+		grid-column: 3;
+		grid-row: 1;
+	}
+}
+
+/* The zig-zag text mirroring. Held at a single class of specificity by `:where()`
+   so the generated `.flexa-timeline-<id> .flexa-timeline__content` rule (two
+   classes) always wins — otherwise the Text alignment control would be dead under
+   the alternate arrangement, and the mobile collapse below could not undo it. */
+:where(.flexa-timeline--alternate .flexa-timeline__item.is-left) .flexa-timeline__content {
+	text-align: right;
+}
+
+:where(.flexa-timeline--alternate .flexa-timeline__item.is-right) .flexa-timeline__content {
+	text-align: left;
+}
+
+/* Under the mobile breakpoint the alternate layout collapses to a single left
+   rail: marker column first, content to its right, no mirrored text. 767px
+   mirrors CSS_Builder::$breakpoints['mobile']. */
+@media (max-width: 767px) {
+	.flexa-timeline--alternate .flexa-timeline__item {
+		display: flex;
+		flex-direction: row;
+	}
+
+	.flexa-timeline--alternate .flexa-timeline__item .flexa-timeline__aside {
+		grid-column: auto;
+		grid-row: auto;
+	}
+
+	:where(.flexa-timeline--alternate .flexa-timeline__item) .flexa-timeline__content {
+		text-align: left;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-timeline.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-timeline.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-timeline.flexa-hide-mobile {
+		display: none !important;
+	}
+}

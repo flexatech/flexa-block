@@ -1,0 +1,49 @@
+/**
+ * Product Price block — frontend + editor base styles.
+ *
+ * Layout only. No colours / typography defaults live here on purpose: the price
+ * inherits the theme until the PHP CSS generator emits declarations for values
+ * the user picks. The inner wraps the regular / sale amounts on one baseline
+ * with a small gap.
+ */
+
+.flexa-product-price__inner {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.5em;
+}
+
+/* WooCommerce's wc_price() output wraps the amount in <span class="woocommerce-Price-amount">;
+   keep it inline so the regular / sale spans stay on the baseline. */
+.flexa-product-price__regular,
+.flexa-product-price__sale {
+	display: inline;
+}
+
+/* When on sale and the "Strike through original price" option is on, strike
+   through the original (regular) amount so the discount reads at a glance — the
+   sale amount stays untouched. */
+.flexa-product-price--strike .flexa-product-price__regular {
+	text-decoration: line-through;
+	opacity: 0.6;
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-product-price.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-product-price.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-product-price.flexa-hide-mobile {
+		display: none !important;
+	}
+}

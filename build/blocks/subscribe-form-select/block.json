@@ -1,0 +1,71 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "flexa/subscribe-form-select",
+  "version": "1.0.0",
+  "title": "Select",
+  "category": "flexa",
+  "description": "A dropdown select for a Subscribe Form — with a label, a prompt, a list of choices, required toggle and column width.",
+  "keywords": [
+    "flexa",
+    "form",
+    "field",
+    "select",
+    "dropdown"
+  ],
+  "textdomain": "flexa-block",
+  "parent": [
+    "flexa/subscribe-form"
+  ],
+  "attributes": {
+    "blockId": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string",
+      "default": "Choose"
+    },
+    "fieldName": {
+      "type": "string",
+      "default": "select"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Select…"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": true
+    },
+    "width": {
+      "type": "string",
+      "default": "100",
+      "enum": [
+        "100",
+        "50"
+      ]
+    },
+    "options": {
+      "type": "array",
+      "default": [
+        "Option 1",
+        "Option 2",
+        "Option 3"
+      ]
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "className": true,
+    "html": false,
+    "reusable": false
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

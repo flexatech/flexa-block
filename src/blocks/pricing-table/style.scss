@@ -1,0 +1,218 @@
+/**
+ * Pricing Table block — frontend + editor base styles.
+ *
+ * Structure plus a few sensible, low-commitment defaults (a hairline card
+ * border, comfortable padding, a centred layout, a soft "most popular" ribbon)
+ * so the plans are readable the moment they are inserted. Every one of those
+ * defaults is overridden the instant the user picks a value: the PHP CSS
+ * generator emits per-instance declarations ONLY for what the user sets
+ * (mirrored as inline styles in the editor), keeping the block theme-first.
+ */
+
+.flexa-pricing-table {
+	box-sizing: border-box;
+
+	&--boxed {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	&--full-width {
+		width: 100%;
+	}
+
+	// When the billing switch is present the wrapper stacks the switch above the
+	// grid and centres it.
+	&--has-toggle {
+		display: flex;
+		flex-direction: column;
+	}
+
+	// Billing switch (monthly / yearly). `align-self` alone places it — no `auto`
+	// margins — so the generator can move it left / right with one declaration.
+	&__billing {
+		position: relative;
+		display: inline-flex;
+		align-self: center;
+		gap: 4px;
+		margin: 0 0 24px;
+		padding: 4px;
+		border-radius: 999px;
+		background: rgba( 0, 0, 0, 0.05 );
+	}
+
+	// The single moving pill — positioned by view.ts through the
+	// `--flexa-billing-ind-*` vars (offset + size measured from the active
+	// option). Hidden until JS measures it; without JS it never appears and the
+	// per-option `.is-active` fill below is the fallback. Mirrors the tabs block's
+	// sliding active indicator.
+	&__billing-indicator {
+		position: absolute;
+		z-index: 0;
+		top: 0;
+		left: 0;
+		width: var( --flexa-billing-ind-w, 0 );
+		height: var( --flexa-billing-ind-h, 0 );
+		transform: translate( var( --flexa-billing-ind-x, 0 ), var( --flexa-billing-ind-y, 0 ) );
+		border-radius: 999px;
+		background: var( --wp--preset--color--base, #ffffff );
+		box-shadow: 0 1px 3px rgba( 0, 0, 0, 0.15 );
+		opacity: 0;
+		pointer-events: none;
+		transition: transform 0.25s ease, width 0.25s ease;
+	}
+
+	&__billing.is-indicator-ready &__billing-indicator {
+		opacity: 1;
+	}
+
+	&__billing-option {
+		position: relative;
+		z-index: 1;
+		appearance: none;
+		border: 0;
+		cursor: pointer;
+		padding: 6px 18px;
+		border-radius: 999px;
+		font: inherit;
+		line-height: 1.2;
+		color: inherit;
+		background: transparent;
+		transition: color 0.2s ease;
+
+		&.is-active {
+			background: var( --wp--preset--color--base, #ffffff );
+			box-shadow: 0 1px 3px rgba( 0, 0, 0, 0.15 );
+		}
+	}
+
+	// Once JS positions the indicator, drop the per-option active fill so it isn't
+	// drawn twice — the sliding pill becomes the single source of truth.
+	&__billing.is-indicator-ready &__billing-option.is-active {
+		background: none;
+		box-shadow: none;
+	}
+
+	// The plan grid.
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat( auto-fit, minmax( 240px, 1fr ) );
+		gap: 24px;
+		box-sizing: border-box;
+	}
+
+	// One plan card.
+	&__plan {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+		padding: 28px 24px;
+		box-sizing: border-box;
+		border: 1px solid rgba( 0, 0, 0, 0.1 );
+		border-radius: 12px;
+		text-align: center;
+
+		&.is-highlighted {
+			border-width: 2px;
+			border-color: #2563eb;
+		}
+	}
+
+	&__badge {
+		display: inline-block;
+		padding: 2px 12px;
+		border-radius: 999px;
+		font-size: 0.72em;
+		font-weight: 600;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+		color: #fff;
+		background: #2563eb;
+	}
+
+	&__name {
+		font-weight: 600;
+		font-size: 1.15em;
+	}
+
+	&__price {
+		display: flex;
+		align-items: baseline;
+		justify-content: center;
+		gap: 4px;
+		flex-wrap: wrap;
+	}
+
+	&__amount {
+		font-weight: 700;
+		font-size: 2em;
+		line-height: 1.1;
+	}
+
+	&__period {
+		opacity: 0.7;
+		font-size: 0.9em;
+	}
+
+	// Monthly shown by default; yearly revealed when the switch toggles the
+	// wrapper's `.is-yearly` class (view.ts).
+	&__price-group--yearly {
+		display: none;
+	}
+
+	&.is-yearly {
+		.flexa-pricing-table__price-group--monthly {
+			display: none;
+		}
+
+		.flexa-pricing-table__price-group--yearly {
+			display: inline;
+		}
+	}
+
+	&__features {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	&__feature {
+		margin: 0;
+	}
+
+	&__cta {
+		margin-top: auto;
+		text-decoration: none;
+	}
+}
+
+/* Respect reduced-motion: show the pill in place, don't animate it. */
+@media (prefers-reduced-motion: reduce) {
+	.flexa-pricing-table__billing-indicator {
+		transition: none;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-pricing-table.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-pricing-table.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-pricing-table.flexa-hide-mobile {
+		display: none !important;
+	}
+}

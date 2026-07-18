@@ -1,0 +1,40 @@
+/**
+ * Table of Contents block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); in the editor the
+ * list is built from the page's heading blocks and shown expanded so its shape
+ * is visible while editing. Colours and typography come from the theme or the
+ * user's choices, mirrored via inline styles in edit.tsx.
+ */
+
+.flexa-toc {
+	.flexa-toc__header {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+	}
+
+	.flexa-toc__title {
+		flex: 1 1 auto;
+	}
+
+	// Links are inert spans in the editor — keep them looking like links.
+	.flexa-toc__link {
+		cursor: default;
+	}
+
+	// The heading-levels group label in the inspector.
+	.flexa-toc-levels-label {
+		margin: 12px 0 4px;
+		font-weight: 600;
+	}
+}
+
+// Scope the levels-label helper to the inspector too (it renders there).
+.flexa-toc-inspector .flexa-toc-levels-label {
+	margin: 12px 0 4px;
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: 11px;
+	opacity: 0.7;
+}

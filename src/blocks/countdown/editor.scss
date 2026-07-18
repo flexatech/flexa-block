@@ -1,0 +1,26 @@
+/**
+ * Countdown block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); this only tidies the
+ * inspector's date-time control. Colours and typography come from the theme or
+ * the user's choices, mirrored via inline styles in edit.tsx.
+ */
+
+.flexa-countdown-datetime {
+	display: block;
+
+	.components-button {
+		justify-content: flex-start;
+		width: 100%;
+		text-align: left;
+	}
+}
+
+// The timezone is chosen with our own Timezone select, so hide the picker's
+// built-in "UTC±0" label to avoid a confusing second timezone indicator.
+// (The popover renders in a portal, so this class isn't nested under the field.)
+.flexa-countdown-datetime__popover {
+	.components-datetime__timezone {
+		display: none;
+	}
+}

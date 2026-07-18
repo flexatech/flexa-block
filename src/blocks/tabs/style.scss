@@ -1,0 +1,228 @@
+/**
+ * Tabs block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * tab labels and content carry the theme's look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). The bar is a horizontal flex row of tab buttons over the panels; on
+ * mobile the bar collapses and each panel's own header drives an accordion. The
+ * only non-structural defaults are the neutral active-indicator fallbacks, so the
+ * active tab is visible before the user picks a colour.
+ */
+
+.flexa-tabs {
+	box-sizing: border-box;
+
+	&__nav {
+		position: relative;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: stretch;
+		gap: 4px;
+	}
+
+	// The single moving active indicator — positioned by view.ts through the
+	// `--flexa-tabs-ind-x` / `--flexa-tabs-ind-w` vars and coloured by the shared
+	// `--flexa-tabs-indicator`. Hidden until JS measures the active tab; without
+	// JS it never appears and the per-tab `.is-active` styling is the fallback.
+	&__indicator {
+		position: absolute;
+		z-index: 0;
+		left: 0;
+		top: 0;
+		width: var(--flexa-tabs-ind-w, 0);
+		transform: translateX(var(--flexa-tabs-ind-x, 0));
+		opacity: 0;
+		pointer-events: none;
+		transition: transform 0.25s ease, width 0.25s ease;
+	}
+
+	&__nav.is-indicator-ready &__indicator {
+		opacity: 1;
+	}
+
+	&__tab {
+		position: relative;
+		z-index: 1;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		box-sizing: border-box;
+		margin: 0;
+		padding: 12px 16px;
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		line-height: 1.4;
+		text-align: center;
+		cursor: pointer;
+		transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+	}
+
+	&__icon {
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1em;
+		height: 1em;
+		color: inherit;
+
+		svg,
+		img {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&__label {
+		flex: 0 1 auto;
+	}
+
+	&__panel {
+		box-sizing: border-box;
+		display: none;
+	}
+
+	// Desktop tab mode: the active wrap's panel is visible.
+	&__panel-wrap.is-active > &__panel {
+		display: block;
+	}
+
+	// The mobile accordion header is hidden on desktop (the bar drives instead).
+	&__accordion-header {
+		display: none;
+		width: 100%;
+		justify-content: flex-start;
+		text-align: left;
+	}
+}
+
+/* Alignment of the tab bar. */
+.flexa-tabs--align-center .flexa-tabs__nav {
+	justify-content: center;
+}
+
+.flexa-tabs--align-right .flexa-tabs__nav {
+	justify-content: flex-end;
+}
+
+.flexa-tabs--align-justify .flexa-tabs__nav .flexa-tabs__tab {
+	flex: 1 1 0;
+}
+
+/* Underline style: an inset bottom line on the active tab (no layout shift). */
+.flexa-tabs--underline .flexa-tabs__nav {
+	border-bottom: 1px solid rgba(127, 127, 127, 0.2);
+}
+
+.flexa-tabs--underline .flexa-tabs__tab.is-active {
+	box-shadow: inset 0 -2px 0 0 var(--flexa-tabs-indicator, currentColor);
+}
+
+/* Underline indicator: a bottom bar that slides between tabs. */
+.flexa-tabs--underline .flexa-tabs__indicator {
+	top: auto;
+	bottom: 0;
+	height: 2px;
+	background: var(--flexa-tabs-indicator, currentColor);
+}
+
+/* Pill style: a rounded active background. */
+.flexa-tabs--pill .flexa-tabs__tab {
+	border-radius: var(--flexa-radius-full, 999px);
+}
+
+.flexa-tabs--pill .flexa-tabs__tab.is-active {
+	background: var(--flexa-tabs-indicator, rgba(127, 127, 127, 0.15));
+}
+
+/* Pill indicator: a full-height rounded pill that slides between tabs. */
+.flexa-tabs--pill .flexa-tabs__indicator {
+	height: 100%;
+	border-radius: var(--flexa-radius-full, 999px);
+	background: var(--flexa-tabs-indicator, rgba(127, 127, 127, 0.15));
+}
+
+/* Boxed style: bordered tabs, the active one connects to the panel below. */
+.flexa-tabs--boxed .flexa-tabs__tab {
+	border: 1px solid transparent;
+	border-radius: var(--flexa-radius-sm, 6px) var(--flexa-radius-sm, 6px) 0 0;
+}
+
+.flexa-tabs--boxed .flexa-tabs__tab.is-active {
+	background: var(--flexa-tabs-indicator, rgba(127, 127, 127, 0.12));
+}
+
+/* Boxed indicator: a full-height rounded-top block that slides between tabs. */
+.flexa-tabs--boxed .flexa-tabs__indicator {
+	height: 100%;
+	border-radius: var(--flexa-radius-sm, 6px) var(--flexa-radius-sm, 6px) 0 0;
+	background: var(--flexa-tabs-indicator, rgba(127, 127, 127, 0.12));
+}
+
+/* Once JS positions the indicator, drop the per-tab active fill so it isn't
+   drawn twice — the sliding indicator becomes the single source of truth. */
+.flexa-tabs__nav.is-indicator-ready .flexa-tabs__tab.is-active {
+	background: none;
+	box-shadow: none;
+}
+
+/* Respect reduced-motion: show the indicator in place, don't animate it. */
+@media (prefers-reduced-motion: reduce) {
+	.flexa-tabs__indicator {
+		transition: none;
+	}
+}
+
+/* Mobile: collapse the bar into an accordion. */
+@media (max-width: 767px) {
+	.flexa-tabs__nav {
+		display: none;
+	}
+
+	// The sliding indicator belongs to the horizontal bar only; the accordion
+	// headers keep their own underline.
+	.flexa-tabs__indicator {
+		display: none;
+	}
+
+	.flexa-tabs__accordion-header {
+		display: flex;
+	}
+
+	.flexa-tabs__panel-wrap:not(.is-open) > .flexa-tabs__panel {
+		display: none;
+	}
+
+	.flexa-tabs__panel-wrap.is-open > .flexa-tabs__panel {
+		display: block;
+	}
+
+	// In accordion mode the underline indicator sits on the open header.
+	.flexa-tabs--underline .flexa-tabs__accordion-header.is-active {
+		box-shadow: inset 0 -2px 0 0 var(--flexa-tabs-indicator, currentColor);
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-tabs.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-tabs.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-tabs.flexa-hide-mobile {
+		display: none !important;
+	}
+}

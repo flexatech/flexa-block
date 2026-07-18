@@ -1,0 +1,10 @@
+/**
+ * Text block — editor-only styles.
+ *
+ * The rich-text field should fill the block width so alignment reads correctly
+ * while editing. Front-end appearance lives in style.scss.
+ */
+
+.wp-block-flexa-text .flexa-text__content {
+	width: 100%;
+}

@@ -1,0 +1,8 @@
+/**
+ * Social Share block — editor-only styles.
+ *
+ * The inspector's network cards use the shared ItemListPanel, styled by
+ * `.flexa-item-card` in components/editor.scss — so nothing block-specific is
+ * needed here. Kept as a placeholder so the block's `import './editor.scss'`
+ * stays valid; add share-only editor tweaks here if ever needed.
+ */

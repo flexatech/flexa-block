@@ -1,0 +1,19 @@
+/**
+ * Comparison Table block — editor-only styles.
+ *
+ * The canvas preview reuses the front-end structure (style.scss); the Columns
+ * and Rows panels use the shared ItemListPanel, styled by `.flexa-item-card` in
+ * components/editor.scss. A minimum width keeps the previewed table legible when
+ * it holds only a couple of columns, and the editor scroll wrapper gets the same
+ * shared thin scrollbar as the front end (src/styles/_scrollbar.scss).
+ */
+
+@use '../../styles/scrollbar' as *;
+
+.flexa-comparison-table__scroll {
+	@include flexa-scrollbar();
+}
+
+.flexa-comparison-table__table {
+	min-width: 100%;
+}

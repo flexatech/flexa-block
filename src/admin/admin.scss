@@ -1,0 +1,586 @@
+/**
+ * Flexa Block — admin dashboard skin.
+ *
+ * Layout: a fixed left sidebar (brand + section nav + block stat) and a fluid
+ * content column on the right. The content column holds either the General
+ * settings cards or the Blocks grid. Block cards carry a group-tinted
+ * illustrative thumbnail. Reads top-to-bottom as one cohesive stylesheet, so it
+ * lives in a single file.
+ */
+
+$accent: #2271b1;
+$accent-dark: #135e96;
+$ink: #1e1e1e;
+$muted: #646970;
+$line: #e0e0e0;
+$radius: 10px;
+
+.flexa-app {
+	display: flex;
+	align-items: flex-start;
+	gap: 20px;
+	margin: 16px 20px 40px 0;
+	color: $ink;
+
+	* { box-sizing: border-box; }
+
+	@media (max-width: 960px) {
+		flex-direction: column;
+		gap: 16px;
+	}
+}
+
+/* -------- Sidebar -------- */
+.flexa-sidebar {
+	position: sticky;
+	top: 46px; /* below the wp-admin toolbar */
+	flex: 0 0 244px;
+	width: 244px;
+	padding: 18px;
+	background: linear-gradient(180deg, #fff 0%, #f6f7ff 100%);
+	border: 1px solid $line;
+	border-radius: 14px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+	@media (max-width: 960px) {
+		position: static;
+		flex: 1 1 auto;
+		width: 100%;
+	}
+
+	&__brand {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding-bottom: 16px;
+		margin-bottom: 14px;
+		border-bottom: 1px solid $line;
+	}
+
+	&__logo {
+		display: grid;
+		place-items: center;
+		flex: 0 0 auto;
+		width: 40px;
+		height: 40px;
+		border-radius: 10px;
+		background: $accent;
+		color: #fff;
+		font-size: 22px;
+		&::before { line-height: 1; }
+	}
+
+	&__title { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.2; }
+
+	&__version {
+		display: inline-block;
+		margin-top: 3px;
+		padding: 1px 8px;
+		border-radius: 999px;
+		background: rgba(34, 113, 177, 0.1);
+		color: $accent-dark;
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	&__nav { display: flex; flex-direction: column; gap: 4px; }
+}
+
+/* -------- Sidebar nav item -------- */
+.flexa-nav-item {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	width: 100%;
+	padding: 10px 11px;
+	border: 1px solid transparent;
+	border-radius: 9px;
+	background: none;
+	text-align: left;
+	cursor: pointer;
+	transition: background 0.15s ease, border-color 0.15s ease;
+
+	&:hover { background: rgba(34, 113, 177, 0.06); }
+
+	&.is-active {
+		background: #fff;
+		border-color: $line;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	}
+
+	&__icon {
+		flex: 0 0 auto;
+		width: 20px;
+		height: 20px;
+		font-size: 20px;
+		color: $muted;
+	}
+	&.is-active &__icon { color: $accent; }
+
+	&__text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+	&__label { font-size: 13.5px; font-weight: 600; color: $ink; }
+	&__desc {
+		font-size: 11.5px;
+		color: $muted;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+}
+
+/* -------- Content column -------- */
+.flexa-content {
+	flex: 1 1 auto;
+	min-width: 0;
+
+	&__grid-two,
+	.flexa-admin__grid-two {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 16px;
+		@media (max-width: 782px) { grid-template-columns: 1fr; }
+	}
+}
+
+/* -------- Auto-save toast (fixed, top-right of the viewport) -------- */
+.flexa-toast {
+	position: fixed;
+	top: 46px;
+	right: 24px;
+	z-index: 100000; /* above the wp-admin toolbar (99999) */
+	pointer-events: none;
+}
+
+@keyframes flexa-toast-in {
+	from { opacity: 0; transform: translateY(-8px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+.flexa-save {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 16px;
+	border-radius: 10px;
+	font-size: 13px;
+	font-weight: 500;
+	background: #fff;
+	border: 1px solid $line;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+	pointer-events: auto;
+	animation: flexa-toast-in 0.2s ease;
+
+	.dashicons { width: 18px; height: 18px; font-size: 18px; }
+	.components-spinner { margin: 0; }
+
+	&--saved { color: #007017; .dashicons { color: #00a32a; } }
+	&--saving { color: $muted; }
+	&--error { color: #b32d2e; .dashicons { color: #d63638; } }
+
+	&__retry {
+		margin-left: 2px;
+		padding: 0;
+		border: none;
+		background: none;
+		color: $accent;
+		font-weight: 600;
+		text-decoration: underline;
+		cursor: pointer;
+	}
+}
+
+.flexa-admin-card {
+	padding: 20px;
+	background: #fff;
+	border: 1px solid $line;
+	border-radius: $radius;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+	&__title {
+		margin: 0 0 14px;
+		font-size: 15px;
+		font-weight: 600;
+	}
+
+	.components-toggle-control { margin-bottom: 14px; &:last-child { margin-bottom: 0; } }
+}
+
+/* -------- Setting card (General tab) -------- */
+.flexa-setting-card {
+	display: flex;
+	flex-direction: column;
+
+	&__header {
+		display: flex;
+		align-items: center;
+		gap: 13px;
+		padding-bottom: 15px;
+		margin-bottom: 17px;
+		border-bottom: 1px solid $line;
+	}
+
+	&__icon {
+		flex: 0 0 auto;
+		display: grid;
+		place-items: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 11px;
+
+		.dashicons {
+			width: 22px;
+			height: 22px;
+			font-size: 22px;
+			color: inherit;
+		}
+	}
+
+	.flexa-admin-card__title { margin: 0; }
+
+	&__sub {
+		margin: 3px 0 0;
+		color: $muted;
+		font-size: 12.5px;
+		line-height: 1.45;
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+}
+
+/* -------- Setting rows (General tab toggles) -------- */
+.flexa-rows { display: flex; flex-direction: column; gap: 10px; }
+
+.flexa-setting-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding: 12px 14px;
+	border: 1px solid $line;
+	border-radius: 10px;
+	background: #fff;
+	transition: border-color 0.15s ease, background 0.15s ease;
+
+	&.is-on {
+		border-color: rgba(34, 113, 177, 0.4);
+		background: rgba(34, 113, 177, 0.03);
+	}
+
+	&__text { flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+	&__label { font-size: 13.5px; font-weight: 600; color: $ink; line-height: 1.35; }
+	&__help { font-size: 12px; color: $muted; line-height: 1.45; }
+
+	.flexa-switch { margin-top: 2px; }
+}
+
+/* -------- Front-End Editing tab -------- */
+.flexa-editing {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+
+	&__empty { margin: 0; color: $muted; font-size: 13px; }
+
+	&__note {
+		display: flex;
+		gap: 8px;
+		margin: 0 0 16px;
+		padding: 10px 12px;
+		border: 1px solid $line;
+		border-left: 3px solid $accent;
+		border-radius: 8px;
+		background: rgba(34, 113, 177, 0.05);
+		color: $muted;
+		font-size: 12.5px;
+		line-height: 1.5;
+	}
+}
+
+/* -------- Role rows (Front-End Editing → Allowed roles) -------- */
+.flexa-roles {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	gap: 10px;
+}
+
+.flexa-role-row {
+	display: flex;
+	align-items: center;
+	gap: 11px;
+	padding: 9px 12px;
+	border: 1px solid $line;
+	border-radius: 10px;
+	background: #fff;
+	transition: border-color 0.15s ease, background 0.15s ease;
+
+	&.is-on {
+		border-color: rgba(34, 113, 177, 0.45);
+		background: rgba(34, 113, 177, 0.04);
+	}
+
+	&.is-locked { background: #f6f7f7; }
+
+	&__icon {
+		display: grid;
+		place-items: center;
+		flex: 0 0 auto;
+		width: 34px;
+		height: 34px;
+		border-radius: 9px;
+		background: rgba(100, 116, 139, 0.12);
+		color: $muted;
+		font-size: 19px;
+	}
+	&.is-on &__icon { background: rgba(34, 113, 177, 0.12); color: $accent; }
+
+	&__name { flex: 1 1 auto; font-size: 13.5px; font-weight: 500; color: $ink; }
+
+	&__badge {
+		flex: 0 0 auto;
+		padding: 2px 9px;
+		border-radius: 999px;
+		background: rgba(0, 160, 42, 0.12);
+		color: #007017;
+		font-size: 11px;
+		font-weight: 600;
+	}
+}
+
+/* -------- Blocks panel -------- */
+.flexa-blocks {
+	&__head {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
+		margin-bottom: 16px;
+	}
+
+	&__count { margin: 4px 0 0; color: $muted; font-size: 13px; }
+
+	&__search {
+		position: relative;
+		flex: 0 1 280px;
+
+		.dashicons {
+			position: absolute;
+			top: 50%;
+			left: 10px;
+			transform: translateY(-50%);
+			color: $muted;
+			pointer-events: none;
+		}
+		input {
+			width: 100%;
+			height: 38px;
+			padding: 0 12px 0 34px;
+			border: 1px solid $line;
+			border-radius: 8px;
+			font-size: 13px;
+			&:focus { border-color: $accent; box-shadow: 0 0 0 1px $accent; outline: none; }
+		}
+	}
+
+	&__toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		flex-wrap: wrap;
+		margin-bottom: 18px;
+	}
+
+	&__filters { display: flex; flex-wrap: wrap; gap: 8px; }
+
+	&__actions { display: flex; gap: 8px; flex: 0 0 auto; }
+
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+		gap: 16px;
+	}
+
+	&__empty { padding: 32px; text-align: center; color: $muted; }
+}
+
+.flexa-bulk-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 6px 12px;
+	border: 1px solid $line;
+	border-radius: 8px;
+	background: #fff;
+	color: $ink;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.15s ease;
+
+	.dashicons { width: 16px; height: 16px; font-size: 16px; color: $muted; }
+
+	&:hover:not( :disabled ) {
+		border-color: $accent;
+		color: $accent-dark;
+		.dashicons { color: $accent; }
+	}
+
+	&:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.flexa-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border: 1px solid $line;
+	border-radius: 999px;
+	background: #fff;
+	color: $muted;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.15s ease;
+
+	&:hover { border-color: $accent; color: $accent-dark; }
+	&.is-active { background: $accent; border-color: $accent; color: #fff; }
+
+	&__count {
+		padding: 1px 7px;
+		border-radius: 999px;
+		background: rgba(0, 0, 0, 0.08);
+		font-size: 11px;
+		font-weight: 600;
+	}
+	&.is-active &__count { background: rgba(255, 255, 255, 0.25); }
+}
+
+/* -------- Block card -------- */
+.flexa-block-card {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	background: #fff;
+	border: 1px solid $line;
+	border-radius: $radius;
+	transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+
+	&:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1); border-color: #c9c9c9; }
+	&.is-off { opacity: 0.62; }
+
+	&__body { padding: 14px 16px 16px; }
+
+	&__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 5px; }
+
+	&__title {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: 0;
+		font-size: 14px;
+		font-weight: 600;
+	}
+
+	&__badge {
+		padding: 1px 7px;
+		border-radius: 4px;
+		background: #f0f0f1;
+		color: $muted;
+		font-size: 10px;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.4px;
+	}
+
+	&__desc {
+		margin: 0;
+		color: $muted;
+		font-size: 12.5px;
+		line-height: 1.5;
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+}
+
+/* -------- Block thumbnail (illustrative preview) -------- */
+.flexa-thumb {
+	position: relative;
+	height: 112px;
+	overflow: hidden;
+
+	&__glow {
+		position: absolute;
+		top: -40%;
+		right: -20%;
+		width: 160px;
+		height: 160px;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.28);
+		filter: blur(4px);
+	}
+
+	&__bar {
+		position: absolute;
+		left: 18px;
+		height: 7px;
+		border-radius: 999px;
+		background: rgba(255, 255, 255, 0.4);
+
+		&--a { bottom: 30px; width: 84px; }
+		&--b { bottom: 18px; width: 56px; background: rgba(255, 255, 255, 0.28); }
+	}
+
+	&__chip {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		display: grid;
+		place-items: center;
+		width: 54px;
+		height: 54px;
+		border-radius: 14px;
+		background: #fff;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+
+		svg { width: 30px; height: 30px; display: block; }
+		.dashicons { font-size: 28px; width: 28px; height: 28px; }
+	}
+}
+
+/* -------- Accessible switch -------- */
+.flexa-switch {
+	position: relative;
+	width: 40px;
+	height: 22px;
+	padding: 0;
+	border: none;
+	border-radius: 999px;
+	background: #ccced0;
+	cursor: pointer;
+	transition: background 0.15s ease;
+	flex: 0 0 auto;
+
+	&.is-on { background: $accent; }
+	&:disabled { cursor: not-allowed; opacity: 0.6; }
+	&:focus-visible { outline: 2px solid $accent; outline-offset: 2px; }
+
+	&__knob {
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		background: #fff;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+		transition: transform 0.15s ease;
+	}
+	&.is-on &__knob { transform: translateX(18px); }
+}

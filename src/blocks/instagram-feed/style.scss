@@ -1,0 +1,167 @@
+/**
+ * Instagram Feed block — frontend + editor base styles.
+ *
+ * Structure only. No colours, padding or typography defaults live here on
+ * purpose: the feed inherits the theme's look, and the PHP CSS generator
+ * (Instagram_Feed_CSS) emits declarations ONLY for values the user picks
+ * (mirrored as inline styles in the editor). The four layouts (grid / overlay /
+ * card / carousel) are the structural modes; everything else is theme-driven.
+ */
+
+@use '../../styles/scrollbar' as *;
+@use '../../styles/image-placeholder' as *;
+@use '../../styles/media-badge' as *;
+
+@include flexa-image-placeholder();
+@include flexa-media-badge();
+
+.flexa-instagram-feed {
+	box-sizing: border-box;
+
+	&__inner {
+		box-sizing: border-box;
+	}
+
+	// Item container — grid by default; the generator sets the column count + gap.
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+
+	// Each media entry.
+	&__item {
+		position: relative;
+		box-sizing: border-box;
+		overflow: hidden;
+		min-width: 0;
+	}
+
+	&__link {
+		display: block;
+		line-height: 0;
+	}
+
+	// Video / album badge over the thumbnail (the item is position:relative).
+	&__media-badge {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		z-index: 1;
+	}
+
+	&__image {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	// Keep the "no image" placeholder centred: it also carries the __image class,
+	// whose display:block would otherwise cancel the placeholder's flex centring.
+	&__image.flexa-image-placeholder {
+		display: flex;
+	}
+
+	// Text area below the image (grid / card / carousel). Content padding + gap
+	// come from the generator (shipped defaults in block.json).
+	&__body {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__caption,
+	&__meta,
+	&__profile {
+		min-width: 0;
+	}
+
+	&__profile {
+		font-weight: 600;
+	}
+
+	// Profile name · date share one row, separated by a centred middle dot.
+	&__byline {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.4em;
+	}
+
+	&__byline-sep {
+		opacity: 0.6;
+	}
+
+	// Date with a leading clock glyph.
+	&__meta {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3em;
+	}
+
+	&__meta-icon {
+		flex: 0 0 auto;
+		width: 1em;
+		height: 1em;
+	}
+
+	&__empty {
+		margin: 0;
+		opacity: 0.75;
+	}
+
+	// --- Overlay layout: text is absolutely positioned over the image and revealed
+	//     on hover / focus (padding + gap come from the generator content controls). ---
+	&--overlay &__overlay {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		opacity: 0;
+		transition: opacity 0.25s ease;
+	}
+
+	&--overlay &__item:hover &__overlay,
+	&--overlay &__item:focus-within &__overlay {
+		opacity: 1;
+	}
+
+	// --- Card layout: image on top, the text __body stacked below. ---
+	&--card &__item {
+		display: flex;
+		flex-direction: column;
+	}
+
+	// --- Carousel layout: a single horizontal, scroll-snapping row. ---
+	&--carousel &__grid {
+		display: flex;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		@include flexa-scrollbar();
+	}
+
+	&--carousel &__item {
+		flex: 0 0 auto;
+		width: min(280px, 70%);
+		scroll-snap-align: start;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-instagram-feed.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-instagram-feed.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-instagram-feed.flexa-hide-mobile {
+		display: none !important;
+	}
+}

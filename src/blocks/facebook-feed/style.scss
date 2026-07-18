@@ -1,0 +1,198 @@
+/**
+ * Facebook Feed block — frontend + editor base styles.
+ *
+ * Structure only. No colours, padding or typography defaults live here on
+ * purpose: the cards inherit the theme's look, and the PHP CSS generator
+ * (Facebook_Feed_CSS) emits declarations ONLY for values the user picks (mirrored
+ * as inline styles in the editor). The four layouts (grid / list / masonry /
+ * carousel) are the structural modes; the generator sets the column count + gaps.
+ */
+
+@use '../../styles/scrollbar' as *;
+@use '../../styles/pagination' as *;
+@use '../../styles/image-placeholder' as *;
+@use '../../styles/media-badge' as *;
+
+@include flexa-pagination();
+@include flexa-image-placeholder();
+@include flexa-media-badge();
+
+.flexa-facebook-feed {
+	box-sizing: border-box;
+
+	&__inner {
+		box-sizing: border-box;
+	}
+
+	// Post container — grid by default; the generator sets the column count + gaps.
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	// Each post is a vertical card.
+	&__item {
+		display: flex;
+		flex-direction: column;
+		box-sizing: border-box;
+		overflow: hidden;
+		min-width: 0;
+		gap: 0.6em;
+	}
+
+	&__header {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		min-width: 0;
+	}
+
+	&__avatar {
+		display: block;
+		width: 2.4em;
+		height: 2.4em;
+		border-radius: 50%;
+		object-fit: cover;
+		flex: 0 0 auto;
+	}
+
+	// Name + date stacked beside the avatar.
+	&__header-text {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	&__page-name {
+		font-weight: 600;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	// Date with a leading clock glyph (sits under the page name).
+	&__timestamp {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3em;
+		opacity: 0.75;
+	}
+
+	&__meta-icon {
+		flex: 0 0 auto;
+		width: 1em;
+		height: 1em;
+	}
+
+	&__image-wrap {
+		position: relative;
+		display: block;
+		overflow: hidden;
+	}
+
+	// Video / album badge over the post image.
+	&__media-badge {
+		position: absolute;
+		top: 8px;
+		right: 8px;
+		z-index: 1;
+	}
+
+	&__image-link {
+		display: block;
+	}
+
+	&__image {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	&__message {
+		min-width: 0;
+	}
+
+	&__message-link {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 1em;
+		margin-top: auto;
+
+		// Each action = an icon + its count.
+		> span {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35em;
+		}
+
+		svg {
+			flex: 0 0 auto;
+			width: 1em;
+			height: 1em;
+		}
+	}
+
+	&__empty {
+		margin: 0;
+		opacity: 0.75;
+	}
+
+	// --- List layout: rows stack vertically; each card lays image beside text. ---
+	&--list &__grid {
+		display: flex;
+		flex-direction: column;
+	}
+
+	// --- Masonry layout: CSS multi-column; the generator sets column-count. ---
+	&--masonry &__grid {
+		display: block;
+		column-count: 3;
+	}
+
+	&--masonry &__item {
+		break-inside: avoid;
+		margin-bottom: 24px;
+	}
+
+	// --- Carousel layout: a horizontal, snap-scrolling row of cards. ---
+	&--carousel &__grid {
+		display: flex;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+
+		@include flexa-scrollbar();
+	}
+
+	&--carousel &__item {
+		flex: 0 0 auto;
+		width: 300px;
+		max-width: 80%;
+		scroll-snap-align: start;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-facebook-feed.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-facebook-feed.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-facebook-feed.flexa-hide-mobile {
+		display: none !important;
+	}
+}

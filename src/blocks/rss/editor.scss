@@ -1,0 +1,24 @@
+/**
+ * RSS block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); an external feed can't
+ * be fetched in the editor, so the cards are placeholders. Colours and typography
+ * come from the theme or the user's choices, mirrored via inline styles in
+ * edit.tsx.
+ */
+
+.flexa-rss {
+	// Read-more is an inert span in the editor — keep it looking like a button.
+	.flexa-rss__readmore {
+		cursor: default;
+	}
+
+	// Loading row shown while the preview feed is being fetched.
+	.flexa-rss__loading {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		margin: 0;
+		opacity: 0.8;
+	}
+}

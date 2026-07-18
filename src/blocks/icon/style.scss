@@ -1,0 +1,81 @@
+/**
+ * Icon block — frontend + editor base styles.
+ *
+ * Instance-specific values (size, colours, frame, alignment) are produced by the
+ * PHP CSS generator (front end) and by inline styles (editor preview). Only
+ * structural layout lives here — no theme colours or padding defaults.
+ *
+ * NOTE: a bare `.flexa-icon` rule is intentionally avoided — the rendered glyph
+ * carries that same class, so all structural rules sit on the frame span
+ * (`.flexa-icon__inner`) or the per-instance `.flexa-icon-<id>` selector.
+ */
+
+/* Wrapper — targeted through the `--shape-*` modifier class that only the wrapper
+   carries. The wrapper and the rendered glyph SHARE the bare `.flexa-icon` class,
+   and sibling blocks (e.g. Button) ship a global `.flexa-icon { width:1em; height:1em }`
+   glyph rule. In the editor WordPress loads every block's stylesheet, so that rule
+   leaks onto THIS wrapper and would crush it to 1em (on the front end the sibling
+   sheet usually isn't present). The doubled `.flexa-icon.flexa-icon--shape-*`
+   selector out-specifies the leak, and `height:auto` undoes the inherited 1em.
+   Shrink-to-fit so the foundational background / border / spacing hug the glyph
+   instead of stretching the full column width; alignment is handled by auto margins
+   from the CSS generator. */
+.flexa-icon.flexa-icon--shape-square,
+.flexa-icon.flexa-icon--shape-rounded,
+.flexa-icon.flexa-icon--shape-circle {
+	/* Flex (not block) so the wrapper hugs the frame span by its real box height,
+	   independent of the surrounding line-height context. */
+	display: flex;
+	width: fit-content;
+	height: auto;
+	box-sizing: border-box;
+}
+
+.flexa-icon__inner {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	font-size: 48px; /* base glyph size — the 1em SVG scales to it until overridden */
+	line-height: 0;
+
+	> .flexa-icon,
+	> .flexa-icon-markup > .flexa-icon {
+		display: block;
+	}
+}
+
+/* Frame shape — border-radius on the frame span (mirrors Icon_CSS::$shape_radius).
+   `square` has no rule (theme-first default). */
+.flexa-icon--shape-rounded .flexa-icon__inner {
+	border-radius: 8px;
+}
+
+.flexa-icon--shape-circle .flexa-icon__inner {
+	border-radius: 50%;
+}
+
+.flexa-icon__link {
+	display: inline-flex;
+	color: inherit;
+	text-decoration: none;
+}
+
+/* Responsive visibility helpers. */
+@media (min-width: 1025px) {
+	.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-hide-mobile {
+		display: none !important;
+	}
+}

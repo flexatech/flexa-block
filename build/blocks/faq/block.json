@@ -1,0 +1,437 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "flexa/faq",
+  "version": "1.0.0",
+  "title": "FAQ",
+  "category": "flexa",
+  "description": "Expandable question-and-answer accordion with open-state icons, per-question and answer styling, dividers, light/dark colours and optional FAQ rich-result schema.",
+  "keywords": [
+    "flexa",
+    "faq",
+    "accordion",
+    "questions",
+    "toggle"
+  ],
+  "textdomain": "flexa-block",
+  "example": {
+    "attributes": {
+      "isExamplePreview": true
+    },
+    "viewportWidth": 500
+  },
+  "attributes": {
+    "isExamplePreview": {
+      "type": "boolean",
+      "default": false
+    },
+    "blockId": {
+      "type": "string"
+    },
+    "htmlTag": {
+      "type": "string",
+      "default": "div"
+    },
+    "items": {
+      "type": "array",
+      "default": [
+        {
+          "question": "What is your refund policy?",
+          "answer": "Answer the question here. You can format the answer with bold, italics and lists."
+        },
+        {
+          "question": "How do I get support?",
+          "answer": "Explain how visitors can reach you and what to expect."
+        }
+      ]
+    },
+    "rowGap": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "maxWidth": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "expandFirst": {
+      "type": "boolean",
+      "default": false
+    },
+    "closeOthers": {
+      "type": "boolean",
+      "default": true
+    },
+    "allowToggle": {
+      "type": "boolean",
+      "default": true
+    },
+    "enableSchema": {
+      "type": "boolean",
+      "default": false
+    },
+    "showIcon": {
+      "type": "boolean",
+      "default": true
+    },
+    "iconStyle": {
+      "type": "string",
+      "default": "plus",
+      "enum": [
+        "plus",
+        "chevron",
+        "arrow"
+      ]
+    },
+    "iconPosition": {
+      "type": "string",
+      "default": "right",
+      "enum": [
+        "left",
+        "right"
+      ]
+    },
+    "iconSize": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "iconGap": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "iconColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "iconActiveColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionTypography": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "questionColorType": {
+      "type": "string",
+      "default": "color",
+      "enum": [
+        "color",
+        "gradient"
+      ]
+    },
+    "questionColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionColorGradient": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionActiveColorType": {
+      "type": "string",
+      "default": "color",
+      "enum": [
+        "color",
+        "gradient"
+      ]
+    },
+    "questionActiveColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionActiveColorGradient": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionBackgroundType": {
+      "type": "string",
+      "default": "color",
+      "enum": [
+        "color",
+        "gradient"
+      ]
+    },
+    "questionBackground": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionBackgroundGradient": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionActiveBackgroundType": {
+      "type": "string",
+      "default": "color",
+      "enum": [
+        "color",
+        "gradient"
+      ]
+    },
+    "questionActiveBackground": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionActiveBackgroundGradient": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "questionPadding": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "answerTypography": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "answerColorType": {
+      "type": "string",
+      "default": "color",
+      "enum": [
+        "color",
+        "gradient"
+      ]
+    },
+    "answerColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "answerColorGradient": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "answerBackgroundType": {
+      "type": "string",
+      "default": "color",
+      "enum": [
+        "color",
+        "gradient"
+      ]
+    },
+    "answerBackground": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "answerBackgroundGradient": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "answerPadding": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "itemBackgroundType": {
+      "type": "string",
+      "default": "color",
+      "enum": [
+        "color",
+        "gradient"
+      ]
+    },
+    "itemBackground": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "itemBackgroundGradient": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "background": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "color": {
+          "light": "",
+          "dark": ""
+        },
+        "gradient": {
+          "light": "",
+          "dark": ""
+        },
+        "image": {
+          "url": "",
+          "id": null,
+          "position": "center center",
+          "repeat": "no-repeat",
+          "size": "cover",
+          "attachment": "scroll"
+        },
+        "lazyLoad": false
+      }
+    },
+    "border": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "style": "",
+          "width": {
+            "top": "",
+            "right": "",
+            "bottom": "",
+            "left": "",
+            "unit": "px"
+          },
+          "color": {
+            "light": "",
+            "dark": ""
+          },
+          "radius": {
+            "topLeft": "",
+            "topRight": "",
+            "bottomRight": "",
+            "bottomLeft": "",
+            "unit": "px"
+          }
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "boxShadow": {
+      "type": "object",
+      "default": {
+        "horizontal": "0",
+        "vertical": "4",
+        "blur": "12",
+        "spread": "0",
+        "color": {
+          "light": "rgba(0,0,0,0.1)",
+          "dark": ""
+        },
+        "inset": false,
+        "enabled": false
+      }
+    },
+    "advancedLayout": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "zIndex": "",
+          "overflow": "",
+          "position": ""
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "responsiveVisibility": {
+      "type": "object",
+      "default": {
+        "hideOnDesktop": false,
+        "hideOnTablet": false,
+        "hideOnMobile": false
+      }
+    },
+    "animation": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "duration": "normal",
+        "delay": ""
+      }
+    },
+    "htmlAttributes": {
+      "type": "object",
+      "default": {
+        "customAttributes": []
+      }
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "className": true,
+    "html": false,
+    "align": false
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

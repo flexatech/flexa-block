@@ -1,0 +1,10 @@
+/**
+ * Slide block — editor-only styles.
+ *
+ * Give an empty slide a comfortable minimum height so the appender is easy to
+ * hit while editing (the real height comes from the slider on the front end).
+ */
+
+.flexa-slide {
+	min-height: 120px;
+}

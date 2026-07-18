@@ -1,0 +1,23 @@
+/**
+ * Instagram Feed block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); the real media is
+ * fetched through an editor-only REST proxy. Colours and typography come from the
+ * theme or the user's choices, mirrored via inline styles in edit.tsx.
+ */
+
+.flexa-instagram-feed {
+	// Loading row shown while the preview feed is being fetched.
+	.flexa-instagram-feed__loading {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		margin: 0;
+		opacity: 0.8;
+	}
+
+	// The link wrapper is inert in the editor.
+	.flexa-instagram-feed__link {
+		cursor: default;
+	}
+}

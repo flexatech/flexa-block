@@ -1,0 +1,276 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/info-box",
+	"version": "1.0.0",
+	"title": "Info Box",
+	"category": "flexa",
+	"description": "Icon or image paired with a prefix, title and description, an optional divider and a call-to-action button. Media sits above or beside the text, with per-device typography, spacing and light/dark colours.",
+	"keywords": [ "flexa", "info box", "icon box", "feature", "service" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 400
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"htmlTag": {
+			"type": "string",
+			"default": "div"
+		},
+		"iconPosition": {
+			"type": "string",
+			"default": "top",
+			"enum": [ "top", "left" ]
+		},
+		"alignment": {
+			"type": "object",
+			"default": { "desktop": "", "tablet": "", "mobile": "" }
+		},
+		"stackOn": {
+			"type": "string",
+			"default": "none",
+			"enum": [ "none", "tablet", "mobile" ]
+		},
+		"mediaGap": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"contentGap": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"showMedia": {
+			"type": "boolean",
+			"default": true
+		},
+		"mediaType": {
+			"type": "string",
+			"default": "icon",
+			"enum": [ "icon", "image" ]
+		},
+		"icon": {
+			"type": "object",
+			"default": {
+				"source": "builtin",
+				"name": "info",
+				"markup": "<svg class=\"flexa-icon\" viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 16v-4M12 8h.01\"/></svg>",
+				"url": "",
+				"id": null
+			}
+		},
+		"image": {
+			"type": "object",
+			"default": { "id": null, "url": "", "alt": "" }
+		},
+		"iconSize": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"imageWidth": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"iconColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"mediaBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"mediaPadding": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"mediaRadius": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"showPrefix": {
+			"type": "boolean",
+			"default": false
+		},
+		"prefix": {
+			"type": "string",
+			"default": "Feature"
+		},
+		"prefixTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"prefixColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"title": {
+			"type": "string",
+			"default": "Info box title"
+		},
+		"titleTag": {
+			"type": "string",
+			"default": "h3"
+		},
+		"titleTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"titleColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"showSeparator": {
+			"type": "boolean",
+			"default": false
+		},
+		"separatorWidth": {
+			"type": "object",
+			"default": { "value": "", "unit": "px" }
+		},
+		"separatorWeight": {
+			"type": "object",
+			"default": { "value": "", "unit": "px" }
+		},
+		"separatorStyle": {
+			"type": "string",
+			"default": "solid"
+		},
+		"separatorColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"description": {
+			"type": "string",
+			"default": "Add a short description that explains this feature or benefit to your visitors."
+		},
+		"descriptionTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"descriptionColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"showButton": {
+			"type": "boolean",
+			"default": false
+		},
+		"buttonText": {
+			"type": "string",
+			"default": "Learn more"
+		},
+		"buttonUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonTarget": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonRel": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonIcon": {
+			"type": "object",
+			"default": { "source": "none", "name": "", "markup": "", "url": "", "id": null, "position": "after" }
+		},
+		"buttonTextColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBgColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonHover": {
+			"type": "object",
+			"default": { "text": { "light": "", "dark": "" }, "background": { "light": "", "dark": "" } }
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

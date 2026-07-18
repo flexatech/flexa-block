@@ -1,0 +1,29 @@
+/**
+ * Banner block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); these rules only keep
+ * the inline RichText fields comfortably editable (they never collapse to zero
+ * width) while the block is being edited.
+ */
+
+.flexa-banner {
+	.flexa-promo__heading,
+	.flexa-promo__description,
+	.flexa-promo__button-text {
+		min-width: 40px;
+	}
+}
+
+// Insert-time "add a background image" state: let the MediaPlaceholder fill the
+// banner band so the block reads as an image hero (drop the hero padding/centring).
+.flexa-banner--placeholder {
+	padding: 0;
+	align-items: stretch;
+	justify-content: stretch;
+
+	.components-placeholder {
+		width: 100%;
+		min-height: 100%;
+		margin: 0;
+	}
+}

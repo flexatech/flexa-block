@@ -1,0 +1,37 @@
+/**
+ * Tabs block — editor-only styles.
+ *
+ * The canvas reuses the front-end structure (style.scss): the tab bar switches
+ * the previewed panel, and the active tab's content is edited inline in a bare
+ * textarea that inherits the panel's typography/colour. Colours and typography
+ * come from the theme or the user's choices, mirrored via inline styles in
+ * edit.tsx.
+ */
+
+.flexa-tabs {
+	// The mobile accordion header isn't rendered in the editor preview.
+	.flexa-tabs__accordion-header {
+		display: none;
+	}
+
+	// Inline content editor — bare, inherits the panel's look.
+	.flexa-tabs__content-input {
+		display: block;
+		width: 100%;
+		min-height: 120px;
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: inherit;
+		font: inherit;
+		line-height: inherit;
+		resize: vertical;
+
+		&:focus {
+			outline: 1px dashed rgba(127, 127, 127, 0.5);
+			outline-offset: 4px;
+		}
+	}
+}

@@ -1,0 +1,229 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/icon-list",
+	"version": "1.0.0",
+	"title": "Icon List",
+	"category": "flexa",
+	"description": "A list or grid of icon-and-text rows — each with its own glyph, label and link — with the icon before or after the text, per-device columns and gaps, block-level icon styling (size, view, shape, colours with hover, frame) and text typography and colours.",
+	"keywords": [ "flexa", "icon list", "list", "features", "checklist", "icon", "bullet" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 500
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"htmlTag": {
+			"type": "string",
+			"default": "div"
+		},
+		"items": {
+			"type": "array",
+			"default": [
+				{
+					"id": "item-1",
+					"text": "Free lifetime updates",
+					"link": { "url": "", "target": "", "rel": "" },
+					"icon": { "source": "builtin", "name": "check", "markup": "<svg class=\"flexa-icon\" viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M5 12l4 4L19 6\"/></svg>", "url": "", "id": null }
+				},
+				{
+					"id": "item-2",
+					"text": "Premium 24/7 support",
+					"link": { "url": "", "target": "", "rel": "" },
+					"icon": { "source": "builtin", "name": "star", "markup": "<svg class=\"flexa-icon\" viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 3l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 18.8 6.1 21.9l1.1-6.5L2.5 9.8l6.5-.9z\"/></svg>", "url": "", "id": null }
+				},
+				{
+					"id": "item-3",
+					"text": "Secure & reliable",
+					"link": { "url": "", "target": "", "rel": "" },
+					"icon": { "source": "builtin", "name": "heart", "markup": "<svg class=\"flexa-icon\" viewBox=\"0 0 24 24\" width=\"1em\" height=\"1em\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 3c0 4.5-9.5 12-9.5 12z\"/></svg>", "url": "", "id": null }
+				}
+			]
+		},
+		"view": {
+			"type": "string",
+			"default": "list",
+			"enum": [ "list", "grid" ]
+		},
+		"columns": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "2", "unit": "" },
+				"tablet": { "value": "1", "unit": "" },
+				"mobile": { "value": "1", "unit": "" }
+			}
+		},
+		"iconPosition": {
+			"type": "string",
+			"default": "before",
+			"enum": [ "before", "after" ]
+		},
+		"alignment": {
+			"type": "object",
+			"default": { "desktop": "", "tablet": "", "mobile": "" }
+		},
+		"gap": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "12", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"iconGap": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "10", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"iconSize": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "20", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"iconView": {
+			"type": "string",
+			"default": "default",
+			"enum": [ "default", "stacked", "framed" ]
+		},
+		"iconShape": {
+			"type": "string",
+			"default": "square",
+			"enum": [ "square", "rounded", "circle" ]
+		},
+		"iconColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"iconColorHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"iconBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"iconBackgroundHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"iconBorderColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"iconPadding": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"typography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"textColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"textColorHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

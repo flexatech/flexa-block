@@ -1,0 +1,38 @@
+/**
+ * Post Filter — editor-only styles.
+ *
+ * The canvas shows the controls disabled (they filter nothing here), so they get a
+ * neutral, non-interactive look instead of reading as broken inputs.
+ */
+
+.flexa-post-filter--editing {
+	// NOT `pointer-events: none`. That is what this used to be, and it is why the
+	// Button panel's hover colours looked inert on the canvas: no pointer events, no
+	// `:hover`, so the mirrored hover rules could never match. The controls are already
+	// `disabled`, which is what stops them being operated; the only thing that would
+	// actually DO something on a click is the disclosure summary, so that one — and
+	// only that one — stays inert.
+	.flexa-filter-field__control,
+	.flexa-post-filter__submit,
+	.flexa-filter-reset__control,
+	.flexa-filter-field__option {
+		cursor: default;
+	}
+
+	.flexa-filter-field__menu-toggle {
+		pointer-events: none;
+	}
+
+	.flexa-filter-field__control[disabled] {
+		opacity: 1;
+		cursor: default;
+	}
+
+	// An empty bar still needs a hit area to drop blocks into.
+	.flexa-post-filter__fields:empty {
+		min-height: 48px;
+		flex: 1 1 100%;
+		border: 1px dashed rgba(0, 0, 0, 0.15);
+		border-radius: 4px;
+	}
+}

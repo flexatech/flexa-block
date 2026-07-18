@@ -1,0 +1,77 @@
+/**
+ * Social Icons block — frontend + editor base styles.
+ *
+ * Structure and motion only. Colours stay on the icons themselves (official
+ * brand artwork, or currentColor for custom-tinted glyphs) and the PHP CSS
+ * generator emits declarations ONLY for values the user picks (mirrored as
+ * inline styles in the editor). The row is a wrapping flex list.
+ */
+
+.flexa-social-icon {
+	box-sizing: border-box;
+
+	&__list {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+	}
+
+	// Each icon is a plain link (or span when no URL) with zero visual chrome
+	// of its own, so the theme's link styling never bleeds into the artwork.
+	&__item {
+		display: inline-flex;
+		color: inherit;
+		text-decoration: none;
+		line-height: 0;
+		transition: transform 0.25s ease, color 0.25s ease;
+	}
+
+	&__icon {
+		display: inline-flex;
+		width: 24px;
+		height: 24px;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	// Hover motions (keyed by the wrapper modifier set in render.php / edit.tsx).
+	&--hover-grow &__item:hover {
+		transform: scale(1.15);
+	}
+
+	&--hover-shrink &__item:hover {
+		transform: scale(0.85);
+	}
+
+	&--hover-lift &__item:hover {
+		transform: translateY(-4px);
+	}
+
+	&--hover-rotate &__item:hover {
+		transform: rotate(10deg);
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-social-icon.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-social-icon.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-social-icon.flexa-hide-mobile {
+		display: none !important;
+	}
+}

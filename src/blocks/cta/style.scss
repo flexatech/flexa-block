@@ -1,0 +1,71 @@
+/**
+ * CTA block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * heading / description carry the theme's look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). A structural padding gives a freshly inserted CTA its shape; the
+ * generator overrides it once the user picks a value. Two layouts: centred
+ * (stacked) or split (text one side, buttons the other).
+ */
+
+@use '../../styles/promo' as *;
+
+.flexa-cta {
+	box-sizing: border-box;
+	padding: 48px 24px;
+	// Centred text by default (low specificity so the generator's per-instance
+	// `.flexa-cta-<id> .flexa-promo__content` rule reliably overrides it).
+	text-align: center;
+
+	@include flexa-promo();
+
+	// Centre the content block within the section.
+	.flexa-promo__content {
+		margin-inline: auto;
+	}
+
+	// Boxed CTAs centre themselves within their parent.
+	&--boxed {
+		margin-inline: auto;
+	}
+
+	// Split layout — text and buttons side by side, wrapping on narrow screens.
+	&--split {
+		.flexa-promo__content {
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			text-align: left;
+			max-width: none;
+		}
+
+		.flexa-promo__text {
+			flex: 1 1 320px;
+		}
+
+		.flexa-promo__buttons {
+			flex: 0 0 auto;
+		}
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-cta.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-cta.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-cta.flexa-hide-mobile {
+		display: none !important;
+	}
+}

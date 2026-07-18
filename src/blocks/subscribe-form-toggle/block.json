@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/subscribe-form-toggle",
+	"version": "1.0.0",
+	"title": "Toggle",
+	"category": "flexa",
+	"description": "An on/off switch for a Subscribe Form — with a label, required toggle and column width. Submits \"Yes\" when switched on.",
+	"keywords": [ "flexa", "form", "field", "toggle", "switch" ],
+	"textdomain": "flexa-block",
+	"parent": [ "flexa/subscribe-form" ],
+	"attributes": {
+		"blockId": { "type": "string" },
+		"label": { "type": "string", "default": "Subscribe to updates" },
+		"fieldName": { "type": "string", "default": "subscribe" },
+		"required": { "type": "boolean", "default": false },
+		"showLabel": { "type": "boolean", "default": true },
+		"width": { "type": "string", "default": "100", "enum": [ "100", "50" ] }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

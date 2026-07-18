@@ -1,0 +1,251 @@
+/**
+ * Subscribe Form — shared front-end structure.
+ *
+ * Only layout lives here; colours / borders / padding come from the per-instance
+ * CSS the generator prints when the user picks them (guide §6.1). Because a field
+ * child only ever renders inside its parent form, the `.flexa-field` rules here
+ * also cover the children on the front end.
+ */
+
+.flexa-subscribe-form {
+	&__fields {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+	}
+
+	&__actions {
+		display: flex;
+		margin-top: 16px;
+
+		&--flex-start {
+			justify-content: flex-start;
+		}
+		&--center {
+			justify-content: center;
+		}
+		&--flex-end {
+			justify-content: flex-end;
+		}
+	}
+
+	&__submit--full {
+		width: 100%;
+	}
+
+	// Loading state — the button dims and its label gains three dots that blink
+	// one after another.
+	&__submit.is-loading {
+		opacity: 0.65;
+		pointer-events: none;
+	}
+
+	&__dots {
+		display: inline-flex;
+		margin-left: 2px;
+
+		span {
+			animation: flexa-blink 1s infinite;
+
+			&:nth-child( 2 ) {
+				animation-delay: 0.2s;
+			}
+			&:nth-child( 3 ) {
+				animation-delay: 0.4s;
+			}
+		}
+	}
+
+	// Honeypot: kept in the DOM for bots but out of sight / off the tab order.
+	&__hp {
+		position: absolute !important;
+		left: -9999px !important;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
+}
+
+.flexa-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+
+	&--w100 {
+		flex: 1 1 100%;
+	}
+	&--w50 {
+		flex: 1 1 calc( 50% - 8px );
+	}
+
+	&__label {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: #374151;
+	}
+
+	&__required {
+		color: #d63638;
+	}
+
+	// Inline validation message shown under the control.
+	&__error {
+		font-size: 0.8125rem;
+		color: #dc2626;
+	}
+
+	&--invalid &__control {
+		border-color: #dc2626;
+
+		&:focus,
+		&:focus-visible {
+			border-color: #dc2626;
+			box-shadow: 0 0 0 3px rgba( 220, 38, 38, 0.15 );
+		}
+	}
+
+	&__control {
+		width: 100%;
+		box-sizing: border-box;
+		font: inherit;
+		color: #1f2937;
+		background: #fff;
+		// A quiet default border colour; the generator supplies width/style/radius
+		// and overrides this colour once the user picks one (higher specificity).
+		border-color: #d1d5db;
+		transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+		&::placeholder {
+			color: #9ca3af;
+		}
+
+		&:focus,
+		&:focus-visible {
+			outline: none;
+			border-color: var( --flexa-color-primary, #2563eb );
+			box-shadow: 0 0 0 3px rgba( 37, 99, 235, 0.15 );
+		}
+	}
+
+	textarea.flexa-field__control {
+		resize: vertical;
+		min-height: 96px;
+	}
+
+	// Radio / checkbox groups.
+	&__options {
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+
+	&__option {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-weight: 400;
+		cursor: pointer;
+	}
+
+	&__choice {
+		flex: 0 0 auto;
+		margin: 0;
+	}
+
+	// On/off switch (toggle field).
+	&__toggle {
+		position: relative;
+		display: inline-flex;
+		width: 44px;
+		height: 24px;
+		flex: 0 0 auto;
+	}
+
+	&__toggle-input {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+
+	&__switch-track {
+		position: absolute;
+		inset: 0;
+		border-radius: 999px;
+		background: #c9c9c9;
+		transition: background 0.2s ease;
+		// Let clicks fall through to the checkbox sitting beneath the track.
+		pointer-events: none;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 2px;
+			left: 2px;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			background: #fff;
+			transition: transform 0.2s ease;
+		}
+	}
+
+	&__toggle-input:checked + &__switch-track {
+		background: var( --flexa-color-primary, #2563eb );
+
+		&::before {
+			transform: translateX( 20px );
+		}
+	}
+}
+
+// Result toast — created by view.js on submit, auto-dismisses. Fixed to the
+// viewport (its DOM parent, the form, doesn't affect placement).
+.flexa-toast {
+	position: fixed;
+	top: 88px;
+	right: 24px;
+	z-index: 99999;
+	max-width: 360px;
+	margin: 0;
+	padding: 14px 18px;
+	border-radius: 10px;
+	box-shadow: 0 10px 30px rgba( 0, 0, 0, 0.18 );
+	font-size: 0.875rem;
+	line-height: 1.4;
+	color: #fff;
+	cursor: pointer;
+	opacity: 0;
+	transform: translateY( -8px );
+	transition: opacity 0.25s ease, transform 0.25s ease;
+
+	&--show {
+		opacity: 1;
+		transform: translateY( 0 );
+	}
+}
+
+// Default feedback colours. The generator's per-instance rules (scoped under the
+// form's blockId) win by specificity when the user sets Message colours.
+.flexa-subscribe-form__message--success {
+	background: #16a34a;
+	color: #fff;
+}
+
+.flexa-subscribe-form__message--error {
+	background: #dc2626;
+	color: #fff;
+}
+
+@keyframes flexa-blink {
+	0%,
+	100% {
+		opacity: 0.2;
+	}
+	40% {
+		opacity: 1;
+	}
+}

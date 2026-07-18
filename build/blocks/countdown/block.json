@@ -1,0 +1,318 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "flexa/countdown",
+  "version": "1.0.0",
+  "title": "Countdown",
+  "category": "flexa",
+  "description": "Live countdown to a target date with selectable day/hour/minute/second units, separators, unit labels, per-device typography, light/dark colours and a completion action.",
+  "keywords": [
+    "flexa",
+    "countdown",
+    "timer",
+    "deadline",
+    "evergreen"
+  ],
+  "textdomain": "flexa-block",
+  "example": {
+    "attributes": {
+      "isExamplePreview": true
+    },
+    "viewportWidth": 500
+  },
+  "attributes": {
+    "isExamplePreview": {
+      "type": "boolean",
+      "default": false
+    },
+    "blockId": {
+      "type": "string"
+    },
+    "htmlTag": {
+      "type": "string",
+      "default": "div"
+    },
+    "endDate": {
+      "type": "string",
+      "default": ""
+    },
+    "showDays": {
+      "type": "boolean",
+      "default": true
+    },
+    "showHours": {
+      "type": "boolean",
+      "default": true
+    },
+    "showMinutes": {
+      "type": "boolean",
+      "default": true
+    },
+    "showSeconds": {
+      "type": "boolean",
+      "default": true
+    },
+    "separator": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "custom": ""
+      }
+    },
+    "labels": {
+      "type": "object",
+      "default": {
+        "show": true,
+        "position": "below",
+        "days": "Days",
+        "hours": "Hours",
+        "minutes": "Minutes",
+        "seconds": "Seconds"
+      }
+    },
+    "expiredAction": {
+      "type": "object",
+      "default": {
+        "type": "hide",
+        "message": ""
+      }
+    },
+    "ariaLive": {
+      "type": "string",
+      "default": "off",
+      "enum": [
+        "off",
+        "polite",
+        "assertive"
+      ]
+    },
+    "timezone": {
+      "type": "string",
+      "default": ""
+    },
+    "alignment": {
+      "type": "object",
+      "default": {
+        "desktop": "center",
+        "tablet": "",
+        "mobile": ""
+      }
+    },
+    "itemGap": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "maxWidth": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "size": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "minHeight": {
+            "value": "",
+            "unit": "px"
+          }
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "digitTypography": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "labelTypography": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "separatorFontSize": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "digitColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "labelColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "separatorColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "itemBackground": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "itemPadding": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "itemBorderRadius": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "background": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "color": {
+          "light": "",
+          "dark": ""
+        },
+        "gradient": {
+          "light": "",
+          "dark": ""
+        },
+        "image": {
+          "url": "",
+          "id": null,
+          "position": "center center",
+          "repeat": "no-repeat",
+          "size": "cover",
+          "attachment": "scroll"
+        },
+        "lazyLoad": false
+      }
+    },
+    "border": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "style": "",
+          "width": {
+            "top": "",
+            "right": "",
+            "bottom": "",
+            "left": "",
+            "unit": "px"
+          },
+          "color": {
+            "light": "",
+            "dark": ""
+          },
+          "radius": {
+            "topLeft": "",
+            "topRight": "",
+            "bottomRight": "",
+            "bottomLeft": "",
+            "unit": "px"
+          }
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "boxShadow": {
+      "type": "object",
+      "default": {
+        "horizontal": "0",
+        "vertical": "4",
+        "blur": "12",
+        "spread": "0",
+        "color": {
+          "light": "rgba(0,0,0,0.1)",
+          "dark": ""
+        },
+        "inset": false,
+        "enabled": false
+      }
+    },
+    "advancedLayout": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "zIndex": "",
+          "overflow": "",
+          "position": ""
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "responsiveVisibility": {
+      "type": "object",
+      "default": {
+        "hideOnDesktop": false,
+        "hideOnTablet": false,
+        "hideOnMobile": false
+      }
+    },
+    "animation": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "duration": "normal",
+        "delay": ""
+      }
+    },
+    "htmlAttributes": {
+      "type": "object",
+      "default": {
+        "customAttributes": []
+      }
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "className": true,
+    "html": false,
+    "align": false
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}

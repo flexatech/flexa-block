@@ -1,0 +1,8 @@
+/**
+ * Progress Bar block — editor-only styles.
+ *
+ * The canvas preview reuses the front-end structure (style.scss); the inspector
+ * uses the shared design-system (`.flexa-inspector` in components/editor.scss),
+ * so nothing block-specific is needed here. Kept as a placeholder so the block's
+ * `import './editor.scss'` stays valid.
+ */

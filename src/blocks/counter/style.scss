@@ -1,0 +1,96 @@
+/**
+ * Counter block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * numbers and labels carry the theme's look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). The list is a responsive grid of stats; each stat stacks its icon,
+ * number and label, centred by default.
+ */
+
+.flexa-counter {
+	box-sizing: border-box;
+
+	&__list {
+		display: grid;
+		// Sensible fallback until the generator sets the exact per-device column
+		// count; keeps the grid readable if inline CSS is ever missing.
+		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+		gap: 32px;
+	}
+
+	&__item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		box-sizing: border-box;
+	}
+
+	// Icon + number on one row (inline icon mode).
+	&__row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 0.5em;
+	}
+
+	&__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 1;
+
+		svg,
+		img {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+	}
+
+	&__number {
+		display: flex;
+		flex-direction: row;
+		align-items: baseline;
+		justify-content: center;
+		gap: 0.1em;
+		line-height: 1;
+	}
+
+	&__value {
+		font-variant-numeric: tabular-nums;
+	}
+
+	&__label {
+		display: block;
+	}
+
+	// A number↔label divider (the generator sets its thickness, style, width and
+	// colour; it inherits the text colour until a divider colour is chosen).
+	&__separator {
+		display: block;
+		border-top-width: 0;
+		border-top-style: solid;
+		border-top-color: currentColor;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-counter.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-counter.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-counter.flexa-hide-mobile {
+		display: none !important;
+	}
+}

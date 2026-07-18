@@ -2,7 +2,7 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
   "name": "flexa/container",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "title": "Container",
   "category": "flexa",
   "description": "Section wrapper with per-device flex layout, background, borders, spacing and light/dark colors.",
@@ -15,7 +15,17 @@
     "wrapper"
   ],
   "textdomain": "flexa-block",
+  "example": {
+    "attributes": {
+      "isExamplePreview": true
+    },
+    "viewportWidth": 500
+  },
   "attributes": {
+    "isExamplePreview": {
+      "type": "boolean",
+      "default": false
+    },
     "blockId": {
       "type": "string"
     },
@@ -190,12 +200,31 @@
         "mobile": {}
       }
     },
+    "gridSpan": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "column": "",
+          "row": ""
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
     "responsiveVisibility": {
       "type": "object",
       "default": {
         "hideOnDesktop": false,
         "hideOnTablet": false,
         "hideOnMobile": false
+      }
+    },
+    "animation": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "duration": "normal",
+        "delay": ""
       }
     },
     "htmlAttributes": {

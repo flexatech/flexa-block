@@ -1,0 +1,10 @@
+/**
+ * Separator block — editor-only styles.
+ *
+ * Give the selectable block a little vertical breathing room so a thin line is
+ * easy to click in the editor. Front-end appearance lives in style.scss.
+ */
+
+.wp-block-flexa-separator {
+	min-height: 1em;
+}

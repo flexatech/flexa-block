@@ -1,0 +1,159 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/product-rating",
+	"version": "1.0.0",
+	"title": "Product Rating",
+	"category": "woocommerce",
+	"description": "Show the current WooCommerce product’s average star rating on a single-product page — display stars, a numeric score or both, an optional review count, and style the star size, gap, filled and empty star colours, the numeric-score colour and typography, and the review-count typography and colours.",
+	"keywords": [ "flexa", "woocommerce", "product", "rating", "stars", "reviews" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 500
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"alignment": {
+			"type": "object",
+			"default": { "desktop": "", "tablet": "", "mobile": "" }
+		},
+		"displayType": {
+			"type": "string",
+			"default": "stars",
+			"enum": [ "stars", "stars-number", "number" ]
+		},
+		"showReviewCount": {
+			"type": "boolean",
+			"default": true
+		},
+		"showEmptyRating": {
+			"type": "boolean",
+			"default": false
+		},
+		"starColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"starEmptyColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"starSize": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"starGap": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"numberColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"numberTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"countColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"countTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

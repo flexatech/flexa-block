@@ -1,0 +1,100 @@
+/**
+ * Product Rating block — frontend + editor base styles.
+ *
+ * Structure only. No theme colours are hardcoded as defaults: the empty (base)
+ * stars inherit currentColor shown faintly, and the filled overlay inherits
+ * currentColor at full strength, so an untouched block is usable and still
+ * theme-tinted. The PHP CSS generator emits colour / size / gap ONLY for the
+ * values the user picks (mirrored as inline styles in the editor). The star row
+ * is an empty base with a width-clipped filled overlay so fractional ratings
+ * fill smoothly.
+ */
+
+.flexa-product-rating {
+	box-sizing: border-box;
+
+	&__stars {
+		position: relative;
+		display: inline-flex;
+		vertical-align: middle;
+		// Sensible default gap between stars; the generator emits `column-gap`
+		// on this element when the user sets a star gap, and the two rows inherit.
+		column-gap: 2px;
+		line-height: 1;
+	}
+
+	// Both rows carry identical star markup so the clipped fill aligns exactly
+	// over the base; they inherit the gap set on `__stars`.
+	&__stars-base,
+	&__stars-fill {
+		display: inline-flex;
+		column-gap: inherit;
+		line-height: 1;
+	}
+
+	// Empty stars: faint by default so they read as "empty"; the generator sets
+	// the empty colour on this row.
+	&__stars-base {
+		color: inherit;
+
+		.flexa-product-rating__star {
+			opacity: 0.28;
+		}
+	}
+
+	// The marked (fill) overlay — clipped to the fill width (set inline).
+	&__stars-fill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+		color: inherit;
+	}
+
+	// One star box — the generator sets width / height when a size is chosen,
+	// otherwise the stars scale to the surrounding text.
+	&__star {
+		display: inline-block;
+		width: 1.15em;
+		height: 1.15em;
+		flex: 0 0 auto;
+		line-height: 1;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&__number {
+		vertical-align: middle;
+		margin-inline-start: 0.35em;
+	}
+
+	&__count {
+		vertical-align: middle;
+		margin-inline-start: 0.4em;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-product-rating.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-product-rating.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-product-rating.flexa-hide-mobile {
+		display: none !important;
+	}
+}

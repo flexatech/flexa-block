@@ -1,0 +1,113 @@
+/**
+ * Testimonial block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * title / quote / name / role carry the theme's look, and the PHP CSS generator
+ * emits declarations ONLY for values the user picks (mirrored as inline styles
+ * in the editor). The card is a flex column; the author is a small avatar-plus-
+ * text row (or column when stacked).
+ */
+
+.flexa-testimonial {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	// Default alignment (left). The generator overrides align-items / text-align
+	// when the user picks an alignment, so an untouched card stays theme-default.
+	align-items: flex-start;
+
+	&__rating {
+		display: inline-flex;
+		align-items: center;
+		gap: 2px;
+		line-height: 1;
+		color: inherit;
+	}
+
+	// Stars inherit the rating colour (currentColor); the generator sets width /
+	// height when a size is chosen, otherwise they scale to the surrounding text.
+	&__star {
+		display: block;
+		width: 1.15em;
+		height: 1.15em;
+		flex: 0 0 auto;
+	}
+
+	&__star--empty {
+		opacity: 0.28;
+	}
+
+	&__title {
+		margin: 0;
+	}
+
+	// A quote, not a UA blockquote — strip the default indentation so alignment
+	// and spacing are driven entirely by the block's own controls.
+	&__quote {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		quotes: none;
+	}
+
+	&__author {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	&__author-text {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	&__avatar {
+		flex: 0 0 auto;
+		display: block;
+		width: 48px;
+		height: 48px;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	// Placeholder shown in the editor before an avatar is picked.
+	&__avatar--placeholder {
+		background: currentColor;
+		opacity: 0.12;
+	}
+
+	&__name,
+	&__job {
+		display: block;
+	}
+
+	// Author layout modes.
+	&--author-inline &__author {
+		flex-direction: row;
+	}
+
+	&--author-stacked &__author {
+		flex-direction: column;
+		text-align: center;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-testimonial.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-testimonial.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-testimonial.flexa-hide-mobile {
+		display: none !important;
+	}
+}

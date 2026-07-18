@@ -1,0 +1,106 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "flexa/slide",
+  "version": "1.0.0",
+  "title": "Slide",
+  "category": "flexa",
+  "description": "A single slide inside a Slider — holds any blocks, with its own background, padding, content max-width and content alignment.",
+  "keywords": [
+    "flexa",
+    "slide",
+    "slider"
+  ],
+  "textdomain": "flexa-block",
+  "parent": [
+    "flexa/slides"
+  ],
+  "supports": {
+    "anchor": true,
+    "className": true,
+    "html": false,
+    "reusable": false
+  },
+  "attributes": {
+    "blockId": {
+      "type": "string"
+    },
+    "background": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "color": {
+          "light": "",
+          "dark": ""
+        },
+        "gradient": {
+          "light": "",
+          "dark": ""
+        },
+        "image": {
+          "url": "",
+          "id": null,
+          "position": "center center",
+          "repeat": "no-repeat",
+          "size": "cover",
+          "attachment": "scroll"
+        },
+        "lazyLoad": false
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "padding": {
+            "top": "",
+            "right": "",
+            "bottom": "",
+            "left": "",
+            "unit": "px"
+          },
+          "margin": {
+            "top": "",
+            "right": "",
+            "bottom": "",
+            "left": "",
+            "unit": "px"
+          }
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "layout": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "justifyContent": "center",
+          "alignItems": "center",
+          "gap": {
+            "row": "16",
+            "column": "16",
+            "unit": "px"
+          }
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "contentMaxWidth": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "value": "",
+          "unit": "px"
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

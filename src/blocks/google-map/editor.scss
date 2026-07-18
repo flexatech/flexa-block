@@ -1,0 +1,15 @@
+/**
+ * Google Map block — editor-only styles.
+ *
+ * The shield sits over the live embed so a click selects the block instead of
+ * being swallowed by the map's own pan/zoom handling.
+ */
+
+.flexa-google-map {
+	&__shield {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		cursor: pointer;
+	}
+}

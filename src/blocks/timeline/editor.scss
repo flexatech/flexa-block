@@ -1,0 +1,20 @@
+/**
+ * Timeline block — editor-only styles.
+ *
+ * The canvas preview reuses the front-end structure (style.scss); the Timeline
+ * panel uses the shared ItemListPanel, styled by `.flexa-item-card` in
+ * components/editor.scss.
+ *
+ * The one editor-specific rule below re-states the marker icon sizing: in the
+ * editor the chosen SVG icon is injected via a `display:contents` wrapper (see
+ * edit.tsx), so this guarantees it scales to the marker even if a setup doesn't
+ * load the front-end stylesheet inside the editor iframe.
+ */
+
+.flexa-timeline__marker svg,
+.flexa-timeline__marker img {
+	width: 60%;
+	height: 60%;
+	display: block;
+	object-fit: contain;
+}

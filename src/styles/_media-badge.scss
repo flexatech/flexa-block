@@ -1,0 +1,26 @@
+// Shared "media type" badge — a small rounded chip laid over a feed thumbnail to
+// mark a video (play glyph) or an album / carousel (stacked squares). Used by the
+// Facebook and Instagram feed blocks via
+// `@use '../../styles/media-badge' as *; @include flexa-media-badge();`. This is
+// the chip look only; the caller positions `.flexa-media-badge` over its image.
+
+@mixin flexa-media-badge() {
+	.flexa-media-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 1.7em;
+		height: 1.7em;
+		border-radius: 6px;
+		background: rgba(0, 0, 0, 0.55);
+		color: #fff;
+		pointer-events: none;
+
+		svg {
+			display: block;
+			width: 1em;
+			height: 1em;
+		}
+	}
+}

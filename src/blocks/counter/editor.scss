@@ -1,0 +1,8 @@
+/**
+ * Counter block — editor-only styles.
+ *
+ * The canvas preview reuses the front-end structure (style.scss); the Stats
+ * panel now uses the shared ItemListPanel, styled by `.flexa-item-card` in
+ * components/editor.scss — so nothing block-specific is needed here. Kept as a
+ * placeholder so the block's `import './editor.scss'` stays valid.
+ */

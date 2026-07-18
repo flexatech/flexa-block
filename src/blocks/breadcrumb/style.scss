@@ -1,0 +1,83 @@
+/**
+ * Breadcrumb block — frontend + editor base styles.
+ *
+ * Structure only, plus the minimum a breadcrumb needs to read well the moment
+ * it is inserted (a wrapping inline row with a small gap, no list bullets). No
+ * colours or spacing defaults are hardcoded here: the PHP CSS generator emits
+ * per-instance declarations ONLY for values the user sets (mirrored as inline
+ * styles in the editor), keeping the block theme-first.
+ */
+
+.flexa-breadcrumb {
+	box-sizing: border-box;
+
+	&__list {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	&__item {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	&__link,
+	&__current {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		text-decoration: none;
+	}
+
+	&__link {
+		cursor: pointer;
+	}
+
+	// The current crumb is not clickable unless the user linked it.
+	&__current {
+		font-weight: 600;
+	}
+
+	&__separator {
+		display: inline-flex;
+		opacity: 0.6;
+		user-select: none;
+	}
+
+	&__home-icon {
+		display: inline-flex;
+		align-items: center;
+
+		svg,
+		img {
+			width: 1em;
+			height: 1em;
+			display: block;
+		}
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-breadcrumb.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-breadcrumb.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-breadcrumb.flexa-hide-mobile {
+		display: none !important;
+	}
+}

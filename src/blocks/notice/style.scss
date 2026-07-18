@@ -1,0 +1,135 @@
+/**
+ * Notice block — frontend + editor base styles.
+ *
+ * Structure + the block's semantic identity only. The per-type accent (a subtle
+ * left border + faint tinted background) is the notice's own identity, so a small
+ * restrained default is intentional and stays easily overridable — the user's
+ * chosen background/border wins because the generated CSS prints after this. No
+ * typography or colour defaults for the title/message live here: those come from
+ * the theme, and the PHP generator emits declarations ONLY for values the user
+ * picks (mirrored as inline styles in the editor).
+ */
+
+.flexa-notice {
+	box-sizing: border-box;
+	border-left: 4px solid transparent;
+	border-radius: var(--flexa-radius-md, 6px);
+
+	// Inner row: icon beside the body by default (row). The generator switches to
+	// a column when the user picks icon position "top".
+	&__inner {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		gap: 0.75em;
+	}
+
+	// Icon glyphs are sized to 1em, so font-size drives the size. A default keeps a
+	// freshly inserted icon visible; the generator overrides it once a size is set.
+	&__icon {
+		display: inline-flex;
+		flex: 0 0 auto;
+		font-size: 1.25em;
+		line-height: 1;
+
+		.flexa-icon,
+		svg {
+			display: block;
+			width: 1em;
+			height: 1em;
+		}
+
+		img.flexa-icon {
+			object-fit: contain;
+		}
+	}
+
+	&__body {
+		flex: 1 1 auto;
+		min-width: 0;
+
+		> * {
+			margin: 0;
+		}
+
+		> * + * {
+			margin-top: 0.35em;
+		}
+	}
+
+	&__title {
+		display: block;
+	}
+
+	// Minimal dismiss button — inherits colour, no background of its own.
+	&__dismiss {
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+		margin-left: 0.5em;
+		width: 1.5em;
+		height: 1.5em;
+		border: 0;
+		background: transparent;
+		color: inherit;
+		font-size: 1.25em;
+		line-height: 1;
+		cursor: pointer;
+		opacity: 0.7;
+
+		&:hover,
+		&:focus {
+			opacity: 1;
+		}
+	}
+
+	// --- Per-type accents (subtle, overridable) -----------------------------
+	// Only a faint tint + left-border colour — the block's semantic identity. No
+	// text colour is set here so the title/message keep the theme's colour until
+	// the user picks one (theme-first, guide §6.1).
+	&--info {
+		background: rgba(13, 110, 253, 0.08);
+		border-left-color: #0d6efd;
+	}
+
+	&--success {
+		background: rgba(25, 135, 84, 0.08);
+		border-left-color: #198754;
+	}
+
+	&--warning {
+		background: rgba(255, 193, 7, 0.12);
+		border-left-color: #ffc107;
+	}
+
+	&--danger {
+		background: rgba(220, 53, 69, 0.08);
+		border-left-color: #dc3545;
+	}
+
+	&--default {
+		background: rgba(0, 0, 0, 0.04);
+		border-left-color: rgba(0, 0, 0, 0.25);
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-notice.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-notice.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-notice.flexa-hide-mobile {
+		display: none !important;
+	}
+}

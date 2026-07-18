@@ -1,0 +1,32 @@
+/**
+ * Images Gallery block — editor-only styles.
+ *
+ * Keeps the thumbnails visible in the canvas. Colours and sizing come from the
+ * theme or the user's choices (mirrored via inline styles in edit.tsx).
+ */
+
+.flexa-images-gallery {
+	.flexa-images-gallery__media {
+		min-height: 1px;
+	}
+}
+
+/* Per-image cards in the inspector: give the thumbnail a usable, undistorted size. */
+.flexa-images-gallery-inspector {
+	.flexa-item-card__preview {
+		width: 40px;
+		height: 40px;
+
+		img {
+			object-fit: cover;
+			border-radius: 4px;
+		}
+	}
+
+	// Read-only caption pulled from the media library.
+	.flexa-images-gallery__cap-note {
+		margin: 0;
+		font-size: 12px;
+		color: #757575;
+	}
+}

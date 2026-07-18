@@ -1,0 +1,94 @@
+/**
+ * Slider block — front-end styles.
+ *
+ * Only structural rules live here (Swiper handles motion; per-instance colours
+ * and sizes come from the generated CSS). Custom arrow SVGs replace Swiper's
+ * default font glyphs, so its `::after` pseudo-icons are hidden.
+ *
+ * Layout model: `.flexa-slides__viewport` is the positioned box that wraps ONLY
+ * the swiper and the arrows, so the arrows anchor to the image's centre. Inside
+ * arrows overlay the image; outside arrows sit in gutters reserved on the
+ * viewport. Pagination overlays the viewport (inside) or flows below it (outside).
+ */
+
+.flexa-slides {
+	.flexa-slides__viewport {
+		position: relative;
+	}
+
+	.swiper {
+		width: 100%;
+	}
+
+	// Custom SVG arrows: suppress Swiper's built-in font glyph.
+	.swiper-button-prev::after,
+	.swiper-button-next::after {
+		display: none;
+	}
+
+	.flexa-slides__arrow {
+		// Square by default so a 50% border-radius renders a true circle (Swiper's
+		// own default arrow box is 27×44, which a radius would turn into a pill).
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 44px;
+		height: 44px;
+
+		svg {
+			display: block;
+			width: 24px;
+			height: 24px;
+		}
+	}
+}
+
+// Arrows inside: overlay the image near its left/right edges.
+.flexa-slides--arrows-inside {
+	.swiper-button-prev {
+		left: 16px;
+	}
+
+	.swiper-button-next {
+		right: 16px;
+	}
+}
+
+// Arrows outside: reserve gutters on the viewport and drop the arrows into them
+// so they sit beside the image instead of on top of it.
+.flexa-slides--arrows-outside {
+	.flexa-slides__viewport {
+		padding-left: 56px;
+		padding-right: 56px;
+	}
+
+	.swiper-button-prev {
+		left: 0;
+	}
+
+	.swiper-button-next {
+		right: 0;
+	}
+}
+
+// Reveal arrows only while the slider is hovered (or an arrow is focused).
+.flexa-slides--arrows-hover {
+	.flexa-slides__arrow {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.25s ease;
+	}
+
+	&:hover .flexa-slides__arrow,
+	.flexa-slides__arrow:focus-visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+// Pagination below the slider (normal flow) instead of overlaying it.
+.flexa-slides--pagination-outside .swiper-pagination {
+	position: static;
+	margin-top: 12px;
+}

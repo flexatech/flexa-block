@@ -1,0 +1,297 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/comparison-table",
+	"version": "1.0.0",
+	"title": "Comparison Table",
+	"category": "flexa",
+	"description": "Side-by-side plan and feature comparison grid — list your columns (plans) and feature rows, mark each cell with a check, a cross or plain text, spotlight one column and let the table scroll on small screens.",
+	"keywords": [ "flexa", "comparison", "pricing", "table", "feature", "plans" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 600
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"htmlTag": {
+			"type": "string",
+			"default": "div"
+		},
+		"columns": {
+			"type": "array",
+			"default": [
+				{ "title": "Starter", "subtitle": "For individuals", "badge": "", "highlighted": false, "ctaText": "Get started", "ctaUrl": "#", "imageUrl": "", "imageId": null },
+				{ "title": "Pro", "subtitle": "For growing teams", "badge": "Popular", "highlighted": true, "ctaText": "Get started", "ctaUrl": "#", "imageUrl": "", "imageId": null },
+				{ "title": "Business", "subtitle": "For companies", "badge": "", "highlighted": false, "ctaText": "Contact us", "ctaUrl": "#", "imageUrl": "", "imageId": null }
+			]
+		},
+		"rows": {
+			"type": "array",
+			"default": [
+				{ "label": "Projects", "values": [ "3", "Unlimited", "Unlimited" ] },
+				{ "label": "Priority support", "values": [ "false", "true", "true" ] },
+				{ "label": "Custom domain", "values": [ "false", "true", "true" ] },
+				{ "label": "Team members", "values": [ "1", "10", "Unlimited" ] }
+			]
+		},
+		"containerType": {
+			"type": "string",
+			"default": "full-width",
+			"enum": [ "boxed", "full-width" ]
+		},
+		"widthBoxed": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"widthFullWidth": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"stickyHeader": {
+			"type": "boolean",
+			"default": false
+		},
+		"zebra": {
+			"type": "boolean",
+			"default": true
+		},
+		"zebraColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"cellAlign": {
+			"type": "object",
+			"default": {"desktop": "", "tablet": "", "mobile": ""}
+		},
+		"cellPadding": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"headerTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"headerColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"headerBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"highlightColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"spotlightBarColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"spotlightBarWidth": {
+			"type": "object",
+			"default": {}
+		},
+		"badgeBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"badgeColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"badgeTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"badgeRadius": {
+			"type": "object",
+			"default": {}
+		},
+		"badgePadding": {
+			"type": "object",
+			"default": {}
+		},
+		"cellTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"cellColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"checkIcon": {
+			"type": "string",
+			"default": "check",
+			"enum": [ "check", "star", "dot" ]
+		},
+		"crossIcon": {
+			"type": "string",
+			"default": "cross",
+			"enum": [ "cross", "dash", "minus" ]
+		},
+		"checkColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"crossColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"showRowDivider": {
+			"type": "boolean",
+			"default": true
+		},
+		"showColumnDivider": {
+			"type": "boolean",
+			"default": false
+		},
+		"dividerColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"dividerWidth": {
+			"type": "object",
+			"default": {}
+		},
+		"buttonTextColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonTextColorHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBackgroundType": {
+			"type": "string",
+			"default": "color",
+			"enum": [ "color", "gradient" ]
+		},
+		"buttonBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBackgroundGradient": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBackgroundHoverType": {
+			"type": "string",
+			"default": "color",
+			"enum": [ "color", "gradient" ]
+		},
+		"buttonBackgroundHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBackgroundHoverGradient": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonRadius": {
+			"type": "object",
+			"default": {}
+		},
+		"buttonPadding": {
+			"type": "object",
+			"default": {}
+		},
+		"buttonWidth": {
+			"type": "string",
+			"default": "auto",
+			"enum": [ "auto", "full" ]
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

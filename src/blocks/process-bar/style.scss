@@ -1,0 +1,144 @@
+/**
+ * Progress Bar block — frontend + editor base styles.
+ *
+ * Structure only, plus a sensible default fill so the bar reads as complete the
+ * moment it is inserted. Colours are exposed as custom properties with neutral
+ * fallbacks (track = a faint tint, fill = the theme's text colour); the PHP CSS
+ * generator overrides them ONLY for values the user picks (mirrored as inline
+ * styles in the editor). The per-value fill (line width, ring dashoffset) is
+ * written inline by render.php, and the on-scroll animation by view.ts.
+ */
+
+.flexa-process-bar {
+	--flexa-pb-track: rgba(0, 0, 0, 0.08);
+	--flexa-pb-fill: currentColor;
+
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	width: 100%;
+
+	&__header {
+		display: flex;
+		flex-direction: row;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.75em;
+		margin-bottom: 0.4em;
+	}
+
+	// The line header sits under the bar when the title is below it.
+	&--line &__bar + &__header {
+		margin-top: 0.4em;
+		margin-bottom: 0;
+	}
+
+	&__title {
+		margin: 0;
+	}
+
+	&__counter {
+		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
+	}
+
+	/* ---- Line layout ---- */
+
+	&__track {
+		position: relative;
+		width: 100%;
+		height: 12px;
+		overflow: hidden;
+		background-color: var(--flexa-pb-track);
+	}
+
+	&__fill {
+		height: 100%;
+		width: 0;
+		max-width: 100%;
+		background-color: var(--flexa-pb-fill);
+	}
+
+	/* ---- Circle / semi-circle layout ---- */
+
+	&--circle,
+	&--semicircle {
+		.flexa-process-bar__circle {
+			position: relative;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.flexa-process-bar__ring {
+			width: 160px;
+			height: 160px;
+			display: block;
+		}
+
+		.flexa-process-bar__ring-track {
+			stroke: var(--flexa-pb-track);
+			stroke-width: 12;
+			fill: none;
+		}
+
+		.flexa-process-bar__ring-fill {
+			stroke: var(--flexa-pb-fill);
+			stroke-width: 12;
+			stroke-linecap: round;
+			fill: none;
+		}
+
+		.flexa-process-bar__circle-counter {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+		}
+	}
+
+	// The semi-circle only draws the top half — pull the readout down toward the
+	// baseline of the arc.
+	&--semicircle {
+		.flexa-process-bar__circle-counter {
+			top: auto;
+			bottom: 0;
+			transform: translate(-50%, 0);
+		}
+	}
+
+	/* ---- Striped fill ---- */
+
+	&__fill {
+		background-repeat: repeat;
+	}
+}
+
+@keyframes flexa-process-bar-stripes {
+	from {
+		background-position: 0 0;
+	}
+	to {
+		background-position: 16px 0;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-process-bar.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-process-bar.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-process-bar.flexa-hide-mobile {
+		display: none !important;
+	}
+}

@@ -1,8 +1,9 @@
 /**
  * Shared inspector design system.
  *
- * Visual polish only - no markup or option changes. Aims for a clean, compact
- * look: muted uppercase labels, pill segmented controls with a dark active
+ * Visual polish only — no markup or option changes. Aims for a clean, compact
+ * look: consistent dark 13px field labels (WP <label> and our custom <span>
+ * labels styled identically), pill segmented controls with a dark active
  * state, consistent spacing and rounded inputs.
  *
  * @package Flexa\Block
@@ -19,7 +20,7 @@ $f-active: #1e1e1e;
 $f-active-text: #fff;
 $f-radius: 6px;
 $f-gap: 16px;
-$f-accent: #2563eb; /* sea blue - primary accent */
+$f-accent: #2563eb; /* sea blue — primary accent */
 $f-accent-soft: rgba( 37, 99, 235, 0.12 );
 $f-accent-border: rgba( 37, 99, 235, 0.5 );
 
@@ -106,9 +107,9 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 /* ---------------------------------------------------------------------------
  * Panels, sections and rows.
  * ------------------------------------------------------------------------ */
-.flexa-container-inspector {
+.flexa-inspector {
 
-	/* Section header (panel title) - compact and bold. */
+	/* Section header (panel title) — compact and bold. */
 	.components-panel__body-title .components-button {
 		font-weight: 600;
 		font-size: 13px;
@@ -130,19 +131,25 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 		margin-bottom: $f-gap;
 	}
 
-	/* Field labels - small, uppercase, muted. */
+	/* Field labels. WordPress renders these as <label>, our custom controls use
+	   <span class="flexa-slider-unit__label"> — match that style exactly (13px,
+	   dark, normal case) so every label in the inspector looks identical
+	   regardless of the underlying element.
+	   !important is required: WordPress ships these labels with an emotion-
+	   generated class repeated three times (specificity 0,3,0), which outranks a
+	   normal `.flexa-inspector .components-…__label` selector (0,2,0). */
 	.components-base-control__label,
 	.components-input-control__label,
 	.components-toggle-group-control + .components-base-control__label {
-		font-size: 11px;
-		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: 0.4px;
-		color: $f-muted;
+		font-size: 13px !important;
+		font-weight: 500 !important;
+		text-transform: none !important;
+		letter-spacing: normal !important;
+		color: $f-muted !important;
 		margin-bottom: 6px;
 	}
 
-	/* Inputs / selects - rounded, consistent height. */
+	/* Inputs / selects — rounded, consistent height. */
 	.components-input-control__container,
 	.components-select-control__input,
 	.components-text-control__input {
@@ -160,13 +167,13 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
  * blue text/icon. Styled both via the sliding backdrop and the selected option
  * itself, so it works whichever the WordPress build exposes.
  * ------------------------------------------------------------------------ */
-.flexa-container-inspector .components-toggle-group-control {
+.flexa-inspector .components-toggle-group-control {
 	border-radius: $f-radius;
 	border: none !important;
 	background: $f-bg-alt; /* soft grey track */
 
 	/* WordPress draws the control's border AND focus ring with box-shadow, not
-	   the border property - so kill box-shadow/outline in every state, on the
+	   the border property — so kill box-shadow/outline in every state, on the
 	   control itself and on every descendant (label, hidden radio, option). */
 	&,
 	&:focus,
@@ -181,7 +188,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 	}
 
 	/* The active "pill" in this WP build is drawn as a ::before pseudo-element on
-	   the control root (emotion), carrying a 1px grey border + outline - that is
+	   the control root (emotion), carrying a 1px grey border + outline — that is
 	   the line we kept seeing. Recolour it to our blue and strip the border. */
 	&::before {
 		border: none !important;
@@ -190,7 +197,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 		background: #dcf2ff !important;
 	}
 
-	/* Older builds use a separate backdrop element instead - hide it. */
+	/* Older builds use a separate backdrop element instead — hide it. */
 	.components-toggle-group-control__backdrop {
 		display: none !important;
 	}
@@ -235,7 +242,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
  * Recolour WordPress's theme-coloured bits (range slider rail + thumb, focus)
  * to our sea blue, inside the inspector only.
  * ------------------------------------------------------------------------ */
-.flexa-container-inspector {
+.flexa-inspector {
 	--wp-admin-theme-color: #{$f-accent};
 	--wp-admin-theme-color-darker-10: #1d4ed8;
 	--wp-admin-theme-color-darker-20: #1e40af;
@@ -260,7 +267,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 		gap: 6px;
 		font-size: 13px;
 		font-weight: 500;
-		color: $f-text;
+		color: $f-muted;
 	}
 
 	&__tools {
@@ -465,7 +472,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 	}
 }
 
-/* Device picker dropdown content - icons only, horizontal. */
+/* Device picker dropdown content — icons only, horizontal. */
 .flexa-device-menu {
 	display: flex;
 	flex-direction: row;
@@ -507,7 +514,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 /* ---------------------------------------------------------------------------
  * Responsive field wrapper: label row + device toggle above any control.
  * ------------------------------------------------------------------------ */
-.flexa-container-inspector .flexa-field {
+.flexa-inspector .flexa-field {
 	margin-bottom: $f-gap;
 
 	/* The wrapped control provides no extra bottom gap of its own. */
@@ -537,10 +544,8 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 		display: inline-flex;
 		align-items: center;
 		gap: 6px;
-		font-size: 11px;
+		font-size: 13px;
 		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: 0.4px;
 		color: $f-muted;
 	}
 }
@@ -548,7 +553,7 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 /* ---------------------------------------------------------------------------
  * Unit-control fix: keep the "px" / "%" suffix from clipping.
  * ------------------------------------------------------------------------ */
-.flexa-container-inspector {
+.flexa-inspector {
 	.components-unit-control,
 	.components-input-control__container,
 	.components-input-control__suffix {
@@ -671,4 +676,266 @@ $f-accent-border: rgba( 37, 99, 235, 0.5 );
 
 .flexa-swatch__content {
 	padding: 12px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Icon picker (builtin / WordPress library / uploaded SVG).
+ * ------------------------------------------------------------------------ */
+.flexa-iconpicker {
+	&__row {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	&__toggle.components-button {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		height: 34px;
+	}
+
+	&__preview {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		font-size: 18px;
+		color: $f-text;
+
+		svg,
+		img {
+			width: 18px;
+			height: 18px;
+		}
+
+		&.is-empty {
+			border: 1px dashed $f-border;
+			border-radius: 4px;
+		}
+	}
+}
+
+.flexa-iconpicker__panel {
+	width: 288px;
+	padding: 6px 10px 10px;
+}
+
+.flexa-iconpicker__search {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	margin-bottom: 4px;
+}
+
+.flexa-iconpicker__grid {
+	display: grid;
+	grid-template-columns: repeat( 6, 1fr );
+	gap: 4px;
+	max-height: 220px;
+	overflow-y: auto;
+	padding-top: 8px;
+}
+
+.flexa-iconpicker__empty {
+	grid-column: 1 / -1;
+	margin: 8px 0;
+	color: $f-muted;
+	text-align: center;
+}
+
+.flexa-iconpicker__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 34px;
+	padding: 0;
+	color: $f-text;
+	background: $f-bg;
+	border: 1px solid $f-border;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: border-color 0.12s ease, box-shadow 0.12s ease, color 0.12s ease;
+
+	svg {
+		width: 20px;
+		height: 20px;
+	}
+
+	&:hover {
+		border-color: $f-accent;
+		color: $f-accent;
+	}
+
+	&.is-active {
+		border-color: $f-accent;
+		box-shadow: 0 0 0 1px $f-accent;
+		color: $f-accent;
+	}
+}
+
+.flexa-iconpicker__upload {
+	padding: 12px 2px 2px;
+}
+
+.flexa-iconpicker__hint {
+	margin: 8px 0 0;
+	font-size: 11px;
+	color: $f-muted;
+}
+
+/* ---------------------------------------------------------------------------
+ * List View block icon — selected-row contrast.
+ *
+ * Every Flexa block registers its icon with a fixed brand-blue `foreground`
+ * (#2563eb). In the List View that colour is applied inline to the icon, so on
+ * a *selected* row — whose background turns the admin theme blue — the blue
+ * icon sits on a blue field and disappears. When a row is selected its label is
+ * white, so force the icon to inherit that white too; it stays brand-blue on
+ * every unselected row. This is unscoped by block on purpose: List View rows
+ * expose no block name to target, and core icons already turn white when
+ * selected (they inherit currentColor), so forcing white here is a no-op for
+ * them and only rescues our foreground-pinned icons.
+ * ------------------------------------------------------------------------ */
+.block-editor-list-view-leaf.is-selected {
+	.block-editor-block-icon,
+	.block-editor-block-icon svg {
+		color: #fff !important;
+		fill: currentcolor;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * Inserter hover-preview → skeleton mock-up.
+ *
+ * Each Flexa block declares an `example` with `isExamplePreview: true`; its Edit
+ * then renders <ExamplePreviewSkeleton> (see components/Skeleton.tsx) instead of
+ * the real block. These primitives paint the grey shimmer bars/circles/boxes so
+ * the preview reads as a faint placeholder of the layout rather than exposing
+ * concrete values. Structure/spacing is inline in the component; only the grey
+ * fill + shimmer live here.
+ * ------------------------------------------------------------------------ */
+.flexa-skel {
+	display: block;
+	border-radius: 5px;
+	background: #dfe3e8;
+	position: relative;
+	overflow: hidden;
+
+	&::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			100deg,
+			rgba( 255, 255, 255, 0 ) 30%,
+			rgba( 255, 255, 255, 0.55 ) 50%,
+			rgba( 255, 255, 255, 0 ) 70%
+		);
+		background-size: 200% 100%;
+		background-repeat: no-repeat;
+		animation: flexa-skeleton-shimmer 1.5s ease-in-out infinite;
+	}
+
+	&--circle {
+		border-radius: 50%;
+	}
+
+	&--box {
+		border-radius: 8px;
+	}
+}
+
+@keyframes flexa-skeleton-shimmer {
+	0% {
+		background-position: 150% 0;
+	}
+
+	100% {
+		background-position: -50% 0;
+	}
+}
+
+/* ---------------------------------------------------------------------------
+ * ItemListPanel — the shared repeatable-item card editor (social-icon, counter,
+ * …). One accordion card per item: a clickable header (preview + title) with
+ * reorder / remove tools, over a collapsible body of the item's own controls.
+ * ------------------------------------------------------------------------- */
+
+.flexa-item-card {
+	padding: 8px 10px;
+	margin-bottom: 8px;
+	border: 1px solid #e0e0e0;
+	border-radius: 6px;
+
+	&__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	// Clicking the header (preview + label) collapses / expands the card.
+	&__toggle {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex: 1 1 auto;
+		min-width: 0;
+		padding: 2px 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+		text-align: left;
+	}
+
+	&__preview {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		width: 20px;
+		height: 20px;
+
+		svg,
+		img {
+			width: 100%;
+			height: 100%;
+		}
+
+		&.is-empty {
+			border: 1px dashed #c0c0c0;
+			border-radius: 4px;
+		}
+	}
+
+	&__title {
+		font-weight: 600;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&__tools {
+		display: inline-flex;
+		flex: 0 0 auto;
+		gap: 2px;
+	}
+
+	&__body {
+		margin-top: 10px;
+
+		.components-base-control,
+		.flexa-iconpicker,
+		.flexa-field {
+			margin-bottom: 12px;
+		}
+	}
+
+	&__add {
+		width: 100%;
+		justify-content: center;
+	}
 }

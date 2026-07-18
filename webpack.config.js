@@ -56,11 +56,33 @@ if ( adminIndex ) {
 	adminEntry[ 'admin/index' ] = adminIndex;
 }
 
+// Shared frontend scripts under src/frontend/<name>.{ts,…} — e.g. the
+// scroll-entrance animation observer and the inline editor. Each file becomes a
+// build/frontend/<name>.js entry (a co-located <name>.scss is extracted to
+// build/frontend/<name>.css).
+const frontendEntry = {};
+const frontendDir = path.resolve( process.cwd(), 'src', 'frontend' );
+if ( fs.existsSync( frontendDir ) ) {
+	fs.readdirSync( frontendDir ).forEach( ( file ) => {
+		const full = path.join( frontendDir, file );
+		if ( ! fs.statSync( full ).isFile() ) {
+			return;
+		}
+		const ext = path.extname( file );
+		if ( ! SCRIPT_EXTENSIONS.includes( ext ) ) {
+			return;
+		}
+		const name = path.basename( file, ext );
+		frontendEntry[ `frontend/${ name }` ] = full;
+	} );
+}
+
 module.exports = {
 	...defaultConfig,
 	entry: {
 		...blockEntries,
 		...adminEntry,
+		...frontendEntry,
 	},
 	output: {
 		...defaultConfig.output,
@@ -77,6 +99,7 @@ module.exports = {
 			'@components': path.resolve( process.cwd(), 'src/components' ),
 			'@hooks': path.resolve( process.cwd(), 'src/hooks' ),
 			'@utils': path.resolve( process.cwd(), 'src/utils' ),
+			'@shared': path.resolve( process.cwd(), 'src/shared' ),
 		},
 	},
 };

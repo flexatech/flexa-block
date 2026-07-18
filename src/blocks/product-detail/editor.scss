@@ -1,0 +1,10 @@
+/**
+ * Product Details block — editor-only styles.
+ *
+ * In the editor the active panel is always shown (tab switching is local state),
+ * so the content fills the block width. Front-end appearance lives in style.scss.
+ */
+
+.wp-block-flexa-product-detail .flexa-product-detail__content {
+	width: 100%;
+}

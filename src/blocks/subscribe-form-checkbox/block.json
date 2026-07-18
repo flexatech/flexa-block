@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/subscribe-form-checkbox",
+	"version": "1.0.0",
+	"title": "Checkbox",
+	"category": "flexa",
+	"description": "A checkbox group for a Subscribe Form — one box for a consent opt-in, or several for a multi-choice list — with a label, required toggle and column width.",
+	"keywords": [ "flexa", "form", "field", "checkbox", "consent" ],
+	"textdomain": "flexa-block",
+	"parent": [ "flexa/subscribe-form" ],
+	"attributes": {
+		"blockId": { "type": "string" },
+		"label": { "type": "string", "default": "Consent" },
+		"fieldName": { "type": "string", "default": "consent" },
+		"placeholder": { "type": "string", "default": "" },
+		"required": { "type": "boolean", "default": true },
+		"showLabel": { "type": "boolean", "default": true },
+		"width": { "type": "string", "default": "100", "enum": [ "100", "50" ] },
+		"options": { "type": "array", "default": [ "I agree to receive emails." ] }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

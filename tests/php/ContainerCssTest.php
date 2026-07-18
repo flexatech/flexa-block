@@ -133,6 +133,25 @@ class ContainerCssTest extends CssTestCase {
 		$this->assertCssHas( $css, '.flexa-container-a', 'z-index:5' );
 	}
 
+	public function test_advanced_layout_inset_emits_only_set_sides(): void {
+		$css = $this->gen( [
+			'blockId'        => 'a',
+			'containerType'  => 'full-width',
+			'advancedLayout' => [
+				'desktop' => [
+					'position' => 'sticky',
+					'inset'    => [ 'top' => '24', 'right' => '', 'bottom' => '', 'left' => '', 'unit' => 'px' ],
+				],
+			],
+		] );
+		$this->assertCssHas( $css, '.flexa-container-a', 'position:sticky' );
+		$this->assertCssHas( $css, '.flexa-container-a', 'top:24px' );
+		// Empty sides stay `auto` — no `right:`/`bottom:`/`left:` should be emitted.
+		$this->assertStringNotContainsString( 'right:', $css );
+		$this->assertStringNotContainsString( 'bottom:', $css );
+		$this->assertStringNotContainsString( 'left:', $css );
+	}
+
 	public function test_border_light_at_base_and_dark_in_media(): void {
 		$css = $this->gen( [
 			'blockId'       => 'a',
@@ -204,7 +223,7 @@ class ContainerCssTest extends CssTestCase {
 		$this->assertCssHas( $css, '.flexa-container-a', 'background-size:cover' );
 		// The image url only applies once .flexa-bg-loaded is added by view.js.
 		$this->assertCssHas( $css, '.flexa-container-a.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
-		// The url must appear exactly once - only behind the loaded class.
+		// The url must appear exactly once — only behind the loaded class.
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 }

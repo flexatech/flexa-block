@@ -1,0 +1,46 @@
+/**
+ * Button block — editor-only styles.
+ *
+ * Keeps the inline RichText label editable and visible without imposing colours
+ * (those come from the theme or the user's choices, mirrored via inline styles).
+ */
+
+.flexa-button {
+	// The editable label should never collapse to zero width when empty.
+	.flexa-button__text {
+		min-width: 1ch;
+	}
+
+	// Show the placeholder in a muted tone while the label is empty.
+	.rich-text[data-is-placeholder-visible='true'] {
+		opacity: 0.6;
+	}
+
+	// Hover transform presets — mirror the front-end (Button_CSS) so the motion
+	// effect previews inside the editor. Inline styles can't express `:hover`,
+	// hence these class-keyed rules.
+	&--hover-grow,
+	&--hover-shrink,
+	&--hover-lift,
+	&--hover-push {
+		.flexa-button__link {
+			transition: transform 0.2s ease;
+		}
+	}
+
+	&--hover-grow .flexa-button__link:hover {
+		transform: scale(1.05);
+	}
+
+	&--hover-shrink .flexa-button__link:hover {
+		transform: scale(0.95);
+	}
+
+	&--hover-lift .flexa-button__link:hover {
+		transform: translateY(-4px);
+	}
+
+	&--hover-push .flexa-button__link:hover {
+		transform: translateY(2px);
+	}
+}

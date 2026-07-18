@@ -1,0 +1,19 @@
+/**
+ * Facebook Feed block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); the Graph API is
+ * proxied through an editor-only REST route, so the cards show the real posts.
+ * Colours and typography come from the theme or the user's choices, mirrored via
+ * inline styles in edit.tsx.
+ */
+
+.flexa-facebook-feed {
+	// Loading row shown while the preview feed is being fetched.
+	.flexa-facebook-feed__loading {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		margin: 0;
+		opacity: 0.8;
+	}
+}

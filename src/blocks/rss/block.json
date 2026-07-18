@@ -1,0 +1,361 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/rss",
+	"version": "1.0.0",
+	"title": "RSS Feed",
+	"category": "flexa",
+	"description": "Show the newest entries from any RSS or Atom feed URL as a list or grid — set how many items, cache time and sort order, toggle the thumbnail, title, date, author, source and excerpt, add a read-more link that can open in a new tab, and style the card typography, colours and button.",
+	"keywords": [ "flexa", "rss", "atom", "feed", "syndication", "news" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 800
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"htmlTag": {
+			"type": "string",
+			"default": "section"
+		},
+		"containerType": {
+			"type": "string",
+			"default": "boxed",
+			"enum": [ "boxed", "full-width" ]
+		},
+		"feedUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"itemsToShow": {
+			"type": "number",
+			"default": 5
+		},
+		"cacheTime": {
+			"type": "number",
+			"default": 60
+		},
+		"sortNewestFirst": {
+			"type": "boolean",
+			"default": true
+		},
+		"openInNewTab": {
+			"type": "boolean",
+			"default": true
+		},
+		"feedLayout": {
+			"type": "string",
+			"default": "grid",
+			"enum": [ "grid", "list" ]
+		},
+		"columns": {
+			"type": "object",
+			"default": {
+				"desktop": { "value": "3", "unit": "" },
+				"tablet": { "value": "2", "unit": "" },
+				"mobile": { "value": "1", "unit": "" }
+			}
+		},
+		"rowGap": {
+			"type": "object",
+			"default": { "desktop": { "value": "30", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"columnGap": {
+			"type": "object",
+			"default": { "desktop": { "value": "30", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"equalHeight": {
+			"type": "boolean",
+			"default": true
+		},
+		"contentAlign": {
+			"type": "object",
+			"default": {"desktop": "", "tablet": "", "mobile": ""}
+		},
+		"contentPadding": {
+			"type": "object",
+			"default": {
+				"desktop": { "top": "16", "right": "20", "bottom": "16", "left": "20", "unit": "px" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"contentGap": {
+			"type": "object",
+			"default": { "desktop": { "value": "10", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"paginationType": {
+			"type": "string",
+			"default": "none",
+			"enum": [ "none", "numbered", "loadmore" ]
+		},
+		"perPage": {
+			"type": "number",
+			"default": 6
+		},
+		"loadMoreText": {
+			"type": "string",
+			"default": "Load more"
+		},
+		"paginationAlign": {
+			"type": "string",
+			"default": "center",
+			"enum": [ "left", "center", "right" ]
+		},
+		"prevLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"nextLabel": {
+			"type": "string",
+			"default": ""
+		},
+		"paginationColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"paginationActiveColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"paginationBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"paginationActiveBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"paginationRadius": {
+			"type": "object",
+			"default": {}
+		},
+		"paginationFontSize": {
+			"type": "object",
+			"default": {}
+		},
+		"loadMoreColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"loadMoreBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"showImage": {
+			"type": "boolean",
+			"default": true
+		},
+		"imageRatio": {
+			"type": "string",
+			"default": "16/9"
+		},
+		"showTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"titleTag": {
+			"type": "string",
+			"default": "h3"
+		},
+		"showMeta": {
+			"type": "boolean",
+			"default": true
+		},
+		"showDate": {
+			"type": "boolean",
+			"default": true
+		},
+		"showAuthor": {
+			"type": "boolean",
+			"default": true
+		},
+		"showSource": {
+			"type": "boolean",
+			"default": false
+		},
+		"showExcerpt": {
+			"type": "boolean",
+			"default": true
+		},
+		"excerptLength": {
+			"type": "number",
+			"default": 20
+		},
+		"showReadMore": {
+			"type": "boolean",
+			"default": true
+		},
+		"readMoreText": {
+			"type": "string",
+			"default": "Read more"
+		},
+		"titleTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"titleColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"metaTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"metaColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"excerptTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"excerptColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"cardBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonAlign": {
+			"type": "string",
+			"default": "",
+			"enum": [ "", "left", "center", "right" ]
+		},
+		"buttonWidth": {
+			"type": "string",
+			"default": "auto",
+			"enum": [ "auto", "full" ]
+		},
+		"buttonTextColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonTextColorHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBackgroundHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"buttonRadius": {
+			"type": "object",
+			"default": {}
+		},
+		"buttonPadding": {
+			"type": "object",
+			"default": {}
+		},
+		"widthBoxed": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"widthFullWidth": {
+			"type": "object",
+			"default": { "desktop": { "value": "100", "unit": "%" }, "tablet": {}, "mobile": {} }
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,24 @@
+/**
+ * Notice block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); these rules only keep
+ * the inline RichText fields comfortably editable (they never collapse to zero
+ * width) while the block is being edited.
+ */
+
+.flexa-notice {
+	.flexa-notice__title,
+	.flexa-notice__content {
+		min-width: 40px;
+	}
+
+	.flexa-notice__body {
+		flex: 1 1 auto;
+	}
+
+	// The dismiss button is a static preview in the editor — don't let it steal
+	// clicks meant for selecting the block.
+	.flexa-notice__dismiss {
+		pointer-events: none;
+	}
+}

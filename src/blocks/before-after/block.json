@@ -1,0 +1,197 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/before-after",
+	"version": "1.0.0",
+	"title": "Before / After",
+	"category": "flexa",
+	"description": "Drag-to-reveal image comparison slider — pick a before and an after image, split them horizontally or vertically, and let visitors wipe between the two with a handle or on hover.",
+	"keywords": [ "flexa", "before after", "compare", "comparison", "slider", "reveal" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 500
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"beforeImage": {
+			"type": "object",
+			"default": { "id": null, "url": "", "alt": "", "width": null, "height": null }
+		},
+		"afterImage": {
+			"type": "object",
+			"default": { "id": null, "url": "", "alt": "", "width": null, "height": null }
+		},
+		"beforeAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"afterAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"objectFit": {
+			"type": "string",
+			"default": "cover"
+		},
+		"aspectRatio": {
+			"type": "object",
+			"default": { "enabled": false, "ratio": "16/9" }
+		},
+		"orientation": {
+			"type": "string",
+			"default": "horizontal",
+			"enum": [ "horizontal", "vertical" ]
+		},
+		"initialPosition": {
+			"type": "number",
+			"default": 50
+		},
+		"interaction": {
+			"type": "string",
+			"default": "drag",
+			"enum": [ "drag", "hover" ]
+		},
+		"showLabels": {
+			"type": "boolean",
+			"default": true
+		},
+		"beforeLabel": {
+			"type": "string",
+			"default": "Before"
+		},
+		"afterLabel": {
+			"type": "string",
+			"default": "After"
+		},
+		"labelColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"labelBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"handleColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"handleSize": {
+			"type": "object",
+			"default": { "value": "", "unit": "px" }
+		},
+		"dividerWidth": {
+			"type": "object",
+			"default": { "value": "", "unit": "px" }
+		},
+		"maxWidth": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"align": {
+			"type": "object",
+			"default": { "desktop": "center", "tablet": "", "mobile": "" }
+		},
+		"size": {
+			"type": "object",
+			"default": {
+				"desktop": { "minHeight": { "value": "", "unit": "px" } },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

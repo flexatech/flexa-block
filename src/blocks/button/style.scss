@@ -1,0 +1,88 @@
+/**
+ * Button block — frontend + editor base styles.
+ *
+ * Layout only. No colours, padding or radius defaults live here on purpose: the
+ * anchor carries `wp-element-button` so it inherits the theme's button look, and
+ * the PHP CSS generator emits declarations ONLY for values the user picks. The
+ * outline / ghost variants use `transparent` / `currentColor` (structural, not
+ * brand colours) so they still adapt to the surrounding theme.
+ */
+
+.flexa-button {
+	display: flex;
+
+	&--center {
+		justify-content: center;
+	}
+
+	&--right {
+		justify-content: flex-end;
+	}
+
+	&--full .flexa-button__link {
+		width: 100%;
+	}
+}
+
+.flexa-button__link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5em;
+	text-decoration: none;
+}
+
+.flexa-icon {
+	flex: 0 0 auto;
+	width: 1em;
+	height: 1em;
+
+	svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+}
+
+img.flexa-icon {
+	object-fit: contain;
+}
+
+/* Structural variants — no brand colours, so the theme still drives the palette.
+   `color: inherit` is important: a filled theme button usually paints its label
+   white (readable on its solid fill). Once we strip the fill for outline/ghost,
+   that white label + the `currentColor` border would vanish on a light page, so
+   we fall back to the surrounding text colour (still theme-driven, still
+   overridable by the user's Text colour choice). */
+.flexa-button--outline .flexa-button__link {
+	color: inherit;
+	background-color: transparent;
+	background-image: none;
+	border: 1px solid currentColor;
+}
+
+.flexa-button--ghost .flexa-button__link {
+	color: inherit;
+	background-color: transparent;
+	background-image: none;
+	border: 0;
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-button.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-button.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-button.flexa-hide-mobile {
+		display: none !important;
+	}
+}

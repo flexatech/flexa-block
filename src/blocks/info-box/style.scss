@@ -1,0 +1,136 @@
+/**
+ * Info Box block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * prefix / title / description carry the theme's look, and the PHP CSS generator
+ * emits declarations ONLY for values the user picks (mirrored as inline styles in
+ * the editor). Two layouts: media above the content (column) or beside it (row).
+ * The icon size has a sensible default so the block shows something the moment
+ * it is inserted; the generator overrides it once the user picks a size.
+ */
+
+.flexa-info-box {
+	box-sizing: border-box;
+	display: flex;
+	gap: 16px;
+
+	&--icon-top {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	&--icon-left {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+
+	&__media {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		overflow: hidden;
+	}
+
+	// Icon glyphs are sized to 1em, so font-size drives the icon size. A default
+	// keeps a freshly inserted icon visible; the generator overrides it.
+	&__icon {
+		display: inline-flex;
+		font-size: 2.5rem;
+		line-height: 1;
+	}
+
+	&__image {
+		display: block;
+		max-width: 100%;
+		height: auto;
+	}
+
+	&__content {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	&__prefix,
+	&__title,
+	&__description {
+		margin: 0;
+	}
+
+	// A fixed-width divider; the generator sets width / weight / style / colour.
+	// align-self follows the content column's align-items (set by the generator).
+	&__separator {
+		width: 60px;
+		border-top: 2px solid currentColor;
+		opacity: 0.9;
+	}
+
+	&__cta {
+		display: inline-flex;
+	}
+
+	// The button carries wp-element-button so it inherits the theme button look;
+	// the generator emits colours only when the user picks them.
+	&__button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5em;
+		text-decoration: none;
+	}
+
+	.flexa-icon {
+		flex: 0 0 auto;
+		width: 1em;
+		height: 1em;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	img.flexa-icon {
+		object-fit: contain;
+	}
+}
+
+/* Stack the row layout into a column at the chosen breakpoint. */
+@media (max-width: 1024px) {
+	.flexa-info-box--stack-tablet {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-info-box--stack-mobile {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-info-box.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-info-box.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-info-box.flexa-hide-mobile {
+		display: none !important;
+	}
+}

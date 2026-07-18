@@ -1,0 +1,41 @@
+/**
+ * Lottie Animation block — editor-only styles.
+ *
+ * The editor renders a static placeholder (icon + label + source name) in place
+ * of the live animation to keep the editor bundle light. These rules style that
+ * placeholder; the real animation plays on the front end via view.ts.
+ */
+
+.flexa-lottie {
+	&__placeholder {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		min-width: 80px;
+		min-height: 80px;
+		padding: 16px;
+		text-align: center;
+		border: 1px dashed var( --flexa-color-border, #d0d5dd );
+		border-radius: var( --flexa-radius-md, 6px );
+	}
+
+	&__placeholder-icon svg {
+		width: 32px;
+		height: 32px;
+		opacity: 0.6;
+	}
+
+	&__placeholder-label {
+		font-size: 13px;
+		font-weight: 600;
+	}
+
+	&__placeholder-src {
+		max-width: 100%;
+		font-size: 11px;
+		word-break: break-all;
+		opacity: 0.7;
+	}
+}

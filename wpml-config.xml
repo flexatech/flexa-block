@@ -1,0 +1,319 @@
+<wpml-config>
+    <gutenberg-blocks>
+
+        <!-- Content blocks -->
+        <gutenberg-block type="flexa/heading" translate="1">
+            <key name="content" />
+            <key name="subheadingContent" />
+            <key name="url" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/text" translate="1">
+            <key name="content" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/button" translate="1">
+            <key name="text" />
+            <key name="url" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/image" translate="1">
+            <key name="altText" />
+            <key name="image"><key name="alt" /></key>
+            <key name="caption"><key name="text" /></key>
+            <key name="link"><key name="url" /></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/before-after" translate="1">
+            <key name="beforeLabel" />
+            <key name="afterLabel" />
+            <key name="beforeAlt" />
+            <key name="afterAlt" />
+            <key name="beforeImage"><key name="alt" /></key>
+            <key name="afterImage"><key name="alt" /></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/countdown" translate="1">
+            <key name="labels">
+                <key name="days" />
+                <key name="hours" />
+                <key name="minutes" />
+                <key name="seconds" />
+            </key>
+            <key name="expiredAction"><key name="message" /></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/testimonial" translate="1">
+            <key name="title" />
+            <key name="quote" />
+            <key name="authorName" />
+            <key name="authorJob" />
+            <key name="authorImage"><key name="alt" /></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/info-box" translate="1">
+            <key name="prefix" />
+            <key name="title" />
+            <key name="description" />
+            <key name="buttonText" />
+            <key name="buttonUrl" />
+            <key name="image"><key name="alt" /></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/table-of-content" translate="1">
+            <key name="title" />
+            <key name="emptyText" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/breadcrumb" translate="1">
+            <key name="homeText" />
+            <key name="items">
+                <key name="label" />
+                <key name="url" />
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/video-popup" translate="1">
+            <key name="buttonText" />
+            <key name="linkText" />
+            <key name="videoUrl" />
+            <key name="thumbnailImage"><key name="alt" /></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/banner" translate="1">
+            <key name="heading" />
+            <key name="description" />
+            <key name="primaryText" />
+            <key name="secondaryText" />
+            <key name="primaryUrl" />
+            <key name="secondaryUrl" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/cta" translate="1">
+            <key name="heading" />
+            <key name="description" />
+            <key name="primaryText" />
+            <key name="secondaryText" />
+            <key name="primaryUrl" />
+            <key name="secondaryUrl" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/google-map" translate="1">
+            <key name="location" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/social-icon" translate="1">
+            <key name="items"><key name="link"><key name="url" /></key></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/social-share" translate="1">
+            <key name="shareTitle" />
+            <key name="shareUrl" />
+            <key name="shareImage" />
+        </gutenberg-block>
+
+        <!-- Array-of-items blocks -->
+        <gutenberg-block type="flexa/faq" translate="1">
+            <key name="items">
+                <key name="question" />
+                <key name="answer" />
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/tabs" translate="1">
+            <key name="tabs">
+                <key name="label" />
+                <key name="content" />
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/steps" translate="1">
+            <key name="items">
+                <key name="title" />
+                <key name="description" />
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/counter" translate="1">
+            <key name="items">
+                <key name="label" />
+                <key name="number">
+                    <key name="prefix" />
+                    <key name="suffix" />
+                </key>
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/comparison-table" translate="1">
+            <key name="columns">
+                <key name="title" />
+                <key name="subtitle" />
+                <key name="badge" />
+                <key name="ctaText" />
+                <key name="ctaUrl" />
+            </key>
+            <key name="rows">
+                <key name="label" />
+                <key name="values" />
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/images-gallery" translate="1">
+            <key name="images">
+                <key name="alt" />
+                <key name="caption" />
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/pricing-table" translate="1">
+            <key name="items">
+                <key name="name" />
+                <key name="priceMonthly" />
+                <key name="priceYearly" />
+                <key name="periodMonthly" />
+                <key name="periodYearly" />
+                <key name="features" />
+                <key name="ctaText" />
+                <key name="ctaUrl" />
+                <key name="badge" />
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/team-member" translate="1">
+            <key name="name" />
+            <key name="role" />
+            <key name="bio" />
+            <key name="image"><key name="alt" /></key>
+            <key name="items"><key name="link"><key name="url" /></key></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/post-grid" translate="1">
+            <key name="readMoreText" />
+            <key name="loadMoreText" />
+            <key name="prevLabel" />
+            <key name="nextLabel" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/post-filter" translate="1">
+            <key name="formLabel" />
+            <key name="submitText" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/filter-search" translate="1">
+            <key name="label" /><key name="placeholder" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/filter-taxonomy" translate="1">
+            <key name="label" /><key name="allTermsLabel" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/filter-reset" translate="1">
+            <key name="text" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/rss" translate="1">
+            <key name="readMoreText" />
+            <key name="loadMoreText" />
+            <key name="prevLabel" />
+            <key name="nextLabel" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/process-bar" translate="1">
+            <key name="title" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/timeline" translate="1">
+            <key name="items">
+                <key name="title" />
+                <key name="description" />
+                <key name="date" />
+                <key name="image"><key name="alt" /></key>
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/icon" translate="1">
+            <key name="link"><key name="url" /></key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/icon-list" translate="1">
+            <key name="items">
+                <key name="text" />
+                <key name="link"><key name="url" /></key>
+            </key>
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/star-rating" translate="1">
+            <key name="title" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/modal" translate="1">
+            <key name="triggerText" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/notice" translate="1">
+            <key name="title" />
+            <key name="content" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/facebook-feed" translate="1">
+            <key name="loadMoreText" />
+            <key name="prevLabel" />
+            <key name="nextLabel" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/taxonomy" translate="1">
+            <key name="prefixText" />
+            <key name="suffixText" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/data-table" translate="1">
+            <key name="columns">
+                <key name="label" />
+            </key>
+            <key name="rows">
+                <key name="values" />
+            </key>
+        </gutenberg-block>
+
+        <!-- Subscribe form + fields -->
+        <gutenberg-block type="flexa/subscribe-form" translate="1">
+            <key name="submitText" />
+            <key name="emailSubject" />
+            <key name="successMessage" />
+            <key name="errorMessage" />
+            <key name="redirectUrl" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/subscribe-form-email" translate="1">
+            <key name="label" /><key name="placeholder" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-name" translate="1">
+            <key name="label" /><key name="placeholder" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-phone" translate="1">
+            <key name="label" /><key name="placeholder" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-textarea" translate="1">
+            <key name="label" /><key name="placeholder" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-url" translate="1">
+            <key name="label" /><key name="placeholder" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-date" translate="1">
+            <key name="label" /><key name="placeholder" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-toggle" translate="1">
+            <key name="label" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-upload" translate="1">
+            <key name="label" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-select" translate="1">
+            <key name="label" /><key name="placeholder" /><key name="options" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-radio" translate="1">
+            <key name="label" /><key name="placeholder" /><key name="options" />
+        </gutenberg-block>
+        <gutenberg-block type="flexa/subscribe-form-checkbox" translate="1">
+            <key name="label" /><key name="placeholder" /><key name="options" />
+        </gutenberg-block>
+
+    </gutenberg-blocks>
+</wpml-config>

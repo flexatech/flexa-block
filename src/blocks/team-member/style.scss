@@ -1,0 +1,150 @@
+/**
+ * Team Member block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * name / role / bio carry the theme's look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). Three layouts: photo above the content (column) or beside it on the
+ * left / right (row). The photo shape (circle / rounded / square) and the social
+ * icon size have sensible defaults so the card looks complete the moment it is
+ * inserted; the generator overrides them once the user picks a value.
+ */
+
+.flexa-team-member {
+	box-sizing: border-box;
+	display: flex;
+	gap: 20px;
+
+	&--pos-top {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	&--pos-left {
+		flex-direction: row;
+		align-items: flex-start;
+	}
+
+	&--pos-right {
+		flex-direction: row-reverse;
+		align-items: flex-start;
+	}
+
+	&__photo {
+		display: inline-flex;
+		flex: 0 0 auto;
+		overflow: hidden;
+	}
+
+	&__image {
+		display: block;
+		width: 120px;
+		max-width: 100%;
+		height: auto;
+		object-fit: cover;
+	}
+
+	// Photo shape → border-radius on the image.
+	&--shape-circle &__image {
+		border-radius: 50%;
+		aspect-ratio: 1 / 1;
+	}
+
+	&--shape-rounded &__image {
+		border-radius: 12px;
+	}
+
+	&--shape-square &__image {
+		border-radius: 0;
+	}
+
+	&__content {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	&__name,
+	&__role,
+	&__bio {
+		margin: 0;
+	}
+
+	&__role {
+		display: block;
+	}
+
+	&__social {
+		display: inline-flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+		margin-top: 4px;
+	}
+
+	// Icon glyphs are sized to 1em, so font-size drives the social icon size. A
+	// default keeps freshly inserted icons visible; the generator overrides it.
+	&__social-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.25rem;
+		line-height: 1;
+		color: inherit;
+		text-decoration: none;
+		transition: color 0.15s ease, transform 0.15s ease;
+	}
+
+	.flexa-icon {
+		flex: 0 0 auto;
+		width: 1em;
+		height: 1em;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	img.flexa-icon {
+		object-fit: contain;
+	}
+}
+
+/* Stack the beside layouts into a column at the chosen breakpoint. */
+@media (max-width: 1024px) {
+	.flexa-team-member--stack-tablet {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-team-member--stack-mobile {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-team-member.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-team-member.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-team-member.flexa-hide-mobile {
+		display: none !important;
+	}
+}

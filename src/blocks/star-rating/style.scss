@@ -1,0 +1,99 @@
+/**
+ * Star Rating block — frontend + editor base styles.
+ *
+ * Structure only. No theme colours are hardcoded as defaults: filled and empty
+ * stars both inherit currentColor, with the empty (base) star shown faintly so
+ * an untouched block is usable and still theme-tinted. The PHP CSS generator
+ * emits colour / size / gap / alignment ONLY for the values the user picks
+ * (mirrored as inline styles in the editor). Each star is an unmarked base with
+ * a width-clipped marked overlay, so fractional ratings fill smoothly.
+ */
+
+.flexa-star-rating {
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	// Sensible default gap between the title and the stars; the generator emits
+	// `gap` when the user sets a title gap.
+	gap: 8px;
+
+	&--inline {
+		flex-direction: row;
+	}
+
+	&--stacked {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	&__stars {
+		display: inline-flex;
+		align-items: center;
+		gap: 2px;
+		line-height: 1;
+		color: inherit;
+	}
+
+	// One star box — the generator sets width / height when a size is chosen,
+	// otherwise the stars scale to the surrounding text.
+	&__star {
+		position: relative;
+		display: inline-block;
+		width: 1.15em;
+		height: 1.15em;
+		flex: 0 0 auto;
+		line-height: 1;
+	}
+
+	// The unmarked (base) star. Faint by default so it reads as "empty"; the
+	// generator sets its colour on this direct-child svg only (never the fill).
+	&__star > svg {
+		display: block;
+		width: 100%;
+		height: 100%;
+		opacity: 0.28;
+	}
+
+	// The marked (fill) overlay — clipped to the per-star fill width (set inline).
+	&__star-fill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 0;
+		overflow: hidden;
+	}
+
+	// Fixed-width square svg so the clip only trims it — height drives the size,
+	// keeping the star undistorted whatever the overlay width.
+	&__star-fill > svg {
+		display: block;
+		height: 100%;
+		width: auto;
+		max-width: none;
+		opacity: 1;
+	}
+
+	&__title {
+		margin: 0;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-star-rating.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-star-rating.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-star-rating.flexa-hide-mobile {
+		display: none !important;
+	}
+}

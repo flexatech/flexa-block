@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/subscribe-form-hidden",
+	"version": "1.0.0",
+	"title": "Hidden",
+	"category": "flexa",
+	"description": "An invisible field for a Subscribe Form that submits a fixed value — handy for tagging entries with a source or campaign.",
+	"keywords": [ "flexa", "form", "field", "hidden" ],
+	"textdomain": "flexa-block",
+	"parent": [ "flexa/subscribe-form" ],
+	"attributes": {
+		"blockId": { "type": "string" },
+		"fieldName": { "type": "string", "default": "source" },
+		"value": { "type": "string", "default": "" }
+	},
+	"supports": {
+		"anchor": false,
+		"className": false,
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

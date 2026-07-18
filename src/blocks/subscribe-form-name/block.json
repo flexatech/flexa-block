@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/subscribe-form-name",
+	"version": "1.0.0",
+	"title": "Name",
+	"category": "flexa",
+	"description": "A text input for a Subscribe Form — with a label, placeholder, required toggle and column width.",
+	"keywords": [ "flexa", "form", "field", "name", "text" ],
+	"textdomain": "flexa-block",
+	"parent": [ "flexa/subscribe-form" ],
+	"attributes": {
+		"blockId": { "type": "string" },
+		"label": { "type": "string", "default": "Name" },
+		"fieldName": { "type": "string", "default": "name" },
+		"placeholder": { "type": "string", "default": "Your name" },
+		"required": { "type": "boolean", "default": false },
+		"showLabel": { "type": "boolean", "default": true },
+		"width": { "type": "string", "default": "100", "enum": [ "100", "50" ] }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

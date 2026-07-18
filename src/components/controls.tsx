@@ -42,7 +42,7 @@ export const useDevice = (): [ DeviceKey, ( device: DeviceType | string ) => voi
 };
 
 /**
- * Device switcher - three segmented icon buttons synced to the editor preview.
+ * Device switcher — three segmented icon buttons synced to the editor preview.
  */
 export const DeviceSwitcher = (): JSX.Element => {
 	const deviceType = useDeviceType();
@@ -117,7 +117,7 @@ interface DimensionsProps {
 
 /**
  * Dimensions control (padding / margin / border width / radius) on our
- * { top, right, bottom, left, unit } shape - four side inputs, a unit dropdown,
+ * { top, right, bottom, left, unit } shape — four side inputs, a unit dropdown,
  * a link toggle (sync all sides) and an optional responsive device toggle.
  */
 export const Dimensions = ( { label, value = {}, onChange, units, responsive = false }: DimensionsProps ): JSX.Element => {
@@ -235,7 +235,7 @@ const MODE_LIST: Array< { key: ColorMode; icon: JSX.Element; label: string } > =
 ];
 
 /**
- * Light / Dark mode toggle (mirrors the responsive DeviceTag) - picks which
+ * Light / Dark mode toggle (mirrors the responsive DeviceTag) — picks which
  * colour (light or dark) the swatch edits.
  */
 const ModeTag = ( { mode, onChange }: { mode: ColorMode; onChange: ( m: ColorMode ) => void } ): JSX.Element => {
@@ -289,12 +289,12 @@ interface DualColorProps {
 }
 
 /**
- * Colour control - one swatch with a light/dark mode toggle (when dark mode is
+ * Colour control — one swatch with a light/dark mode toggle (when dark mode is
  * enabled) and a reset button. Clicking the swatch opens the colour picker.
  */
 export const DualColor = ( { label, value = {}, onChange, palette = DEFAULT_PALETTE }: DualColorProps ): JSX.Element => {
 	const darkEnabled = isDarkModeEnabled();
-	const [ mode, setMode ] = useState( 'light' );
+	const [ mode, setMode ] = useState< ColorMode >( 'light' );
 	const activeMode: ColorMode = darkEnabled ? mode : 'light';
 
 	return (
@@ -332,12 +332,12 @@ interface GradientControlProps {
 }
 
 /**
- * Gradient control - visual gradient builder (stops, type, angle) with a
+ * Gradient control — visual gradient builder (stops, type, angle) with a
  * light/dark mode toggle (when dark mode is enabled) and a reset button.
  */
 export const GradientControl = ( { label, value = {}, onChange }: GradientControlProps ): JSX.Element => {
 	const darkEnabled = isDarkModeEnabled();
-	const [ mode, setMode ] = useState( 'light' );
+	const [ mode, setMode ] = useState< ColorMode >( 'light' );
 	const activeMode: ColorMode = darkEnabled ? mode : 'light';
 
 	return (
@@ -367,6 +367,41 @@ export const GradientControl = ( { label, value = {}, onChange }: GradientContro
 	);
 };
 
+interface ColorGradientControlProps {
+	label: string;
+	type?: 'color' | 'gradient';
+	color?: ColorPair;
+	gradient?: ColorPair;
+	onTypeChange: ( type: 'color' | 'gradient' ) => void;
+	onColorChange: ( value: ColorPair ) => void;
+	onGradientChange: ( value: ColorPair ) => void;
+}
+
+/**
+ * Colour-or-gradient control — a Color / Gradient segmented toggle that swaps
+ * between a solid {light,dark} colour picker and the gradient builder. Mirrors
+ * the Container background's color|gradient pattern so any fill (text,
+ * background, …) that supports both offers the same choice.
+ */
+export const ColorGradientControl = ( { label, type = 'color', color = {}, gradient = {}, onTypeChange, onColorChange, onGradientChange }: ColorGradientControlProps ): JSX.Element => (
+	<div className="flexa-field flexa-colorgradient">
+		<Segmented
+			label={ label }
+			value={ type }
+			onChange={ ( v ) => onTypeChange( v as 'color' | 'gradient' ) }
+			options={ [
+				{ value: 'color', label: __( 'Color', 'flexa-block' ) },
+				{ value: 'gradient', label: __( 'Gradient', 'flexa-block' ) },
+			] }
+		/>
+		{ type === 'gradient' ? (
+			<GradientControl label={ __( 'Gradient', 'flexa-block' ) } value={ gradient } onChange={ onGradientChange } />
+		) : (
+			<DualColor label={ __( 'Color', 'flexa-block' ) } value={ color } onChange={ onColorChange } />
+		) }
+	</div>
+);
+
 /* --- Slider + number input + unit toggle (length / size control). --- */
 
 /** Default slider upper bound per unit. */
@@ -392,7 +427,7 @@ const DEVICE_LIST: Array< { key: DeviceKey; type: DeviceType; label: string } > 
 ];
 
 /**
- * Clickable responsive indicator - opens a dropdown to pick the active editor
+ * Clickable responsive indicator — opens a dropdown to pick the active editor
  * device (Desktop / Tablet / Mobile). Responsive attributes are stored per
  * device, so picking one lets a control hold a different value per breakpoint.
  */
@@ -404,7 +439,7 @@ export const DeviceTag = (): JSX.Element => {
 			contentClassName="flexa-device-menu__popover"
 			popoverProps={ { placement: 'bottom-end' } }
 			renderToggle={ ( { isOpen, onToggle }: { isOpen: boolean; onToggle: () => void } ) => (
-				<Tooltip text={ __( 'Responsive - choose device', 'flexa-block' ) }>
+				<Tooltip text={ __( 'Responsive — choose device', 'flexa-block' ) }>
 					<button
 						type="button"
 						className={ 'flexa-device-tag' + ( device !== 'desktop' ? ' is-active' : '' ) }
@@ -467,7 +502,10 @@ interface SliderUnitProps {
  * bound adapts to the active unit.
  */
 export const SliderUnit = ( { label, value = {}, units, onChange, min = 0, max, defaultUnit, showDevice = true }: SliderUnitProps ): JSX.Element => {
-	const unit = value.unit || defaultUnit || units[ 0 ]?.value || 'px';
+	// Nullish (not ||) so an intentional empty-string unit '' (unitless controls
+	// like Columns) is preserved instead of falling through to 'px' — otherwise the
+	// slider would read SLIDER_MAX['px'] (e.g. 1600) instead of the unit's own max.
+	const unit = value.unit ?? ( defaultUnit ?? ( units[ 0 ]?.value ?? 'px' ) );
 	const raw = value.value;
 	const num = raw === '' || raw === undefined || raw === null ? undefined : parseFloat( String( raw ) );
 	const sliderMax = ( max && max[ unit ] ) ?? SLIDER_MAX[ unit ] ?? 1000;

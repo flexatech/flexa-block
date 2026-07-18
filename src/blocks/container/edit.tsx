@@ -1,5 +1,5 @@
 /**
- * Container block - editor component.
+ * Container block — editor component.
  *
  * Assembles the shared inspector panels (@components) plus a container-specific
  * panel. Responsive values follow the editor's active device preview.
@@ -18,19 +18,26 @@ import {
 	Segmented,
 	SliderUnit,
 	LayoutPanel,
+	GridItemPanel,
 	SpacingPanel,
 	BackgroundPanel,
 	BorderPanel,
 	ShadowPanel,
 	PositionPanel,
 	VisibilityPanel,
+	AnimationPanel,
+	CONTAINER_WIDTH_OPTIONS,
 	useDevice,
+	ExamplePreviewSkeleton,
 } from '@components';
 import {
+	cn,
 	effective,
 	withUnit,
 	spacingShorthand,
-	radiusShorthand,
+	applyBackgroundPreview,
+	applyBorderPreview,
+	boxShadowPreview,
 	HTML_TAGS,
 	WIDTH_UNITS,
 	HEIGHT_UNITS,
@@ -39,8 +46,6 @@ import type { ContainerAttributes, DeviceKey, EditProps, LengthValue, PanelProps
 import StructurePicker from './components/StructurePicker';
 
 type CssProps = Record< string, string >;
-
-const cn = ( ...parts: Array< string | false | null | undefined > ): string => parts.filter( Boolean ).join( ' ' );
 
 /**
  * Container-specific settings: width mode, width, min-height, tag.
@@ -69,10 +74,7 @@ const ContainerPanel = ( { attributes, setAttributes }: PanelProps ): JSX.Elemen
 				label={ __( 'Content Width', 'flexa-block' ) }
 				value={ containerType || 'boxed' }
 				onChange={ ( v ) => setAttributes( { containerType: v as ContainerAttributes[ 'containerType' ] } ) }
-				options={ [
-					{ value: 'boxed', label: __( 'Boxed', 'flexa-block' ) },
-					{ value: 'full-width', label: __( 'Full Width', 'flexa-block' ) },
-				] }
+				options={ CONTAINER_WIDTH_OPTIONS }
 			/>
 			<SliderUnit
 				label={ isBoxed ? __( 'Max Width', 'flexa-block' ) : __( 'Width', 'flexa-block' ) }
@@ -135,25 +137,19 @@ const buildStyledStyle = ( attributes: ContainerAttributes, device: DeviceKey, i
 		s[ isBoxed ? 'maxWidth' : 'width' ] = withUnit( w.value, wu );
 	}
 	if ( sz.minHeight?.value ) s.minHeight = withUnit( sz.minHeight.value, sz.minHeight.unit || 'px' );
-	if ( b.style ) s.borderStyle = b.style;
-	const bw = spacingShorthand( b.width );
-	if ( bw ) s.borderWidth = bw;
-	if ( b.color?.light ) s.borderColor = b.color.light;
-	const br = radiusShorthand( b.radius );
-	if ( br ) s.borderRadius = br;
-	if ( background?.type === 'classic' && background.color?.light ) s.backgroundColor = background.color.light;
-	else if ( background?.type === 'gradient' && background.gradient?.light ) s.backgroundImage = background.gradient.light;
-	else if ( background?.type === 'image' && background.image?.url ) {
-		s.backgroundImage = `url(${ background.image.url })`;
-		s.backgroundSize = background.image.size || 'cover';
-		s.backgroundPosition = background.image.position || 'center center';
-		s.backgroundRepeat = background.image.repeat || 'no-repeat';
-	}
-	if ( boxShadow?.enabled ) {
-		const c = boxShadow.color?.light || 'rgba(0,0,0,0.1)';
-		s.boxShadow = `${ boxShadow.inset ? 'inset ' : '' }${ withUnit( boxShadow.horizontal ) } ${ withUnit( boxShadow.vertical ) } ${ withUnit( boxShadow.blur ) } ${ withUnit( boxShadow.spread ) } ${ c }`;
-	}
+	applyBorderPreview( s, b );
+	applyBackgroundPreview( s, background );
+	const shadow = boxShadowPreview( boxShadow );
+	if ( shadow ) s.boxShadow = shadow;
 	if ( adv.overflow ) s.overflow = adv.overflow;
+	if ( adv.position ) s.position = adv.position;
+	if ( adv.inset ) {
+		const iu = adv.inset.unit || 'px';
+		( [ 'top', 'right', 'bottom', 'left' ] as const ).forEach( ( side ) => {
+			const v = adv.inset?.[ side ];
+			if ( v ) s[ side ] = withUnit( v, iu );
+		} );
+	}
 	return s;
 };
 
@@ -166,14 +162,16 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const [ device ] = useDevice();
 	const isBoxed = containerType === 'boxed';
 
-	// Nesting depth + whether the block already has children (to decide on the picker).
-	const { depth, hasInner } = useSelect(
+	// Nesting depth + whether the block already has children (to decide on the
+	// picker) + whether the block sits directly inside a Grid (to show span).
+	const { depth, hasInner, isGridChild } = useSelect(
 		( select: ( store: string ) => any ) => {
-			const { getBlockParents, getBlockName, getBlock } = select( 'core/block-editor' );
+			const { getBlockParents, getBlockName, getBlock, getBlockRootClientId } = select( 'core/block-editor' );
 			const parents: string[] = getBlockParents( clientId );
 			const d = parents.filter( ( p ) => getBlockName( p ) === 'flexa/container' ).length;
 			const blk = getBlock( clientId );
-			return { depth: d, hasInner: !! ( blk?.innerBlocks?.length ) };
+			const root = getBlockRootClientId( clientId );
+			return { depth: d, hasInner: !! ( blk?.innerBlocks?.length ), isGridChild: !! root && getBlockName( root ) === 'flexa/grid' };
 		},
 		[ clientId ]
 	);
@@ -195,6 +193,15 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const margin = spacingShorthand( effective( spacing, device ).margin );
 	const marginStyle: CssProps = margin ? { margin } : {};
 
+	// Grid item span (only when this block sits directly inside a Grid). Applied
+	// to the outer element — the actual grid item.
+	const spanStyle: CssProps = {};
+	if ( isGridChild ) {
+		const span = effective( attributes.gridSpan, device );
+		if ( span.column ) spanStyle.gridColumn = `span ${ span.column }`;
+		if ( span.row ) spanStyle.gridRow = `span ${ span.row }`;
+	}
+
 	const Tag: any = htmlTag || 'div';
 	const blockProps = useBlockProps( {
 		className: cn(
@@ -205,7 +212,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 			responsiveVisibility?.hideOnTablet && 'flexa-hide-tablet',
 			responsiveVisibility?.hideOnMobile && 'flexa-hide-mobile'
 		),
-		style: isBoxed ? marginStyle : { ...styledStyle, ...marginStyle },
+		style: isBoxed ? { ...marginStyle, ...spanStyle } : { ...styledStyle, ...marginStyle, ...spanStyle },
 	} );
 
 	// Apply inner-blocks props directly to the flex container so child columns
@@ -218,6 +225,15 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		{ renderAppender: appender }
 	);
 
+	// Inserter hover-preview → faint skeleton mock-up instead of the real container.
+	if ( ( attributes as any ).isExamplePreview ) {
+		return (
+			<div { ...blockProps }>
+				<ExamplePreviewSkeleton kind="container" />
+			</div>
+		);
+	}
+
 	if ( showPicker ) {
 		return (
 			<div { ...blockProps }>
@@ -229,11 +245,12 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	return (
 		<>
 			<InspectorControls>
-				<div className="flexa-container-inspector">
+				<div className="flexa-inspector flexa-container-inspector">
 					<InspectorTabs
 						layout={
 							<>
 								<ContainerPanel attributes={ attributes } setAttributes={ setAttributes } />
+								{ isGridChild && <GridItemPanel attributes={ attributes } setAttributes={ setAttributes } /> }
 								<LayoutPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<SpacingPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
@@ -249,6 +266,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 							<>
 								<PositionPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<VisibilityPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<AnimationPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
 						}
 					/>

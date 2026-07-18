@@ -1,0 +1,61 @@
+/**
+ * Data Table block — frontend + editor base styles.
+ *
+ * Structure only (border-collapse, and a horizontally scrollable wrapper with the
+ * shared thin/rounded overlay scrollbar). The table sizes to its content but never
+ * shrinks below the wrapper, so when it is wider than the wrapper's max width (or
+ * the viewport) it scrolls sideways instead of overflowing. Following the "prefer
+ * theme styles" rule there are NO colour / padding / border defaults here: the PHP
+ * CSS generator emits per-instance declarations ONLY for the values the user set
+ * (cell padding ships a sensible default in block.json), keeping the block
+ * theme-first.
+ */
+
+@use '../../styles/scrollbar' as *;
+
+.flexa-data-table {
+	box-sizing: border-box;
+
+	// The table scrolls horizontally inside this wrapper (max-width comes from the
+	// generator), with the shared thin/rounded overlay scrollbar
+	// (src/styles/_scrollbar.scss).
+	&__scroll {
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		@include flexa-scrollbar();
+	}
+
+	// max-content so the table grows to fit its cells; min-width:100% so a short
+	// table still fills the wrapper. Wider-than-wrapper → horizontal scroll.
+	&__table {
+		width: max-content;
+		min-width: 100%;
+		border-collapse: collapse;
+		box-sizing: border-box;
+	}
+
+	&__th,
+	&__cell {
+		box-sizing: border-box;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-data-table.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-data-table.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-data-table.flexa-hide-mobile {
+		display: none !important;
+	}
+}

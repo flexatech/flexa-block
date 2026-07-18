@@ -1,0 +1,288 @@
+/**
+ * Image block — frontend + editor base styles.
+ *
+ * Structure and motion only. Instance values (width, alignment, aspect ratio,
+ * border, overlay colour, caption colours/typography, custom mask) are produced
+ * by the PHP CSS generator on the front end and mirrored as inline styles in the
+ * editor. Built-in mask geometry and hover effects are static and keyed by the
+ * class names set in render.php / edit.tsx.
+ */
+
+.flexa-image {
+	margin: 0;
+	box-sizing: border-box;
+
+	* {
+		box-sizing: border-box;
+	}
+
+	// The frame holds the picture; width / alignment / border / radius / aspect
+	// ratio are applied here so the border clips the image and masks work.
+	&__frame {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		line-height: 0;
+		max-width: 100%;
+	}
+
+	&__img {
+		display: block;
+		width: 100%;
+		height: auto;
+		object-fit: cover;
+		transition: transform 0.4s ease, filter 0.4s ease;
+	}
+
+	// Absolute colour / gradient overlay above the image.
+	&__overlay {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		transition: opacity 0.3s ease;
+	}
+
+	&__caption {
+		margin: 0;
+		font-size: 0.875em;
+		line-height: 1.4;
+
+		p {
+			margin: 0;
+		}
+
+		// Below mode — a normal caption under the image.
+		&--below {
+			display: block;
+			padding-top: 8px;
+		}
+	}
+
+	// Link wrapper should not add its own visual weight.
+	&__link {
+		display: block;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	// Lightbox / media click targets get a pointer cursor from view.ts.
+
+	// =====================================================================
+	// Aspect ratio: the image fills the ratio-locked frame.
+	// =====================================================================
+	&--has-ratio &__img {
+		height: 100%;
+	}
+
+	// =====================================================================
+	// Overlay caption positioning.
+	// =====================================================================
+	&__caption--top,
+	&__caption--center,
+	&__caption--bottom {
+		position: absolute;
+		left: 0;
+		right: 0;
+		z-index: 2;
+		padding: 8px 12px;
+	}
+
+	&__caption--top {
+		top: 0;
+	}
+
+	&__caption--center {
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	&__caption--bottom {
+		bottom: 0;
+	}
+
+	// =====================================================================
+	// Hover effects (applied to the image inside the frame).
+	// =====================================================================
+	&--hover-zoom-in:hover &__img {
+		transform: scale(1.08);
+	}
+
+	&--hover-zoom-out &__img {
+		transform: scale(1.08);
+	}
+
+	&--hover-zoom-out:hover &__img {
+		transform: scale(1);
+	}
+
+	&--hover-grayscale &__img {
+		filter: grayscale(100%);
+	}
+
+	&--hover-grayscale:hover &__img {
+		filter: grayscale(0%);
+	}
+
+	&--hover-blur:hover &__img {
+		filter: blur(3px);
+	}
+
+	&--hover-rotate:hover &__img {
+		transform: scale(1.1) rotate(3deg);
+	}
+
+	&--hover-slide:hover &__img {
+		transform: scale(1.1) translateX(-3%);
+	}
+
+	// Shine — a diagonal highlight sweeps across on hover.
+	&--hover-shine &__frame::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: -75%;
+		width: 50%;
+		height: 100%;
+		background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0) 100%);
+		transform: skewX(-20deg);
+		z-index: 3;
+		pointer-events: none;
+	}
+
+	&--hover-shine:hover &__frame::after {
+		left: 125%;
+		transition: left 0.7s ease;
+	}
+
+	// =====================================================================
+	// Masks. Built-in shapes set --flexa-img-mask; custom masks set it inline.
+	// =====================================================================
+	&--masked &__frame {
+		-webkit-mask-image: var(--flexa-img-mask, none);
+		mask-image: var(--flexa-img-mask, none);
+		-webkit-mask-size: var(--flexa-img-mask-size, contain);
+		mask-size: var(--flexa-img-mask-size, contain);
+		-webkit-mask-position: var(--flexa-img-mask-position, center center);
+		mask-position: var(--flexa-img-mask-position, center center);
+		-webkit-mask-repeat: var(--flexa-img-mask-repeat, no-repeat);
+		mask-repeat: var(--flexa-img-mask-repeat, no-repeat);
+	}
+
+	&--mask-circle &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50'/%3E%3C/svg%3E");
+	}
+
+	&--mask-ellipse &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'%3E%3Cellipse cx='50' cy='30' rx='50' ry='30'/%3E%3C/svg%3E");
+	}
+
+	&--mask-rounded &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20'/%3E%3C/svg%3E");
+	}
+
+	&--mask-triangle &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,0 100,100 0,100'/%3E%3C/svg%3E");
+	}
+
+	&--mask-diamond &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,0 100,50 50,100 0,50'/%3E%3C/svg%3E");
+	}
+
+	&--mask-hexagon &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,0 93,25 93,75 50,100 7,75 7,25'/%3E%3C/svg%3E");
+	}
+
+	&--mask-pentagon &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,0 100,38 81,100 19,100 0,38'/%3E%3C/svg%3E");
+	}
+
+	&--mask-octagon &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='30,0 70,0 100,30 100,70 70,100 30,100 0,70 0,30'/%3E%3C/svg%3E");
+	}
+
+	&--mask-star &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,0 61,35 98,35 68,57 79,91 50,70 21,91 32,57 2,35 39,35'/%3E%3C/svg%3E");
+	}
+
+	&--mask-heart &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 90'%3E%3Cpath d='M50,90 L43,83 C17,59 0,44 0,26 C0,12 11,0 25,0 C33,0 41,4 50,12 C59,4 67,0 75,0 C89,0 100,12 100,26 C100,44 83,59 57,83 L50,90 Z'/%3E%3C/svg%3E");
+	}
+
+	&--mask-blob &__frame {
+		--flexa-img-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cpath fill='black' d='M45.7,-58.9C58.2,-49.4,66.5,-34.6,69.8,-18.9C73.1,-3.2,71.4,13.4,64.3,27.6C57.1,41.8,44.5,53.6,29.9,60.9C15.3,68.2,-1.3,71,-17.2,67.4C-33.1,63.8,-48.3,53.8,-58.6,40.1C-68.9,26.4,-74.3,9,-72.3,-7.4C-70.3,-23.8,-60.9,-39.2,-48,-49C-35.1,-58.8,-18.8,-63,-1,-61.8C16.9,-60.6,33.2,-68.4,45.7,-58.9Z' transform='translate(100 100)'/%3E%3C/svg%3E");
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-image.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-image.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-image.flexa-hide-mobile {
+		display: none !important;
+	}
+}
+
+/* Lightbox overlay (created by view.ts). */
+.flexa-image-lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: var(--flexa-lightbox-bg, rgba(17, 17, 17, 0.9));
+	cursor: zoom-out;
+
+	&__figure {
+		margin: 0;
+		max-width: 92vw;
+		max-height: 92vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+		cursor: default;
+	}
+
+	&__img {
+		max-width: 92vw;
+		max-height: 82vh;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		border-radius: 4px;
+	}
+
+	&__caption {
+		color: #fff;
+		font-size: 0.9rem;
+		text-align: center;
+		margin: 0;
+	}
+
+	&__close {
+		position: absolute;
+		top: 16px;
+		right: 20px;
+		width: 40px;
+		height: 40px;
+		border: 0;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.15);
+		color: #fff;
+		font-size: 22px;
+		line-height: 1;
+		cursor: pointer;
+	}
+}

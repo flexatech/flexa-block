@@ -1,0 +1,57 @@
+// Shared pagination structure — the numbered page links (`.flexa-pagination
+// .page-numbers`) and the load-more button (`.flexa-pagination-loadmore`). Used
+// by Post Grid and RSS via `@use '../../styles/pagination' as *; @include
+// flexa-pagination();`. Structure only — colours come from the per-instance CSS
+// generator (CSS_Helpers::add_pagination / add_loadmore); theme-inheriting until
+// the user picks a value. The links match the Post Grid look (circular, borderless)
+// so both blocks look the same by default. Works for both `<a>` (paginate_links)
+// and `<button>` (RSS view.ts) markup.
+
+@mixin flexa-pagination() {
+	.flexa-pagination {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4em;
+		margin-top: 1.5em;
+
+		// Circular by default (equal width/height + full radius); the generator's
+		// "Corner radius" option overrides border-radius when the user sets one.
+		.page-numbers {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			box-sizing: border-box;
+			min-width: 2.5em;
+			height: 2.5em;
+			padding: 0 0.5em;
+			border: 0;
+			border-radius: 50%;
+			background: transparent;
+			color: inherit;
+			font: inherit;
+			line-height: 1;
+			text-decoration: none;
+			cursor: pointer;
+
+			&.dots {
+				cursor: default;
+			}
+
+			&.current {
+				font-weight: 700;
+			}
+		}
+	}
+
+	.flexa-pagination-loadmore {
+		display: flex;
+		justify-content: center;
+		margin-top: 1.5em;
+
+		&__btn {
+			cursor: pointer;
+		}
+	}
+}

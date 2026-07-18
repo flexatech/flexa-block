@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * CSS Generator Service - orchestrates save-time CSS generation for a post.
+ * CSS Generator Service — orchestrates save-time CSS generation for a post.
  *
  * @package Flexa\Block
  */
@@ -129,8 +129,18 @@ class CSS_Generator_Service {
 
 			if ( isset( $generators[ $block['blockName'] ] ) ) {
 				$attrs = self::merge_defaults( $block['blockName'], $block['attrs'] ?? [] );
-				if ( ! empty( $attrs['blockId'] ) ) {
-					$class = $generators[ $block['blockName'] ];
+
+				// `blockId` is a user-controlled block attribute that becomes part of
+				// the CSS selector (.flexa-<block>-<id>) printed inline via
+				// wp_add_inline_style(). Sanitize it HERE — once, for every generator —
+				// exactly as each render.php sanitizes the matching class, so a crafted
+				// id (e.g. "</style>…") can't break out of the inline <style> block
+				// (stored XSS) and the generated selector always matches the front-end
+				// class.
+				$block_id = sanitize_html_class( (string) ( $attrs['blockId'] ?? '' ) );
+				if ( '' !== $block_id ) {
+					$attrs['blockId'] = $block_id;
+					$class            = $generators[ $block['blockName'] ];
 					if ( class_exists( $class ) ) {
 						// Isolate each block: a failing generator must not abort CSS
 						// for the rest of the post (nor break the post save itself).
@@ -152,11 +162,14 @@ class CSS_Generator_Service {
 	/**
 	 * Merge saved attributes over block.json defaults (deep for objects).
 	 *
+	 * Public because Block_Locator needs the same "saved attrs on top of the
+	 * registered defaults" view when it resolves a block from post content.
+	 *
 	 * @param string $block_name Block name.
 	 * @param array  $attrs      Saved attributes.
 	 * @return array
 	 */
-	private static function merge_defaults( $block_name, $attrs ) {
+	public static function merge_defaults( $block_name, $attrs ) {
 		$defaults = self::get_block_defaults( $block_name );
 		if ( empty( $defaults ) ) {
 			return $attrs;

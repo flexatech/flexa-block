@@ -1,6 +1,6 @@
 <?php
 /**
- * Tests for the CSS_Builder engine - the core every block reuses.
+ * Tests for the CSS_Builder engine — the core every block reuses.
  *
  * @package Flexa\Block
  */
@@ -43,12 +43,32 @@ class CssBuilderTest extends TestCase {
 		$this->assertStringNotContainsString( '>', $out );
 	}
 
-	public function test_strips_structural_chars_to_prevent_rule_breakout(): void {
+	public function test_selector_strips_left_angle_bracket_to_prevent_style_breakout(): void {
+		// Defense in depth: even a selector fed unsanitized must not be able to close
+		// the inline <style> block. Only "<" is stripped (no "<" → no "</style>");
+		// ">" stays because it is a legitimate child combinator.
 		$css = new CSS_Builder();
-		$css->set_selector( '.x' )->add_property( 'color', 'red;} body{display:none' );
+		$css->set_selector( '.flexa-container-</style><script>alert(1)</script>' )->add_property( 'color', 'red' );
 		$out = $css->get_output();
-		$this->assertStringNotContainsString( 'body{', $out );
-		$this->assertSame( '.x{color:red bodydisplay:none;}', $out );
+		$this->assertStringNotContainsString( '<', $out );
+		$this->assertStringNotContainsString( '</style>', $out );
+		$this->assertStringNotContainsString( '<script', $out );
+	}
+
+	public function test_selector_keeps_child_combinator(): void {
+		// The ">" child combinator must survive the "<"-strip.
+		$css = new CSS_Builder();
+		$css->set_selector( '.a > .b' )->add_property( 'color', 'red' );
+		$this->assertSame( '.a > .b{color:red;}', $css->get_output() );
+	}
+
+	public function test_value_strips_rule_breakout_chars(): void {
+		// A value carrying "}", "{" or ";" must not be able to inject extra rules.
+		$css = new CSS_Builder();
+		$css->set_selector( '.a' )->add_property( 'background', 'red;}body{display:none' );
+		$out = $css->get_output();
+		$this->assertStringNotContainsString( '}body{', $out );
+		$this->assertSame( '.a{background:redbodydisplay:none;}', $out );
 	}
 
 	public function test_tablet_wraps_in_max_width_media_query(): void {

@@ -1,0 +1,89 @@
+/**
+ * Icon List block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * text carries the theme's look, and the PHP CSS generator emits declarations
+ * ONLY for values the user picks (mirrored as inline styles in the editor). The
+ * list is a stack of icon-and-text rows; grid view flows them into columns.
+ */
+
+.flexa-icon-list {
+	box-sizing: border-box;
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	// Each row: icon + text on one line. A row can be a link (<a>) — strip the
+	// theme's link chrome so the row reads as list content.
+	&__item {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 10px;
+		color: inherit;
+		text-decoration: none;
+		box-sizing: border-box;
+	}
+
+	&__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 1;
+		flex: 0 0 auto;
+		box-sizing: border-box;
+
+		.flexa-icon,
+		svg,
+		img {
+			display: block;
+			width: 1em;
+			height: 1em;
+		}
+	}
+
+	&__text {
+		display: inline-block;
+	}
+
+	// Grid view: rows flow into columns (the generator sets the exact per-device
+	// count; this auto-fit keeps the grid readable if inline CSS is ever missing).
+	&--grid &__list {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+	}
+
+	// Stacked / framed icons get a comfortable frame padding by default (the
+	// generator overrides it when the user sets an icon padding).
+	&--icon-stacked &__icon,
+	&--icon-framed &__icon {
+		padding: 0.4em;
+	}
+
+	// Framed icon: an outline that inherits the icon colour until one is picked.
+	&--icon-framed &__icon {
+		border: 1px solid currentColor;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-icon-list.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-icon-list.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-icon-list.flexa-hide-mobile {
+		display: none !important;
+	}
+}

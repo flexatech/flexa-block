@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "flexa/subscribe-form-textarea",
+  "version": "1.0.0",
+  "title": "Message",
+  "category": "flexa",
+  "description": "A multi-line message input for a Subscribe Form — with a label, placeholder, row count, required toggle and column width.",
+  "keywords": [
+    "flexa",
+    "form",
+    "field",
+    "message",
+    "textarea"
+  ],
+  "textdomain": "flexa-block",
+  "parent": [
+    "flexa/subscribe-form"
+  ],
+  "attributes": {
+    "blockId": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string",
+      "default": "Message"
+    },
+    "fieldName": {
+      "type": "string",
+      "default": "message"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": "Your message"
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": true
+    },
+    "width": {
+      "type": "string",
+      "default": "100",
+      "enum": [
+        "100",
+        "50"
+      ]
+    },
+    "rows": {
+      "type": "number",
+      "default": 4
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "className": true,
+    "html": false,
+    "reusable": false
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

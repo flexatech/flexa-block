@@ -1,0 +1,24 @@
+/**
+ * Lottie Animation block — front-end structural styles.
+ *
+ * Layout only (flex wrapper for alignment + the player box sizing). Colours,
+ * spacing, borders and the box width/height are emitted per-instance by
+ * Lottie_CSS, so nothing theme-related is hardcoded here.
+ */
+
+.flexa-lottie {
+	display: flex;
+	justify-content: flex-start;
+
+	&__player {
+		box-sizing: border-box;
+		max-width: 100%;
+		line-height: 0;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+}

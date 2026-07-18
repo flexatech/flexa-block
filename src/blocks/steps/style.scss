@@ -1,0 +1,120 @@
+/**
+ * Steps block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * titles and descriptions carry the theme's look, and the PHP CSS generator
+ * emits declarations ONLY for values the user picks (mirrored as inline styles
+ * in the editor). The marker and connector inherit `currentColor` so the
+ * timeline is visible on insert without hard-coding a palette.
+ */
+
+.flexa-steps {
+	box-sizing: border-box;
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&__item {
+		display: flex;
+		align-items: stretch;
+		gap: 16px;
+		box-sizing: border-box;
+	}
+
+	// The marker column: marker at the top, connector filling the rest.
+	&__aside {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		flex: 0 0 auto;
+	}
+
+	&__marker {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		flex: 0 0 auto;
+		width: 40px;
+		height: 40px;
+		line-height: 1;
+		font-weight: 600;
+		// Visible without a chosen colour — inherits the surrounding text colour.
+		border: 2px solid currentColor;
+		background: transparent;
+
+		svg,
+		img {
+			width: 60%;
+			height: 60%;
+			display: block;
+			object-fit: contain;
+		}
+	}
+
+	// The line between one marker and the next; grows to fill the item height.
+	&__connector {
+		flex: 1 1 auto;
+		width: 0;
+		min-height: 16px;
+		margin-top: 4px;
+		border-left: 2px solid currentColor;
+	}
+
+	// The last step never draws a connector.
+	&__item:last-child &__connector {
+		display: none;
+	}
+
+	&__content {
+		flex: 1 1 auto;
+		min-width: 0;
+		padding-bottom: 24px;
+	}
+
+	&__item:last-child &__content {
+		padding-bottom: 0;
+	}
+
+	&__title {
+		display: block;
+	}
+
+	&__description {
+		display: block;
+	}
+
+	// Marker shapes (structural — always applied from the wrapper modifier class).
+	&--marker-circle &__marker {
+		border-radius: 50%;
+	}
+
+	&--marker-rounded &__marker {
+		border-radius: 8px;
+	}
+
+	&--marker-square &__marker {
+		border-radius: 0;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-steps.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-steps.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-steps.flexa-hide-mobile {
+		display: none !important;
+	}
+}

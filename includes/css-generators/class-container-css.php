@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * Container block - server-side CSS generator.
+ * Container block — server-side CSS generator.
  *
  * Produces responsive, dark-mode-aware CSS for one container instance.
  *
@@ -36,7 +36,7 @@ class Container_CSS {
 	 * @param CSS_Builder $css   Shared builder.
 	 */
 	public static function generate( $attrs, $css ) {
-		$id = sanitize_html_class( $attrs['blockId'] ?? '' );
+		$id = $attrs['blockId'] ?? '';
 		if ( '' === $id ) {
 			return;
 		}
@@ -46,26 +46,41 @@ class Container_CSS {
 		$styled   = $is_boxed ? $outer . ' > .flexa-container__inner' : $outer;
 
 		foreach ( self::$devices as $device ) {
-			self::open_device( $css, $device );
+			CSS_Helpers::open_device( $css, $device );
 
 			// Layout (flex) on the styled element.
 			$layout = $attrs['layout'][ $device ] ?? [];
 			if ( ! empty( $layout ) ) {
 				$css->set_selector( $styled );
 				if ( ! empty( $layout['display'] ) ) {
-					$css->add_property( 'display', CSS_Helpers::keyword( $layout['display'], [ 'flex', 'inline-flex', 'block', 'inline-block', 'grid', 'inline-grid', 'none' ] ) );
+					$display = CSS_Helpers::sanitize_enum( $layout['display'], [ 'flex', 'block', 'grid', 'inline-block', 'inline-flex', 'none' ] );
+					if ( '' !== $display ) {
+						$css->add_property( 'display', $display );
+					}
 				}
 				if ( ! empty( $layout['direction'] ) ) {
-					$css->add_property( 'flex-direction', CSS_Helpers::keyword( $layout['direction'], [ 'row', 'row-reverse', 'column', 'column-reverse' ] ) );
+					$direction = CSS_Helpers::sanitize_enum( $layout['direction'], [ 'row', 'column', 'row-reverse', 'column-reverse' ] );
+					if ( '' !== $direction ) {
+						$css->add_property( 'flex-direction', $direction );
+					}
 				}
 				if ( ! empty( $layout['justifyContent'] ) ) {
-					$css->add_property( 'justify-content', CSS_Helpers::keyword( $layout['justifyContent'], [ 'flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly', 'start', 'end' ] ) );
+					$justify = CSS_Helpers::sanitize_enum( $layout['justifyContent'], [ 'flex-start', 'center', 'flex-end', 'space-between', 'space-around' ] );
+					if ( '' !== $justify ) {
+						$css->add_property( 'justify-content', $justify );
+					}
 				}
 				if ( ! empty( $layout['alignItems'] ) ) {
-					$css->add_property( 'align-items', CSS_Helpers::keyword( $layout['alignItems'], [ 'stretch', 'flex-start', 'flex-end', 'center', 'baseline', 'start', 'end' ] ) );
+					$align = CSS_Helpers::sanitize_enum( $layout['alignItems'], [ 'flex-start', 'center', 'flex-end', 'stretch' ] );
+					if ( '' !== $align ) {
+						$css->add_property( 'align-items', $align );
+					}
 				}
 				if ( ! empty( $layout['wrap'] ) ) {
-					$css->add_property( 'flex-wrap', CSS_Helpers::keyword( $layout['wrap'], [ 'wrap', 'nowrap', 'wrap-reverse' ] ) );
+					$wrap = CSS_Helpers::sanitize_enum( $layout['wrap'], [ 'nowrap', 'wrap' ] );
+					if ( '' !== $wrap ) {
+						$css->add_property( 'flex-wrap', $wrap );
+					}
 				}
 				$gap = $layout['gap'] ?? [];
 				if ( is_array( $gap ) ) {
@@ -118,18 +133,20 @@ class Container_CSS {
 			$advanced = $attrs['advancedLayout'][ $device ] ?? [];
 			if ( ! empty( $advanced ) ) {
 				$css->set_selector( $styled );
-				if ( ! empty( $advanced['overflow'] ) ) {
-					$css->add_property( 'overflow', CSS_Helpers::keyword( $advanced['overflow'], [ 'visible', 'hidden', 'clip', 'scroll', 'auto' ] ) );
-				}
-				if ( ! empty( $advanced['position'] ) ) {
-					$css->add_property( 'position', CSS_Helpers::keyword( $advanced['position'], [ 'static', 'relative', 'absolute', 'fixed', 'sticky' ] ) );
-				}
-				if ( isset( $advanced['zIndex'] ) && is_numeric( $advanced['zIndex'] ) ) {
-					$css->add_property( 'z-index', (string) (int) $advanced['zIndex'] );
-				}
+				CSS_Helpers::add_advanced_layout( $css, $advanced );
 			}
 
-			self::close_device( $css, $device );
+			// Grid item span (applies on the outer element when this block is a
+			// grid child; ignored by the browser otherwise).
+			$span = $attrs['gridSpan'][ $device ] ?? [];
+			if ( ! empty( $span['column'] ) ) {
+				$css->set_selector( $outer )->add_property( 'grid-column', 'span ' . (int) $span['column'] );
+			}
+			if ( ! empty( $span['row'] ) ) {
+				$css->set_selector( $outer )->add_property( 'grid-row', 'span ' . (int) $span['row'] );
+			}
+
+			CSS_Helpers::close_device( $css, $device );
 		}
 
 		// Non-responsive: background + box shadow (base only).
@@ -160,19 +177,19 @@ class Container_CSS {
 				// Background dark color / gradient.
 				$type = $background['type'] ?? 'none';
 				if ( 'classic' === $type || 'color' === $type ) {
-					$dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $background['color'] ?? '' ) );
+					$dark = CSS_Helpers::dark( $background['color'] ?? '' );
 					if ( '' !== $dark ) {
 						$css->add_property( 'background-color', $dark );
 					}
 				} elseif ( 'gradient' === $type ) {
-					$dark = CSS_Helpers::sanitize_gradient( CSS_Helpers::dark( $background['gradient'] ?? '' ) );
+					$dark = CSS_Helpers::dark( $background['gradient'] ?? '' );
 					if ( '' !== $dark ) {
 						$css->add_property( 'background-image', $dark );
 					}
 				}
 
 				// Border dark color (desktop only).
-				$border_dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' ) );
+				$border_dark = CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' );
 				if ( '' !== $border_dark ) {
 					$css->add_property( 'border-color', $border_dark );
 				}
@@ -190,29 +207,5 @@ class Container_CSS {
 				}
 			}
 		);
-	}
-
-	/**
-	 * Open a media query for non-desktop devices.
-	 *
-	 * @param CSS_Builder $css    Builder.
-	 * @param string      $device Device.
-	 */
-	private static function open_device( $css, $device ) {
-		if ( 'desktop' !== $device ) {
-			$css->start_media_query( $device );
-		}
-	}
-
-	/**
-	 * Close a media query for non-desktop devices.
-	 *
-	 * @param CSS_Builder $css    Builder.
-	 * @param string      $device Device.
-	 */
-	private static function close_device( $css, $device ) {
-		if ( 'desktop' !== $device ) {
-			$css->end_media_query();
-		}
 	}
 }

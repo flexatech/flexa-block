@@ -1,0 +1,21 @@
+/**
+ * Testimonial block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); these rules only make
+ * the inline RichText fields editable-friendly (they never collapse to zero
+ * width) and give the empty placeholders a visible outline in the canvas.
+ */
+
+.flexa-testimonial {
+	.flexa-testimonial__title,
+	.flexa-testimonial__quote,
+	.flexa-testimonial__name,
+	.flexa-testimonial__job {
+		min-width: 40px;
+	}
+
+	// Keep the empty-avatar placeholder visible while editing.
+	.flexa-testimonial__avatar--placeholder {
+		border: 1px dashed rgba(0, 0, 0, 0.2);
+	}
+}

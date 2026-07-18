@@ -1,0 +1,13 @@
+/**
+ * Taxonomy block — editor-only styles.
+ *
+ * The canvas preview reuses the front-end structure (style.scss); only a tiny
+ * tweak lives here so the term links inside the editor canvas stay non-navigating
+ * without looking disabled. Kept small so the block's `import './editor.scss'`
+ * stays valid.
+ */
+
+.flexa-taxonomy .flexa-taxonomy__link {
+	pointer-events: none;
+	cursor: default;
+}

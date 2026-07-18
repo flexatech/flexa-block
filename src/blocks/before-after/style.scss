@@ -1,0 +1,202 @@
+/**
+ * Before / After block — frontend + editor base styles.
+ *
+ * The look is driven by three custom properties with sensible fallbacks, so an
+ * untouched block already works: `--flexa-ba-pos` (0–100% split, updated live by
+ * view.js), `--flexa-ba-line-width` (divider thickness) and `--flexa-ba-handle-size`
+ * (grip diameter). Instance overrides + colours come from the PHP CSS generator.
+ */
+
+.flexa-before-after {
+	--flexa-ba-pos: 50%;
+	--flexa-ba-line-width: 3px;
+	--flexa-ba-handle-size: 42px;
+
+	box-sizing: border-box;
+	display: block;
+	width: 100%;
+
+	* {
+		box-sizing: border-box;
+	}
+
+	&__frame {
+		position: relative;
+		width: 100%;
+		overflow: hidden;
+		line-height: 0; // kill the inline gap under the flow image
+		touch-action: none; // let view.js own drag gestures on touch
+		user-select: none;
+	}
+
+	&__img-wrap {
+		&--after {
+			position: relative;
+			display: block;
+			width: 100%;
+		}
+
+		&--before {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&__img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	// The flow (after) image sets the frame height; let it keep its own ratio.
+	&__img-wrap--after > &__img {
+		height: auto;
+	}
+
+	// Clip the "before" layer to the current split position.
+	&--horizontal &__img-wrap--before {
+		clip-path: inset(0 calc(100% - var(--flexa-ba-pos)) 0 0);
+	}
+
+	&--vertical &__img-wrap--before {
+		clip-path: inset(0 0 calc(100% - var(--flexa-ba-pos)) 0);
+	}
+
+	// Handle: a coloured divider line with a round grip centred on it.
+	&__handle {
+		position: absolute;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #ffffff;
+	}
+
+	&--horizontal &__handle {
+		top: 0;
+		bottom: 0;
+		left: var(--flexa-ba-pos);
+		width: 0;
+		flex-direction: column;
+		cursor: ew-resize;
+	}
+
+	&--vertical &__handle {
+		left: 0;
+		right: 0;
+		top: var(--flexa-ba-pos);
+		height: 0;
+		cursor: ns-resize;
+	}
+
+	&__handle:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+
+	&__line {
+		background: currentColor;
+		flex: 1 1 auto;
+	}
+
+	&--horizontal &__line {
+		width: var(--flexa-ba-line-width);
+		height: 100%;
+	}
+
+	&--vertical &__line {
+		height: var(--flexa-ba-line-width);
+		width: 100%;
+	}
+
+	&__grip {
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--flexa-ba-handle-size);
+		height: var(--flexa-ba-handle-size);
+		border-radius: 50%;
+		background: currentColor;
+		box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+	}
+
+	&__arrows {
+		width: 62%;
+		height: 62%;
+		color: rgba(0, 0, 0, 0.55); // contrast against the (usually light) grip
+	}
+
+	&--vertical &__arrows {
+		transform: rotate(90deg);
+	}
+
+	// Hover mode: the whole frame is the target, so hint it.
+	&--hover &__frame {
+		cursor: col-resize;
+	}
+
+	&--hover.flexa-before-after--vertical &__frame {
+		cursor: row-resize;
+	}
+
+	// Corner labels. Each label fades out (via view.js opacity) as its own image
+	// shrinks to nothing, so it never sits over the other image. Position tracks
+	// the split direction: after sits opposite the before across the divider.
+	&__label {
+		position: absolute;
+		z-index: 1;
+		padding: 4px 10px;
+		border-radius: 4px;
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 1.4;
+		letter-spacing: 0.02em;
+		color: #ffffff;
+		background: rgba(0, 0, 0, 0.55);
+		pointer-events: none;
+		transition: opacity 0.15s ease;
+	}
+
+	&--horizontal &__label--before {
+		top: 12px;
+		left: 12px;
+	}
+
+	&--horizontal &__label--after {
+		top: 12px;
+		right: 12px;
+	}
+
+	&--vertical &__label--before {
+		top: 12px;
+		left: 12px;
+	}
+
+	&--vertical &__label--after {
+		bottom: 12px;
+		right: 12px;
+	}
+}
+
+/* Responsive visibility helpers. */
+@media (min-width: 1025px) {
+	.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-hide-mobile {
+		display: none !important;
+	}
+}

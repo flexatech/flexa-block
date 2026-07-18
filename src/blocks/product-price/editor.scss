@@ -1,0 +1,11 @@
+/**
+ * Product Price block — editor-only styles.
+ *
+ * The placeholder price shown in the canvas is real WooCommerce output on the
+ * front end; in the editor it is a static demo. Front-end appearance lives in
+ * style.scss.
+ */
+
+.wp-block-flexa-product-price .flexa-product-price__inner {
+	max-width: 100%;
+}

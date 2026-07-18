@@ -1,0 +1,14 @@
+/**
+ * Breadcrumb block — editor-only styles.
+ *
+ * The canvas preview reuses the front-end structure (style.scss); the manual
+ * crumbs use the shared ItemListPanel, styled by `.flexa-item-card` in
+ * components/editor.scss. Only a tiny tweak lives here so links inside the
+ * editor canvas stay non-navigating without looking disabled. Kept small so the
+ * block's `import './editor.scss'` stays valid.
+ */
+
+.flexa-breadcrumb .flexa-breadcrumb__link,
+.flexa-breadcrumb .flexa-breadcrumb__current {
+	pointer-events: none;
+}

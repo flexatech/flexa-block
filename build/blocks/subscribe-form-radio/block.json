@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "flexa/subscribe-form-radio",
+  "version": "1.0.0",
+  "title": "Radio",
+  "category": "flexa",
+  "description": "A single-choice radio group for a Subscribe Form — with a label, a list of choices, required toggle and column width.",
+  "keywords": [
+    "flexa",
+    "form",
+    "field",
+    "radio",
+    "choice"
+  ],
+  "textdomain": "flexa-block",
+  "parent": [
+    "flexa/subscribe-form"
+  ],
+  "attributes": {
+    "blockId": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string",
+      "default": "Choose one"
+    },
+    "fieldName": {
+      "type": "string",
+      "default": "choice"
+    },
+    "placeholder": {
+      "type": "string",
+      "default": ""
+    },
+    "required": {
+      "type": "boolean",
+      "default": false
+    },
+    "showLabel": {
+      "type": "boolean",
+      "default": true
+    },
+    "width": {
+      "type": "string",
+      "default": "100",
+      "enum": [
+        "100",
+        "50"
+      ]
+    },
+    "options": {
+      "type": "array",
+      "default": [
+        "Option 1",
+        "Option 2"
+      ]
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "className": true,
+    "html": false,
+    "reusable": false
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

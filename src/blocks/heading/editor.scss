@@ -1,0 +1,20 @@
+/**
+ * Heading block — editor-only styles.
+ *
+ * Keeps the inline RichText title and subheading editable and visible without
+ * imposing colours (those come from the theme or the user's choices, mirrored
+ * via inline styles).
+ */
+
+.flexa-heading {
+	// Editable fields should never collapse to zero width when empty.
+	.flexa-heading__title,
+	.flexa-heading__subheading {
+		min-width: 1ch;
+	}
+
+	// Show the placeholder in a muted tone while a field is empty.
+	.rich-text[data-is-placeholder-visible='true'] {
+		opacity: 0.6;
+	}
+}

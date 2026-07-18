@@ -6,6 +6,14 @@ PROJECT_PATH=$(pwd)
 STAGE_PATH="/tmp/${PLUGIN_SLUG}-release"
 DEST_PATH="${STAGE_PATH}/${PLUGIN_SLUG}"
 
+PLUGIN_VERSION=$(grep -iE "^\s*\*\s*Version:" "${PROJECT_PATH}/${PLUGIN_SLUG}.php" | head -1 | sed -E 's/.*Version:\s*//' | tr -d '[:space:]')
+ZIP_NAME="${PLUGIN_SLUG}-${PLUGIN_VERSION}.zip"
+
+if [ ! -d "${PROJECT_PATH}/node_modules" ]; then
+  echo "Installing dependencies..."
+  npm ci
+fi
+
 echo "Building assets..."
 npm run build -- --stats=errors-only
 
@@ -18,8 +26,8 @@ rsync -rc --exclude-from="${PROJECT_PATH}/.distignore" "${PROJECT_PATH}/" "${DES
 
 echo "Generating zip file..."
 cd "$STAGE_PATH" || exit
-zip -q -r "${PLUGIN_SLUG}.zip" "${PLUGIN_SLUG}/"
-mv "${PLUGIN_SLUG}.zip" "${PROJECT_PATH}/"
+zip -q -r "${ZIP_NAME}" "${PLUGIN_SLUG}/"
+mv "${ZIP_NAME}" "${PROJECT_PATH}/"
 rm -rf "$STAGE_PATH"
 
-echo "${PLUGIN_SLUG}.zip generated!"
+echo "${ZIP_NAME} generated!"

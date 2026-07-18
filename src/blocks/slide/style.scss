@@ -1,0 +1,29 @@
+/**
+ * Slide block — front-end styles.
+ *
+ * Structural only: the slide is a column flex box and its content wrapper is a
+ * centred column. Per-instance alignment, padding, background and max-width come
+ * from the generated CSS (nothing is hardcoded so the theme stays in control).
+ */
+
+// Scoped under `.flexa-slides` so these win over Swiper's own `.swiper-slide`
+// rules — otherwise the slide falls back to block flow and `justify-content`
+// (vertical align) has no effect.
+//
+// `height: auto` is deliberate and beats Swiper's `.swiper-slide { height:100% }`:
+// a percentage height against the wrapper's indefinite height does NOT resolve,
+// leaving each slide at its own content height. With `height:auto`, the flex
+// wrapper's default `align-items:stretch` instead equalises every slide to the
+// tallest one, giving short slides the room their content needs to centre.
+.flexa-slides .flexa-slide {
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	height: auto;
+
+	> .flexa-slide__content {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+}

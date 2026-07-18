@@ -1,0 +1,13 @@
+/**
+ * Image block — editor-only styles.
+ *
+ * Keeps the placeholder and picture visible in the canvas. Colours and sizing
+ * come from the theme or the user's choices (mirrored via inline styles).
+ */
+
+.flexa-image {
+	// Ensure an empty/loading frame never collapses to zero height.
+	.flexa-image__frame {
+		min-height: 1px;
+	}
+}

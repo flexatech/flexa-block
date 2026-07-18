@@ -1,0 +1,263 @@
+/**
+ * Video Popup block — frontend + editor base styles.
+ *
+ * Structure and the "renders on insert" defaults only. Instance values (max
+ * width, alignment, aspect ratio, border, play icon size/colours, scrim and
+ * backdrop) are produced by the PHP CSS generator on the front end and mirrored
+ * as inline styles in the editor. The look leans on custom properties with
+ * sensible fallbacks so an untouched block already works:
+ * `--flexa-vp-icon-size` (play button diameter).
+ */
+
+.flexa-video-popup {
+	--flexa-vp-icon-size: 64px;
+
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center; // default alignment; generator overrides per device
+	width: 100%;
+
+	* {
+		box-sizing: border-box;
+	}
+
+	// --- Trigger: shared reset for the three modes --------------------------
+	&__trigger {
+		appearance: none;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		font: inherit;
+		color: inherit;
+		cursor: pointer;
+	}
+
+	// --- Thumbnail mode -----------------------------------------------------
+	&__thumb {
+		position: relative;
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		overflow: hidden;
+		line-height: 0;
+	}
+
+	&__media {
+		position: relative;
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9; // default ratio; generator overrides when changed
+		overflow: hidden;
+
+		// Inline mode: view.ts replaces the façade with the player inside a
+		// __media frame — the iframe / <video> fills it edge to edge.
+		.flexa-video-popup__iframe,
+		.flexa-video-popup__video {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			border: 0;
+		}
+
+		&.is-playing {
+			cursor: default; // No longer a trigger once the player has taken over.
+		}
+	}
+
+	&__image {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	&__placeholder {
+		display: block;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(135deg, #1f2937, #374151);
+	}
+
+	// Dark scrim over the thumbnail so the play button stays legible.
+	&__scrim {
+		position: absolute;
+		inset: 0;
+		background: #000;
+		opacity: 0.3;
+		pointer-events: none;
+		transition: opacity 0.2s ease;
+	}
+
+	// --- Play button --------------------------------------------------------
+	&__play {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--flexa-vp-icon-size);
+		height: var(--flexa-vp-icon-size);
+		border-radius: 50%;
+		background: rgba(0, 0, 0, 0.6);
+		color: #ffffff;
+		transition: transform 0.2s ease, background 0.2s ease;
+
+		.flexa-icon {
+			width: 45%;
+			height: 45%;
+			display: block;
+		}
+
+		img.flexa-icon {
+			object-fit: contain;
+		}
+
+		// A picked icon (IconPicker markup) is wrapped in a __slot in the editor
+		// so its inner <svg> fills the slot and stays centred (front end prints the
+		// <svg class="flexa-icon"> directly). Without this the svg keeps its 1em
+		// intrinsic size and sits top-left of the play button.
+		.flexa-icon-slot {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 45%;
+			height: 45%;
+
+			svg {
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
+
+	// Thumbnail mode centres the play button over the media.
+	&__thumb &__play {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 2;
+	}
+
+	&__thumb:hover &__play {
+		transform: translate(-50%, -50%) scale(1.08);
+	}
+
+	// --- Button mode --------------------------------------------------------
+	&__button {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		padding: 12px 22px;
+		border-radius: 6px;
+	}
+
+	&__button &__play {
+		width: 1.6em;
+		height: 1.6em;
+		background: rgba(255, 255, 255, 0.2);
+	}
+
+	// --- Text mode ----------------------------------------------------------
+	&__text {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	&__text &__play {
+		width: 1.5em;
+		height: 1.5em;
+	}
+
+	&__button:hover &__play,
+	&__text:hover &__play {
+		transform: scale(1.08);
+	}
+}
+
+// --- Lightbox (hidden until view.ts opens it) -------------------------------
+.flexa-video-popup__lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+
+	&[hidden] {
+		display: none;
+	}
+
+	.flexa-video-popup__backdrop {
+		position: absolute;
+		inset: 0;
+		background: #000;
+		opacity: 0.9; // default backdrop darkness; generator overrides when changed
+		cursor: zoom-out;
+	}
+
+	.flexa-video-popup__dialog {
+		position: relative;
+		z-index: 1;
+		width: min(920px, 92vw);
+		max-width: 100%;
+	}
+
+	.flexa-video-popup__player {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		background: #000;
+		border-radius: 6px;
+		overflow: hidden;
+	}
+
+	.flexa-video-popup__iframe,
+	.flexa-video-popup__video {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		border: 0;
+	}
+
+	.flexa-video-popup__close {
+		position: absolute;
+		top: -44px;
+		right: 0;
+		width: 40px;
+		height: 40px;
+		border: 0;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.15);
+		color: #ffffff;
+		font-size: 24px;
+		line-height: 1;
+		cursor: pointer;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-video-popup.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-video-popup.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-video-popup.flexa-hide-mobile {
+		display: none !important;
+	}
+}

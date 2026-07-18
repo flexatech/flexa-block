@@ -71,4 +71,64 @@ abstract class CssTestCase extends TestCase {
 			"Expected CSS to contain:\n  $selector { ... $decl ... }\nGot:\n  $css"
 		);
 	}
+
+	/**
+	 * Assert that a declaration sits INSIDE a given media-query block.
+	 *
+	 * Asserting only the `@media (...)` string (or only the value) can pass even
+	 * when the value landed at the base — this scopes the assertion to the media
+	 * block itself.
+	 *
+	 * Example: assertCssHasInMedia( $css, '@media (max-width: 1024px)', '.flexa-faq-a', 'row-gap:8px' )
+	 *
+	 * @param string $css      Full CSS string.
+	 * @param string $media    Media-query needle, e.g. '@media (max-width: 767px)'.
+	 * @param string $selector CSS selector to look for inside the media block.
+	 * @param string $decl     Declaration substring, e.g. "row-gap:8px".
+	 */
+	protected function assertCssHasInMedia( string $css, string $media, string $selector, string $decl ): void {
+		$start = strpos( $css, $media );
+		$this->assertNotFalse( $start, "Expected CSS to contain the media query '$media'.\nGot:\n  $css" );
+
+		// Extract the media block by matching its braces (rules nest one level).
+		$open  = strpos( $css, '{', $start );
+		$depth = 0;
+		$end   = $open;
+		$len   = strlen( $css );
+		for ( $i = $open; $i < $len; $i++ ) {
+			if ( '{' === $css[ $i ] ) {
+				$depth++;
+			} elseif ( '}' === $css[ $i ] ) {
+				$depth--;
+				if ( 0 === $depth ) {
+					$end = $i;
+					break;
+				}
+			}
+		}
+		$block = substr( $css, $open, $end - $open + 1 );
+
+		$this->assertCssHas( $block, $selector, $decl );
+	}
+
+	/**
+	 * Assert a FULL `property:value` declaration inside the dark-mode branch.
+	 *
+	 * Always pass the whole declaration — never a bare colour like '#fff', which
+	 * is a substring of '#ffffff' and can match a LIGHT value at the base,
+	 * making the assertion vacuous.
+	 *
+	 * @param string $css       Full CSS string.
+	 * @param string $selector  Base selector (without the [data-theme] prefix).
+	 * @param string $decl      Full declaration, e.g. "background-color:#000000".
+	 * @param bool   $dataTheme Assert the [data-theme="dark"] branch instead of
+	 *                          the prefers-color-scheme media query.
+	 */
+	protected function assertCssHasInDark( string $css, string $selector, string $decl, bool $dataTheme = false ): void {
+		if ( $dataTheme ) {
+			$this->assertCssHas( $css, '[data-theme="dark"] ' . $selector, $decl );
+			return;
+		}
+		$this->assertCssHasInMedia( $css, '@media (prefers-color-scheme: dark)', $selector, $decl );
+	}
 }

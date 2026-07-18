@@ -1,0 +1,26 @@
+/**
+ * Slider block — editor-only styles.
+ *
+ * The carousel runs on the front end. In the editor only the active slide is
+ * shown (view.tsx injects a per-instance rule hiding the others) with a small
+ * tab strip to switch between slides, so a slider with many slides stays compact.
+ */
+
+.flexa-slides--editing {
+	.flexa-slides__tabs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+		margin-bottom: 12px;
+	}
+
+	.flexa-slides__editor {
+		display: flex;
+		flex-direction: column;
+
+		> * {
+			outline: 1px dashed rgba(127, 127, 127, 0.4);
+			outline-offset: 2px;
+		}
+	}
+}

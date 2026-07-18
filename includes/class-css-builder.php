@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * CSS Builder - fluent generator with responsive media queries and minification.
+ * CSS Builder — fluent generator with responsive media queries and minification.
  *
  * @package Flexa\Block
  */
@@ -62,6 +62,15 @@ class CSS_Builder {
 	 * @return self
 	 */
 	public function set_selector( $selector ) {
+		// Defense in depth: strip "<" from any selector. Selectors are built from the
+		// block's `blockId` (sanitized upstream in CSS_Generator_Service), but should
+		// an id reach here unsanitized, a "</style>" inside the selector would break
+		// out of the inline <style> block when the sheet is printed (XSS). Only "<"
+		// is stripped — ">" is a legitimate child combinator (e.g.
+		// ".flexa-container-x > .flexa-container__inner") and without a "<" no closing
+		// tag can form.
+		$selector = str_replace( '<', '', (string) $selector );
+
 		// Resolve the specificity-boost setting once per request.
 		if ( null === self::$specificity_boost ) {
 			/**
@@ -93,9 +102,10 @@ class CSS_Builder {
 			return $this;
 		}
 
-		// Defensive: CSS values never legitimately contain these. Stripping them
-		// prevents breaking out of the inline <style> block (e.g. "</style>")
-		// or out of the declaration/rule (e.g. "red;} body{display:none").
+		// Defensive: a CSS value never legitimately contains these characters, but an
+		// unsanitized attribute value could use them to break out of the declaration,
+		// the rule, or the inline <style> block — "</style>" (escape the style tag →
+		// XSS), or "}selector{" / ";prop:val" (inject extra CSS). Strip them all.
 		$value = str_replace( [ '<', '>', '{', '}', ';' ], '', (string) $value );
 		if ( '' === $value ) {
 			return $this;

@@ -1,0 +1,25 @@
+/**
+ * Video Popup block — editor-only styles.
+ *
+ * The front-end look lives in style.scss (loaded in the editor too). The editor
+ * shows the trigger exactly as it will render; the popup never opens here, so
+ * only a couple of affordances are needed.
+ */
+
+.flexa-video-popup {
+	// The trigger is presentational in the editor — don't let it feel clickable
+	// (the block is selected/edited by clicking, not "played").
+	.flexa-video-popup__trigger {
+		cursor: default;
+	}
+
+	.flexa-video-popup__placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: rgba(255, 255, 255, 0.85);
+		font-size: 13px;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+}

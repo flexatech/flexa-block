@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/subscribe-form-date",
+	"version": "1.0.0",
+	"title": "Date",
+	"category": "flexa",
+	"description": "A date picker for a Subscribe Form — with a label, required toggle and column width.",
+	"keywords": [ "flexa", "form", "field", "date" ],
+	"textdomain": "flexa-block",
+	"parent": [ "flexa/subscribe-form" ],
+	"attributes": {
+		"blockId": { "type": "string" },
+		"label": { "type": "string", "default": "Date" },
+		"fieldName": { "type": "string", "default": "date" },
+		"placeholder": { "type": "string", "default": "" },
+		"required": { "type": "boolean", "default": false },
+		"showLabel": { "type": "boolean", "default": true },
+		"width": { "type": "string", "default": "100", "enum": [ "100", "50" ] }
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"reusable": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

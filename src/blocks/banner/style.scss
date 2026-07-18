@@ -1,0 +1,81 @@
+/**
+ * Banner block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * heading / description carry the theme's look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). A structural min-height + padding give a freshly inserted banner its
+ * shape; the generator overrides them once the user picks a value.
+ */
+
+@use '../../styles/promo' as *;
+
+.flexa-banner {
+	position: relative;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	min-height: 380px;
+	padding: 60px 24px;
+	overflow: hidden;
+	// Centred text by default (low specificity so the generator's per-instance
+	// `.flexa-banner-<id> .flexa-promo__content` rule reliably overrides it).
+	text-align: center;
+
+	@include flexa-promo();
+
+	// Content box: wraps the promo content. width:100% by default (spans the
+	// banner, so an untouched banner is unchanged); the generator sets a max-width
+	// + margin-inline:auto when `contentBoxWidth` is used, centring it on the site
+	// grid while the background stays full-bleed. `align-items: inherit` carries the
+	// banner's own alignment (from `contentAlign`) down so the column still sits
+	// left/centre/right within the box.
+	&__box {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: inherit;
+	}
+
+	.flexa-promo__content {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+	}
+
+	// Boxed banners centre themselves within their parent.
+	&--boxed {
+		margin-inline: auto;
+	}
+
+	// The colour/gradient overlay sits above the background image, below content.
+	&__overlay {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		pointer-events: none;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-banner.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-banner.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-banner.flexa-hide-mobile {
+		display: none !important;
+	}
+}

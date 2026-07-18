@@ -1,0 +1,36 @@
+/**
+ * Modal block — editor-only styles.
+ *
+ * The front end hides the modal until it is opened; in the editor we show it
+ * OPEN and in-flow (not fixed / full-screen) so the inner blocks can be edited
+ * directly. The overlay becomes a faint, non-interactive tint framing the box.
+ */
+
+.flexa-modal__preview {
+	position: relative;
+	margin-top: 16px;
+	padding: 28px;
+	border: 1px dashed rgba(120, 120, 120, 0.4);
+	border-radius: 8px;
+
+	.flexa-modal__overlay {
+		position: absolute;
+		inset: 0;
+		border-radius: 8px;
+		opacity: 0.15;
+		pointer-events: none;
+	}
+
+	// In-flow, fully visible box — no fixed positioning, scroll or clipping.
+	.flexa-modal__box {
+		position: relative;
+		z-index: 1;
+		margin: 0 auto;
+		max-height: none;
+		overflow: visible;
+	}
+
+	.flexa-modal__content {
+		min-height: 40px;
+	}
+}

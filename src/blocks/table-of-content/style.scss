@@ -1,0 +1,191 @@
+/**
+ * Table of Contents block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * title and links carry the theme's look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). Gaps and the sub-level indent are read from CSS variables the
+ * generator sets per device (`--flexa-toc-gap` / `--flexa-toc-indent`).
+ */
+
+.flexa-toc {
+	box-sizing: border-box;
+
+	&__title {
+		margin: 0 0 0.5em;
+	}
+
+	// Collapse toggle: a plain button that reads like the title row.
+	&__toggle {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		width: 100%;
+		margin: 0 0 0.5em;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+
+		.flexa-toc__title {
+			flex: 1 1 auto;
+			margin: 0;
+		}
+	}
+
+	&__icon {
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1em;
+		height: 1em;
+		transition: transform 0.25s ease;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&__list {
+		margin: 0;
+		padding: 0;
+		// Marker sits inside the content box so indent/padding stay predictable.
+		list-style-position: inside;
+	}
+
+	&__item {
+		margin: 0;
+	}
+
+	// Nested lists indent one step (var overridable per device by the generator).
+	&__list &__list {
+		padding-left: var(--flexa-toc-indent, 1em);
+	}
+
+	// Vertical rhythm between entries and before a nested list.
+	&__item + &__item,
+	&__link + &__list {
+		margin-top: var(--flexa-toc-gap, 6px);
+	}
+
+	&__link {
+		color: inherit;
+		text-decoration: none;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
+	&__empty {
+		margin: 0;
+		opacity: 0.7;
+	}
+
+	// Scrollable body (shown once "List max height" caps the height). Replace the
+	// chunky native scrollbar with a slim, rounded, floating one that auto-hides:
+	// the thumb is transparent at rest and fades in only while the pointer is over
+	// the list (the Radix-style behaviour). The track keeps its width so content
+	// never shifts when the thumb appears. Purely cosmetic — the bar only exists
+	// when the list overflows its capped height.
+	&__body {
+		// Firefox: hidden at rest, tinted on hover.
+		scrollbar-width: thin;
+		scrollbar-color: transparent transparent;
+
+		&:hover {
+			scrollbar-color: rgba(100, 116, 139, 0.5) transparent;
+		}
+
+		// WebKit (Chrome / Safari / Edge).
+		&::-webkit-scrollbar {
+			width: 8px;
+			height: 8px;
+		}
+
+		&::-webkit-scrollbar-track {
+			background: transparent;
+		}
+
+		&::-webkit-scrollbar-thumb {
+			background: transparent;
+			border-radius: 999px;
+			border: 2px solid transparent;
+			background-clip: padding-box;
+			transition: background-color 0.2s ease;
+		}
+
+		&:hover::-webkit-scrollbar-thumb {
+			background: rgba(100, 116, 139, 0.6);
+		}
+
+		&:hover::-webkit-scrollbar-thumb:hover {
+			background: rgba(100, 116, 139, 0.75);
+		}
+
+		&::-webkit-scrollbar-thumb:active {
+			background: rgba(71, 85, 105, 0.85);
+		}
+	}
+
+	// Marker styles (a modifier class set on the wrapper).
+	&--marker-none &__list {
+		list-style: none;
+	}
+
+	&--marker-bullet &__list {
+		list-style: disc;
+	}
+
+	&--marker-number &__list {
+		list-style: decimal;
+	}
+
+	// Collapsed state (view.js toggles the attribute).
+	&[data-collapsed] &__body {
+		display: none;
+	}
+
+	&[data-collapsed] &__icon {
+		transform: rotate(-90deg);
+	}
+}
+
+/* Slim auto-hide scrollbar — lighter thumb on dark backgrounds (hover only; it
+ * stays transparent at rest via the base rule). */
+@media (prefers-color-scheme: dark) {
+	.flexa-toc__body {
+		&:hover {
+			scrollbar-color: rgba(203, 213, 225, 0.5) transparent;
+		}
+
+		&:hover::-webkit-scrollbar-thumb {
+			background: rgba(203, 213, 225, 0.55);
+		}
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-toc.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-toc.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-toc.flexa-hide-mobile {
+		display: none !important;
+	}
+}

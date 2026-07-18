@@ -1,0 +1,183 @@
+/**
+ * Post Grid block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * title, meta and excerpt carry the theme's look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). Columns and gaps have sensible fallbacks so the grid is usable even
+ * before the generator's per-device rules load.
+ */
+
+@use '../../styles/pagination' as *;
+@use '../../styles/image-placeholder' as *;
+
+@include flexa-pagination();
+@include flexa-image-placeholder();
+
+.flexa-post-grid {
+	box-sizing: border-box;
+
+	&__inner {
+		box-sizing: border-box;
+	}
+
+	&--boxed &__inner {
+		margin-inline: auto;
+	}
+
+	// "12 posts found". Always in the DOM as a live region; `screen-reader-text` is on
+	// it unless the author asked for it to be seen, so this only styles the seen case.
+	&__status:not(.screen-reader-text) {
+		margin: 0 0 16px;
+		font-size: 0.875em;
+		opacity: 0.7;
+	}
+
+	&__grid {
+		display: grid;
+		// Fallback columns/gap; the generator overrides these per device.
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 30px;
+
+		// AJAX paging: dim + lock the grid while the next page is fetched.
+		&.is-loading {
+			opacity: 0.55;
+			pointer-events: none;
+			transition: opacity 0.15s ease;
+		}
+	}
+
+	&__item {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		margin: 0;
+		min-width: 0;
+		text-align: left;
+		overflow: hidden;
+	}
+
+	// Media fills the card width regardless of the card's content alignment.
+	&__image-link,
+	&__image-wrap {
+		display: block;
+		width: 100%;
+		align-self: stretch;
+	}
+
+	&__image {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	&__image--placeholder {
+		aspect-ratio: 16 / 9;
+		background: rgba(100, 116, 139, 0.15);
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5em;
+		width: 100%;
+		align-self: stretch;
+		box-sizing: border-box;
+		// Fill whatever height the card has left, so the read-more below can be pushed
+		// to its foot. Without this the body is only as tall as its text, the button
+		// sits directly under the excerpt, and a row of cards with two-line and
+		// four-line excerpts gets a row of buttons at four different heights.
+		// (Cards are the same height already — see `equalHeight`, on by default. With
+		// it off the cards are their natural heights and nothing CAN line up.)
+		flex: 1 1 auto;
+		min-height: 0;
+		// Inner padding comes from the generator (Content padding control), so the
+		// image above stays full-bleed while the text/body is inset.
+	}
+
+	&__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.5em;
+		font-size: 0.85em;
+		opacity: 0.85;
+	}
+
+	&__meta-sep {
+		opacity: 0.5;
+	}
+
+	// Author + optional avatar sit inline; the avatar is a small round thumbnail.
+	&__author {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+	}
+
+	&__avatar {
+		display: block;
+		border-radius: 50%;
+		object-fit: cover;
+		flex-shrink: 0;
+	}
+
+	&__title {
+		margin: 0;
+
+		a {
+			color: inherit;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	&__excerpt {
+		margin: 0;
+	}
+
+	// Read-more hugs its content (never stretches) so it follows card alignment.
+	// `align-self: flex-start` is essential: the body is a stretch flex column, so
+	// without it an inline-flex child is stretched to the full column width. The
+	// generator overrides align-self (Button alignment) / width (full-width) when set.
+	&__readmore {
+		display: inline-flex;
+		align-items: center;
+		align-self: flex-start;
+		text-decoration: none;
+		box-sizing: border-box;
+		max-width: 100%;
+		// The button falls to the foot of the body, so every card's button lands on the
+		// same line however long its title and excerpt ran. `auto` and not a fixed
+		// margin: it eats exactly the slack the card has, and nothing when there is
+		// none — a card whose text fills it keeps the body's own gap above the button.
+		margin-top: auto;
+	}
+
+	&__empty {
+		margin: 0;
+		opacity: 0.7;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-post-grid.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-post-grid.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-post-grid.flexa-hide-mobile {
+		display: none !important;
+	}
+}

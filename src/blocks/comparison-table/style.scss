@@ -1,0 +1,190 @@
+/**
+ * Comparison Table block — frontend + editor base styles.
+ *
+ * Structure plus a few sensible, low-commitment defaults (hairline dividers, a
+ * soft zebra stripe, green check / muted cross marks, a spotlight accent bar) so
+ * the table is readable the moment it is inserted. Every one of those defaults is
+ * overridden the instant the user picks a colour: the PHP CSS generator emits
+ * per-instance declarations ONLY for values the user sets (mirrored as inline
+ * styles in the editor), keeping the block theme-first.
+ */
+
+@use '../../styles/scrollbar' as *;
+
+.flexa-comparison-table {
+	box-sizing: border-box;
+
+	&--boxed {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	&--full-width {
+		width: 100%;
+	}
+
+	// The table scrolls horizontally inside this wrapper on small screens, with
+	// the shared thin/rounded overlay scrollbar (src/styles/_scrollbar.scss).
+	&__scroll {
+		width: 100%;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		@include flexa-scrollbar();
+	}
+
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+		box-sizing: border-box;
+	}
+
+	&__col,
+	&__label,
+	&__cell,
+	&__corner {
+		padding: 12px 16px;
+		box-sizing: border-box;
+	}
+
+	&__corner {
+		background: transparent;
+	}
+
+	// Column header.
+	&__col {
+		vertical-align: bottom;
+		text-align: center;
+	}
+
+	&__col-inner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+	}
+
+	&__logo {
+		max-width: 72px;
+		height: auto;
+		display: block;
+	}
+
+	&__col-title {
+		font-weight: 600;
+	}
+
+	&__col-subtitle {
+		font-size: 0.85em;
+		opacity: 0.75;
+	}
+
+	&__badge {
+		display: inline-block;
+		padding: 2px 10px;
+		border-radius: 999px;
+		font-size: 0.72em;
+		font-weight: 600;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+		color: #fff;
+		background: #2563eb;
+	}
+
+	&__cta {
+		margin-top: 8px;
+		text-decoration: none;
+	}
+
+	// Row header (the feature label).
+	&__label {
+		text-align: left;
+		font-weight: 500;
+	}
+
+	&__cell {
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	// Boolean marks.
+	&__mark {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.25em;
+		height: 1.25em;
+		line-height: 1;
+
+		svg {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+
+		&--yes {
+			color: #16a34a;
+		}
+
+		&--no {
+			color: #9ca3af;
+		}
+	}
+
+	// Spotlight accent bar over a highlighted column (until a Spotlight colour is
+	// chosen, at which point the generator paints the header background instead).
+	&__col.is-highlighted {
+		box-shadow: inset 0 3px 0 0 #06b6d4;
+	}
+
+	// Hairline dividers (toggled by class; the generator overrides colour/width).
+	&--row-divider {
+		.flexa-comparison-table__col,
+		.flexa-comparison-table__cell,
+		.flexa-comparison-table__label {
+			border-bottom: 1px solid rgba( 0, 0, 0, 0.08 );
+		}
+	}
+
+	&--col-divider {
+		.flexa-comparison-table__col,
+		.flexa-comparison-table__cell,
+		.flexa-comparison-table__label {
+			border-right: 1px solid rgba( 0, 0, 0, 0.08 );
+		}
+	}
+
+	// Soft zebra stripe (the generator overrides the colour).
+	&--zebra {
+		.flexa-comparison-table__row:nth-child( even ) .flexa-comparison-table__cell,
+		.flexa-comparison-table__row:nth-child( even ) .flexa-comparison-table__label {
+			background-color: rgba( 0, 0, 0, 0.035 );
+		}
+	}
+
+	// Sticky column headers while the page scrolls.
+	&--sticky .flexa-comparison-table__table thead th {
+		position: sticky;
+		top: 0;
+		z-index: 2;
+		background-color: var( --wp--preset--color--base, #ffffff );
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-comparison-table.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-comparison-table.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-comparison-table.flexa-hide-mobile {
+		display: none !important;
+	}
+}

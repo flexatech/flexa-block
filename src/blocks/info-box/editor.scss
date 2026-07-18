@@ -1,0 +1,21 @@
+/**
+ * Info Box block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); these rules only keep
+ * the inline RichText fields comfortably editable (they never collapse to zero
+ * width) while the block is being edited.
+ */
+
+.flexa-info-box {
+	.flexa-info-box__prefix,
+	.flexa-info-box__title,
+	.flexa-info-box__description,
+	.flexa-info-box__button-text {
+		min-width: 40px;
+	}
+
+	// The content column shouldn't shrink away in the row layout while editing.
+	.flexa-info-box__content {
+		flex: 1 1 auto;
+	}
+}

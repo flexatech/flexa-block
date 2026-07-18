@@ -1,0 +1,74 @@
+/**
+ * Data Table block — editor-only styles.
+ *
+ * The canvas preview reuses the front-end structure (style.scss). These styles
+ * cover the in-canvas editing affordances: the per-cell text inputs, the
+ * per-column alignment select, the remove-column / remove-row buttons and the
+ * add-row / add-column controls under the table. The scroll wrapper gets the
+ * same shared thin scrollbar as the front end (src/styles/_scrollbar.scss).
+ */
+
+@use '../../styles/scrollbar' as *;
+
+.flexa-data-table__scroll {
+	@include flexa-scrollbar();
+}
+
+.flexa-data-table__table {
+	min-width: 100%;
+}
+
+.flexa-data-table__cell-edit {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.flexa-data-table__input {
+	flex: 1 1 auto;
+	min-width: 0;
+	width: 100%;
+	padding: 4px 6px;
+	border: 1px solid rgba( 0, 0, 0, 0.15 );
+	border-radius: 3px;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	text-align: inherit;
+}
+
+.flexa-data-table__align {
+	flex: 0 0 auto;
+	max-width: 68px;
+	padding: 2px;
+	border: 1px solid rgba( 0, 0, 0, 0.15 );
+	border-radius: 3px;
+	font-size: 11px;
+}
+
+.flexa-data-table__remove {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	border: none;
+	border-radius: 3px;
+	background: transparent;
+	color: #cc1818;
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+
+	&:hover {
+		background: rgba( 204, 24, 24, 0.1 );
+	}
+}
+
+.flexa-data-table__controls {
+	display: flex;
+	gap: 8px;
+	margin-top: 10px;
+}

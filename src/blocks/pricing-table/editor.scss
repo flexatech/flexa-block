@@ -1,0 +1,13 @@
+/**
+ * Pricing Table block — editor-only styles.
+ *
+ * The canvas preview reuses the front-end structure (style.scss); the Plans
+ * panel uses the shared ItemListPanel, styled by `.flexa-item-card` in
+ * components/editor.scss. The billing switch is previewed statically here (its
+ * click behaviour is front-end only), so its buttons are non-interactive in the
+ * editor to keep clicks on the canvas selecting the block.
+ */
+
+.flexa-pricing-table__billing-option {
+	pointer-events: none;
+}

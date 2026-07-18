@@ -1,0 +1,21 @@
+/**
+ * Before / After block — editor-only styles.
+ *
+ * The front-end look lives in style.scss (loaded in the editor too). This adds
+ * the two-up media picker shown until both images are chosen.
+ */
+
+.flexa-before-after__setup {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+
+	@media (max-width: 600px) {
+		grid-template-columns: 1fr;
+	}
+
+	.components-placeholder {
+		height: 100%;
+		margin: 0;
+	}
+}

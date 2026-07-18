@@ -1,0 +1,51 @@
+/**
+ * FAQ block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); in the editor every
+ * answer stays expanded so both the question and the answer are editable, and
+ * per-item remove / add-question controls are surfaced. Colours and typography
+ * come from the theme or the user's choices, mirrored via inline styles in
+ * edit.tsx.
+ */
+
+.flexa-faq {
+	// Keep every answer open for editing (front-end animates them closed).
+	.flexa-faq__answer {
+		grid-template-rows: 1fr;
+	}
+
+	.flexa-faq__item {
+		position: relative;
+	}
+
+	.flexa-faq__question-text {
+		min-width: 40px;
+	}
+
+	// Per-item remove button — a clear red circle at the end of the question row
+	// (in flow, so it is never clipped by the item's overflow) that stays obvious.
+	.flexa-faq__remove.components-button {
+		flex: 0 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 26px;
+		min-width: 26px;
+		height: 26px;
+		padding: 0;
+		border-radius: 50%;
+		color: #fff;
+		background: #d63638;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+		&:hover,
+		&:focus {
+			color: #fff;
+			background: #b32d2e;
+		}
+	}
+
+	.flexa-faq__add {
+		margin-top: 12px;
+	}
+}

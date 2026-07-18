@@ -1,0 +1,121 @@
+/**
+ * Taxonomy block — front-end + editor base styles.
+ *
+ * Structure only, plus the minimum a term list needs to read well the moment it
+ * is inserted (no list bullets, a small gap, chips that lay out per display mode).
+ * No colours or padding defaults are hardcoded here: the PHP CSS generator emits
+ * per-instance declarations ONLY for values the user sets (mirrored as inline
+ * styles in the editor), keeping the block theme-first.
+ */
+
+.flexa-taxonomy {
+	box-sizing: border-box;
+
+	&__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		gap: 8px;
+	}
+
+	&__item {
+		box-sizing: border-box;
+		min-width: 0;
+	}
+
+	&__link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		box-sizing: border-box;
+		text-decoration: none;
+	}
+
+	&__name {
+		min-width: 0;
+	}
+
+	&__count {
+		opacity: 0.7;
+	}
+
+	&__prefix,
+	&__suffix {
+		display: inline-flex;
+		align-items: center;
+		flex: none;
+
+		svg,
+		img {
+			width: 1em;
+			height: 1em;
+			display: block;
+		}
+	}
+
+	&__separator {
+		display: inline-flex;
+		opacity: 0.6;
+		user-select: none;
+	}
+
+	&__empty {
+		margin: 0;
+		opacity: 0.7;
+	}
+
+	// --- List: a vertical stack. ---
+	&--list &__list {
+		display: flex;
+		flex-direction: column;
+
+		// Nested child lists (hierarchy) indent slightly.
+		.flexa-taxonomy__list {
+			padding-inline-start: 1.2em;
+			margin-top: 8px;
+		}
+	}
+
+	// --- Inline: a wrapping row with separators. ---
+	&--inline &__list {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	&--inline &__item {
+		display: inline-flex;
+		align-items: center;
+		gap: inherit;
+	}
+
+	// --- Grid: equal-width columns (track count from the generator). ---
+	&--grid &__list {
+		display: grid;
+		grid-template-columns: repeat(1, minmax(0, 1fr));
+	}
+
+	// --- Dropdown: a native select. ---
+	&--dropdown &__select {
+		max-width: 100%;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-taxonomy.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-taxonomy.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-taxonomy.flexa-hide-mobile {
+		display: none !important;
+	}
+}

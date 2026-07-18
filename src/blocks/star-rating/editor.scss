@@ -1,0 +1,14 @@
+/**
+ * Star Rating block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss). The stars always
+ * render (a default rating shows on insert), so no extra editor scaffolding is
+ * needed; this file exists for parity with the other blocks and future tweaks.
+ */
+
+.flexa-star-rating {
+	// Keep an inline title from collapsing to zero width while editing.
+	.flexa-star-rating__title {
+		min-width: 1px;
+	}
+}

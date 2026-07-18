@@ -1,0 +1,15 @@
+/**
+ * Product Rating block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss). A placeholder rating
+ * always renders on insert, so no extra editor scaffolding is needed; this file
+ * exists for parity with the other blocks and future tweaks.
+ */
+
+.flexa-product-rating {
+	// Keep the numeric score / count from collapsing while editing.
+	.flexa-product-rating__number,
+	.flexa-product-rating__count {
+		min-width: 1px;
+	}
+}

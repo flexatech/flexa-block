@@ -1,0 +1,415 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "flexa/timeline",
+  "version": "1.0.0",
+  "title": "Timeline",
+  "category": "flexa",
+  "description": "Chronological timeline of events — each entry with a title, description, date, an optional image and a marker icon, arranged down a connector line alternating left/right or on a single side, with per-element typography, marker and line styling and light/dark colours.",
+  "keywords": [
+    "flexa",
+    "timeline",
+    "history",
+    "roadmap",
+    "milestones",
+    "events"
+  ],
+  "textdomain": "flexa-block",
+  "example": {
+    "attributes": {
+      "isExamplePreview": true
+    },
+    "viewportWidth": 500
+  },
+  "attributes": {
+    "isExamplePreview": {
+      "type": "boolean",
+      "default": false
+    },
+    "blockId": {
+      "type": "string"
+    },
+    "htmlTag": {
+      "type": "string",
+      "default": "div"
+    },
+    "items": {
+      "type": "array",
+      "default": [
+        {
+          "title": "Company founded",
+          "description": "The team came together and shipped the very first prototype.",
+          "date": "2019",
+          "icon": {
+            "source": "none",
+            "name": "",
+            "markup": "",
+            "url": "",
+            "id": null
+          },
+          "image": {
+            "id": null,
+            "url": "",
+            "alt": ""
+          }
+        },
+        {
+          "title": "First 1,000 customers",
+          "description": "Word spread and the product found its early community.",
+          "date": "2021",
+          "icon": {
+            "source": "none",
+            "name": "",
+            "markup": "",
+            "url": "",
+            "id": null
+          },
+          "image": {
+            "id": null,
+            "url": "",
+            "alt": ""
+          }
+        },
+        {
+          "title": "Global launch",
+          "description": "Expanded to new markets with a redesigned platform.",
+          "date": "2024",
+          "icon": {
+            "source": "none",
+            "name": "",
+            "markup": "",
+            "url": "",
+            "id": null
+          },
+          "image": {
+            "id": null,
+            "url": "",
+            "alt": ""
+          }
+        }
+      ]
+    },
+    "timelineLayout": {
+      "type": "string",
+      "default": "alternate",
+      "enum": [
+        "alternate",
+        "left",
+        "right"
+      ]
+    },
+    "imagePosition": {
+      "type": "string",
+      "default": "top",
+      "enum": [
+        "top",
+        "bottom"
+      ]
+    },
+    "imageAlign": {
+      "type": "string",
+      "default": "left",
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ]
+    },
+    "imageWidth": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "markerShape": {
+      "type": "string",
+      "default": "circle",
+      "enum": [
+        "circle",
+        "square",
+        "rounded"
+      ]
+    },
+    "markerSize": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "value": "40",
+          "unit": "px"
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "markerColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "markerIconColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "connectorShow": {
+      "type": "boolean",
+      "default": true
+    },
+    "connectorColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "connectorWidth": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "value": "2",
+          "unit": "px"
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "connectorStyle": {
+      "type": "string",
+      "default": "solid",
+      "enum": [
+        "solid",
+        "dashed",
+        "dotted"
+      ]
+    },
+    "datePosition": {
+      "type": "string",
+      "default": "above",
+      "enum": [
+        "inline",
+        "above"
+      ]
+    },
+    "dateTypography": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "dateColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "markerGap": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "value": "16",
+          "unit": "px"
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "itemGap": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "value": "24",
+          "unit": "px"
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "contentAlign": {
+      "type": "object",
+      "default": {
+        "desktop": "",
+        "tablet": "",
+        "mobile": ""
+      }
+    },
+    "maxWidth": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "cardPadding": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "top": "16",
+          "right": "16",
+          "bottom": "16",
+          "left": "16",
+          "unit": "px"
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "titleTypography": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "titleColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "descriptionTypography": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "descriptionColor": {
+      "type": "object",
+      "default": {
+        "light": "",
+        "dark": ""
+      }
+    },
+    "spacing": {
+      "type": "object",
+      "default": {
+        "desktop": {},
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "background": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "color": {
+          "light": "",
+          "dark": ""
+        },
+        "gradient": {
+          "light": "",
+          "dark": ""
+        },
+        "image": {
+          "url": "",
+          "id": null,
+          "position": "center center",
+          "repeat": "no-repeat",
+          "size": "cover",
+          "attachment": "scroll"
+        },
+        "lazyLoad": false
+      }
+    },
+    "border": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "style": "",
+          "width": {
+            "top": "",
+            "right": "",
+            "bottom": "",
+            "left": "",
+            "unit": "px"
+          },
+          "color": {
+            "light": "",
+            "dark": ""
+          },
+          "radius": {
+            "topLeft": "",
+            "topRight": "",
+            "bottomRight": "",
+            "bottomLeft": "",
+            "unit": "px"
+          }
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "boxShadow": {
+      "type": "object",
+      "default": {
+        "horizontal": "0",
+        "vertical": "4",
+        "blur": "12",
+        "spread": "0",
+        "color": {
+          "light": "rgba(0,0,0,0.1)",
+          "dark": ""
+        },
+        "inset": false,
+        "enabled": false
+      }
+    },
+    "advancedLayout": {
+      "type": "object",
+      "default": {
+        "desktop": {
+          "zIndex": "",
+          "overflow": "",
+          "position": ""
+        },
+        "tablet": {},
+        "mobile": {}
+      }
+    },
+    "responsiveVisibility": {
+      "type": "object",
+      "default": {
+        "hideOnDesktop": false,
+        "hideOnTablet": false,
+        "hideOnMobile": false
+      }
+    },
+    "animation": {
+      "type": "object",
+      "default": {
+        "type": "none",
+        "duration": "normal",
+        "delay": ""
+      }
+    },
+    "htmlAttributes": {
+      "type": "object",
+      "default": {
+        "customAttributes": []
+      }
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "className": true,
+    "html": false,
+    "align": false
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:./render.php"
+}

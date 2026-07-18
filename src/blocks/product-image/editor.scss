@@ -1,0 +1,11 @@
+/**
+ * Product Image block — editor-only styles.
+ *
+ * The placeholder featured image fills the block width so alignment and the
+ * thumbnail layout read correctly while editing. Front-end appearance lives in
+ * style.scss.
+ */
+
+.wp-block-flexa-product-image .flexa-product-image__main {
+	width: 100%;
+}

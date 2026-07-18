@@ -1,0 +1,55 @@
+/**
+ * Post Grid block — editor-only styles.
+ *
+ * The preview reuses the front-end structure (style.scss); the cards are built
+ * from a live query (getEntityRecords) so the grid mirrors what the front end
+ * renders. Colours and typography come from the theme or the user's choices,
+ * mirrored via inline styles in edit.tsx.
+ */
+
+.flexa-post-grid {
+	// Read-more is an inert span in the editor — keep it looking like a button.
+	.flexa-post-grid__readmore {
+		cursor: default;
+	}
+
+	.flexa-post-grid__loading {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		margin: 0;
+		opacity: 0.8;
+	}
+
+	// Placeholder / skeleton cards shown when the query has no posts yet, so the
+	// layout is visible while editing. Muted so it's obviously not real content.
+	.flexa-post-grid__item--skeleton {
+		opacity: 0.6;
+
+		.flexa-skeleton-line {
+			display: block;
+			height: 0.7em;
+			margin: 0.35em 0;
+			border-radius: 3px;
+			background: rgba(100, 116, 139, 0.22);
+
+			&--title {
+				height: 1em;
+				width: 80%;
+			}
+
+			&--meta {
+				height: 0.6em;
+				width: 45%;
+			}
+
+			&--short {
+				width: 60%;
+			}
+		}
+
+		.flexa-post-grid__readmore {
+			opacity: 0.7;
+		}
+	}
+}

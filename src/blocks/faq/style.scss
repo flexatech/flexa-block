@@ -1,0 +1,140 @@
+/**
+ * FAQ block — frontend + editor base styles.
+ *
+ * Structure only. No colours or typography defaults live here on purpose: the
+ * question/answer text carries the theme's look, and the PHP CSS generator emits
+ * declarations ONLY for values the user picks (mirrored as inline styles in the
+ * editor). The list is a flex column; each item stacks a question button over
+ * an animatable answer region.
+ */
+
+.flexa-faq {
+	box-sizing: border-box;
+
+	&__list {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+	}
+
+	&__item {
+		box-sizing: border-box;
+	}
+
+	// The question is a real <button> — strip the UA chrome so it inherits the
+	// theme's text styling and fills its row. border-box keeps padding inside the
+	// item width so a padded background never overflows the rounded corners.
+	&__question {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		box-sizing: border-box;
+		width: 100%;
+		margin: 0;
+		padding: 12px 0;
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		text-align: left;
+		cursor: pointer;
+	}
+
+	&__question-text {
+		flex: 1 1 auto;
+	}
+
+	// Icon side: markup order already places the icon first for "left"; nothing
+	// else is needed, the flex text pushes it to the correct edge.
+	&__icon {
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1em;
+		height: 1em;
+		position: relative;
+		color: inherit;
+		transition: transform 0.25s ease;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	// Plus / minus drawn with two bars so "open" can hide the vertical one to
+	// become a minus — colour follows currentColor (icon colour).
+	&__icon--plus::before,
+	&__icon--plus::after {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-color: currentColor;
+	}
+
+	&__icon--plus::before {
+		width: 100%;
+		height: 2px;
+	}
+
+	&__icon--plus::after {
+		width: 2px;
+		height: 100%;
+		transition: opacity 0.25s ease;
+	}
+
+	// Answer region: animate open via CSS grid rows (0fr → 1fr).
+	&__answer {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.3s ease;
+	}
+
+	// The collapsing layer must stay padding/border free, otherwise it can't shrink
+	// to zero and leaves a sliver when closed. Padding + text live on the content.
+	&__answer-inner {
+		overflow: hidden;
+		min-height: 0;
+	}
+
+	&__answer-content {
+		box-sizing: border-box;
+	}
+
+	// Open state.
+	&__item[data-open] &__answer {
+		grid-template-rows: 1fr;
+	}
+
+	&__item[data-open] &__icon--plus::after {
+		opacity: 0;
+	}
+
+	&__item[data-open] &__icon--chevron,
+	&__item[data-open] &__icon--arrow {
+		transform: rotate(180deg);
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-faq.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-faq.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-faq.flexa-hide-mobile {
+		display: none !important;
+	}
+}

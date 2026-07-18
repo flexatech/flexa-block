@@ -1,0 +1,50 @@
+/**
+ * Text block — frontend + editor base styles.
+ *
+ * Layout only. No colours / typography defaults live here on purpose: the text
+ * inherits the theme until the PHP CSS generator emits declarations for values
+ * the user picks. The drop-cap effect is a structural class (toggled by the
+ * `dropCap` attribute), not a brand style, so it lives here rather than being
+ * generated per instance.
+ */
+
+.flexa-text__content {
+	margin: 0;
+}
+
+/* Inline text-colour (core/text-color) wraps the selection in <mark>, painted
+   with a yellow background by default. We only use the colour, so clear the
+   background. No !important — an inline background (if ever set) still wins. */
+.flexa-text mark {
+	background-color: transparent;
+}
+
+/* Drop cap — enlarge the first letter. Structural (float + relative sizing),
+   colour still inherited from the text so it stays theme-driven. */
+.flexa-text__content.has-drop-cap::first-letter {
+	float: left;
+	font-size: 3.2em;
+	line-height: 0.9;
+	font-weight: 700;
+	margin: 0.05em 0.12em 0 0;
+	text-transform: uppercase;
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-text.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-text.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-text.flexa-hide-mobile {
+		display: none !important;
+	}
+}

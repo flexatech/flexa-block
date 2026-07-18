@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 /**
- * Admin - settings page, REST API, and option-backed behaviour wiring.
+ * Admin — settings page, REST API, and option-backed behaviour wiring.
  *
  * One small dashboard that lets users toggle dark mode, the CSS specificity
- * boost, and enable/disable individual blocks - stored in a single option and
+ * boost, and enable/disable individual blocks — stored in a single option and
  * fed back into the engine via filters.
  *
  * @package Flexa\Block
@@ -43,6 +43,11 @@ class Admin {
 			'specificityBoost' => false,
 		],
 		'disabled_blocks' => [],
+		'inline_editor'   => [
+			'enabled'         => true,
+			'disabled_blocks' => [],
+			'roles'           => [ 'editor' ],
+		],
 	];
 
 	/**
@@ -79,10 +84,17 @@ class Admin {
 		if ( ! is_array( $stored ) ) {
 			$stored = [];
 		}
+		$ie = is_array( $stored['inline_editor'] ?? null ) ? $stored['inline_editor'] : [];
+
 		return [
 			'dark_mode'       => array_merge( self::DEFAULTS['dark_mode'], is_array( $stored['dark_mode'] ?? null ) ? $stored['dark_mode'] : [] ),
 			'performance'     => array_merge( self::DEFAULTS['performance'], is_array( $stored['performance'] ?? null ) ? $stored['performance'] : [] ),
 			'disabled_blocks' => is_array( $stored['disabled_blocks'] ?? null ) ? array_values( $stored['disabled_blocks'] ) : [],
+			'inline_editor'   => [
+				'enabled'         => isset( $ie['enabled'] ) ? (bool) $ie['enabled'] : self::DEFAULTS['inline_editor']['enabled'],
+				'disabled_blocks' => is_array( $ie['disabled_blocks'] ?? null ) ? array_values( $ie['disabled_blocks'] ) : self::DEFAULTS['inline_editor']['disabled_blocks'],
+				'roles'           => is_array( $ie['roles'] ?? null ) ? array_values( $ie['roles'] ) : self::DEFAULTS['inline_editor']['roles'],
+			],
 		];
 	}
 
@@ -108,6 +120,7 @@ class Admin {
 				'specificityBoost' => ! empty( $perf['specificityBoost'] ),
 			],
 			'disabled_blocks' => self::sanitize_block_slugs( $input['disabled_blocks'] ?? $current['disabled_blocks'] ),
+			'inline_editor'   => self::sanitize_inline_editor( $input['inline_editor'] ?? null, $current['inline_editor'] ),
 		];
 
 		update_option( self::OPTION_NAME, $sanitized );
@@ -138,6 +151,95 @@ class Admin {
 			}
 		}
 		return array_values( array_unique( $clean ) );
+	}
+
+	/**
+	 * Sanitize the inline-editor settings block.
+	 *
+	 * Falls back to the current values when a key is absent, so a partial save
+	 * (e.g. toggling only dark mode) never wipes it.
+	 *
+	 * @param mixed                $input   Raw inline_editor input (or null).
+	 * @param array<string, mixed> $current Current inline_editor settings.
+	 * @return array{enabled: bool, disabled_blocks: list<string>, roles: list<string>}
+	 */
+	private static function sanitize_inline_editor( $input, array $current ): array {
+		if ( ! is_array( $input ) ) {
+			/** @var array{enabled: bool, disabled_blocks: list<string>, roles: list<string>} $current */
+			return $current;
+		}
+
+		return [
+			'enabled'         => ! empty( $input['enabled'] ),
+			'disabled_blocks' => self::sanitize_editable_slugs( $input['disabled_blocks'] ?? [] ),
+			'roles'           => self::sanitize_editor_roles( $input['roles'] ?? [] ),
+		];
+	}
+
+	/**
+	 * Keep only valid editable-block slugs (block name minus the `flexa/` prefix).
+	 *
+	 * @param mixed $slugs Candidate slugs.
+	 * @return list<string>
+	 */
+	private static function sanitize_editable_slugs( $slugs ): array {
+		if ( ! is_array( $slugs ) ) {
+			return [];
+		}
+		$valid = array_map(
+			static function ( $name ) {
+				return str_replace( 'flexa/', '', $name );
+			},
+			\Flexa\Block\Inline_Editor::editable_block_names()
+		);
+		$clean = [];
+		foreach ( $slugs as $slug ) {
+			$slug = sanitize_key( (string) $slug );
+			if ( in_array( $slug, $valid, true ) ) {
+				$clean[] = $slug;
+			}
+		}
+		return array_values( array_unique( $clean ) );
+	}
+
+	/**
+	 * Keep only real, non-administrator role slugs.
+	 *
+	 * @param mixed $roles Candidate role slugs.
+	 * @return list<string>
+	 */
+	private static function sanitize_editor_roles( $roles ): array {
+		if ( ! is_array( $roles ) ) {
+			return [];
+		}
+		$valid = array_keys( wp_roles()->roles );
+		$clean = [];
+		foreach ( $roles as $role ) {
+			$role = sanitize_key( (string) $role );
+			if ( 'administrator' !== $role && in_array( $role, $valid, true ) ) {
+				$clean[] = $role;
+			}
+		}
+		return array_values( array_unique( $clean ) );
+	}
+
+	/**
+	 * Site roles (minus administrator) for the editing settings UI.
+	 *
+	 * @return list<array{slug: string, name: string}>
+	 */
+	private static function roles_for_admin(): array {
+		$out = [];
+		foreach ( wp_roles()->roles as $slug => $data ) {
+			if ( 'administrator' === $slug ) {
+				continue;
+			}
+			$out[] = [
+				'slug' => (string) $slug,
+				'name' => translate_user_role( (string) ( $data['name'] ?? $slug ) ),
+			];
+		}
+		return $out;
 	}
 
 	/* ---------------------------------------------------------------------
@@ -231,17 +333,37 @@ class Admin {
 			$version,
 			true
 		);
-		wp_set_script_translations( 'flexa-block-admin', 'flexa-block', FLEXA_BLOCK_DIR . 'languages' );
 		wp_enqueue_style( 'wp-components' );
+
+		$style_file = FLEXA_BLOCK_DIR . 'build/admin/index.css';
+		if ( file_exists( $style_file ) ) {
+			wp_enqueue_style(
+				'flexa-block-admin',
+				FLEXA_BLOCK_URL . 'build/admin/index.css',
+				[ 'wp-components' ],
+				$version
+			);
+			wp_style_add_data( 'flexa-block-admin', 'rtl', 'replace' );
+		}
+
+		wp_set_script_translations( 'flexa-block-admin', 'flexa-block', FLEXA_BLOCK_DIR . 'languages' );
 
 		wp_localize_script(
 			'flexa-block-admin',
 			'flexaBlockAdmin',
 			[
-				'restUrl'  => esc_url_raw( rest_url( self::REST_NS . '/settings' ) ),
-				'nonce'    => wp_create_nonce( 'wp_rest' ),
-				'settings' => self::get_settings(),
-				'blocks'   => Block_Manager::get_block_catalog(),
+				'restUrl'        => esc_url_raw( rest_url( self::REST_NS . '/settings' ) ),
+				'nonce'          => wp_create_nonce( 'wp_rest' ),
+				'version'        => FLEXA_BLOCK_VER,
+				'settings'       => self::get_settings(),
+				'blocks'         => Block_Manager::get_block_catalog(),
+				'editableBlocks' => array_map(
+					static function ( $name ) {
+						return str_replace( 'flexa/', '', $name );
+					},
+					\Flexa\Block\Inline_Editor::editable_block_names()
+				),
+				'roles'          => self::roles_for_admin(),
 			]
 		);
 	}
