@@ -116,10 +116,11 @@ class Form_Handler {
 	}
 
 	/**
-	 * Validate and stage uploaded files: check each against WordPress's allowed
-	 * MIME types and the size cap, move it to a temp copy, and collect the copy
-	 * paths (for attachment), the temp paths (for cleanup) and per-field name
-	 * summaries (for the email body).
+	 * Validate and stage uploaded files: hand each raw upload to WordPress's own
+	 * uploader (wp_handle_upload), which checks it against the allowed MIME types,
+	 * verifies it is a genuine HTTP upload and moves it into the uploads directory.
+	 * Collect the resulting paths (for attachment), the paths to remove after the
+	 * mail is sent (for cleanup) and per-field name summaries (for the email body).
 	 *
 	 * @return array{attachments:array<int,string>,temp:array<int,string>,names:array<string,string>}
 	 */
@@ -134,6 +135,17 @@ class Form_Handler {
 		if ( empty( $_FILES ) || ! is_array( $_FILES ) ) {
 			return $result;
 		}
+
+		if ( ! function_exists( 'wp_handle_upload' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+		}
+
+		// test_form => false: this is an AJAX upload, not a matching <form> POST, so
+		// skip wp_handle_upload()'s form-action check (the nonce is already verified).
+		$overrides = [
+			'test_form' => false,
+			'action'    => 'flexa_subscribe',
+		];
 
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput, WordPress.Security.NonceVerification.Missing -- each field/value is validated below; nonce verified in process().
 		foreach ( $_FILES as $field => $data ) {
@@ -150,10 +162,6 @@ class Form_Handler {
 				if ( ! isset( $file['error'] ) || UPLOAD_ERR_OK !== (int) $file['error'] ) {
 					continue;
 				}
-				$tmp = (string) ( $file['tmp_name'] ?? '' );
-				if ( '' === $tmp || ! is_uploaded_file( $tmp ) ) {
-					continue;
-				}
 				if ( (int) ( $file['size'] ?? 0 ) > self::MAX_UPLOAD_BYTES ) {
 					continue;
 				}
@@ -168,17 +176,25 @@ class Form_Handler {
 					continue;
 				}
 
-				$dest = wp_tempnam( $filename );
-				// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, Generic.PHP.ForbiddenFunctions.Found -- is_uploaded_file() is verified above; move_uploaded_file() is the correct primitive for staging a raw HTTP upload.
-				if ( ! $dest || ! @move_uploaded_file( $tmp, $dest ) ) {
-					if ( $dest ) {
-						wp_delete_file( $dest );
-					}
+				// Let WordPress validate and move the raw upload; the stored copy is
+				// attached to the email and removed again in cleanup_temp() after send.
+				$moved = wp_handle_upload(
+					[
+						'name'     => $filename,
+						'type'     => (string) ( $file['type'] ?? '' ),
+						'tmp_name' => (string) ( $file['tmp_name'] ?? '' ),
+						'error'    => (int) $file['error'],
+						'size'     => (int) ( $file['size'] ?? 0 ),
+					],
+					$overrides
+				);
+
+				if ( ! is_array( $moved ) || empty( $moved['file'] ) || ! empty( $moved['error'] ) ) {
 					continue;
 				}
 
-				$result['attachments'][] = $dest;
-				$result['temp'][]        = $dest;
+				$result['attachments'][] = (string) $moved['file'];
+				$result['temp'][]        = (string) $moved['file'];
 				$collected[]             = $filename;
 			}
 
@@ -207,6 +223,7 @@ class Form_Handler {
 			for ( $i = 0; $i < $count; $i++ ) {
 				$out[] = [
 					'name'     => $data['name'][ $i ] ?? '',
+					'type'     => $data['type'][ $i ] ?? '',
 					'tmp_name' => $data['tmp_name'][ $i ] ?? '',
 					'error'    => $data['error'][ $i ] ?? UPLOAD_ERR_NO_FILE,
 					'size'     => $data['size'][ $i ] ?? 0,

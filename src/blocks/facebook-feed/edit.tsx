@@ -47,6 +47,7 @@ import {
 	applyBackgroundPreview,
 	applyBorderPreview,
 	boxShadowPreview,
+	demoImage,
 	ClockIcon,
 	ThumbsUpIcon,
 	CommentIcon,
@@ -88,10 +89,10 @@ const isConnected = (): boolean =>
  * (render.php shows real posts or nothing).
  */
 const SAMPLE_POSTS: FeedPost[] = [
-	{ id: 'demo-1', message: __( 'This is a demo Facebook post — connect a Page access token to show your real feed. It appears only in the editor.', 'flexa-block' ), permalink: '#', date: 'Jul 12, 2026 2:45 PM', image: 'https://picsum.photos/seed/flexa-fb-1/640/420', type: 'image', likes: 128, comments: 24, shares: 8, pageName: __( 'Your Page', 'flexa-block' ), pageAvatar: 'https://picsum.photos/seed/flexa-fb-a/80/80' },
-	{ id: 'demo-2', message: __( 'Behind the scenes from today’s shoot 📸 (sample video)', 'flexa-block' ), permalink: '#', date: 'Jul 11, 2026 6:10 PM', image: 'https://picsum.photos/seed/flexa-fb-2/640/420', type: 'video', likes: 342, comments: 51, shares: 19, pageName: __( 'Your Page', 'flexa-block' ), pageAvatar: 'https://picsum.photos/seed/flexa-fb-a/80/80' },
-	{ id: 'demo-3', message: __( 'Weekend sale is on! (sample album). Demo data only — it will not appear on your published site.', 'flexa-block' ), permalink: '#', date: 'Jul 10, 2026 9:30 AM', image: 'https://picsum.photos/seed/flexa-fb-3/640/420', type: 'album', likes: 87, comments: 12, shares: 5, pageName: __( 'Your Page', 'flexa-block' ), pageAvatar: 'https://picsum.photos/seed/flexa-fb-a/80/80' },
-	{ id: 'demo-4', message: __( 'Thanks for 10k followers! 🎉', 'flexa-block' ), permalink: '#', date: 'Jul 8, 2026 11:20 AM', image: 'https://picsum.photos/seed/flexa-fb-4/640/420', type: 'image', likes: 512, comments: 96, shares: 40, pageName: __( 'Your Page', 'flexa-block' ), pageAvatar: 'https://picsum.photos/seed/flexa-fb-a/80/80' },
+	{ id: 'demo-1', message: __( 'This is a demo Facebook post — connect a Page access token to show your real feed. It appears only in the editor.', 'flexa-block' ), permalink: '#', date: 'Jul 12, 2026 2:45 PM', image: demoImage( 'flexa-fb-1', 640, 420 ), type: 'image', likes: 128, comments: 24, shares: 8, pageName: __( 'Your Page', 'flexa-block' ), pageAvatar: demoImage( 'flexa-fb-a', 80, 80 ) },
+	{ id: 'demo-2', message: __( 'Behind the scenes from today’s shoot 📸 (sample video)', 'flexa-block' ), permalink: '#', date: 'Jul 11, 2026 6:10 PM', image: demoImage( 'flexa-fb-2', 640, 420 ), type: 'video', likes: 342, comments: 51, shares: 19, pageName: __( 'Your Page', 'flexa-block' ), pageAvatar: demoImage( 'flexa-fb-a', 80, 80 ) },
+	{ id: 'demo-3', message: __( 'Weekend sale is on! (sample album). Demo data only — it will not appear on your published site.', 'flexa-block' ), permalink: '#', date: 'Jul 10, 2026 9:30 AM', image: demoImage( 'flexa-fb-3', 640, 420 ), type: 'album', likes: 87, comments: 12, shares: 5, pageName: __( 'Your Page', 'flexa-block' ), pageAvatar: demoImage( 'flexa-fb-a', 80, 80 ) },
+	{ id: 'demo-4', message: __( 'Thanks for 10k followers! 🎉', 'flexa-block' ), permalink: '#', date: 'Jul 8, 2026 11:20 AM', image: demoImage( 'flexa-fb-4', 640, 420 ), type: 'image', likes: 512, comments: 96, shares: 40, pageName: __( 'Your Page', 'flexa-block' ), pageAvatar: demoImage( 'flexa-fb-a', 80, 80 ) },
 ];
 
 /** Trim a plain-text message to a word count. */

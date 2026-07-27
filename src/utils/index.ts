@@ -404,6 +404,36 @@ export const boxShadowPreview = ( shadow: BoxShadowAttr = {} ): string => {
 	return `${ shadow.inset ? 'inset ' : '' }${ withUnit( shadow.horizontal ) } ${ withUnit( shadow.vertical ) } ${ withUnit( shadow.blur ) } ${ withUnit( shadow.spread ) } ${ color }`;
 };
 
+/**
+ * Build a self-contained, deterministic gradient placeholder as an inline SVG data
+ * URI — used for the editor-only demo media in the feed blocks so the sample layout
+ * can be previewed without loading any remote image. The hue is derived from the
+ * seed so each demo card keeps a stable, distinct colour across re-renders. Nothing
+ * is fetched from a third-party host and this never reaches the front end (render.php
+ * shows real media or nothing).
+ *
+ * @param seed   Deterministic seed for the gradient hue.
+ * @param width  Placeholder width in px.
+ * @param height Placeholder height in px.
+ * @return A `data:image/svg+xml,...` URI.
+ */
+export const demoImage = ( seed: string, width = 600, height = 600 ): string => {
+	let hash = 0;
+	for ( let i = 0; i < seed.length; i++ ) {
+		hash = ( hash * 31 + seed.charCodeAt( i ) ) % 360;
+	}
+	const hueA = hash;
+	const hueB = ( hash + 40 ) % 360;
+	const svg =
+		`<svg xmlns="http://www.w3.org/2000/svg" width="${ width }" height="${ height }" viewBox="0 0 ${ width } ${ height }">` +
+		`<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">` +
+		`<stop offset="0" stop-color="hsl(${ hueA },58%,72%)"/>` +
+		`<stop offset="1" stop-color="hsl(${ hueB },58%,54%)"/>` +
+		`</linearGradient></defs>` +
+		`<rect width="${ width }" height="${ height }" fill="url(#g)"/></svg>`;
+	return `data:image/svg+xml,${ encodeURIComponent( svg ) }`;
+};
+
 /** One editor CSS rule: a full selector, a property and its resolved value. */
 export interface EditorCssRule {
 	selector: string;

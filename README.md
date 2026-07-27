@@ -2,7 +2,7 @@
 
 A responsive Gutenberg block collection with **dark mode** support and **save-time CSS generation**. Ships the **Container** block as the canonical architecture reference for all future blocks.
 
-- **Version:** 1.0.0
+- **Version:** 1.0.5
 - **Requires:** WordPress 6.4+, PHP 7.4+
 - **License:** GPLv3
 

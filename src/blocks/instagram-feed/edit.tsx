@@ -44,6 +44,7 @@ import {
 	applyBackgroundPreview,
 	applyBorderPreview,
 	boxShadowPreview,
+	demoImage,
 	ClockIcon,
 	type CssProps,
 } from '@utils';
@@ -77,12 +78,12 @@ const isConnected = (): boolean =>
  * (render.php shows real media or nothing).
  */
 const SAMPLE_MEDIA: MediaItem[] = [
-	{ id: 'demo-1', caption: __( 'Demo photo — connect a token to show your real feed. Editor-only.', 'flexa-block' ), permalink: '#', date: 'Jul 12, 2026 2:45 PM', image: 'https://picsum.photos/seed/flexa-ig-1/600/600', type: 'image', username: 'your_handle' },
-	{ id: 'demo-2', caption: __( 'Golden hour ✨ (sample video)', 'flexa-block' ), permalink: '#', date: 'Jul 11, 2026 6:10 PM', image: 'https://picsum.photos/seed/flexa-ig-2/600/600', type: 'video', username: 'your_handle' },
-	{ id: 'demo-3', caption: __( 'New drop this week 🛍️ (sample album)', 'flexa-block' ), permalink: '#', date: 'Jul 10, 2026 9:30 AM', image: 'https://picsum.photos/seed/flexa-ig-3/600/600', type: 'album', username: 'your_handle' },
-	{ id: 'demo-4', caption: __( 'Behind the scenes', 'flexa-block' ), permalink: '#', date: 'Jul 9, 2026 4:05 PM', image: 'https://picsum.photos/seed/flexa-ig-4/600/600', type: 'image', username: 'your_handle' },
-	{ id: 'demo-5', caption: __( 'Weekend vibes', 'flexa-block' ), permalink: '#', date: 'Jul 8, 2026 11:20 AM', image: 'https://picsum.photos/seed/flexa-ig-5/600/600', type: 'image', username: 'your_handle' },
-	{ id: 'demo-6', caption: __( 'Sample data only', 'flexa-block' ), permalink: '#', date: 'Jul 7, 2026 8:00 PM', image: 'https://picsum.photos/seed/flexa-ig-6/600/600', type: 'image', username: 'your_handle' },
+	{ id: 'demo-1', caption: __( 'Demo photo — connect a token to show your real feed. Editor-only.', 'flexa-block' ), permalink: '#', date: 'Jul 12, 2026 2:45 PM', image: demoImage( 'flexa-ig-1' ), type: 'image', username: 'your_handle' },
+	{ id: 'demo-2', caption: __( 'Golden hour ✨ (sample video)', 'flexa-block' ), permalink: '#', date: 'Jul 11, 2026 6:10 PM', image: demoImage( 'flexa-ig-2' ), type: 'video', username: 'your_handle' },
+	{ id: 'demo-3', caption: __( 'New drop this week 🛍️ (sample album)', 'flexa-block' ), permalink: '#', date: 'Jul 10, 2026 9:30 AM', image: demoImage( 'flexa-ig-3' ), type: 'album', username: 'your_handle' },
+	{ id: 'demo-4', caption: __( 'Behind the scenes', 'flexa-block' ), permalink: '#', date: 'Jul 9, 2026 4:05 PM', image: demoImage( 'flexa-ig-4' ), type: 'image', username: 'your_handle' },
+	{ id: 'demo-5', caption: __( 'Weekend vibes', 'flexa-block' ), permalink: '#', date: 'Jul 8, 2026 11:20 AM', image: demoImage( 'flexa-ig-5' ), type: 'image', username: 'your_handle' },
+	{ id: 'demo-6', caption: __( 'Sample data only', 'flexa-block' ), permalink: '#', date: 'Jul 7, 2026 8:00 PM', image: demoImage( 'flexa-ig-6' ), type: 'image', username: 'your_handle' },
 ];
 
 /** Trim a plain-text caption to a word count. */
