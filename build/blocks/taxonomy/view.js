@@ -1,1 +1,0 @@
-(()=>{"use strict";function e(e){const t=e.target;if(!t)return;const n=t.value;n&&(window.location.href=n)}function t(){document.querySelectorAll(".flexa-taxonomy__select[data-flexa-taxonomy-nav]").forEach(t=>{t.addEventListener("change",e)})}"loading"===document.readyState?document.addEventListener("DOMContentLoaded",t):t()})();
