@@ -1,11 +1,11 @@
 
-=== Flexa Block – Blocks & Page Builder for Gutenberg ===
+=== Flexa Block – Blocks & Page Builder ===
 Contributors: flexatech
 Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,45 @@ Fixing a typo no longer means opening the Block Editor. On the live page, logged
 Whether you're building landing pages, business websites, blogs, or eCommerce stores, Flexa Block helps you create professional layouts with less effort.
 
 More blocks and advanced features will be added in future releases.
+
+**Source code for compiled JavaScript and CSS**
+
+The plugin ships with minified/compiled JavaScript and CSS in `build/`. The human-readable source code (`src/`), together with the build tooling used to generate those assets, is **publicly available** and maintained at:
+
+https://github.com/flexatech/flexa-block
+
+The assets are built with npm and @wordpress/scripts (webpack). To build them yourself:
+
+1. Install dependencies: `npm install`
+2. Build production assets: `npm run build` (or `npm start` for a watched dev build)
+
+This regenerates everything in `build/` from the source in `src/`.
+
+== External services ==
+
+This plugin can connect to the third-party services listed below. Each is optional and is only contacted for the specific block that uses it; if you do not use that block, no request is made.
+
+**Facebook Graph API (Facebook Feed block)**
+
+The Facebook Feed block displays posts from a Facebook Page. When the block is present on a page (and in the editor while you configure it), the plugin sends a request from your server to the Facebook Graph API (`https://graph.facebook.com/`) containing the Page ID and the Page access token you enter in the plugin settings, in order to retrieve the Page's recent posts, images and engagement counts. Responses are cached to reduce the number of requests. The access token is stored on your server and is never exposed to visitors' browsers. This service is provided by Meta Platforms, Inc.
+Terms of Service: https://developers.facebook.com/terms/
+Privacy Policy: https://www.facebook.com/privacy/policy/
+
+**Instagram Graph / Basic Display API (Instagram Feed block)**
+
+The Instagram Feed block displays media from an Instagram account. When the block is present on a page (and in the editor while you configure it), the plugin sends a request from your server to the Instagram API (`https://graph.instagram.com/`) containing the access token you enter in the plugin settings, in order to retrieve the account's recent media. Responses are cached to reduce the number of requests. The access token is stored on your server and is never exposed to visitors' browsers. This service is provided by Meta Platforms, Inc.
+Terms of Service: https://www.instagram.com/about/legal/terms/
+Privacy Policy: https://privacycenter.instagram.com/policy/
+
+**Google Maps (Google Map block)**
+
+The Google Map block embeds an interactive map for a location you specify. When a page containing the block is viewed, the visitor's browser loads a Google Maps embed (`https://www.google.com/maps/embed/` when you supply a Google Maps Embed API key, otherwise `https://maps.google.com/maps`) with the location and zoom level configured on the block. This means the visitor's browser connects to Google to display the map. This service is provided by Google LLC.
+Terms of Service: https://cloud.google.com/maps-platform/terms
+Privacy Policy: https://policies.google.com/privacy
+
+**User-supplied RSS feed (RSS Feed block)**
+
+The RSS Feed block fetches and displays entries from an RSS/Atom URL that you enter into the block. No fixed third-party service is involved — the plugin only requests the exact feed URL you configure — but be aware that this causes your server to make an outgoing request to that URL.
 
 == Installation ==
 
@@ -80,6 +119,11 @@ In the WordPress admin sidebar, click **Flexa Block** (located below Settings). 
 Yes. Flexa Block Pro adds additional blocks and advanced features. It works alongside this free plugin.
 
 == Changelog ==
+
+= 1.0.6 =
+* WordPress.org review fixes: documented the external services the plugin can connect to (Facebook Graph, Instagram and Google Maps) with their Terms/Privacy links, and added build-tool instructions alongside the public source-code link.
+* Feed blocks: the editor-only demo media for the Facebook Feed and Instagram Feed blocks now uses self-contained inline placeholders instead of loading sample images from a remote host.
+* Subscribe Form: uploaded file attachments are now staged through WordPress's own `wp_handle_upload()` instead of `move_uploaded_file()`.
 
 = 1.0.5 =
 * Banner: added a Content Box Width control that caps the width of the content box while keeping the background full-bleed, so a full-width banner can align its content with the site grid.
