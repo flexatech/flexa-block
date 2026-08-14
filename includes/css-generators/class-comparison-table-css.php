@@ -46,6 +46,7 @@ class Comparison_Table_CSS {
 		}
 
 		$wrap       = '.flexa-comparison-table-' . $id;
+		$table      = $wrap . ' .flexa-comparison-table__table';
 		$col        = $wrap . ' .flexa-comparison-table__col';
 		$corner     = $wrap . ' .flexa-comparison-table__corner';
 		$label      = $wrap . ' .flexa-comparison-table__label';
@@ -71,6 +72,18 @@ class Comparison_Table_CSS {
 				$css->set_selector( $wrap )->add_property(
 					$is_boxed ? 'max-width' : 'width',
 					CSS_Helpers::with_unit( $width['value'], $width['unit'] ?? ( $is_boxed ? 'px' : '%' ) )
+				);
+			}
+
+			// Minimum width of the TABLE — never the wrapper, which is the scroll viewport and has
+			// to stay at the container's width or the page scrolls instead of the table. Without a
+			// floor, `table-layout: auto` collapses every column to its longest word and long
+			// labels stack several lines high inside a scroller that never needed to scroll.
+			$min_w = $attrs['tableMinWidth'][ $device ] ?? [];
+			if ( ! empty( $min_w['value'] ) ) {
+				$css->set_selector( $table )->add_property(
+					'min-width',
+					CSS_Helpers::with_unit( $min_w['value'], $min_w['unit'] ?? 'px' )
 				);
 			}
 

@@ -258,13 +258,152 @@ final class Inline_Editor {
 	private static $should = null;
 
 	/**
+	 * Memoized registry() result for the current request.
+	 *
+	 * @var array<string, array{fields: list<array<string, mixed>>}>|null
+	 */
+	private static $registry = null;
+
+	/**
+	 * The editable registry, open to add-on plugins.
+	 *
+	 * `EDITABLE` above describes this plugin's own blocks. An add-on (Flexa Block
+	 * Pro) is the only place that knows its blocks' render markup and attribute
+	 * shapes, so it must be able to describe them itself rather than have this
+	 * file carry knowledge of blocks it does not ship. Same extension model as the
+	 * `flexa_block_blocks` catalog filter, and the reason the whole pipeline —
+	 * annotation, the front-end module, the REST write — is reused instead of
+	 * duplicated per add-on.
+	 *
+	 * Entries are shape-checked rather than trusted: a malformed one would
+	 * otherwise surface as a fatal deep inside annotate() or handle_save(), far
+	 * from the add-on that caused it. Unknown keys are kept — a newer add-on may
+	 * carry field flags an older copy of this plugin does not read yet.
+	 *
+	 * @return array<string, array{fields: list<array<string, mixed>>}>
+	 */
+	public static function registry(): array {
+		if ( null !== self::$registry ) {
+			return self::$registry;
+		}
+
+		/**
+		 * Filters the blocks and fields that can be edited from the front end.
+		 *
+		 * Standard filter semantics: add-ons append their own block names. The
+		 * array is keyed by block name; each entry is `[ 'fields' => [ … ] ]` in
+		 * the shape documented on Inline_Editor::EDITABLE.
+		 *
+		 * @param array<string, array{fields: list<array<string, mixed>>}> $registry Block name → editable fields.
+		 */
+		$filtered = apply_filters( 'flexa_block_inline_editable', self::EDITABLE );
+
+		$registry = [];
+		if ( is_array( $filtered ) ) {
+			foreach ( $filtered as $name => $def ) {
+				if ( ! is_string( $name ) || '' === $name ) {
+					continue;
+				}
+				$fields = self::valid_fields( $def );
+				if ( $fields ) {
+					$registry[ $name ] = [ 'fields' => $fields ];
+				}
+			}
+		}
+
+		self::$registry = $registry;
+		return $registry;
+	}
+
+	/**
+	 * The well-formed fields of a registry entry (empty when unusable).
+	 *
+	 * A field is only usable if it names both a block attribute and a rendered
+	 * element to click. Repeater / object / matrix-cell fields additionally need
+	 * `key`, without which find_field() could never match them and every save
+	 * would be rejected as an invalid field. `allowed` may be omitted — allowed_html()
+	 * falls back to the most restrictive inline allowlist.
+	 *
+	 * @param mixed $def Registry entry.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function valid_fields( $def ): array {
+		if ( ! is_array( $def ) || ! isset( $def['fields'] ) || ! is_array( $def['fields'] ) ) {
+			return [];
+		}
+
+		$out = [];
+		foreach ( $def['fields'] as $field ) {
+			if ( ! is_array( $field ) ) {
+				continue;
+			}
+			if ( ! isset( $field['attr'] ) || ! is_string( $field['attr'] ) || '' === $field['attr'] ) {
+				continue;
+			}
+			if ( ! isset( $field['selector'] ) || ! is_string( $field['selector'] ) || '' === $field['selector'] ) {
+				continue;
+			}
+			$needs_key = ! empty( $field['repeat'] ) || ! empty( $field['object'] ) || ! empty( $field['cell'] );
+			if ( $needs_key && ( ! isset( $field['key'] ) || ! is_string( $field['key'] ) || '' === $field['key'] ) ) {
+				continue;
+			}
+			$out[] = $field;
+		}
+
+		return $out;
+	}
+
+	/**
+	 * The settings slug for a block name — the part after the namespace.
+	 *
+	 * `flexa/faq` and `flexa-pro/flip-box` both reduce to their bare slug, which
+	 * is what the Editing screen stores in `disabled_blocks`. Deriving it by
+	 * trimming a literal `flexa/` (as three call sites used to) left an add-on
+	 * name's slash intact, and the `sanitize_key()` the settings screen runs
+	 * downstream then silently turned `flexa-pro/flip-box` into
+	 * `flexa-proflip-box` — a slug that matches nothing, so an add-on block could
+	 * never be switched off.
+	 *
+	 * @param string $name Block name.
+	 * @return string
+	 */
+	public static function slug_for( string $name ): string {
+		$pos = strrpos( $name, '/' );
+		return ( false === $pos ) ? $name : substr( $name, $pos + 1 );
+	}
+
+	/**
 	 * Register hooks.
 	 */
 	public static function init(): void {
 		add_filter( 'render_block', [ __CLASS__, 'annotate' ], 20, 2 );
+		add_filter( 'body_class', [ __CLASS__, 'body_class' ] );
 		add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue' ], 25 );
 		add_action( 'wp_footer', [ __CLASS__, 'render_toolbar' ] );
 		add_action( 'rest_api_init', [ __CLASS__, 'register_routes' ] );
+	}
+
+	/**
+	 * Mark the page while the inline editor is live.
+	 *
+	 * Some editable text is decorative in its resting state — click-through so a
+	 * control underneath stays the hit target, or hidden until its parent is
+	 * hovered. Such text can be bound and still never receive a click, which
+	 * reads as "this field is not editable". A block needs a way to relax that
+	 * for editors only, and `.flexa-fee-editable` cannot do it: the front-end
+	 * module puts that class on the text element itself, whereas the rule usually
+	 * has to reach an ANCESTOR (a tooltip's `pointer-events`, say). A body-level
+	 * flag is the signal that works in both directions, and it costs a visitor
+	 * nothing because it is only ever printed for a user who may edit the post.
+	 *
+	 * @param string[] $classes Body classes.
+	 * @return string[]
+	 */
+	public static function body_class( $classes ) {
+		if ( is_array( $classes ) && self::should_render() ) {
+			$classes[] = 'flexa-fee-on';
+		}
+		return $classes;
 	}
 
 	/* ---------------------------------------------------------------------
@@ -306,7 +445,7 @@ final class Inline_Editor {
 	 * @return list<string>
 	 */
 	public static function editable_block_names(): array {
-		return array_keys( self::EDITABLE );
+		return array_keys( self::registry() );
 	}
 
 	/**
@@ -316,7 +455,8 @@ final class Inline_Editor {
 	 * @return list<array<string, mixed>>
 	 */
 	private static function fields_for( string $name ): array {
-		return isset( self::EDITABLE[ $name ] ) ? self::EDITABLE[ $name ]['fields'] : [];
+		$registry = self::registry();
+		return isset( $registry[ $name ] ) ? $registry[ $name ]['fields'] : [];
 	}
 
 	/**
@@ -400,8 +540,7 @@ final class Inline_Editor {
 	 * Whether a block slug has been disabled in settings.
 	 */
 	private static function is_block_disabled( string $block_name ): bool {
-		$slug = str_replace( 'flexa/', '', $block_name );
-		return in_array( $slug, self::settings()['disabled_blocks'], true );
+		return in_array( self::slug_for( $block_name ), self::settings()['disabled_blocks'], true );
 	}
 
 	/* ---------------------------------------------------------------------
@@ -423,8 +562,9 @@ final class Inline_Editor {
 			return $content;
 		}
 
-		$name = $block['blockName'] ?? '';
-		if ( ! isset( self::EDITABLE[ $name ] ) || self::is_block_disabled( $name ) ) {
+		$name     = $block['blockName'] ?? '';
+		$registry = self::registry();
+		if ( ! isset( $registry[ $name ] ) || self::is_block_disabled( $name ) ) {
 			return $content;
 		}
 
@@ -511,7 +651,7 @@ final class Inline_Editor {
 	 */
 	private static function js_fields(): array {
 		$out = [];
-		foreach ( self::EDITABLE as $name => $def ) {
+		foreach ( self::registry() as $name => $def ) {
 			if ( self::is_block_disabled( $name ) ) {
 				continue;
 			}
@@ -664,7 +804,7 @@ final class Inline_Editor {
 				sprintf(
 					/* translators: %s: block type slug. */
 					__( 'Front-end editing is turned off for the “%s” block. Turn it on under Flexa Block → Editing.', 'flexa-block' ),
-					str_replace( 'flexa/', '', $name )
+					self::slug_for( $name )
 				),
 				[ 'status' => 403 ]
 			);
@@ -900,7 +1040,7 @@ final class Inline_Editor {
 	 */
 	private static function log_edit( int $post_id, string $name, string $old, string $new ): void {
 		$user  = wp_get_current_user();
-		$type  = str_replace( 'flexa/', '', $name );
+		$type  = self::slug_for( $name );
 		$old_s = mb_strimwidth( wp_strip_all_tags( $old ), 0, 80, '…' );
 		$new_s = mb_strimwidth( wp_strip_all_tags( $new ), 0, 80, '…' );
 

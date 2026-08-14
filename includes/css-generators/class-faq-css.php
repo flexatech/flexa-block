@@ -64,6 +64,12 @@ class Faq_CSS {
 		$icon        = $wrap . ' .flexa-faq__icon';
 		$icon_on     = $item_on . ' .flexa-faq__icon, ' . $question . ':hover .flexa-faq__icon';
 
+		// Item-style migration flag. Before it flips, the wrapper border/shadow
+		// still paint each item (legacy behaviour); after, the item uses the
+		// dedicated itemBorder/itemBoxShadow and the wrapper carries border/shadow.
+		// TODO(remove in vNEXT): item-style migration.
+		$migrated = ! empty( $attrs['itemStyleMigrated'] );
+
 		foreach ( self::$devices as $device ) {
 			CSS_Helpers::open_device( $css, $device );
 
@@ -106,15 +112,28 @@ class Faq_CSS {
 
 			// Border outlines each item (4 sides) plus a matching divider between the
 			// question and its answer — five lines per item. Clip the item when a
-			// radius is set so the rounded corners hold.
-			$border = $attrs['border'][ $device ] ?? [];
-			if ( ! empty( $border ) ) {
+			// radius is set so the rounded corners hold. Post-migration the item
+			// border comes from itemBorder; legacy content falls back to the wrapper
+			// border (which used to paint the item + its divider).
+			// TODO(remove in vNEXT): drop the fallback, always itemBorder.
+			$item_border = ( $migrated ? ( $attrs['itemBorder'] ?? [] ) : ( $attrs['border'] ?? [] ) )[ $device ] ?? [];
+			if ( ! empty( $item_border ) ) {
 				$css->set_selector( $item );
-				CSS_Helpers::add_border( $css, $border );
-				if ( '' !== CSS_Helpers::radius_shorthand( $border['radius'] ?? [] ) ) {
+				CSS_Helpers::add_border( $css, $item_border );
+				if ( '' !== CSS_Helpers::radius_shorthand( $item_border['radius'] ?? [] ) ) {
 					$css->add_property( 'overflow', 'hidden' );
 				}
-				self::add_qa_divider( $css, $question, $border );
+				self::add_qa_divider( $css, $question, $item_border );
+			}
+
+			// Wrapper border (post-migration only): the Style-tab border now frames
+			// the whole block. TODO(remove in vNEXT): the migrated gate.
+			if ( $migrated ) {
+				$wrap_border = $attrs['border'][ $device ] ?? [];
+				if ( ! empty( $wrap_border ) ) {
+					$css->set_selector( $wrap );
+					CSS_Helpers::add_border( $css, $wrap_border );
+				}
 			}
 
 			// Wrapper spacing: padding + margin.
@@ -158,10 +177,19 @@ class Faq_CSS {
 			]
 		);
 		// Dark colour for the item border + the question/answer divider (light value
-		// + geometry come from the per-device CSS_Helpers::add_border above).
-		$border_dark = CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' );
+		// + geometry come from the per-device CSS_Helpers::add_border above), read
+		// from the same source as the light rules (itemBorder once migrated, else
+		// the legacy wrapper border). TODO(remove in vNEXT): the $migrated fallback.
+		$item_border_cfg = $migrated ? ( $attrs['itemBorder'] ?? [] ) : ( $attrs['border'] ?? [] );
+		$border_dark     = CSS_Helpers::dark( $item_border_cfg['desktop']['color'] ?? '' );
 		self::dark_color( $css, $item, 'border-color', $border_dark );
 		self::dark_color( $css, $question, 'border-bottom-color', $border_dark );
+
+		// Wrapper dark border (post-migration only). TODO(remove in vNEXT): the gate.
+		if ( $migrated ) {
+			$wrap_border_dark = CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' );
+			self::dark_color( $css, $wrap, 'border-color', $wrap_border_dark );
+		}
 
 		// Wrapper background (base, light) — the whole block.
 		$background = $attrs['background'] ?? [];
@@ -176,8 +204,10 @@ class Faq_CSS {
 		}
 
 		// Box shadow wraps each item (the question + answer pair), not the block, and
-		// is clipped so only the bottom drop shadow shows.
-		$shadow_cfg = $attrs['boxShadow'] ?? [];
+		// is clipped so only the bottom drop shadow shows. Post-migration it comes
+		// from itemBoxShadow; legacy content falls back to the wrapper boxShadow.
+		// TODO(remove in vNEXT): drop the legacy fallback, always itemBoxShadow.
+		$shadow_cfg = $migrated ? ( $attrs['itemBoxShadow'] ?? [] ) : ( $attrs['boxShadow'] ?? [] );
 		$shadow     = CSS_Helpers::box_shadow( $shadow_cfg );
 		if ( '' !== $shadow ) {
 			$css->set_selector( $item )->add_property( 'box-shadow', $shadow );
@@ -192,8 +222,24 @@ class Faq_CSS {
 			}
 		}
 
+		// Wrapper box shadow (post-migration only): the Style-tab shadow now frames
+		// the whole block. TODO(remove in vNEXT): the migrated gate.
+		if ( $migrated ) {
+			$wrap_shadow = CSS_Helpers::box_shadow( $attrs['boxShadow'] ?? [] );
+			if ( '' !== $wrap_shadow ) {
+				$css->set_selector( $wrap )->add_property( 'box-shadow', $wrap_shadow );
+			}
+		}
+
 		self::add_wrapper_dark( $css, $wrap, $background );
-		self::add_item_shadow_dark( $css, $item, $attrs );
+		// Dark shadow on each item, from the same source as the light rule.
+		// TODO(remove in vNEXT): the $migrated fallback.
+		self::add_item_shadow_dark( $css, $item, $migrated ? ( $attrs['itemBoxShadow'] ?? [] ) : ( $attrs['boxShadow'] ?? [] ) );
+
+		// Wrapper dark shadow (post-migration only). TODO(remove in vNEXT): the gate.
+		if ( $migrated ) {
+			self::add_item_shadow_dark( $css, $wrap, $attrs['boxShadow'] ?? [] );
+		}
 	}
 
 	/**
@@ -323,15 +369,15 @@ class Faq_CSS {
 	}
 
 	/**
-	 * Dark-mode box shadow on each item, mirroring the light shadow with the dark
-	 * shadow colour.
+	 * Dark-mode box shadow on a selector, mirroring the light shadow with the dark
+	 * shadow colour. Used for both each item and (post-migration) the wrapper, so
+	 * the shadow config is passed in rather than read from a fixed attribute.
 	 *
-	 * @param CSS_Builder $css   Builder.
-	 * @param string      $item  Item selector.
-	 * @param array       $attrs Attributes.
+	 * @param CSS_Builder $css      Builder.
+	 * @param string      $selector Target selector.
+	 * @param array       $shadow   Box-shadow config.
 	 */
-	private static function add_item_shadow_dark( $css, $item, $attrs ) {
-		$shadow = $attrs['boxShadow'] ?? [];
+	private static function add_item_shadow_dark( $css, $selector, $shadow ) {
 		if ( empty( $shadow['enabled'] ) ) {
 			return;
 		}
@@ -345,7 +391,7 @@ class Faq_CSS {
 		}
 		CSS_Helpers::add_dark_mode(
 			$css,
-			$item,
+			$selector,
 			function ( $css ) use ( $value ) {
 				$css->add_property( 'box-shadow', $value );
 			}

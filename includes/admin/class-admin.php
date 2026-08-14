@@ -67,7 +67,9 @@ class Admin {
 
 		// Feed stored settings back into the engine.
 		add_filter( 'flexa_block_css_specificity_boost', [ __CLASS__, 'filter_specificity_boost' ] );
-		add_filter( 'flexa_block_blocks', [ __CLASS__, 'filter_disabled_blocks' ] );
+		// Narrows what gets registered, NOT the catalog itself — see the filter's
+		// documentation in Block_Manager::register_blocks().
+		add_filter( 'flexa_block_registerable_blocks', [ __CLASS__, 'filter_disabled_blocks' ] );
 	}
 
 	/* ---------------------------------------------------------------------
@@ -133,7 +135,14 @@ class Admin {
 	}
 
 	/**
-	 * Keep only valid, known block slugs.
+	 * Keep only valid, known, switchable block slugs.
+	 *
+	 * Locked slugs are excluded even though they are in the catalog: they
+	 * describe a block from an add-on the site does not have, so there is nothing
+	 * to switch off. Without this, "known slug" alone would accept them and a
+	 * bulk action could write a block the site does not own into
+	 * `disabled_blocks`, where it would sit until someone bought the add-on and
+	 * then wondered why the block arrived switched off.
 	 *
 	 * @param mixed $slugs Candidate slugs.
 	 * @return array<int, string>
@@ -142,11 +151,12 @@ class Admin {
 		if ( ! is_array( $slugs ) ) {
 			return [];
 		}
-		$valid = array_column( Block_Manager::get_block_catalog(), 'slug' );
-		$clean = [];
+		$valid  = array_column( Block_Manager::get_block_catalog(), 'slug' );
+		$locked = \Flexa\Block\Addon_Blocks::locked_slugs();
+		$clean  = [];
 		foreach ( $slugs as $slug ) {
 			$slug = sanitize_key( (string) $slug );
-			if ( in_array( $slug, $valid, true ) ) {
+			if ( in_array( $slug, $valid, true ) && ! in_array( $slug, $locked, true ) ) {
 				$clean[] = $slug;
 			}
 		}
@@ -177,7 +187,7 @@ class Admin {
 	}
 
 	/**
-	 * Keep only valid editable-block slugs (block name minus the `flexa/` prefix).
+	 * Keep only valid editable-block slugs (block name minus its namespace).
 	 *
 	 * @param mixed $slugs Candidate slugs.
 	 * @return list<string>
@@ -187,9 +197,7 @@ class Admin {
 			return [];
 		}
 		$valid = array_map(
-			static function ( $name ) {
-				return str_replace( 'flexa/', '', $name );
-			},
+			[ \Flexa\Block\Inline_Editor::class, 'slug_for' ],
 			\Flexa\Block\Inline_Editor::editable_block_names()
 		);
 		$clean = [];
@@ -242,6 +250,60 @@ class Admin {
 		return $out;
 	}
 
+	/**
+	 * Catalog fields the Blocks dashboard is allowed to receive.
+	 *
+	 * This list IS the contract for add-ons. The catalog is opened up through the
+	 * `flexa_block_blocks` filter, so an add-on's entry arrives here alongside the
+	 * core ones — and three of these fields exist only for it:
+	 *   - `group`       → overrides the slug→pill mapping in block-groups.ts, which
+	 *                     only knows core slugs. Without it an add-on block has no
+	 *                     way out of "Other".
+	 *   - `badge`       → free-text origin label beside the card title (e.g. "Pro").
+	 *                     A string rather than a boolean flag so several add-ons can
+	 *                     each label their own blocks.
+	 *   - `description` → the card body.
+	 * Adding a field the dashboard should see means adding it here first; it is
+	 * dropped silently otherwise.
+	 *
+	 * @var list<string>
+	 */
+	private const ADMIN_BLOCK_FIELDS = [
+		'slug',
+		'name',
+		'title',
+		'description',
+		'category',
+		'is_core',
+		'is_child',
+		'is_woo',
+		'group',
+		'badge',
+		'locked',
+	];
+
+	/**
+	 * Catalog trimmed to the fields the dashboard renders.
+	 *
+	 * Entries also carry engine-only internals — `generator` (a class FQCN) and
+	 * `path` (an absolute filesystem path an add-on points at its own build dir).
+	 * Handing the raw catalog to wp_localize_script() printed both into the page,
+	 * so every admin screen leaked the server's directory layout. Nothing in the
+	 * JS reads them.
+	 *
+	 * @return list<array<string, mixed>>
+	 */
+	private static function blocks_for_admin(): array {
+		$out = [];
+		foreach ( Block_Manager::get_block_catalog() as $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+			$out[] = array_intersect_key( $block, array_flip( self::ADMIN_BLOCK_FIELDS ) );
+		}
+		return $out;
+	}
+
 	/* ---------------------------------------------------------------------
 	 * Engine wiring (filters)
 	 * ------------------------------------------------------------------ */
@@ -258,7 +320,15 @@ class Admin {
 	}
 
 	/**
-	 * Remove disabled blocks from the registration catalog.
+	 * Drop the switched-off blocks from the set about to be registered.
+	 *
+	 * Runs on `flexa_block_registerable_blocks`, deliberately not on
+	 * `flexa_block_blocks`: the catalog must keep listing a disabled block so its
+	 * card stays on this screen (with the switch off) and so its slug still
+	 * validates on the next save. Hooking the catalog also meant add-on blocks
+	 * escaped entirely — an add-on appends on the same filter at the same
+	 * priority but registers later, so its entries landed after this ran and no
+	 * add-on block could ever be switched off.
 	 *
 	 * @param array<int, array<string, mixed>> $blocks Block catalog.
 	 * @return array<int, array<string, mixed>>
@@ -356,11 +426,9 @@ class Admin {
 				'nonce'          => wp_create_nonce( 'wp_rest' ),
 				'version'        => FLEXA_BLOCK_VER,
 				'settings'       => self::get_settings(),
-				'blocks'         => Block_Manager::get_block_catalog(),
+				'blocks'         => self::blocks_for_admin(),
 				'editableBlocks' => array_map(
-					static function ( $name ) {
-						return str_replace( 'flexa/', '', $name );
-					},
+					[ \Flexa\Block\Inline_Editor::class, 'slug_for' ],
 					\Flexa\Block\Inline_Editor::editable_block_names()
 				),
 				'roles'          => self::roles_for_admin(),
@@ -412,7 +480,7 @@ class Admin {
 		return rest_ensure_response(
 			[
 				'settings' => self::get_settings(),
-				'blocks'   => Block_Manager::get_block_catalog(),
+				'blocks'   => self::blocks_for_admin(),
 			]
 		);
 	}

@@ -202,6 +202,14 @@ class Block_Manager {
 				'generator'   => 'Flexa\\Block\\CSS_Generators\\Tabs_CSS',
 			],
 			[
+				'slug'        => 'tab',
+				'name'        => 'flexa/tab',
+				'title'       => 'Tab',
+				'description' => 'A single tab inside a Tabs block — a label, optional intro text and any blocks below it.',
+				'category'    => 'design',
+				'is_child'    => true,
+			],
+			[
 				'slug'        => 'steps',
 				'name'        => 'flexa/steps',
 				'title'       => 'Steps',
@@ -639,12 +647,25 @@ class Block_Manager {
 
 	/**
 	 * Register all blocks from the blocks/ directory.
+	 *
+	 * The catalog is filtered once more here, through
+	 * `flexa_block_registerable_blocks`, and that separation is load-bearing:
+	 * `flexa_block_blocks` answers "which blocks exist" (what the dashboard
+	 * lists, what carries a CSS generator), while this one answers "which of
+	 * them should reach the editor". Narrowing the catalog itself conflated the
+	 * two — a block switched off in the settings vanished from the very screen
+	 * that switches it back on, and `sanitize_block_slugs()` then rejected its
+	 * slug as unknown on the next save. Add-ons append on `flexa_block_blocks`
+	 * and are unaffected by (and cannot outrun) whoever narrows this one.
 	 */
 	public static function register_blocks() {
 		$build_dir  = FLEXA_BLOCK_DIR . 'build/blocks/';
 		$blocks_dir = is_dir( $build_dir ) ? $build_dir : FLEXA_BLOCK_DIR . 'src/blocks/';
 
-		foreach ( self::get_blocks() as $block ) {
+		/** This filter is documented above. */
+		$registerable = apply_filters( 'flexa_block_registerable_blocks', self::get_blocks() );
+
+		foreach ( (array) $registerable as $block ) {
 			if ( empty( $block['slug'] ) ) {
 				continue;
 			}

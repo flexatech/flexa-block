@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Flexa Block – Blocks & Page Builder
  * Description:       A collection of lightweight, customizable blocks for building modern WordPress websites with the block editor.
- * Version:           1.0.6
+ * Version:           1.0.8
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Flexa Tech
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FLEXA_BLOCK_VER', '1.0.6' );
+define( 'FLEXA_BLOCK_VER', '1.0.8' );
 define( 'FLEXA_BLOCK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FLEXA_BLOCK_URL', plugin_dir_url( __FILE__ ) );
 define( 'FLEXA_BLOCK_BASENAME', plugin_basename( __FILE__ ) );
@@ -46,6 +46,7 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-css-generator-service.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/css-generators/index.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-block-manager.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-addon-blocks.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-asset-loader.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-block-locator.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-post-query.php';
@@ -53,6 +54,8 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-post-filter-rest.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-form-handler.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-editor.php';
+	// TODO(remove in vNEXT): item-style migration.
+	require_once FLEXA_BLOCK_DIR . 'includes/class-item-style-migration.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-uploads.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-rss-feed.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-remote-feed.php';
@@ -62,11 +65,13 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-admin.php';
 
 	Flexa\Block\Block_Manager::init();
+	Flexa\Block\Addon_Blocks::init();
 	Flexa\Block\Animations::init();
 	Flexa\Block\Asset_Loader::init();
 	Flexa\Block\Form_Handler::init();
 	Flexa\Block\Post_Filter_REST::init();
 	Flexa\Block\Inline_Editor::init();
+	Flexa\Block\Item_Style_Migration::init(); // TODO(remove in vNEXT): item-style migration.
 	Flexa\Block\Uploads::init();
 	Flexa\Block\Rss_Feed::init();
 	Flexa\Block\Feed_Tokens::init();

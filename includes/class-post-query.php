@@ -152,11 +152,18 @@ final class Post_Query {
 			'showDate'       => false !== ( $attrs['showDate'] ?? true ),
 			'showComments'   => ! empty( $attrs['showComments'] ),
 			'showTaxonomy'   => ! empty( $attrs['showTaxonomy'] ),
+			'showReadingTime' => ! empty( $attrs['showReadingTime'] ),
+			'wordsPerMinute' => max( 100, min( 600, (int) ( $attrs['wordsPerMinute'] ?? 200 ) ) ),
 			'showExcerpt'    => false !== ( $attrs['showExcerpt'] ?? true ),
 			'excerptLength'  => max( 0, (int) ( $attrs['excerptLength'] ?? 20 ) ),
 			'showReadMore'   => false !== ( $attrs['showReadMore'] ?? true ),
 			'readMoreText'   => '' !== $read_more ? $read_more : __( 'Read more', 'flexa-block' ),
 			'imageSize'      => '' !== $image_size ? $image_size : 'large',
+			'hoverEffect'    => (string) ( $attrs['hoverEffect'] ?? 'none' ),
+			// Card layout: 'overlay' puts the body over the image; 'featureFirst' makes
+			// the first card span the full row (image beside body).
+			'cardStyle'      => 'overlay' === ( $attrs['cardStyle'] ?? 'stacked' ) ? 'overlay' : 'stacked',
+			'featureFirst'   => ! empty( $attrs['featureFirst'] ),
 			// Inline aspect-ratio for the "no image" placeholder so it matches the chosen ratio.
 			'ratioStyle'     => preg_match( '#^[0-9]+\s*/\s*[0-9]+$#', $image_ratio ) ? 'aspect-ratio:' . $image_ratio : '',
 		];
@@ -612,13 +619,22 @@ final class Post_Query {
 			return '';
 		}
 
+		$feature_first = ! empty( $cfg['featureFirst'] );
+
 		$cards = '';
+		$index = 0;
 		while ( $query->have_posts() ) {
 			$query->the_post();
 			$post_id   = (int) get_the_ID();
 			$permalink = (string) get_permalink( $post_id );
 
-			$cards .= '<article class="flexa-post-grid__item">'
+			$item_class = 'flexa-post-grid__item';
+			if ( $feature_first && 0 === $index ) {
+				$item_class .= ' flexa-post-grid__item--featured';
+			}
+			++$index;
+
+			$cards .= '<article class="' . esc_attr( $item_class ) . '">'
 				. self::card_image( $post_id, $permalink, $cfg )
 				. '<div class="flexa-post-grid__body">'
 					. self::card_meta( $post_id, $cfg )
@@ -646,6 +662,11 @@ final class Post_Query {
 			return '';
 		}
 
+		$wrap_class = implode(
+			' ',
+			array_merge( [ 'flexa-post-grid__image-wrap' ], HTML_Helpers::hover_effect_classes( $cfg['hoverEffect'] ?? 'none' ) )
+		);
+
 		if ( has_post_thumbnail( $post_id ) ) {
 			$thumb = get_the_post_thumbnail(
 				$post_id,
@@ -657,11 +678,11 @@ final class Post_Query {
 			);
 			if ( '' !== $thumb ) {
 				return '<a class="flexa-post-grid__image-link" href="' . esc_url( $permalink ) . '" tabindex="-1" aria-hidden="true">'
-					. '<span class="flexa-post-grid__image-wrap">' . $thumb . '</span></a>';
+					. '<span class="' . esc_attr( $wrap_class ) . '">' . $thumb . '</span></a>';
 			}
 		}
 
-		return '<span class="flexa-post-grid__image-wrap">' . HTML_Helpers::image_placeholder( '', (string) $cfg['ratioStyle'] ) . '</span>';
+		return '<span class="' . esc_attr( $wrap_class ) . '">' . HTML_Helpers::image_placeholder( '', (string) $cfg['ratioStyle'] ) . '</span>';
 	}
 
 	/**
@@ -689,6 +710,13 @@ final class Post_Query {
 
 		if ( ! empty( $cfg['showDate'] ) ) {
 			$parts[] = '<time class="flexa-post-grid__date" datetime="' . esc_attr( get_the_date( 'c', $post_id ) ) . '">' . esc_html( get_the_date( '', $post_id ) ) . '</time>';
+		}
+
+		if ( ! empty( $cfg['showReadingTime'] ) ) {
+			$minutes = self::reading_time_minutes( $post_id, (int) ( $cfg['wordsPerMinute'] ?? 200 ) );
+			/* translators: %d: estimated minutes to read the post. */
+			$label   = sprintf( _n( '%d min read', '%d min read', $minutes, 'flexa-block' ), $minutes );
+			$parts[] = '<span class="flexa-post-grid__reading-time">' . esc_html( $label ) . '</span>';
 		}
 
 		if ( ! empty( $cfg['showComments'] ) ) {
@@ -723,6 +751,29 @@ final class Post_Query {
 		return '<div class="flexa-post-grid__meta">'
 			. implode( '<span class="flexa-post-grid__meta-sep" aria-hidden="true">·</span>', $parts )
 			. '</div>';
+	}
+
+	/**
+	 * Estimated reading time in whole minutes (min 1), from the post's word count.
+	 *
+	 * @param int $post_id Post ID.
+	 * @param int $wpm     Words per minute (falls back to 200).
+	 * @return int
+	 */
+	private static function reading_time_minutes( int $post_id, int $wpm ): int {
+		$wpm     = $wpm > 0 ? $wpm : 200;
+		$content = wp_strip_all_tags( strip_shortcodes( (string) get_post_field( 'post_content', $post_id ) ) );
+		$words   = str_word_count( $content );
+		$minutes = max( 1, (int) ceil( $words / $wpm ) );
+
+		/**
+		 * Filter the estimated reading time (minutes) shown on a post-grid card.
+		 *
+		 * @param int $minutes Estimated minutes.
+		 * @param int $post_id Post ID.
+		 * @param int $wpm     Words-per-minute used.
+		 */
+		return (int) apply_filters( 'flexa_block/post_grid/reading_time', $minutes, $post_id, $wpm );
 	}
 
 	/**
@@ -791,7 +842,7 @@ final class Post_Query {
 	 *                            like two separate problems.
 	 * @return string
 	 */
-	public static function render_grid( string $cards, bool $count_shown = false ): string {
+	public static function render_grid( string $cards, bool $count_shown = false, string $extra_class = '' ): string {
 		if ( '' === $cards ) {
 			// The paragraph stays even when it says nothing: it is the node the view
 			// script swaps back when results return. Remove it and the grid has nothing
@@ -800,7 +851,27 @@ final class Post_Query {
 				? '<p class="flexa-post-grid__empty" hidden></p>'
 				: '<p class="flexa-post-grid__empty">' . esc_html__( 'No posts found.', 'flexa-block' ) . '</p>';
 		}
-		return '<div class="flexa-post-grid__grid">' . $cards . '</div>';
+		return '<div class="flexa-post-grid__grid' . esc_attr( $extra_class ) . '">' . $cards . '</div>';
+	}
+
+	/**
+	 * Grid wrapper modifier classes from card layout options (leading-space prefixed).
+	 *
+	 * Shared by the block render and the AJAX filter route so a filtered grid keeps
+	 * its overlay / feature-first layout.
+	 *
+	 * @param array $cfg Config from config().
+	 * @return string e.g. " flexa-post-grid__grid--overlay flexa-post-grid__grid--feature-first".
+	 */
+	public static function grid_modifier_classes( array $cfg ): string {
+		$classes = '';
+		if ( 'overlay' === ( $cfg['cardStyle'] ?? 'stacked' ) ) {
+			$classes .= ' flexa-post-grid__grid--overlay';
+		}
+		if ( ! empty( $cfg['featureFirst'] ) ) {
+			$classes .= ' flexa-post-grid__grid--feature-first';
+		}
+		return $classes;
 	}
 
 	/**

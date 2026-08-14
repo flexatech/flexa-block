@@ -160,7 +160,12 @@ class Banner_CSS {
 		self::add_overlay( $css, $overlay, $attrs['overlay'] ?? [] );
 
 		// Shared promo content (heading / description / buttons / content align).
-		Promo_CSS_Parts::emit( $css, $wrap, $attrs );
+		// With `contentSource: 'custom'` those elements are not rendered at all, so
+		// their declarations would only be dead weight in the baked CSS. `fields` is
+		// the default, so a banner saved before this option existed still gets them.
+		if ( 'custom' !== ( $attrs['contentSource'] ?? 'fields' ) ) {
+			Promo_CSS_Parts::emit( $css, $wrap, $attrs );
+		}
 	}
 
 	/**

@@ -162,7 +162,7 @@ final class Post_Filter_REST {
 		$cards = Post_Query::render_cards( $result['query'], $cfg );
 
 		$payload = [
-			'grid'       => Post_Query::render_grid( $cards, ! empty( $cfg['showResultCount'] ) ),
+			'grid'       => Post_Query::render_grid( $cards, ! empty( $cfg['showResultCount'] ), Post_Query::grid_modifier_classes( $cfg ) ),
 			'pagination' => Post_Query::render_pagination( $cfg, $gid, $result['paged'], $result['totalPages'], $base_url ),
 			'status'     => Post_Query::render_status( $result['total'], ! empty( $cfg['showResultCount'] ), (string) ( $cfg['resultCountText'] ?? '' ) ),
 			'total'      => $result['total'],

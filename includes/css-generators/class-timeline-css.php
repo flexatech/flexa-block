@@ -52,13 +52,22 @@ class Timeline_CSS {
 		$connector = $wrap . ' .flexa-timeline__connector';
 		$content   = $wrap . ' .flexa-timeline__content';
 		$card      = $wrap . ' .flexa-timeline__card';
-		$image     = $wrap . ' .flexa-timeline__image';
+		// When a hover effect wraps the image in a `--wrap` frame, size / align that
+		// frame (the inner <img> fills it) so the width and alignment still apply.
+		$has_hover = 'none' !== (string) ( $attrs['hoverEffect'] ?? 'none' );
+		$image     = $has_hover ? $wrap . ' .flexa-timeline__image-wrap' : $wrap . ' .flexa-timeline__image';
 		$date      = $wrap . ' .flexa-timeline__date';
 		$title     = $wrap . ' .flexa-timeline__title';
 		$desc      = $wrap . ' .flexa-timeline__description';
 
 		// The connector is hidden only when the user explicitly turns it off.
 		$connector_hidden = array_key_exists( 'connectorShow', $attrs ) && false === $attrs['connectorShow'];
+
+		// Item-style migration flag. Before it flips, the wrapper border/shadow
+		// still paint each card (legacy behaviour); after, the card uses the
+		// dedicated itemBorder/itemBoxShadow and the wrapper carries border/shadow.
+		// TODO(remove in vNEXT): item-style migration.
+		$migrated = ! empty( $attrs['itemStyleMigrated'] );
 
 		foreach ( self::$devices as $device ) {
 			CSS_Helpers::open_device( $css, $device );
@@ -102,6 +111,12 @@ class Timeline_CSS {
 				$css->set_selector( $image )->add_property( 'width', CSS_Helpers::with_unit( $img_w['value'], $img_w['unit'] ?? '%' ) );
 			}
 
+			// Per-entry image corner radius (on the hover frame when present, else the image).
+			$img_r = $attrs['imageRadius'][ $device ] ?? [];
+			if ( ! empty( $img_r['value'] ) ) {
+				$css->set_selector( $image )->add_property( 'border-radius', CSS_Helpers::with_unit( $img_r['value'], $img_r['unit'] ?? 'px' ) );
+			}
+
 			// Content text alignment.
 			$align = (string) ( $attrs['contentAlign'][ $device ] ?? '' );
 			if ( '' !== $align ) {
@@ -138,10 +153,23 @@ class Timeline_CSS {
 			}
 
 			// Border on each event's card (wraps the text/image; excludes the gap).
-			$border = $attrs['border'][ $device ] ?? [];
-			if ( ! empty( $border ) ) {
+			// Post-migration it comes from itemBorder; legacy content falls back to
+			// the wrapper border (which used to paint the card).
+			// TODO(remove in vNEXT): drop the fallback, always itemBorder.
+			$item_border = ( $migrated ? ( $attrs['itemBorder'] ?? [] ) : ( $attrs['border'] ?? [] ) )[ $device ] ?? [];
+			if ( ! empty( $item_border ) ) {
 				$css->set_selector( $card );
-				CSS_Helpers::add_border( $css, $border );
+				CSS_Helpers::add_border( $css, $item_border );
+			}
+
+			// Wrapper border (post-migration only): the Style-tab border now frames
+			// the whole block. TODO(remove in vNEXT): the migrated gate.
+			if ( $migrated ) {
+				$wrap_border = $attrs['border'][ $device ] ?? [];
+				if ( ! empty( $wrap_border ) ) {
+					$css->set_selector( $wrap );
+					CSS_Helpers::add_border( $css, $wrap_border );
+				}
 			}
 
 			// Advanced layout (overflow / position / z-index) on the wrapper.
@@ -224,13 +252,26 @@ class Timeline_CSS {
 			}
 		}
 
-		$shadow = CSS_Helpers::box_shadow( $attrs['boxShadow'] ?? [] );
+		// Box shadow on each event's card (base, light). Post-migration from
+		// itemBoxShadow; legacy content falls back to the wrapper boxShadow.
+		// TODO(remove in vNEXT): drop the legacy fallback.
+		$item_shadow_cfg = $migrated ? ( $attrs['itemBoxShadow'] ?? [] ) : ( $attrs['boxShadow'] ?? [] );
+		$shadow          = CSS_Helpers::box_shadow( $item_shadow_cfg );
 		if ( '' !== $shadow ) {
 			$css->set_selector( $card )->add_property( 'box-shadow', $shadow );
 		}
 
+		// Wrapper box shadow (post-migration only).
+		// TODO(remove in vNEXT): the migrated gate.
+		if ( $migrated ) {
+			$wrap_shadow = CSS_Helpers::box_shadow( $attrs['boxShadow'] ?? [] );
+			if ( '' !== $wrap_shadow ) {
+				$css->set_selector( $wrap )->add_property( 'box-shadow', $wrap_shadow );
+			}
+		}
+
 		// Dark mode: background on the wrapper; border colour + shadow on each card.
-		self::add_wrapper_dark( $css, $wrap, $card, $attrs, $background );
+		self::add_wrapper_dark( $css, $wrap, $card, $attrs, $background, $migrated );
 	}
 
 	/**
@@ -243,8 +284,9 @@ class Timeline_CSS {
 	 * @param string      $content    Per-entry content-card selector.
 	 * @param array       $attrs      Attributes.
 	 * @param array       $background Background attribute.
+	 * @param bool        $migrated   Item-style migration flag.
 	 */
-	private static function add_wrapper_dark( $css, $wrap, $content, $attrs, $background ) {
+	private static function add_wrapper_dark( $css, $wrap, $content, $attrs, $background, $migrated = false ) {
 		// Wrapper background (dark).
 		CSS_Helpers::add_dark_mode(
 			$css,
@@ -265,17 +307,21 @@ class Timeline_CSS {
 			}
 		);
 
-		// Per-card border colour + shadow (dark).
+		// Per-card border colour + shadow (dark), read from the same source as the
+		// light rules (itemBorder/itemBoxShadow once migrated, else the legacy
+		// wrapper border/boxShadow).
+		// TODO(remove in vNEXT): drop the $migrated fallback.
 		CSS_Helpers::add_dark_mode(
 			$css,
 			$content,
-			function ( $css ) use ( $attrs ) {
-				$border_dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' ) );
+			function ( $css ) use ( $attrs, $migrated ) {
+				$item_border_cfg = $migrated ? ( $attrs['itemBorder'] ?? [] ) : ( $attrs['border'] ?? [] );
+				$border_dark     = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $item_border_cfg['desktop']['color'] ?? '' ) );
 				if ( '' !== $border_dark ) {
 					$css->add_property( 'border-color', $border_dark );
 				}
 
-				$shadow = $attrs['boxShadow'] ?? [];
+				$shadow = $migrated ? ( $attrs['itemBoxShadow'] ?? [] ) : ( $attrs['boxShadow'] ?? [] );
 				if ( ! empty( $shadow['enabled'] ) ) {
 					$shadow_dark = CSS_Helpers::dark( $shadow['color'] ?? '' );
 					if ( '' !== $shadow_dark ) {
@@ -287,5 +333,31 @@ class Timeline_CSS {
 				}
 			}
 		);
+
+		// Wrapper border + shadow (dark, post-migration only).
+		// TODO(remove in vNEXT): the migrated gate.
+		if ( $migrated ) {
+			CSS_Helpers::add_dark_mode(
+				$css,
+				$wrap,
+				function ( $css ) use ( $attrs ) {
+					$border_dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' ) );
+					if ( '' !== $border_dark ) {
+						$css->add_property( 'border-color', $border_dark );
+					}
+
+					$shadow = $attrs['boxShadow'] ?? [];
+					if ( ! empty( $shadow['enabled'] ) ) {
+						$shadow_dark = CSS_Helpers::dark( $shadow['color'] ?? '' );
+						if ( '' !== $shadow_dark ) {
+							$value = CSS_Helpers::box_shadow( $shadow, $shadow_dark );
+							if ( '' !== $value ) {
+								$css->add_property( 'box-shadow', $value );
+							}
+						}
+					}
+				}
+			);
+		}
 	}
 }

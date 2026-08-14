@@ -2,29 +2,26 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Flexa Block 1.0.5\n"
+"Project-Id-Version: Flexa Block – Blocks & Page Builder 1.0.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/flexa-block\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-12T14:53:28+00:00\n"
+"POT-Creation-Date: 2026-07-30T03:44:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: flexa-block\n"
 
 #. Plugin Name of the plugin
 #: flexa-block.php
-#: includes/admin/class-admin.php:293
-#: includes/admin/class-admin.php:294
-#: build/admin/index.js:5
-msgid "Flexa Block"
+msgid "Flexa Block – Blocks & Page Builder"
 msgstr ""
 
 #. Description of the plugin
 #: flexa-block.php
-msgid "A collection of lightweight, customizable Gutenberg blocks for building modern WordPress websites."
+msgid "A collection of lightweight, customizable blocks for building modern WordPress websites with the block editor."
 msgstr ""
 
 #. Author of the plugin
@@ -34,7 +31,7 @@ msgstr ""
 
 #. Author URI of the plugin
 #: flexa-block.php
-msgid "https://flexa.vn"
+msgid "https://flexablock.com/"
 msgstr ""
 
 #: build/blocks/before-after/render.php:97
@@ -63,6 +60,8 @@ msgstr ""
 #: build/blocks/breadcrumb/render.php:142
 #: src/blocks/breadcrumb/render.php:142
 #: build/blocks/breadcrumb/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/post-filter/index.js:4
 msgid "Category"
 msgstr ""
 
@@ -80,12 +79,11 @@ msgid "Breadcrumb"
 msgstr ""
 
 #: build/blocks/facebook-feed/render.php:60
-#: build/blocks/post-grid/render.php:69
-#: build/blocks/product-detail/render.php:103
+#: build/blocks/product-detail/render.php:104
 #: build/blocks/rss/render.php:58
+#: includes/class-post-query.php:140
 #: src/blocks/facebook-feed/render.php:60
-#: src/blocks/post-grid/render.php:69
-#: src/blocks/product-detail/render.php:103
+#: src/blocks/product-detail/render.php:104
 #: src/blocks/rss/render.php:58
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/post-grid/index.js:1
@@ -108,6 +106,83 @@ msgstr ""
 #: build/blocks/facebook-feed/render.php:194
 #: src/blocks/facebook-feed/render.php:194
 msgid "No posts could be loaded."
+msgstr ""
+
+#: build/blocks/filter-reset/render.php:36
+#: src/blocks/filter-reset/render.php:36
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/separator/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Reset"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/render.php:49
+#: src/blocks/filter-taxonomy/render.php:49
+#: build/admin/index.js:2
+#: build/admin/index.js:3
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "All"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/render.php:143
+#: src/blocks/filter-taxonomy/render.php:143
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "Filter terms…"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/render.php:144
+#: src/blocks/filter-taxonomy/render.php:144
+msgid "Filter terms"
 msgstr ""
 
 #: build/blocks/google-map/render.php:81
@@ -140,66 +215,39 @@ msgstr ""
 msgid "Dismiss"
 msgstr ""
 
-#: build/blocks/post-grid/render.php:59
-#: build/blocks/rss/render.php:52
-#: src/blocks/post-grid/render.php:59
-#: src/blocks/rss/render.php:52
-#: build/blocks/post-grid/index.js:1
-#: build/blocks/rss/index.js:1
-msgid "Read more"
+#: build/blocks/post-filter/render.php:47
+#: src/blocks/post-filter/render.php:47
+msgid "Filter posts"
 msgstr ""
 
-#: build/blocks/post-grid/render.php:73
-#: src/blocks/post-grid/render.php:73
-msgid "‹"
+#: build/blocks/post-filter/render.php:50
+#: src/blocks/post-filter/render.php:50
+#: build/blocks/post-filter/index.js:3
+msgid "Filter"
 msgstr ""
 
-#: build/blocks/post-grid/render.php:75
-#: src/blocks/post-grid/render.php:75
-msgid "›"
-msgstr ""
-
-#. translators: %d: number of comments on the post.
-#: build/blocks/post-grid/render.php:188
-#: src/blocks/post-grid/render.php:188
-#, php-format
-msgid "%d comment"
-msgid_plural "%d comments"
-msgstr[0] ""
-msgstr[1] ""
-
-#: build/blocks/post-grid/render.php:255
-#: src/blocks/post-grid/render.php:255
-msgid "Posts navigation"
-msgstr ""
-
-#: build/blocks/post-grid/render.php:267
-#: src/blocks/post-grid/render.php:267
-msgid "No posts found."
-msgstr ""
-
-#: build/blocks/pricing-table/render.php:100
-#: src/blocks/pricing-table/render.php:100
-#: build/blocks/pricing-table/index.js:1
-msgid "Plan"
-msgstr ""
-
-#: build/blocks/pricing-table/render.php:133
-#: src/blocks/pricing-table/render.php:133
-#: build/blocks/pricing-table/index.js:1
-msgid "Billing period"
-msgstr ""
-
-#: build/blocks/pricing-table/render.php:135
-#: src/blocks/pricing-table/render.php:135
+#: build/blocks/pricing-table/render.php:53
+#: src/blocks/pricing-table/render.php:53
 #: build/blocks/pricing-table/index.js:1
 msgid "Monthly"
 msgstr ""
 
-#: build/blocks/pricing-table/render.php:136
-#: src/blocks/pricing-table/render.php:136
+#: build/blocks/pricing-table/render.php:54
+#: src/blocks/pricing-table/render.php:54
 #: build/blocks/pricing-table/index.js:1
 msgid "Yearly"
+msgstr ""
+
+#: build/blocks/pricing-table/render.php:123
+#: src/blocks/pricing-table/render.php:123
+#: build/blocks/pricing-table/index.js:1
+msgid "Plan"
+msgstr ""
+
+#: build/blocks/pricing-table/render.php:164
+#: src/blocks/pricing-table/render.php:164
+#: build/blocks/pricing-table/index.js:1
+msgid "Billing period"
 msgstr ""
 
 #: build/blocks/product-detail/render.php:49
@@ -213,49 +261,49 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: build/blocks/product-detail/render.php:62
-#: src/blocks/product-detail/render.php:62
+#: build/blocks/product-detail/render.php:63
+#: src/blocks/product-detail/render.php:63
 #: build/blocks/product-detail/index.js:1
 msgid "Additional information"
 msgstr ""
 
-#: build/blocks/product-detail/render.php:107
-#: src/blocks/product-detail/render.php:107
+#: build/blocks/product-detail/render.php:108
+#: src/blocks/product-detail/render.php:108
 msgid "Reviews pagination"
 msgstr ""
 
-#: build/blocks/product-detail/render.php:125
-#: build/blocks/product-detail/render.php:146
-#: src/blocks/product-detail/render.php:125
-#: src/blocks/product-detail/render.php:146
+#: build/blocks/product-detail/render.php:126
+#: build/blocks/product-detail/render.php:147
+#: src/blocks/product-detail/render.php:126
+#: src/blocks/product-detail/render.php:147
 #: build/blocks/product-detail/index.js:1
 msgid "Reviews"
 msgstr ""
 
 #. translators: %s: average product rating out of 5.
-#: build/blocks/product-detail/render.php:136
-#: src/blocks/product-detail/render.php:136
+#: build/blocks/product-detail/render.php:137
+#: src/blocks/product-detail/render.php:137
 #, php-format
 msgid "Average rating: %s out of 5"
 msgstr ""
 
 #. translators: %s: number of product reviews.
-#: build/blocks/product-detail/render.php:142
-#: src/blocks/product-detail/render.php:142
+#: build/blocks/product-detail/render.php:143
+#: src/blocks/product-detail/render.php:143
 #, php-format
 msgid "%s review"
 msgid_plural "%s reviews"
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/blocks/product-image/render.php:75
-#: src/blocks/product-image/render.php:75
+#: build/blocks/product-image/render.php:86
+#: src/blocks/product-image/render.php:86
 #: build/blocks/product-image/index.js:1
 msgid "Previous"
 msgstr ""
 
-#: build/blocks/product-image/render.php:76
-#: src/blocks/product-image/render.php:76
+#: build/blocks/product-image/render.php:87
+#: src/blocks/product-image/render.php:87
 #: build/blocks/product-image/index.js:1
 msgid "Next"
 msgstr ""
@@ -277,6 +325,14 @@ msgid "(%s review)"
 msgid_plural "(%s reviews)"
 msgstr[0] ""
 msgstr[1] ""
+
+#: build/blocks/rss/render.php:52
+#: includes/class-post-query.php:160
+#: src/blocks/rss/render.php:52
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/rss/index.js:1
+msgid "Read more"
+msgstr ""
 
 #: build/blocks/rss/render.php:137
 #: src/blocks/rss/render.php:137
@@ -304,16 +360,16 @@ msgid "Next slide"
 msgstr ""
 
 #: build/blocks/social-icon/render.php:75
-#: build/blocks/team-member/render.php:103
+#: build/blocks/team-member/render.php:107
 #: src/blocks/social-icon/render.php:75
-#: src/blocks/team-member/render.php:103
+#: src/blocks/team-member/render.php:107
 #: build/blocks/team-member/index.js:1
 msgid "Social link"
 msgstr ""
 
 #. translators: %s: social network name.
-#: build/blocks/social-share/render.php:120
-#: src/blocks/social-share/render.php:120
+#: build/blocks/social-share/render.php:125
+#: src/blocks/social-share/render.php:125
 #, php-format
 msgid "Share on %s"
 msgstr ""
@@ -377,16 +433,22 @@ msgid "Video"
 msgstr ""
 
 #. translators: %s: minimum WordPress version
-#: flexa-block.php:84
+#: flexa-block.php:92
 #, php-format
 msgid "Flexa Block requires WordPress %s or higher."
 msgstr ""
 
-#: includes/class-block-manager.php:555
+#: includes/admin/class-admin.php:293
+#: includes/admin/class-admin.php:294
+#: build/admin/index.js:5
+msgid "Flexa Block"
+msgstr ""
+
+#: includes/class-block-manager.php:598
 msgid "Flexa"
 msgstr ""
 
-#: includes/class-block-manager.php:573
+#: includes/class-block-manager.php:616
 #: build/admin/index.js:1
 msgid "WooCommerce"
 msgstr ""
@@ -396,17 +458,17 @@ msgstr ""
 msgid "Unknown feed service."
 msgstr ""
 
-#: includes/class-form-handler.php:278
+#: includes/class-form-handler.php:299
 msgid "New subscription"
 msgstr ""
 
 #. translators: %s: site name.
-#: includes/class-form-handler.php:355
+#: includes/class-form-handler.php:341
 #, php-format
 msgid "A new subscription was submitted on %s."
 msgstr ""
 
-#: includes/class-html-helpers.php:446
+#: includes/class-html-helpers.php:463
 msgid "Please enter a valid phone number (digits, spaces, + ( ) - . )."
 msgstr ""
 
@@ -480,6 +542,53 @@ msgstr ""
 msgid "Edited %1$s from front end: \"%2$s\" → \"%3$s\""
 msgstr ""
 
+#: includes/class-post-filter-rest.php:125
+msgid "Missing block id."
+msgstr ""
+
+#: includes/class-post-filter-rest.php:130
+msgid "Post Grid not found."
+msgstr ""
+
+#: includes/class-post-query.php:141
+msgid "‹"
+msgstr ""
+
+#: includes/class-post-query.php:142
+msgid "›"
+msgstr ""
+
+#. translators: %d: estimated minutes to read the post.
+#: includes/class-post-query.php:718
+#, php-format
+msgid "%d min read"
+msgid_plural "%d min read"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of comments on the post.
+#: includes/class-post-query.php:725
+#, php-format
+msgid "%d comment"
+msgid_plural "%d comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-post-query.php:852
+msgid "No posts found."
+msgstr ""
+
+#: includes/class-post-query.php:918
+msgid "Posts navigation"
+msgstr ""
+
+#. translators: %s: number of posts found.
+#: includes/class-post-query.php:949
+#: build/blocks/post-grid/index.js:1
+#, php-format,js-format
+msgid "%s posts found"
+msgstr ""
+
 #: includes/class-remote-feed.php:39
 msgid "The request URL is invalid."
 msgstr ""
@@ -517,6 +626,8 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -568,6 +679,16 @@ msgid "Content"
 msgstr ""
 
 #: build/admin/index.js:1
+msgid "Posts"
+msgstr ""
+
+#: build/admin/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/rss/index.js:1
+msgid "Elements"
+msgstr ""
+
+#: build/admin/index.js:1
 #: build/blocks/image/index.js:1
 #: build/blocks/images-gallery/index.js:1
 #: build/blocks/info-box/index.js:1
@@ -613,11 +734,6 @@ msgstr ""
 
 #: build/admin/index.js:2
 msgid "Search blocks"
-msgstr ""
-
-#: build/admin/index.js:2
-#: build/admin/index.js:3
-msgid "All"
 msgstr ""
 
 #: build/admin/index.js:2
@@ -805,6 +921,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -817,6 +936,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -857,6 +977,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -869,6 +992,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -909,6 +1033,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -921,6 +1048,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -950,6 +1078,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -973,6 +1102,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -985,6 +1117,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1014,6 +1147,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1037,6 +1171,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1049,6 +1186,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1089,6 +1227,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1101,6 +1242,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1141,6 +1283,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1153,58 +1298,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
-#: build/blocks/post-grid/index.js:1
-#: build/blocks/pricing-table/index.js:1
-#: build/blocks/process-bar/index.js:1
-#: build/blocks/product-detail/index.js:1
-#: build/blocks/product-image/index.js:1
-#: build/blocks/product-name/index.js:1
-#: build/blocks/product-price/index.js:1
-#: build/blocks/product-rating/index.js:1
-#: build/blocks/rss/index.js:1
-#: build/blocks/separator/index.js:1
-#: build/blocks/slide/index.js:1
-#: build/blocks/slides/index.js:1
-#: build/blocks/social-icon/index.js:1
-#: build/blocks/social-share/index.js:1
-#: build/blocks/star-rating/index.js:1
-#: build/blocks/steps/index.js:1
-#: build/blocks/subscribe-form/index.js:1
-#: build/blocks/table-of-content/index.js:1
-#: build/blocks/tabs/index.js:1
-#: build/blocks/taxonomy/index.js:1
-#: build/blocks/team-member/index.js:1
-#: build/blocks/testimonial/index.js:1
-#: build/blocks/text/index.js:1
-#: build/blocks/timeline/index.js:1
-#: build/blocks/video-popup/index.js:1
-msgid "Reset"
-msgstr ""
-
-#: build/blocks/banner/index.js:1
-#: build/blocks/before-after/index.js:1
-#: build/blocks/breadcrumb/index.js:1
-#: build/blocks/button/index.js:1
-#: build/blocks/comparison-table/index.js:1
-#: build/blocks/container/index.js:1
-#: build/blocks/countdown/index.js:1
-#: build/blocks/counter/index.js:1
-#: build/blocks/cta/index.js:1
-#: build/blocks/data-table/index.js:1
-#: build/blocks/facebook-feed/index.js:1
-#: build/blocks/faq/index.js:1
-#: build/blocks/google-map/index.js:1
-#: build/blocks/grid/index.js:1
-#: build/blocks/heading/index.js:1
-#: build/blocks/icon-list/index.js:1
-#: build/blocks/icon/index.js:1
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-#: build/blocks/info-box/index.js:1
-#: build/blocks/instagram-feed/index.js:1
-#: build/blocks/lottie/index.js:1
-#: build/blocks/modal/index.js:1
-#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1245,6 +1339,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1257,6 +1354,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1286,6 +1384,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1309,6 +1408,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1321,6 +1423,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1350,6 +1453,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1373,6 +1477,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1385,6 +1492,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1414,6 +1522,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1437,6 +1546,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1449,6 +1561,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1501,6 +1614,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1513,6 +1629,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1565,6 +1682,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1577,6 +1697,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1606,6 +1727,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1629,6 +1751,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1641,6 +1766,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1670,6 +1796,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1693,6 +1820,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1705,6 +1835,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1734,6 +1865,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1757,6 +1889,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1769,6 +1904,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1798,6 +1934,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1821,6 +1958,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1833,6 +1973,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1862,6 +2003,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1885,6 +2027,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1897,6 +2042,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1926,6 +2072,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -1949,6 +2096,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -1961,6 +2111,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -1990,6 +2141,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2013,6 +2165,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2025,6 +2180,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2054,6 +2210,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2077,6 +2234,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2089,6 +2249,8 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2118,6 +2280,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2141,6 +2304,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2153,6 +2319,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2182,6 +2349,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2205,6 +2373,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2217,6 +2388,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2246,6 +2418,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2269,6 +2442,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2281,6 +2457,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2310,6 +2487,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2333,6 +2511,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2345,6 +2526,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2374,6 +2556,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2397,6 +2580,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2409,6 +2595,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2438,6 +2625,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2461,6 +2649,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2473,6 +2664,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2502,6 +2694,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2525,6 +2718,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2537,6 +2733,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2566,6 +2763,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2589,6 +2787,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2601,6 +2802,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2630,6 +2832,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2653,6 +2856,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2665,6 +2871,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2694,6 +2901,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2717,6 +2925,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2729,6 +2940,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2758,6 +2970,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2781,6 +2994,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2793,6 +3009,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2822,6 +3039,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2845,6 +3063,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2857,6 +3078,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2886,6 +3108,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2909,6 +3132,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2921,6 +3147,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -2950,6 +3177,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -2973,6 +3201,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -2985,6 +3216,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3014,6 +3246,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3037,6 +3270,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3049,6 +3285,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3078,6 +3315,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3101,6 +3339,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3113,6 +3354,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3142,6 +3384,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3165,6 +3408,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3177,6 +3423,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3206,6 +3453,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3229,6 +3477,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3241,6 +3492,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3270,6 +3522,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3293,6 +3546,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3305,6 +3561,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3334,6 +3591,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3357,6 +3615,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3369,6 +3630,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3398,6 +3660,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3421,6 +3684,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3433,6 +3699,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3462,6 +3729,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3485,6 +3753,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3497,6 +3768,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3526,6 +3798,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3549,6 +3822,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3561,6 +3837,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3590,6 +3867,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3613,6 +3891,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3625,6 +3906,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3654,6 +3936,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3677,6 +3960,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3689,6 +3975,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3718,6 +4005,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3741,6 +4029,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3753,6 +4044,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3782,6 +4074,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3805,6 +4098,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3817,6 +4113,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3846,6 +4143,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3869,6 +4167,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3881,6 +4182,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3910,6 +4212,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3933,6 +4236,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -3945,6 +4251,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -3974,6 +4281,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -3997,6 +4305,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4009,6 +4320,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4038,6 +4350,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -4061,6 +4374,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4073,6 +4389,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4102,6 +4419,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -4125,6 +4443,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4137,6 +4458,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4166,6 +4488,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -4189,6 +4512,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4201,6 +4527,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4230,6 +4557,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -4239,6 +4567,489 @@ msgstr ""
 #: build/blocks/timeline/index.js:1
 #: build/blocks/video-popup/index.js:1
 msgid "Portrait 9:16"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/separator/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Zoom in"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/separator/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Zoom out"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/separator/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Grayscale"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/separator/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Blur"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/separator/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Rotate"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/separator/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Shine"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/separator/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Slide"
 msgstr ""
 
 #: build/blocks/banner/index.js:1
@@ -4259,6 +5070,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4297,6 +5109,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4335,6 +5148,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4373,6 +5187,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4411,6 +5226,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4455,6 +5271,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4507,6 +5324,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4559,6 +5377,8 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4599,6 +5419,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4610,6 +5433,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/lottie/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4648,6 +5472,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4660,6 +5487,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4699,6 +5527,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4711,6 +5542,8 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4749,6 +5582,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4761,6 +5597,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4799,6 +5636,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4811,6 +5651,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4849,6 +5690,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4861,6 +5705,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4899,6 +5744,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4911,6 +5759,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4950,6 +5799,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -4962,6 +5814,61 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Remove"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -4986,7 +5893,7 @@ msgstr ""
 #: build/blocks/text/index.js:1
 #: build/blocks/timeline/index.js:1
 #: build/blocks/video-popup/index.js:1
-msgid "Remove"
+msgid "Scroll behavior"
 msgstr ""
 
 #: build/blocks/banner/index.js:1
@@ -5000,6 +5907,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5011,6 +5921,166 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/lottie/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Scroll with page"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Fixed — image stays, content scrolls"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Fixed keeps the background image still while the content scrolls over it. Some mobile browsers ignore this and fall back to scrolling."
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5049,6 +6119,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5060,6 +6133,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/lottie/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5099,6 +6173,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5111,6 +6188,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5149,6 +6227,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5161,6 +6242,8 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5213,6 +6296,10 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/filter-taxonomy/index.js:2
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5225,6 +6312,8 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5276,6 +6365,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5288,6 +6380,8 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5326,6 +6420,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5338,6 +6435,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5367,6 +6465,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -5390,6 +6489,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5402,6 +6504,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5431,6 +6534,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -5454,6 +6558,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5466,6 +6573,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5495,70 +6603,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
-#: build/blocks/table-of-content/index.js:1
-#: build/blocks/tabs/index.js:1
-#: build/blocks/taxonomy/index.js:1
-#: build/blocks/team-member/index.js:1
-#: build/blocks/testimonial/index.js:1
-#: build/blocks/text/index.js:1
-#: build/blocks/timeline/index.js:1
-#: build/blocks/video-popup/index.js:1
-msgid "Blur"
-msgstr ""
-
-#: build/blocks/banner/index.js:1
-#: build/blocks/before-after/index.js:1
-#: build/blocks/breadcrumb/index.js:1
-#: build/blocks/button/index.js:1
-#: build/blocks/comparison-table/index.js:1
-#: build/blocks/container/index.js:1
-#: build/blocks/countdown/index.js:1
-#: build/blocks/counter/index.js:1
-#: build/blocks/cta/index.js:1
-#: build/blocks/data-table/index.js:1
-#: build/blocks/facebook-feed/index.js:1
-#: build/blocks/faq/index.js:1
-#: build/blocks/google-map/index.js:1
-#: build/blocks/grid/index.js:1
-#: build/blocks/heading/index.js:1
-#: build/blocks/icon-list/index.js:1
-#: build/blocks/icon/index.js:1
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-#: build/blocks/info-box/index.js:1
-#: build/blocks/instagram-feed/index.js:1
-#: build/blocks/lottie/index.js:1
-#: build/blocks/modal/index.js:1
-#: build/blocks/notice/index.js:1
-#: build/blocks/post-grid/index.js:1
-#: build/blocks/pricing-table/index.js:1
-#: build/blocks/process-bar/index.js:1
-#: build/blocks/product-detail/index.js:1
-#: build/blocks/product-image/index.js:1
-#: build/blocks/product-name/index.js:1
-#: build/blocks/product-price/index.js:1
-#: build/blocks/product-rating/index.js:1
-#: build/blocks/rss/index.js:1
-#: build/blocks/separator/index.js:1
-#: build/blocks/slide/index.js:1
-#: build/blocks/slides/index.js:1
-#: build/blocks/social-icon/index.js:1
-#: build/blocks/social-share/index.js:1
-#: build/blocks/star-rating/index.js:1
-#: build/blocks/steps/index.js:1
-#: build/blocks/subscribe-form-checkbox/index.js:1
-#: build/blocks/subscribe-form-date/index.js:1
-#: build/blocks/subscribe-form-email/index.js:1
-#: build/blocks/subscribe-form-hidden/index.js:1
-#: build/blocks/subscribe-form-name/index.js:1
-#: build/blocks/subscribe-form-phone/index.js:1
-#: build/blocks/subscribe-form-radio/index.js:1
-#: build/blocks/subscribe-form-select/index.js:1
-#: build/blocks/subscribe-form-textarea/index.js:1
-#: build/blocks/subscribe-form-toggle/index.js:1
-#: build/blocks/subscribe-form-upload/index.js:1
-#: build/blocks/subscribe-form-url/index.js:1
-#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -5581,6 +6626,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5593,6 +6641,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5630,6 +6679,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5642,6 +6694,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5679,6 +6732,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5691,6 +6747,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5736,6 +6793,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/lottie/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5780,6 +6838,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/lottie/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5822,6 +6881,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/lottie/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5864,6 +6924,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/lottie/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5906,6 +6967,7 @@ msgstr ""
 #: build/blocks/instagram-feed/index.js:1
 #: build/blocks/lottie/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5941,6 +7003,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -5953,6 +7018,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -5992,6 +7058,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6004,6 +7073,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6043,6 +7113,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6055,6 +7128,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6094,6 +7168,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6106,6 +7183,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6145,6 +7223,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6157,6 +7238,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6186,6 +7268,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6209,6 +7292,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6221,6 +7307,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6250,6 +7337,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6273,6 +7361,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6285,6 +7376,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6314,6 +7406,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6337,6 +7430,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6349,6 +7445,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6378,6 +7475,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6401,6 +7499,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6413,6 +7514,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6442,6 +7544,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6465,6 +7568,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6477,6 +7583,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6506,6 +7613,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6529,6 +7637,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6541,6 +7652,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6570,6 +7682,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6593,6 +7706,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6605,6 +7721,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6634,6 +7751,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6657,6 +7775,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6669,6 +7790,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6698,6 +7820,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6721,6 +7844,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6733,6 +7859,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6762,6 +7889,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6785,6 +7913,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6797,6 +7928,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6826,6 +7958,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6849,6 +7982,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6861,6 +7997,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6890,6 +8027,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6913,6 +8051,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6925,6 +8066,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -6954,6 +8096,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -6977,6 +8120,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -6989,6 +8135,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7018,6 +8165,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -7041,6 +8189,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -7053,6 +8204,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7082,6 +8234,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -7105,6 +8258,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -7117,6 +8273,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7146,6 +8303,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -7169,6 +8327,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -7181,6 +8342,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7210,6 +8372,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -7245,6 +8408,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7296,6 +8460,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7347,6 +8512,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7398,6 +8564,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7437,6 +8604,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -7449,6 +8619,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7478,6 +8649,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -7501,6 +8673,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -7513,6 +8688,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -7542,6 +8718,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -7566,7 +8743,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7587,7 +8764,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7608,7 +8785,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7629,7 +8806,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7650,7 +8827,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7671,7 +8848,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7692,7 +8869,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7713,7 +8890,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7734,7 +8911,7 @@ msgstr ""
 #: build/blocks/slides/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
@@ -7880,6 +9057,7 @@ msgstr ""
 #: build/blocks/notice/index.js:1
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/steps/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
@@ -7917,6 +9095,7 @@ msgstr ""
 #: build/blocks/banner/index.js:1
 #: build/blocks/button/index.js:1
 #: build/blocks/cta/index.js:1
+#: build/blocks/filter-reset/index.js:1
 #: build/blocks/heading/index.js:1
 #: build/blocks/icon-list/index.js:1
 #: build/blocks/info-box/index.js:1
@@ -8002,6 +9181,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -8054,6 +9234,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -8066,6 +9249,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -8095,6 +9279,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -8118,6 +9303,9 @@ msgstr ""
 #: build/blocks/data-table/index.js:1
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/google-map/index.js:1
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
@@ -8130,6 +9318,7 @@ msgstr ""
 #: build/blocks/lottie/index.js:1
 #: build/blocks/modal/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/process-bar/index.js:1
@@ -8159,6 +9348,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 #: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
 #: build/blocks/table-of-content/index.js:1
 #: build/blocks/tabs/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -8177,12 +9367,14 @@ msgstr ""
 #: build/blocks/images-gallery/index.js:1
 #: build/blocks/info-box/index.js:1
 #: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/slide/index.js:1
 #: build/blocks/team-member/index.js:1
 msgid "Top"
 msgstr ""
 
 #: build/blocks/banner/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/slide/index.js:1
 msgid "Middle"
 msgstr ""
@@ -8191,9 +9383,26 @@ msgstr ""
 #: build/blocks/heading/index.js:1
 #: build/blocks/image/index.js:1
 #: build/blocks/images-gallery/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/product-image/index.js:1
 #: build/blocks/slide/index.js:1
 msgid "Bottom"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+msgid "Fields"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+msgid "Any blocks"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+msgid "Build the banner from any blocks. The heading, description and buttons are kept — switch back to Fields to use them again."
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+msgid "Use the built-in heading, description and buttons. Choose “Any blocks” to build the banner from blocks instead."
 msgstr ""
 
 #: build/blocks/banner/index.js:1
@@ -8215,6 +9424,10 @@ msgstr ""
 #: build/blocks/rss/index.js:1
 #: build/blocks/video-popup/index.js:1
 msgid "Max Width"
+msgstr ""
+
+#: build/blocks/banner/index.js:1
+msgid "Content Box Width"
 msgstr ""
 
 #: build/blocks/banner/index.js:1
@@ -8399,7 +9612,6 @@ msgstr ""
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/heading/index.js:1
 #: build/blocks/icon-list/index.js:1
-#: build/blocks/post-grid/index.js:1
 #: build/blocks/product-name/index.js:1
 #: build/blocks/rss/index.js:1
 #: build/blocks/taxonomy/index.js:1
@@ -8416,7 +9628,6 @@ msgstr ""
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/social-share/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
 msgid "Move up"
@@ -8431,7 +9642,6 @@ msgstr ""
 #: build/blocks/social-icon/index.js:1
 #: build/blocks/social-share/index.js:1
 #: build/blocks/steps/index.js:1
-#: build/blocks/tabs/index.js:1
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
 msgid "Move down"
@@ -8511,6 +9721,9 @@ msgstr ""
 
 #: build/blocks/breadcrumb/index.js:1
 #: build/blocks/counter/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:2
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/product-detail/index.js:1
 #: build/blocks/subscribe-form-checkbox/index.js:1
 #: build/blocks/subscribe-form-date/index.js:1
@@ -8524,11 +9737,11 @@ msgstr ""
 #: build/blocks/subscribe-form-toggle/index.js:1
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
-#: build/blocks/tabs/index.js:1
 msgid "Label"
 msgstr ""
 
 #: build/blocks/breadcrumb/index.js:1
+#: build/blocks/filter-reset/index.js:1
 #: build/blocks/icon-list/index.js:1
 #: build/blocks/image/index.js:1
 #: build/blocks/social-icon/index.js:1
@@ -8605,8 +9818,10 @@ msgstr ""
 
 #: build/blocks/button/index.js:1
 #: build/blocks/comparison-table/index.js:1
+#: build/blocks/filter-reset/index.js:1
 #: build/blocks/info-box/index.js:1
 #: build/blocks/modal/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/rss/index.js:1
@@ -8771,6 +9986,7 @@ msgid "Spotlight this column"
 msgstr ""
 
 #: build/blocks/comparison-table/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/pricing-table/index.js:1
 msgid "Button text"
 msgstr ""
@@ -8802,11 +10018,13 @@ msgstr ""
 #: build/blocks/container/index.js:1
 #: build/blocks/data-table/index.js:1
 #: build/blocks/grid/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/slide/index.js:1
 msgid "Column"
 msgstr ""
 
 #: build/blocks/comparison-table/index.js:1
+#: build/blocks/pricing-table/index.js:1
 msgid "Feature"
 msgstr ""
 
@@ -8839,6 +10057,7 @@ msgstr ""
 #: build/blocks/comparison-table/index.js:1
 #: build/blocks/container/index.js:1
 #: build/blocks/grid/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/slide/index.js:1
 msgid "Row"
 msgstr ""
@@ -8918,6 +10137,7 @@ msgstr ""
 #: build/blocks/product-detail/index.js:1
 #: build/blocks/product-image/index.js:1
 #: build/blocks/rss/index.js:1
+#: build/blocks/timeline/index.js:1
 msgid "Corner radius"
 msgstr ""
 
@@ -8981,6 +10201,9 @@ msgid "Striped-row colour"
 msgstr ""
 
 #: build/blocks/comparison-table/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/image/index.js:1
 #: build/blocks/pricing-table/index.js:1
 msgid "Auto"
@@ -8998,6 +10221,7 @@ msgstr ""
 
 #: build/blocks/comparison-table/index.js:1
 #: build/blocks/icon/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/pricing-table/index.js:1
 #: build/blocks/rss/index.js:1
@@ -9024,11 +10248,13 @@ msgid "Block"
 msgstr ""
 
 #: build/blocks/container/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/social-share/index.js:1
 msgid "Direction"
 msgstr ""
 
 #: build/blocks/container/index.js:1
+#: build/blocks/post-filter/index.js:4
 msgid "Align"
 msgstr ""
 
@@ -9040,6 +10266,7 @@ msgstr ""
 #: build/blocks/grid/index.js:1
 #: build/blocks/heading/index.js:1
 #: build/blocks/images-gallery/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/product-detail/index.js:1
 #: build/blocks/slide/index.js:1
 #: build/blocks/social-icon/index.js:1
@@ -9320,6 +10547,7 @@ msgid "Unit Box"
 msgstr ""
 
 #: build/blocks/countdown/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/slides/index.js:1
 #: build/blocks/subscribe-form/index.js:1
 msgid "Border radius"
@@ -9558,6 +10786,26 @@ msgstr ""
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/instagram-feed/index.js:1
 msgid "Ask an administrator to connect the account before this feed can show live posts."
+msgstr ""
+
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/timeline/index.js:1
+msgid "Item border"
+msgstr ""
+
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/timeline/index.js:1
+msgid "Item box shadow"
 msgstr ""
 
 #: build/blocks/facebook-feed/index.js:1
@@ -9913,6 +11161,161 @@ msgstr ""
 msgid "Add question"
 msgstr ""
 
+#: build/blocks/filter-reset/index.js:1
+msgid "On the front end this only appears once a visitor has searched or picked a term — with nothing applied there is nothing to clear. It always shows here so you can style it."
+msgstr ""
+
+#: build/blocks/filter-search/index.js:1
+msgid "Search"
+msgstr ""
+
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:2
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+msgid "Show label"
+msgstr ""
+
+#: build/blocks/filter-search/index.js:1
+msgid "When off the label is still read out to screen readers — it is hidden, not removed."
+msgstr ""
+
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/subscribe-form-checkbox/index.js:1
+#: build/blocks/subscribe-form-date/index.js:1
+#: build/blocks/subscribe-form-email/index.js:1
+#: build/blocks/subscribe-form-hidden/index.js:1
+#: build/blocks/subscribe-form-name/index.js:1
+#: build/blocks/subscribe-form-phone/index.js:1
+#: build/blocks/subscribe-form-radio/index.js:1
+#: build/blocks/subscribe-form-select/index.js:1
+#: build/blocks/subscribe-form-textarea/index.js:1
+#: build/blocks/subscribe-form-toggle/index.js:1
+#: build/blocks/subscribe-form-upload/index.js:1
+#: build/blocks/subscribe-form-url/index.js:1
+msgid "Placeholder"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+msgid "Name"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Post count"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Term order"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Category filter"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Let visitors narrow the Post Grid to one category."
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Tag filter"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Let visitors narrow the Post Grid to one tag."
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Tag"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Custom taxonomy filter"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Filter by any other taxonomy — pick which one in the block settings."
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "— Select a taxonomy —"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/filter-taxonomy/index.js:2
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/taxonomy/index.js:1
+msgid "Taxonomy"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:1
+msgid "Pick a taxonomy — until you do, this filter renders nothing on the front end."
+msgstr ""
+
+#. translators: %s: comma-separated term names the target grid is limited to.
+#: build/blocks/filter-taxonomy/index.js:2
+#, js-format
+msgid "The target grid only shows: %s. Visitors can filter within those terms, not outside them."
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+#: build/blocks/post-filter/index.js:4
+msgid "Control"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+#: build/blocks/taxonomy/index.js:1
+msgid "Dropdown"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "Pills"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "Checkboxes"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "Allow multiple"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "Off: one pill at a time. On: visitors can combine several."
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "\"Any term\" label"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+#: build/blocks/taxonomy/index.js:1
+msgid "Show post count"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "Hide empty terms"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "Order terms by"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/index.js:2
+msgid "Max terms"
+msgstr ""
+
 #: build/blocks/google-map/index.js:1
 msgid "Free"
 msgstr ""
@@ -10032,6 +11435,7 @@ msgid "End"
 msgstr ""
 
 #: build/blocks/grid/index.js:1
+#: build/blocks/post-filter/index.js:4
 msgid "Stretch"
 msgstr ""
 
@@ -10143,6 +11547,7 @@ msgid "Heading…"
 msgstr ""
 
 #: build/blocks/icon-list/index.js:1
+#: build/blocks/post-grid/index.js:1
 #: build/blocks/star-rating/index.js:1
 #: build/blocks/testimonial/index.js:1
 msgid "Stacked"
@@ -10253,6 +11658,7 @@ msgid "Icon color (hover)"
 msgstr ""
 
 #: build/blocks/icon/index.js:1
+#: build/blocks/post-filter/index.js:4
 #: build/blocks/subscribe-form/index.js:1
 msgid "Border color"
 msgstr ""
@@ -10264,6 +11670,17 @@ msgstr ""
 #: build/blocks/icon/index.js:1
 #: build/blocks/subscribe-form/index.js:1
 msgid "Border width"
+msgstr ""
+
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/timeline/index.js:1
+msgid "Hover Effect"
 msgstr ""
 
 #: build/blocks/image/index.js:1
@@ -10281,39 +11698,6 @@ msgstr ""
 #: build/blocks/image/index.js:1
 #: build/blocks/images-gallery/index.js:1
 msgid "Large"
-msgstr ""
-
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-msgid "Zoom in"
-msgstr ""
-
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-msgid "Zoom out"
-msgstr ""
-
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-msgid "Grayscale"
-msgstr ""
-
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-#: build/blocks/social-icon/index.js:1
-#: build/blocks/social-share/index.js:1
-msgid "Rotate"
-msgstr ""
-
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-msgid "Shine"
-msgstr ""
-
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-#: build/blocks/slides/index.js:1
-msgid "Slide"
 msgstr ""
 
 #: build/blocks/image/index.js:1
@@ -10392,11 +11776,6 @@ msgstr ""
 
 #: build/blocks/image/index.js:1
 msgid "Effects"
-msgstr ""
-
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-msgid "Hover Effect"
 msgstr ""
 
 #: build/blocks/image/index.js:1
@@ -10677,6 +12056,7 @@ msgid "Caption typography"
 msgstr ""
 
 #: build/blocks/instagram-feed/index.js:1
+#: build/blocks/post-grid/index.js:1
 msgid "Meta typography"
 msgstr ""
 
@@ -10914,6 +12294,14 @@ msgid "Keep the notice hidden for this visitor after they close it."
 msgstr ""
 
 #: build/blocks/notice/index.js:1
+msgid "Icon alignment (horizontal)"
+msgstr ""
+
+#: build/blocks/notice/index.js:1
+msgid "Icon alignment (vertical)"
+msgstr ""
+
+#: build/blocks/notice/index.js:1
 #: build/blocks/process-bar/index.js:1
 #: build/blocks/star-rating/index.js:1
 #: build/blocks/table-of-content/index.js:1
@@ -10936,6 +12324,83 @@ msgstr ""
 msgid "Add your message…"
 msgstr ""
 
+#. translators: 1: grid number on the page, 2: the grid's post type.
+#: build/blocks/post-filter/index.js:3
+msgid "Post Grid"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:3
+msgid "No Post Grid on this page yet — add one and this bar will filter it."
+msgstr ""
+
+#. translators: %s: the blockId the filter bar is pointing at.
+#: build/blocks/post-filter/index.js:4
+#, js-format
+msgid "No Post Grid on this page has the id \"%s\". If the grid lives in a template this is fine — otherwise the filters will do nothing. Pick a grid below, or choose Auto."
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+msgid "Post Grid to filter"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+msgid "The grid can sit anywhere on the page — a sidebar filter driving a grid in the main column works fine."
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+msgid "Auto — first Post Grid on the page"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+#, js-format
+msgid "Not on this page — %s"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+#: build/blocks/post-grid/index.js:1
+msgid "Grid ID"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+msgid "Only needed when the grid lives in a template rather than in this content."
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+msgid "Accessible name"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+msgid "Announced to screen readers as the name of this search region."
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+#: build/blocks/subscribe-form/index.js:1
+msgid "Label color"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+#: build/blocks/subscribe-form/index.js:1
+msgid "Text color"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+#: build/blocks/subscribe-form/index.js:1
+msgid "Placeholder color"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+msgid "Control border"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+msgid "Border color (focus)"
+msgstr ""
+
+#: build/blocks/post-filter/index.js:4
+#: build/blocks/subscribe-form/index.js:1
+msgid "Text color (hover)"
+msgstr ""
+
 #: build/blocks/post-grid/index.js:1
 msgid "Menu order"
 msgstr ""
@@ -10956,6 +12421,14 @@ msgstr ""
 #: build/blocks/post-grid/index.js:1
 #: build/blocks/taxonomy/index.js:1
 msgid "Ascending"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Title and excerpt"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Everything, including block markup"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
@@ -11013,6 +12486,39 @@ msgid "Exclude current post"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
+msgid "Visitor search looks in"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Used by a Post Filter search box. \"Everything\" is WordPress's own behaviour — it searches the raw content, block markup included, so a search for \"container\" matches every post built with one."
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Show result count"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "\"12 posts found\", above the grid — it updates as visitors filter. It is always announced to screen readers; this only decides whether everyone else sees it too."
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Result count text"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+#, js-format
+msgid "%s is the number of posts. Leave empty for \"%s posts found\"."
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "This grid's id. A Post Filter normally finds it on its own — copy this only when the filter bar lives somewhere the editor can't see it, like a template."
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "— saved when you first edit the block —"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
 #: build/blocks/rss/index.js:1
 msgid "Column gap"
 msgstr ""
@@ -11028,8 +12534,15 @@ msgid "Equal height cards"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
-#: build/blocks/rss/index.js:1
-msgid "Elements"
+msgid "Card style"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Feature first post"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "The first post spans the full row (image beside the text). Applies on page one."
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
@@ -11077,12 +12590,23 @@ msgid "Avatar size"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
-msgid "Comments"
+msgid "Reading time"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
-#: build/blocks/taxonomy/index.js:1
-msgid "Taxonomy"
+msgid "Each post shows its own time, calculated from that post’s length."
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Reading speed (words per minute)"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "How fast a reader is assumed to read. Each post’s time = its word count ÷ this. Average is ~200–250."
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Comments"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
@@ -11105,7 +12629,36 @@ msgid "Read more text"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
+#: build/blocks/process-bar/index.js:1
+msgid "Title typography"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Excerpt typography"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Result count"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/timeline/index.js:1
+msgid "Colour"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "Inherit"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
 msgid "(no title)"
+msgstr ""
+
+#: build/blocks/post-grid/index.js:1
+msgid "min read"
 msgstr ""
 
 #: build/blocks/pricing-table/index.js:1
@@ -11114,6 +12667,26 @@ msgstr ""
 
 #: build/blocks/pricing-table/index.js:1
 msgid "Gap between plans"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Features"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Toggle the ✓/✕ to mark a feature as included or not."
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Included"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Not included"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Add feature"
 msgstr ""
 
 #: build/blocks/pricing-table/index.js:1
@@ -11145,14 +12718,6 @@ msgid "Yearly period"
 msgstr ""
 
 #: build/blocks/pricing-table/index.js:1
-msgid "Features"
-msgstr ""
-
-#: build/blocks/pricing-table/index.js:1
-msgid "One feature per line."
-msgstr ""
-
-#: build/blocks/pricing-table/index.js:1
 msgid "Highlight this plan"
 msgstr ""
 
@@ -11177,6 +12742,38 @@ msgid "Show a switch that flips every plan between its monthly and yearly price.
 msgstr ""
 
 #: build/blocks/pricing-table/index.js:1
+msgid "Billing switch"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Monthly label"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Yearly label"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Selected by default"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Switch placement"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Text colour (selected)"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Track background"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Selected background"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
 msgid "Price"
 msgstr ""
 
@@ -11186,6 +12783,14 @@ msgstr ""
 
 #: build/blocks/pricing-table/index.js:1
 msgid "Period colour"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Plan card"
+msgstr ""
+
+#: build/blocks/pricing-table/index.js:1
+msgid "Box shadow"
 msgstr ""
 
 #: build/blocks/pricing-table/index.js:1
@@ -11318,10 +12923,6 @@ msgstr ""
 
 #: build/blocks/process-bar/index.js:1
 msgid "Track"
-msgstr ""
-
-#: build/blocks/process-bar/index.js:1
-msgid "Title typography"
 msgstr ""
 
 #: build/blocks/process-bar/index.js:1
@@ -11460,10 +13061,6 @@ msgstr ""
 msgid "Image scale"
 msgstr ""
 
-#: build/blocks/product-image/index.js:1
-msgid "Zoom on hover"
-msgstr ""
-
 #: build/blocks/product-name/index.js:1
 msgid "Product Name"
 msgstr ""
@@ -11506,12 +13103,6 @@ msgstr ""
 
 #: build/blocks/product-price/index.js:1
 msgid "Regular Price"
-msgstr ""
-
-#: build/blocks/product-price/index.js:1
-#: build/blocks/steps/index.js:1
-#: build/blocks/timeline/index.js:1
-msgid "Colour"
 msgstr ""
 
 #: build/blocks/product-price/index.js:1
@@ -11985,37 +13576,7 @@ msgstr ""
 #: build/blocks/subscribe-form-toggle/index.js:1
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
-msgid "Show label"
-msgstr ""
-
-#: build/blocks/subscribe-form-checkbox/index.js:1
-#: build/blocks/subscribe-form-date/index.js:1
-#: build/blocks/subscribe-form-email/index.js:1
-#: build/blocks/subscribe-form-hidden/index.js:1
-#: build/blocks/subscribe-form-name/index.js:1
-#: build/blocks/subscribe-form-phone/index.js:1
-#: build/blocks/subscribe-form-radio/index.js:1
-#: build/blocks/subscribe-form-select/index.js:1
-#: build/blocks/subscribe-form-textarea/index.js:1
-#: build/blocks/subscribe-form-toggle/index.js:1
-#: build/blocks/subscribe-form-upload/index.js:1
-#: build/blocks/subscribe-form-url/index.js:1
 msgid "Prompt"
-msgstr ""
-
-#: build/blocks/subscribe-form-checkbox/index.js:1
-#: build/blocks/subscribe-form-date/index.js:1
-#: build/blocks/subscribe-form-email/index.js:1
-#: build/blocks/subscribe-form-hidden/index.js:1
-#: build/blocks/subscribe-form-name/index.js:1
-#: build/blocks/subscribe-form-phone/index.js:1
-#: build/blocks/subscribe-form-radio/index.js:1
-#: build/blocks/subscribe-form-select/index.js:1
-#: build/blocks/subscribe-form-textarea/index.js:1
-#: build/blocks/subscribe-form-toggle/index.js:1
-#: build/blocks/subscribe-form-upload/index.js:1
-#: build/blocks/subscribe-form-url/index.js:1
-msgid "Placeholder"
 msgstr ""
 
 #: build/blocks/subscribe-form-checkbox/index.js:1
@@ -12184,23 +13745,7 @@ msgid "Fields & inputs"
 msgstr ""
 
 #: build/blocks/subscribe-form/index.js:1
-msgid "Label color"
-msgstr ""
-
-#: build/blocks/subscribe-form/index.js:1
-msgid "Text color"
-msgstr ""
-
-#: build/blocks/subscribe-form/index.js:1
-msgid "Placeholder color"
-msgstr ""
-
-#: build/blocks/subscribe-form/index.js:1
 msgid "Submit button"
-msgstr ""
-
-#: build/blocks/subscribe-form/index.js:1
-msgid "Text color (hover)"
 msgstr ""
 
 #: build/blocks/subscribe-form/index.js:1
@@ -12209,6 +13754,19 @@ msgstr ""
 
 #: build/blocks/subscribe-form/index.js:1
 msgid "Error"
+msgstr ""
+
+#: build/blocks/tab/index.js:1
+#: build/blocks/tabs/index.js:1
+msgid "Tab"
+msgstr ""
+
+#: build/blocks/tab/index.js:1
+msgid "Tab label"
+msgstr ""
+
+#: build/blocks/tab/index.js:1
+msgid "Optional intro text for this tab…"
 msgstr ""
 
 #: build/blocks/table-of-content/index.js:1
@@ -12236,11 +13794,19 @@ msgid "Smooth scroll"
 msgstr ""
 
 #: build/blocks/table-of-content/index.js:1
+msgid "Highlight active section"
+msgstr ""
+
+#: build/blocks/table-of-content/index.js:1
+msgid "As the reader scrolls, highlight the link of the section in view (scroll-spy)."
+msgstr ""
+
+#: build/blocks/table-of-content/index.js:1
 msgid "Scroll offset (px)"
 msgstr ""
 
 #: build/blocks/table-of-content/index.js:1
-msgid "Space to leave for a sticky header when jumping to a heading."
+msgid "Space to leave for a sticky header when jumping to / detecting a heading."
 msgstr ""
 
 #: build/blocks/table-of-content/index.js:1
@@ -12269,6 +13835,10 @@ msgid "Link colour (hover)"
 msgstr ""
 
 #: build/blocks/table-of-content/index.js:1
+msgid "Link colour (active)"
+msgstr ""
+
+#: build/blocks/table-of-content/index.js:1
 msgid "Marker colour"
 msgstr ""
 
@@ -12293,18 +13863,6 @@ msgid "Pill"
 msgstr ""
 
 #: build/blocks/tabs/index.js:1
-msgid "Tabs"
-msgstr ""
-
-#: build/blocks/tabs/index.js:1
-msgid "Add tab"
-msgstr ""
-
-#: build/blocks/tabs/index.js:1
-msgid "Tab"
-msgstr ""
-
-#: build/blocks/tabs/index.js:1
 msgid "Tab style"
 msgstr ""
 
@@ -12321,6 +13879,10 @@ msgid "Gap from label"
 msgstr ""
 
 #: build/blocks/tabs/index.js:1
+msgid "Tabs"
+msgstr ""
+
+#: build/blocks/tabs/index.js:1
 msgid "Text colour (active)"
 msgstr ""
 
@@ -12333,16 +13895,19 @@ msgid "Tab padding"
 msgstr ""
 
 #: build/blocks/tabs/index.js:1
-msgid "Tab content…"
+msgid "Tab 1"
 msgstr ""
 
-#: build/blocks/taxonomy/index.js:1
-msgid "Dropdown"
+#: build/blocks/tabs/index.js:1
+msgid "Tab 2"
 msgstr ""
 
-#: build/blocks/taxonomy/index.js:1
-#: build/blocks/team-member/index.js:1
-msgid "Name"
+#: build/blocks/tabs/index.js:1
+msgid "Tab 3"
+msgstr ""
+
+#: build/blocks/tabs/index.js:1
+msgid "Add tab"
 msgstr ""
 
 #: build/blocks/taxonomy/index.js:1
@@ -12359,10 +13924,6 @@ msgstr ""
 
 #: build/blocks/taxonomy/index.js:1
 msgid "Tags"
-msgstr ""
-
-#: build/blocks/taxonomy/index.js:1
-msgid "Show post count"
 msgstr ""
 
 #: build/blocks/taxonomy/index.js:1
@@ -12730,6 +14291,9 @@ msgstr ""
 #: build/blocks/data-table/block.json
 #: build/blocks/facebook-feed/block.json
 #: build/blocks/faq/block.json
+#: build/blocks/filter-reset/block.json
+#: build/blocks/filter-search/block.json
+#: build/blocks/filter-taxonomy/block.json
 #: build/blocks/google-map/block.json
 #: build/blocks/grid/block.json
 #: build/blocks/heading/block.json
@@ -12742,6 +14306,7 @@ msgstr ""
 #: build/blocks/lottie/block.json
 #: build/blocks/modal/block.json
 #: build/blocks/notice/block.json
+#: build/blocks/post-filter/block.json
 #: build/blocks/post-grid/block.json
 #: build/blocks/pricing-table/block.json
 #: build/blocks/process-bar/block.json
@@ -12771,6 +14336,7 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/block.json
 #: build/blocks/subscribe-form-url/block.json
 #: build/blocks/subscribe-form/block.json
+#: build/blocks/tab/block.json
 #: build/blocks/table-of-content/block.json
 #: build/blocks/tabs/block.json
 #: build/blocks/taxonomy/block.json
@@ -12791,6 +14357,9 @@ msgstr ""
 #: src/blocks/data-table/block.json
 #: src/blocks/facebook-feed/block.json
 #: src/blocks/faq/block.json
+#: src/blocks/filter-reset/block.json
+#: src/blocks/filter-search/block.json
+#: src/blocks/filter-taxonomy/block.json
 #: src/blocks/google-map/block.json
 #: src/blocks/grid/block.json
 #: src/blocks/heading/block.json
@@ -12803,6 +14372,7 @@ msgstr ""
 #: src/blocks/lottie/block.json
 #: src/blocks/modal/block.json
 #: src/blocks/notice/block.json
+#: src/blocks/post-filter/block.json
 #: src/blocks/post-grid/block.json
 #: src/blocks/pricing-table/block.json
 #: src/blocks/process-bar/block.json
@@ -12832,6 +14402,7 @@ msgstr ""
 #: src/blocks/subscribe-form-upload/block.json
 #: src/blocks/subscribe-form-url/block.json
 #: src/blocks/subscribe-form/block.json
+#: src/blocks/tab/block.json
 #: src/blocks/table-of-content/block.json
 #: src/blocks/tabs/block.json
 #: src/blocks/taxonomy/block.json
@@ -13322,6 +14893,112 @@ msgctxt "block keyword"
 msgid "toggle"
 msgstr ""
 
+#: build/blocks/filter-reset/block.json
+#: src/blocks/filter-reset/block.json
+msgctxt "block title"
+msgid "Filter: Reset"
+msgstr ""
+
+#: build/blocks/filter-reset/block.json
+#: src/blocks/filter-reset/block.json
+msgctxt "block description"
+msgid "A reset control for a Post Filter — clears the search and every term filter applied to the target Post Grid."
+msgstr ""
+
+#: build/blocks/filter-reset/block.json
+#: build/blocks/filter-search/block.json
+#: build/blocks/filter-taxonomy/block.json
+#: build/blocks/post-filter/block.json
+#: src/blocks/filter-reset/block.json
+#: src/blocks/filter-search/block.json
+#: src/blocks/filter-taxonomy/block.json
+#: src/blocks/post-filter/block.json
+msgctxt "block keyword"
+msgid "filter"
+msgstr ""
+
+#: build/blocks/filter-reset/block.json
+#: src/blocks/filter-reset/block.json
+msgctxt "block keyword"
+msgid "reset"
+msgstr ""
+
+#: build/blocks/filter-reset/block.json
+#: src/blocks/filter-reset/block.json
+msgctxt "block keyword"
+msgid "clear"
+msgstr ""
+
+#: build/blocks/filter-search/block.json
+#: src/blocks/filter-search/block.json
+msgctxt "block title"
+msgid "Filter: Search"
+msgstr ""
+
+#: build/blocks/filter-search/block.json
+#: src/blocks/filter-search/block.json
+msgctxt "block description"
+msgid "A search box for a Post Filter — visitors type a keyword and the target Post Grid narrows to matching posts."
+msgstr ""
+
+#: build/blocks/filter-search/block.json
+#: build/blocks/post-filter/block.json
+#: src/blocks/filter-search/block.json
+#: src/blocks/post-filter/block.json
+msgctxt "block keyword"
+msgid "search"
+msgstr ""
+
+#: build/blocks/filter-search/block.json
+#: src/blocks/filter-search/block.json
+msgctxt "block keyword"
+msgid "keyword"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/block.json
+#: src/blocks/filter-taxonomy/block.json
+msgctxt "block title"
+msgid "Filter: Taxonomy"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/block.json
+#: src/blocks/filter-taxonomy/block.json
+msgctxt "block description"
+msgid "A category, tag or custom-taxonomy filter for a Post Filter — as a dropdown or a checkbox list. Add it twice to filter by two taxonomies at once."
+msgstr ""
+
+#: build/blocks/filter-taxonomy/block.json
+#: build/blocks/post-filter/block.json
+#: src/blocks/filter-taxonomy/block.json
+#: src/blocks/post-filter/block.json
+msgctxt "block keyword"
+msgid "category"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/block.json
+#: build/blocks/post-filter/block.json
+#: src/blocks/filter-taxonomy/block.json
+#: src/blocks/post-filter/block.json
+msgctxt "block keyword"
+msgid "tag"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/block.json
+#: build/blocks/post-filter/block.json
+#: build/blocks/taxonomy/block.json
+#: src/blocks/filter-taxonomy/block.json
+#: src/blocks/post-filter/block.json
+#: src/blocks/taxonomy/block.json
+msgctxt "block keyword"
+msgid "taxonomy"
+msgstr ""
+
+#: build/blocks/filter-taxonomy/block.json
+#: src/blocks/filter-taxonomy/block.json
+msgctxt "block keyword"
+msgid "term"
+msgstr ""
+
 #: build/blocks/google-map/block.json
 #: src/blocks/google-map/block.json
 msgctxt "block title"
@@ -13758,6 +15435,26 @@ msgctxt "block keyword"
 msgid "message"
 msgstr ""
 
+#: build/blocks/post-filter/block.json
+#: src/blocks/post-filter/block.json
+msgctxt "block title"
+msgid "Post Filter"
+msgstr ""
+
+#: build/blocks/post-filter/block.json
+#: src/blocks/post-filter/block.json
+msgctxt "block description"
+msgid "A filter bar for a Post Grid — drop in a search box, category and tag filters and a reset link, pick the grid they drive, and visitors narrow the results without leaving the page."
+msgstr ""
+
+#: build/blocks/post-filter/block.json
+#: build/blocks/post-grid/block.json
+#: src/blocks/post-filter/block.json
+#: src/blocks/post-grid/block.json
+msgctxt "block keyword"
+msgid "post grid"
+msgstr ""
+
 #: build/blocks/post-grid/block.json
 #: src/blocks/post-grid/block.json
 msgctxt "block title"
@@ -13768,12 +15465,6 @@ msgstr ""
 #: src/blocks/post-grid/block.json
 msgctxt "block description"
 msgid "Dynamic grid of posts pulled by a query — pick the post type, count, order and taxonomy filter, show or hide the featured image, title, meta, excerpt and read-more button, set per-device columns and image ratio, and page through the results."
-msgstr ""
-
-#: build/blocks/post-grid/block.json
-#: src/blocks/post-grid/block.json
-msgctxt "block keyword"
-msgid "post grid"
 msgstr ""
 
 #: build/blocks/post-grid/block.json
@@ -13927,8 +15618,10 @@ msgid "details"
 msgstr ""
 
 #: build/blocks/product-detail/block.json
+#: build/blocks/tab/block.json
 #: build/blocks/tabs/block.json
 #: src/blocks/product-detail/block.json
+#: src/blocks/tab/block.json
 #: src/blocks/tabs/block.json
 msgctxt "block keyword"
 msgid "tabs"
@@ -14630,6 +16323,24 @@ msgctxt "block keyword"
 msgid "contact"
 msgstr ""
 
+#: build/blocks/tab/block.json
+#: src/blocks/tab/block.json
+msgctxt "block title"
+msgid "Tab"
+msgstr ""
+
+#: build/blocks/tab/block.json
+#: src/blocks/tab/block.json
+msgctxt "block description"
+msgid "A single tab inside a Tabs block — a label, an optional line of text and any blocks you drop below it."
+msgstr ""
+
+#: build/blocks/tab/block.json
+#: src/blocks/tab/block.json
+msgctxt "block keyword"
+msgid "tab"
+msgstr ""
+
 #: build/blocks/table-of-content/block.json
 #: src/blocks/table-of-content/block.json
 msgctxt "block title"
@@ -14700,12 +16411,6 @@ msgstr ""
 #: src/blocks/taxonomy/block.json
 msgctxt "block description"
 msgid "List the terms of any taxonomy (categories, tags or custom) as a list, inline row, dropdown or grid — show the post count, include empty terms or the full hierarchy, limit and order them, add an icon or text prefix/suffix and a separator, and style each term chip with light/dark colours, hover, gap and padding."
-msgstr ""
-
-#: build/blocks/taxonomy/block.json
-#: src/blocks/taxonomy/block.json
-msgctxt "block keyword"
-msgid "taxonomy"
 msgstr ""
 
 #: build/blocks/taxonomy/block.json

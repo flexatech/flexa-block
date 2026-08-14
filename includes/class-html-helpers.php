@@ -65,6 +65,23 @@ class HTML_Helpers {
 	}
 
 	/**
+	 * Image hover-effect classes for a media frame. Returns `flexa-hover` plus
+	 * `flexa-hover--<effect>`, or [] for 'none'/empty. Mirrors the editor
+	 * `hoverEffectClasses()`; the motion CSS lives in `_hover-effect.scss`. Attach
+	 * the returned classes to the element that directly wraps the `<img>`.
+	 *
+	 * @param string $effect Effect key (zoom-in, zoom-out, grayscale, …).
+	 * @return array<int,string>
+	 */
+	public static function hover_effect_classes( $effect ) {
+		$effect = (string) $effect;
+		if ( '' === $effect || 'none' === $effect ) {
+			return [];
+		}
+		return [ 'flexa-hover', 'flexa-hover--' . sanitize_html_class( $effect ) ];
+	}
+
+	/**
 	 * Sanitise an inline-SVG string for safe echoing (icons).
 	 *
 	 * Allows only a fixed set of SVG shape tags and geometric/presentation

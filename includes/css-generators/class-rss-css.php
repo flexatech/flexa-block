@@ -70,6 +70,12 @@ class Rss_CSS {
 		$excerpt  = $outer . ' .flexa-rss__excerpt';
 		$readmore = $outer . ' .flexa-rss__readmore';
 
+		// Item-style migration flag. Before it flips, the wrapper border/shadow
+		// still paint each card (legacy behaviour); after, the card uses the
+		// dedicated itemBorder/itemBoxShadow and the wrapper carries border/shadow.
+		// TODO(remove in vNEXT): item-style migration.
+		$migrated = ! empty( $attrs['itemStyleMigrated'] );
+
 		foreach ( self::$devices as $device ) {
 			CSS_Helpers::open_device( $css, $device );
 
@@ -134,11 +140,23 @@ class Rss_CSS {
 				$css->set_selector( $inner )->add_property( $is_boxed ? 'max-width' : 'width', $value );
 			}
 
-			// Border on each item card (matches per-card background/shadow).
-			$border = $attrs['border'][ $device ] ?? [];
-			if ( ! empty( $border ) ) {
+			// Border on each item card. Post-migration it comes from itemBorder;
+			// legacy content falls back to the wrapper border (which used to paint
+			// the card). TODO(remove in vNEXT): drop the fallback, always itemBorder.
+			$item_border = ( $migrated ? ( $attrs['itemBorder'] ?? [] ) : ( $attrs['border'] ?? [] ) )[ $device ] ?? [];
+			if ( ! empty( $item_border ) ) {
 				$css->set_selector( $item );
-				CSS_Helpers::add_border( $css, $border );
+				CSS_Helpers::add_border( $css, $item_border );
+			}
+
+			// Wrapper border (post-migration only): the Style-tab border now frames
+			// the whole block. TODO(remove in vNEXT): the migrated gate.
+			if ( $migrated ) {
+				$wrap_border = $attrs['border'][ $device ] ?? [];
+				if ( ! empty( $wrap_border ) ) {
+					$css->set_selector( $inner );
+					CSS_Helpers::add_border( $css, $wrap_border );
+				}
 			}
 
 			// Advanced layout (overflow / position / z-index) on the inner element.
@@ -215,23 +233,39 @@ class Rss_CSS {
 			}
 		}
 
-		// Box shadow on each item card (base, light) — matches per-card border/bg.
-		$shadow = CSS_Helpers::box_shadow( $attrs['boxShadow'] ?? [] );
+		// Box shadow on each item card (base, light). Post-migration from
+		// itemBoxShadow; legacy content falls back to the wrapper boxShadow.
+		// TODO(remove in vNEXT): drop the legacy fallback.
+		$item_shadow_cfg = $migrated ? ( $attrs['itemBoxShadow'] ?? [] ) : ( $attrs['boxShadow'] ?? [] );
+		$shadow          = CSS_Helpers::box_shadow( $item_shadow_cfg );
 		if ( '' !== $shadow ) {
 			$css->set_selector( $item )->add_property( 'box-shadow', $shadow );
 		}
 
-		// Dark mode on each item card: border colour + shadow colour.
+		// Wrapper box shadow (post-migration only).
+		// TODO(remove in vNEXT): the migrated gate.
+		if ( $migrated ) {
+			$wrap_shadow = CSS_Helpers::box_shadow( $attrs['boxShadow'] ?? [] );
+			if ( '' !== $wrap_shadow ) {
+				$css->set_selector( $inner )->add_property( 'box-shadow', $wrap_shadow );
+			}
+		}
+
+		// Dark mode on each item card: border colour + shadow colour, read from
+		// the same source as the light rules (itemBorder/itemBoxShadow once
+		// migrated, else the legacy wrapper border/boxShadow).
+		// TODO(remove in vNEXT): drop the $migrated fallback.
 		CSS_Helpers::add_dark_mode(
 			$css,
 			$item,
-			function ( $css ) use ( $attrs ) {
-				$border_dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' ) );
+			function ( $css ) use ( $attrs, $migrated ) {
+				$item_border_cfg = $migrated ? ( $attrs['itemBorder'] ?? [] ) : ( $attrs['border'] ?? [] );
+				$border_dark     = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $item_border_cfg['desktop']['color'] ?? '' ) );
 				if ( '' !== $border_dark ) {
 					$css->add_property( 'border-color', $border_dark );
 				}
 
-				$shadow_cfg = $attrs['boxShadow'] ?? [];
+				$shadow_cfg = $migrated ? ( $attrs['itemBoxShadow'] ?? [] ) : ( $attrs['boxShadow'] ?? [] );
 				if ( ! empty( $shadow_cfg['enabled'] ) ) {
 					$shadow_dark = CSS_Helpers::dark( $shadow_cfg['color'] ?? '' );
 					if ( '' !== $shadow_dark ) {
@@ -243,6 +277,32 @@ class Rss_CSS {
 				}
 			}
 		);
+
+		// Dark mode on the wrapper inner (post-migration only): border + shadow.
+		// TODO(remove in vNEXT): the migrated gate.
+		if ( $migrated ) {
+			CSS_Helpers::add_dark_mode(
+				$css,
+				$inner,
+				function ( $css ) use ( $attrs ) {
+					$border_dark = CSS_Helpers::sanitize_color( CSS_Helpers::dark( $attrs['border']['desktop']['color'] ?? '' ) );
+					if ( '' !== $border_dark ) {
+						$css->add_property( 'border-color', $border_dark );
+					}
+
+					$shadow_cfg = $attrs['boxShadow'] ?? [];
+					if ( ! empty( $shadow_cfg['enabled'] ) ) {
+						$shadow_dark = CSS_Helpers::dark( $shadow_cfg['color'] ?? '' );
+						if ( '' !== $shadow_dark ) {
+							$value = CSS_Helpers::box_shadow( $shadow_cfg, $shadow_dark );
+							if ( '' !== $value ) {
+								$css->add_property( 'box-shadow', $value );
+							}
+						}
+					}
+				}
+			);
+		}
 	}
 
 	/**

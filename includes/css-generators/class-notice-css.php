@@ -58,6 +58,14 @@ class Notice_CSS {
 			$css->set_selector( $inner )->add_property( 'flex-direction', 'column' );
 		}
 
+		// Icon cross-axis alignment → align-self on the icon. With the icon on the
+		// left (row) this is the vertical axis (top/middle/bottom); with the icon on
+		// top (column) it is the horizontal axis (left/center/right).
+		$icon_align = CSS_Helpers::sanitize_enum( (string) ( $attrs['iconAlign'] ?? '' ), [ 'flex-start', 'center', 'flex-end' ] );
+		if ( '' !== $icon_align ) {
+			$css->set_selector( $icon )->add_property( 'align-self', $icon_align );
+		}
+
 		foreach ( self::$devices as $device ) {
 			CSS_Helpers::open_device( $css, $device );
 

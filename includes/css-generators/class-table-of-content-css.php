@@ -51,6 +51,9 @@ class Table_Of_Content_CSS {
 		$link   = $wrap . ' .flexa-toc__link';
 		$hover  = $wrap . ' .flexa-toc__link:hover';
 		$marker = $wrap . ' .flexa-toc__item::marker';
+		// Number markers are drawn with a counter on ::before (not the native
+		// ::marker), so the marker colour must target that pseudo too.
+		$number = $wrap . '.flexa-toc--marker-number .flexa-toc__link::before';
 
 		foreach ( self::$devices as $device ) {
 			CSS_Helpers::open_device( $css, $device );
@@ -135,11 +138,21 @@ class Table_Of_Content_CSS {
 		}
 		CSS_Helpers::dark_color( $css, $hover, 'color', CSS_Helpers::dark( $attrs['linkHoverColor'] ?? '' ) );
 
+		// Active (scroll-spy) link colour.
+		$active       = $wrap . ' .flexa-toc__link.is-active';
+		$active_light = CSS_Helpers::sanitize_color( CSS_Helpers::light( $attrs['activeColor'] ?? '' ) );
+		if ( '' !== $active_light ) {
+			$css->set_selector( $active )->add_property( 'color', $active_light );
+		}
+		CSS_Helpers::dark_color( $css, $active, 'color', CSS_Helpers::dark( $attrs['activeColor'] ?? '' ) );
+
 		$marker_light = CSS_Helpers::sanitize_color( CSS_Helpers::light( $attrs['markerColor'] ?? '' ) );
 		if ( '' !== $marker_light ) {
 			$css->set_selector( $marker )->add_property( 'color', $marker_light );
+			$css->set_selector( $number )->add_property( 'color', $marker_light );
 		}
 		CSS_Helpers::dark_color( $css, $marker, 'color', CSS_Helpers::dark( $attrs['markerColor'] ?? '' ) );
+		CSS_Helpers::dark_color( $css, $number, 'color', CSS_Helpers::dark( $attrs['markerColor'] ?? '' ) );
 
 		// Wrapper background (base, light) + lazy image url gated behind the loaded class.
 		$background = $attrs['background'] ?? [];

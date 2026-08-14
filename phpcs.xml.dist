@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<ruleset name="Flexa Block">
+	<description>PHPCS + WPCS coding standards for the Flexa Block plugin.</description>
+
+	<!-- What to scan (hand-written PHP only). -->
+	<file>flexa-block.php</file>
+	<file>uninstall.php</file>
+	<file>includes</file>
+	<file>src</file>
+	<file>tests</file>
+
+	<!-- Never scan generated, vendored or demo code. -->
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/demo/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/languages/*</exclude-pattern>
+
+	<!-- Only PHP files. -->
+	<arg name="extensions" value="php"/>
+	<!-- Show sniff codes, colours and progress. -->
+	<arg name="colors"/>
+	<arg value="sp"/>
+	<!-- Use as many cores as available. -->
+	<arg name="parallel" value="8"/>
+
+	<!-- WordPress coding standards (Core + Docs + Extra + Security). -->
+	<rule ref="WordPress">
+		<!-- render.php templates mix HTML and PHP; file docblocks are noise there. -->
+		<exclude name="Squiz.Commenting.FileComment.Missing"/>
+		<!-- The codebase deliberately uses modern short-array syntax []. -->
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+	</rule>
+
+	<!-- Enforce the plugin's real prefixes for globals/hooks/functions. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="flexa_block"/>
+				<element value="FLEXA_BLOCK"/>
+				<element value="Flexa\Block"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!--
+		Block render.php templates are loaded by WordPress inside a function
+		scope (the block render callback), so assignments to names like $title
+		or $tag are function-local, not global overrides. Skip the false positive.
+	-->
+	<rule ref="WordPress.WP.GlobalVariablesOverride">
+		<exclude-pattern>*/src/blocks/*/render.php</exclude-pattern>
+	</rule>
+
+	<!-- Text domain check for i18n functions. -->
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="flexa-block"/>
+			</property>
+		</properties>
+	</rule>
+
+	<!-- Minimum supported WP version (drives deprecated-function checks). -->
+	<config name="minimum_wp_version" value="6.4"/>
+
+	<!-- PHP cross-version compatibility (plugin requires PHP 7.4+). -->
+	<config name="testVersion" value="7.4-"/>
+	<rule ref="PHPCompatibilityWP"/>
+</ruleset>
