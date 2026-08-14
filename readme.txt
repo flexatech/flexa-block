@@ -3,9 +3,9 @@
 Contributors: flexatech
 Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,18 @@ The Google Map block embeds an interactive map for a location you specify. When 
 Terms of Service: https://cloud.google.com/maps-platform/terms
 Privacy Policy: https://policies.google.com/privacy
 
+**YouTube (Video Popup block)**
+
+When the Video Popup block is set to a YouTube video, the visitor's browser loads a preview thumbnail from YouTube (`https://img.youtube.com/`) when the page is viewed, and — after the visitor clicks play — an embedded player from YouTube (`https://www.youtube.com/embed/`). Only the video ID you configure on the block is sent; no personal data is transmitted by the plugin. This means the visitor's browser connects to YouTube to display the thumbnail and player. This service is provided by Google LLC.
+Terms of Service: https://www.youtube.com/t/terms
+Privacy Policy: https://policies.google.com/privacy
+
+**Vimeo (Video Popup block)**
+
+When the Video Popup block is set to a Vimeo video, the visitor's browser loads an embedded player from Vimeo (`https://player.vimeo.com/`) after the visitor clicks play. Only the video ID you configure on the block is sent; no personal data is transmitted by the plugin. This means the visitor's browser connects to Vimeo to display the player. This service is provided by Vimeo, Inc.
+Terms of Service: https://vimeo.com/terms
+Privacy Policy: https://vimeo.com/privacy
+
 **User-supplied RSS feed (RSS Feed block)**
 
 The RSS Feed block fetches and displays entries from an RSS/Atom URL that you enter into the block. No fixed third-party service is involved — the plugin only requests the exact feed URL you configure — but be aware that this causes your server to make an outgoing request to that URL.
@@ -119,6 +131,25 @@ In the WordPress admin sidebar, click **Flexa Block** (located below Settings). 
 Yes. Flexa Block Pro adds additional blocks and advanced features. It works alongside this free plugin.
 
 == Changelog ==
+
+= 1.0.8 =
+* WordPress 7.1 compatibility: inspector controls (Text, Select, Range and Search) now use the new 40px default control size, matching WordPress 7.1 and clearing the related deprecation notice. Tested up to 7.1.
+
+= 1.0.7 =
+* Tabs: each tab can now hold any blocks, not just text. A new Tab child block keeps the tab's label, icon and an optional line of default text, with its own inner-blocks area below for images, buttons, columns and more. Existing Tabs are migrated automatically the first time they're opened.
+* Post Grid: added a card style option — Stacked (image over text, the default) or Overlay (image as the background with the text on top) — plus a "Feature first post" toggle that makes the first post span the full row with its image beside the text.
+* Post Grid: added an optional reading time in the meta line, estimated from each post's own length (with a configurable reading speed / words-per-minute).
+* Banner: added an optional inner-blocks area above the heading, so a breadcrumb, an eyebrow or a meta line can sit inside the hero.
+* Banner: added a Content choice — Fields, the built-in heading, description and buttons (how every banner has always worked, and still the default), or Any blocks, which hides those fields and lets you build the banner from blocks instead: columns, images, a form, anything. The heading, description and button text are kept, not cleared, so switching back to Fields restores them unchanged. Existing banners are untouched.
+* Table of Contents: added a "Highlight active section" (scroll-spy) option that marks the link of the section currently in view, with its own active-link colour.
+* Pricing Table: each feature can now be marked included or not included (a ✓ or a muted ✕ per line), edited with a per-feature toggle. Older plans that stored features as plain lines keep working.
+* Added six new brand icons to the Social Icons and Social Share blocks — Messenger, Zalo, WhatsApp, Telegram, TikTok and YouTube — in both official-colour and monochrome (tinted) modes. WhatsApp and Telegram are also available as share buttons in the Social Share block.
+* Added a shared image hover effect (zoom, zoom-out, slide, blur, grayscale, sepia and more) to the media blocks — Image and Images Gallery now share the same hover controls, and the Timeline media follows suit.
+* Collection blocks (Gallery, Grid, Slides and more): border and shadow are now split between the wrapper and each item, so you can style the container and its items independently. Existing content is migrated automatically.
+* Notice: the icon can now be aligned along the cross axis (top / center / bottom).
+* Table of Contents: numbered markers now reflect the heading hierarchy (e.g. 3.1, 3.2) using CSS counters.
+* Added inserter previews for the Post Filter child blocks (Search, Taxonomy and Reset).
+* Fixed the Lottie block so its animation SVG is kept out of React's conditional render, preventing the animation from disappearing.
 
 = 1.0.6 =
 * WordPress.org review fixes: documented the external services the plugin can connect to (Facebook Graph, Instagram and Google Maps) with their Terms/Privacy links, and added build-tool instructions alongside the public source-code link.
