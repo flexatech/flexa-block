@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,6 +88,17 @@ Privacy Policy: https://vimeo.com/privacy
 
 The RSS Feed block fetches and displays entries from an RSS/Atom URL that you enter into the block. No fixed third-party service is involved — the plugin only requests the exact feed URL you configure — but be aware that this causes your server to make an outgoing request to that URL.
 
+**Deactivation feedback (Flexa Product Intelligence)**
+
+When you go to deactivate Flexa Block on the Plugins screen, a short optional survey asks why. It is served by Flexa's product intelligence service at `https://product-intelligence.flexacommerce.com`. It runs only in the admin, on `wp-admin/plugins.php`, never on the front end, and never blocks or delays deactivation. What is sent, and when:
+
+* On opening the Plugins screen: a request to `/api/v1/config` (product slug and tier) to load the survey configuration. The response is cached for 6 hours.
+* When you deactivate or interact with the survey: the reason you pick and any optional message you type, sent to `/api/v1/deactivations`, `/api/v1/events`, `/api/v1/feedback`, `/api/v1/feature-requests` and `/api/v1/recovery-events`.
+
+Every request includes an anonymous per-site identifier (a random UUID), the plugin version and tier, and by default your WordPress version, PHP version and locale. No email, site domain, user identity or raw IP is collected. To stop sending environment data, use `add_filter( 'flexa-block/deactivation_survey/config', function ( $c ) { return array( 'collect_environment' => false ) + $c; } );`. To disable the survey entirely, use `add_filter( 'flexa-block/deactivation_survey/enabled', '__return_false' );`.
+Terms of Service: https://flexacommerce.com/pages/terms
+Privacy Policy: https://flexacommerce.com/pages/privacy
+
 == Installation ==
 
 1. Upload the plugin files to `/wp-content/plugins/flexa-block`, or install
@@ -131,6 +142,9 @@ In the WordPress admin sidebar, click **Flexa Block** (located below Settings). 
 Yes. Flexa Block Pro adds additional blocks and advanced features. It works alongside this free plugin.
 
 == Changelog ==
+
+= 1.0.9 =
+* Added an optional, admin-only deactivation feedback survey so we can learn why the plugin is being removed. It runs only on the Plugins screen, never blocks deactivation, and can be disabled with a filter. See the "External services" section for exactly what is sent.
 
 = 1.0.8 =
 * WordPress 7.1 compatibility: inspector controls (Text, Select, Range and Search) now use the new 40px default control size, matching WordPress 7.1 and clearing the related deprecation notice. Tested up to 7.1.
@@ -194,3 +208,8 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 
 = 1.0.0 =
 * Initial release with the Container block.
+
+== Upgrade Notice ==
+
+= 1.0.9 =
+Adds an optional, admin-only deactivation feedback survey. It never blocks deactivation and can be turned off with a filter.

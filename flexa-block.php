@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Flexa Block – Blocks & Page Builder
  * Description:       A collection of lightweight, customizable blocks for building modern WordPress websites with the block editor.
- * Version:           1.0.8
+ * Version:           1.0.9
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Flexa Tech
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FLEXA_BLOCK_VER', '1.0.8' );
+define( 'FLEXA_BLOCK_VER', '1.0.9' );
 define( 'FLEXA_BLOCK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FLEXA_BLOCK_URL', plugin_dir_url( __FILE__ ) );
 define( 'FLEXA_BLOCK_BASENAME', plugin_basename( __FILE__ ) );
@@ -33,6 +33,10 @@ function flexa_block_init() {
 		add_action( 'admin_notices', 'flexa_block_wp_version_notice' );
 		return;
 	}
+
+	// Deactivation feedback survey (admin-only; never blocks deactivation).
+	require_once FLEXA_BLOCK_DIR . 'includes/class-deactivation-survey.php';
+	Flexa\Block\Deactivation_Survey::init();
 
 	// Core services.
 	require_once FLEXA_BLOCK_DIR . 'includes/class-css-builder.php';

@@ -40,4 +40,4 @@ Desktop.ini
 .env.local
 
 # built zip file
-flexa-block.zip
+*.zip
