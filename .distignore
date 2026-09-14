@@ -31,3 +31,5 @@ Thumbs.db
 .phpunit.cache
 flexa-block.zip
 *.zip
+*.ps1
+*.mjs
