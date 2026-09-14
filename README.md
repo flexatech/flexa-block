@@ -2,9 +2,9 @@
 
 A responsive Gutenberg block collection with **dark mode** support and **save-time CSS generation**. Ships the **Container** block as the canonical architecture reference for all future blocks.
 
-- **Version:** 1.0.5
+- **Version:** 1.0.10
 - **Requires:** WordPress 6.4+, PHP 7.4+
-- **License:** GPLv3
+- **License:** GPL-2.0-or-later
 
 ---
 
@@ -46,6 +46,31 @@ npm install          # install dependencies (first time only)
 npm run build        # production build → outputs to build/
 npm run start        # dev build + watch (rebuilds on src/ changes)
 ```
+
+> **Load-bearing: the `sideEffects` field in `package.json`.**
+> Every block entry imports from the `@components` barrel, which `export *`s a
+> dozen modules. Without that field webpack must assume all of them matter and
+> keeps the lot — a 33-line block such as `subscribe-form-hidden` built to
+> 180 KB, and the editor loaded 14 MB of block scripts on every post, since
+> WordPress enqueues the editor script of *every* registered block whether or not
+> it is used. Declaring only stylesheets side-effectful halves that to 7.2 MB
+> while leaving all 264 built CSS files and every `view.js` byte-for-byte
+> identical.
+>
+> `src/components/index.ts` is listed explicitly because that barrel opens with
+> `import './editor.scss'` — the shared inspector design system. Webpack resolves
+> a re-export straight to its source module and would otherwise never evaluate
+> the barrel, silently dropping that stylesheet from all 66 editor bundles.
+>
+> **When adding a module-level side effect, add it to that list.** A top-level
+> `addFilter`, `registerStore` or `domReady` in anything other than a block entry
+> would be shaken out with no error and no failing test — the breakage only shows
+> up in the editor. The audit:
+> ```bash
+> grep -rn "^import '[^']*';" src --include=*.ts --include=*.tsx
+> grep -rnE "^[[:space:]]*(addFilter|addAction|registerPlugin|registerStore|domReady)\(" src --include=*.ts --include=*.tsx
+> ```
+> The first should return only stylesheets; the second, nothing.
 
 Other commands:
 
