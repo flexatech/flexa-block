@@ -9,6 +9,10 @@
  * it is inserted; the generator overrides it once the user picks a size.
  */
 
+@use '../../styles/hover-effect' as *;
+
+@include flexa-hover-effect();
+
 .flexa-info-box {
 	box-sizing: border-box;
 	display: flex;

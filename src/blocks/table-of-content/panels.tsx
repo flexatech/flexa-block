@@ -67,6 +67,7 @@ export const TocStructurePanel = ( { attributes, setAttributes }: TocPanelProps 
 			{ showTitle !== false && (
 				<SelectControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Title tag', 'flexa-block' ) }
 					value={ titleTag || 'h2' }
 					options={ TEXT_TAG_OPTIONS }
@@ -143,7 +144,7 @@ export const TocLayoutPanel = ( { attributes, setAttributes }: TocPanelProps ): 
  * toggle and the wrapper tag. These feed view.ts; they emit no CSS.
  */
 export const TocBehaviorPanel = ( { attributes, setAttributes }: TocPanelProps ): JSX.Element => {
-	const { smoothScroll, scrollOffset, collapsible, initialCollapsed, htmlTag } = attributes;
+	const { smoothScroll, scrollOffset, scrollSpy, collapsible, initialCollapsed, htmlTag } = attributes;
 
 	return (
 		<PanelBody title={ __( 'Behaviour', 'flexa-block' ) } initialOpen={ false }>
@@ -153,11 +154,19 @@ export const TocBehaviorPanel = ( { attributes, setAttributes }: TocPanelProps )
 				checked={ smoothScroll !== false }
 				onChange={ ( v: boolean ) => setAttributes( { smoothScroll: v } ) }
 			/>
-			{ smoothScroll !== false && (
+			<ToggleControl
+				__nextHasNoMarginBottom
+				label={ __( 'Highlight active section', 'flexa-block' ) }
+				help={ __( 'As the reader scrolls, highlight the link of the section in view (scroll-spy).', 'flexa-block' ) }
+				checked={ !! scrollSpy }
+				onChange={ ( v: boolean ) => setAttributes( { scrollSpy: v } ) }
+			/>
+			{ ( smoothScroll !== false || scrollSpy ) && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Scroll offset (px)', 'flexa-block' ) }
-					help={ __( 'Space to leave for a sticky header when jumping to a heading.', 'flexa-block' ) }
+					help={ __( 'Space to leave for a sticky header when jumping to / detecting a heading.', 'flexa-block' ) }
 					value={ scrollOffset ?? 0 }
 					min={ 0 }
 					max={ 300 }
@@ -181,6 +190,7 @@ export const TocBehaviorPanel = ( { attributes, setAttributes }: TocPanelProps )
 			) }
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'nav' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -219,6 +229,7 @@ export const TocLinksPanel = ( { attributes, setAttributes }: TocPanelProps ): J
 			<TypographyControls value={ typo } onChange={ setTypo } />
 			<DualColor label={ __( 'Link colour', 'flexa-block' ) } value={ attributes.linkColor || {} } onChange={ ( v ) => setAttributes( { linkColor: v } ) } />
 			<DualColor label={ __( 'Link colour (hover)', 'flexa-block' ) } value={ attributes.linkHoverColor || {} } onChange={ ( v ) => setAttributes( { linkHoverColor: v } ) } />
+			<DualColor label={ __( 'Link colour (active)', 'flexa-block' ) } value={ attributes.activeColor || {} } onChange={ ( v ) => setAttributes( { activeColor: v } ) } />
 			<DualColor label={ __( 'Marker colour', 'flexa-block' ) } value={ attributes.markerColor || {} } onChange={ ( v ) => setAttributes( { markerColor: v } ) } />
 		</PanelBody>
 	);

@@ -68,6 +68,22 @@ class NoticeCssTest extends CssTestCase {
 		$this->assertStringNotContainsString( 'flex-direction', $left );
 	}
 
+	public function test_icon_align_maps_to_align_self_on_icon(): void {
+		$css = $this->gen( [ 'blockId' => 'a', 'iconAlign' => 'center' ] );
+		$this->assertCssHas( $css, self::ICON, 'align-self:center' );
+
+		$end = $this->gen( [ 'blockId' => 'a', 'iconAlign' => 'flex-end' ] );
+		$this->assertCssHas( $end, self::ICON, 'align-self:flex-end' );
+	}
+
+	public function test_icon_align_absent_when_unset(): void {
+		$this->assertStringNotContainsString( 'align-self', $this->gen( [ 'blockId' => 'a' ] ) );
+	}
+
+	public function test_icon_align_rejects_bad_value(): void {
+		$this->assertStringNotContainsString( 'align-self', $this->gen( [ 'blockId' => 'a', 'iconAlign' => 'bogus' ] ) );
+	}
+
 	public function test_alignment_maps_to_text_align_on_body(): void {
 		$css = $this->gen( [
 			'blockId'   => 'a',

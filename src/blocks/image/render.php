@@ -96,9 +96,6 @@ $built_in     = [ 'circle', 'ellipse', 'rounded', 'triangle', 'diamond', 'hexago
 $is_built_in  = $has_mask && in_array( $mask_shape, $built_in, true );
 
 $classes = [ 'flexa-image', 'flexa-image-' . sanitize_html_class( $block_id ) ];
-if ( 'none' !== $hover_effect ) {
-	$classes[] = 'flexa-image--hover-' . sanitize_html_class( $hover_effect );
-}
 if ( $has_mask ) {
 	$classes[] = 'flexa-image--masked';
 }
@@ -161,7 +158,8 @@ if ( $caption_show && 'overlay' === $caption_display ) {
 	$overlay_caption = '<figcaption class="flexa-image__caption flexa-image__caption--' . esc_attr( $caption_pos ) . '">' . wp_kses( $caption_text, $inline_allowed ) . '</figcaption>';
 }
 
-$frame_html = '<div class="flexa-image__frame">' . $img_html . $overlay_html . $overlay_caption . '</div>';
+$frame_classes = array_merge( [ 'flexa-image__frame' ], HTML_Helpers::hover_effect_classes( $hover_effect ) );
+$frame_html    = '<div class="' . esc_attr( implode( ' ', $frame_classes ) ) . '">' . $img_html . $overlay_html . $overlay_caption . '</div>';
 
 // Link mode wraps the frame in an anchor.
 if ( 'link' === $click_action && ! empty( $link['url'] ) ) {

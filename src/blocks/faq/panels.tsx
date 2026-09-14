@@ -92,6 +92,7 @@ export const FaqBehaviorPanel = ( { attributes, setAttributes }: FaqPanelProps )
 			<ToggleControl __nextHasNoMarginBottom label={ __( 'Output FAQ schema (SEO)', 'flexa-block' ) } help={ __( 'Add FAQPage structured data for search engines.', 'flexa-block' ) } checked={ !! enableSchema } onChange={ ( v: boolean ) => setAttributes( { enableSchema: v } ) } />
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -115,6 +116,7 @@ export const FaqIconPanel = ( { attributes, setAttributes }: FaqPanelProps ): JS
 				<>
 					<SelectControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Icon style', 'flexa-block' ) }
 						value={ iconStyle || 'plus' }
 						options={ ICON_STYLE_OPTIONS }

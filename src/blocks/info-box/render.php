@@ -79,7 +79,12 @@ if ( $show_media ) {
 		}
 	}
 	if ( '' !== $inner_media ) {
-		$media_html = '<div class="flexa-info-box__media">' . $inner_media . '</div>';
+		// Hover motion applies to an <img> media only, not the inline icon.
+		$media_hover = 'image' === $media_type
+			? HTML_Helpers::hover_effect_classes( (string) ( $attributes['hoverEffect'] ?? 'none' ) )
+			: [];
+		$media_class = implode( ' ', array_merge( [ 'flexa-info-box__media' ], $media_hover ) );
+		$media_html  = '<div class="' . esc_attr( $media_class ) . '">' . $inner_media . '</div>';
 	}
 }
 

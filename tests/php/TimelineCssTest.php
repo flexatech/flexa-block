@@ -284,4 +284,77 @@ class TimelineCssTest extends CssTestCase {
 		$this->assertCssHasInDark( $css, '.flexa-timeline-a .flexa-timeline__title', 'color:#eeeeee', true );
 		$this->assertStringNotContainsString( 'prefers-color-scheme', $css );
 	}
+
+	// --- item-style migration ---------------------------------------------
+
+	/**
+	 * After migration the Style-tab border/shadow frame the whole block (the
+	 * wrapper), and no longer paint each event card.
+	 * TODO(remove in vNEXT): item-style migration.
+	 */
+	public function test_migrated_wrapper_border_and_shadow_on_wrapper(): void {
+		$css = $this->gen( [
+			'blockId'           => 'a',
+			'itemStyleMigrated' => true,
+			'border'            => [
+				'desktop' => [
+					'style'  => 'solid',
+					'width'  => [ 'top' => '2', 'right' => '2', 'bottom' => '2', 'left' => '2', 'unit' => 'px' ],
+					'color'  => [ 'light' => '#111111', 'dark' => '#eeeeee' ],
+					'radius' => [ 'topLeft' => '10', 'topRight' => '10', 'bottomRight' => '10', 'bottomLeft' => '10', 'unit' => 'px' ],
+				],
+			],
+			'boxShadow'         => [
+				'enabled'    => true,
+				'horizontal' => '0',
+				'vertical'   => '8',
+				'blur'       => '24',
+				'spread'     => '0',
+				'color'      => [ 'light' => 'rgba(0,0,0,0.2)', 'dark' => 'rgba(0,0,0,0.7)' ],
+				'inset'      => false,
+			],
+		] );
+		$this->assertCssHas( $css, '.flexa-timeline-a', 'border-style:solid' );
+		$this->assertCssHas( $css, '.flexa-timeline-a', 'border-width:2px 2px 2px 2px' );
+		$this->assertCssHas( $css, '.flexa-timeline-a', 'border-color:#111111' );
+		$this->assertCssHas( $css, '.flexa-timeline-a', 'border-radius:10px 10px 10px 10px' );
+		$this->assertCssHas( $css, '.flexa-timeline-a', 'box-shadow:0px 8px 24px 0px rgba(0,0,0,0.2)' );
+		$this->assertCssHasInDark( $css, '.flexa-timeline-a', 'border-color:#eeeeee' );
+		$this->assertCssHasInDark( $css, '.flexa-timeline-a', 'box-shadow:0px 8px 24px 0px rgba(0,0,0,0.7)' );
+		// The legacy border/shadow no longer land on the card once migrated.
+		$this->assertStringNotContainsString( '.flexa-timeline-a .flexa-timeline__card{border-style', $css );
+	}
+
+	/**
+	 * After migration the dedicated itemBorder/itemBoxShadow paint each event card.
+	 * TODO(remove in vNEXT): item-style migration.
+	 */
+	public function test_migrated_item_border_and_shadow_on_card(): void {
+		$css = $this->gen( [
+			'blockId'           => 'a',
+			'itemStyleMigrated' => true,
+			'itemBorder'        => [
+				'desktop' => [
+					'style'  => 'dashed',
+					'width'  => [ 'top' => '1', 'right' => '1', 'bottom' => '1', 'left' => '1', 'unit' => 'px' ],
+					'color'  => [ 'light' => '#cccccc', 'dark' => '#333333' ],
+					'radius' => [ 'topLeft' => '6', 'topRight' => '6', 'bottomRight' => '6', 'bottomLeft' => '6', 'unit' => 'px' ],
+				],
+			],
+			'itemBoxShadow'     => [
+				'enabled'    => true,
+				'horizontal' => '0',
+				'vertical'   => '6',
+				'blur'       => '16',
+				'spread'     => '0',
+				'color'      => [ 'light' => 'rgba(0,0,0,0.12)', 'dark' => 'rgba(0,0,0,0.6)' ],
+				'inset'      => false,
+			],
+		] );
+		$this->assertCssHas( $css, '.flexa-timeline-a .flexa-timeline__card', 'border-style:dashed' );
+		$this->assertCssHas( $css, '.flexa-timeline-a .flexa-timeline__card', 'border-color:#cccccc' );
+		$this->assertCssHas( $css, '.flexa-timeline-a .flexa-timeline__card', 'box-shadow:0px 6px 16px 0px rgba(0,0,0,0.12)' );
+		$this->assertCssHasInDark( $css, '.flexa-timeline-a .flexa-timeline__card', 'border-color:#333333' );
+		$this->assertCssHasInDark( $css, '.flexa-timeline-a .flexa-timeline__card', 'box-shadow:0px 6px 16px 0px rgba(0,0,0,0.6)' );
+	}
 }

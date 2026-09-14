@@ -77,6 +77,7 @@ export const SeparatorStylePanel = ( { attributes, setAttributes }: SeparatorPan
 	<PanelBody title={ __( 'Line', 'flexa-block' ) } initialOpen={ true }>
 		<SelectControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Style', 'flexa-block' ) }
 			value={ attributes.lineStyle || 'solid' }
 			options={ LINE_STYLE_OPTIONS }
@@ -97,6 +98,7 @@ export const SeparatorAdvancedPanel = ( { attributes, setAttributes }: Separator
 	<PanelBody title={ __( 'HTML Tag', 'flexa-block' ) } initialOpen={ false }>
 		<SelectControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'HTML Tag', 'flexa-block' ) }
 			value={ attributes.htmlTag || 'div' }
 			options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

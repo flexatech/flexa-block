@@ -85,16 +85,16 @@ const CounterItemBody = ( { item, update }: { item: CounterItem; update: ( patch
 			<IconPicker label={ __( 'Icon', 'flexa-block' ) } value={ item.icon || {} } onChange={ ( v: IconValue ) => update( { icon: v } ) } />
 			<Flex gap={ 2 } align="flex-end">
 				<FlexItem isBlock>
-					<TextControl __nextHasNoMarginBottom label={ __( 'Prefix', 'flexa-block' ) } value={ num.prefix ?? '' } onChange={ ( v: string ) => setNumber( { prefix: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Prefix', 'flexa-block' ) } value={ num.prefix ?? '' } onChange={ ( v: string ) => setNumber( { prefix: v } ) } />
 				</FlexItem>
 				<FlexItem isBlock>
-					<TextControl __nextHasNoMarginBottom label={ __( 'Number', 'flexa-block' ) } value={ num.value ?? '' } onChange={ ( v: string ) => setNumber( { value: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Number', 'flexa-block' ) } value={ num.value ?? '' } onChange={ ( v: string ) => setNumber( { value: v } ) } />
 				</FlexItem>
 				<FlexItem isBlock>
-					<TextControl __nextHasNoMarginBottom label={ __( 'Suffix', 'flexa-block' ) } value={ num.suffix ?? '' } onChange={ ( v: string ) => setNumber( { suffix: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Suffix', 'flexa-block' ) } value={ num.suffix ?? '' } onChange={ ( v: string ) => setNumber( { suffix: v } ) } />
 				</FlexItem>
 			</Flex>
-			<TextControl __nextHasNoMarginBottom label={ __( 'Label', 'flexa-block' ) } value={ item.label ?? '' } onChange={ ( v: string ) => update( { label: v } ) } />
+			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Label', 'flexa-block' ) } value={ item.label ?? '' } onChange={ ( v: string ) => update( { label: v } ) } />
 		</>
 	);
 };
@@ -227,6 +227,7 @@ export const CounterNumberPanel = ( { attributes, setAttributes }: CPanelProps )
 			{ attributes.countUp !== false && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Animation duration (ms)', 'flexa-block' ) }
 					value={ typeof attributes.countDuration === 'number' ? attributes.countDuration : 2000 }
 					min={ 200 }

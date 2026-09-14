@@ -19,16 +19,20 @@ import {
 	BackgroundPanel,
 	BorderPanel,
 	ShadowPanel,
+	ItemBorderPanel,
+	ItemShadowPanel,
 	PositionPanel,
 	VisibilityPanel,
 	AnimationPanel,
 	useBlockId,
+	useMigrateItemStyle,
 	useDevice,
 	ExamplePreviewSkeleton,
 } from '@components';
 import {
 	cn,
 	visibilityClasses,
+	hoverEffectClasses,
 	effective,
 	rawDevice,
 	withUnit,
@@ -51,7 +55,11 @@ import {
 } from './panels';
 import type { DeviceKey, EditProps, TimelineItem, TimelineAttributes } from '../../types';
 
-/** Wrapper preview: max width, spacing, background, border, shadow. */
+/**
+ * Wrapper preview: max width, spacing, background. Once migrated, the wrapper
+ * also carries the Style-tab border/shadow; before migration those live on each
+ * card (see buildCardStyle) so legacy content is unchanged.
+ */
 const buildWrapperStyle = ( attributes: TimelineAttributes, device: DeviceKey ): CssProps => {
 	const s: CssProps = {};
 	const w = effective( attributes.maxWidth, device );
@@ -64,6 +72,13 @@ const buildWrapperStyle = ( attributes: TimelineAttributes, device: DeviceKey ):
 	applyBackgroundPreview( s, attributes.background );
 	const adv = effective( attributes.advancedLayout, device );
 	if ( adv.overflow ) s.overflow = adv.overflow;
+	// Wrapper border/shadow apply only after migration; legacy content keeps them
+	// on the card. Mirrors Timeline_CSS. TODO(remove in vNEXT): the gate.
+	if ( attributes.itemStyleMigrated ) {
+		applyBorderPreview( s, effective( attributes.border, device ) );
+		const shadow = boxShadowPreview( attributes.boxShadow );
+		if ( shadow ) s.boxShadow = shadow;
+	}
 	return s;
 };
 
@@ -92,8 +107,13 @@ const buildCardStyle = ( attributes: TimelineAttributes, device: DeviceKey ): Cs
 	const s: CssProps = {};
 	const pad = spacingShorthand( effective( attributes.cardPadding, device ) );
 	if ( pad ) s.padding = pad;
-	applyBorderPreview( s, effective( attributes.border, device ) );
-	const shadow = boxShadowPreview( attributes.boxShadow );
+	// Border + box-shadow apply to each card (matching the front-end generator).
+	// Post-migration this comes from the dedicated itemBorder/itemBoxShadow;
+	// legacy content falls back to the old wrapper border/boxShadow.
+	// TODO(remove in vNEXT): drop the legacy fallback, always use itemBorder/itemBoxShadow.
+	const migrated = !! attributes.itemStyleMigrated;
+	applyBorderPreview( s, effective( migrated ? attributes.itemBorder : attributes.border, device ) );
+	const shadow = boxShadowPreview( ( migrated ? attributes.itemBoxShadow : attributes.boxShadow ) || {} );
 	if ( shadow ) s.boxShadow = shadow;
 	return s;
 };
@@ -103,6 +123,8 @@ const buildImageStyle = ( attributes: TimelineAttributes, device: DeviceKey ): C
 	const s: CssProps = {};
 	const w = effective( attributes.imageWidth, device );
 	if ( w.value ) s.width = withUnit( w.value, w.unit || '%' );
+	const r = effective( attributes.imageRadius, device );
+	if ( r.value ) s.borderRadius = withUnit( r.value, r.unit || 'px' );
 	if ( attributes.imageAlign === 'center' ) {
 		s.marginLeft = 'auto';
 		s.marginRight = 'auto';
@@ -185,12 +207,15 @@ const MarkerInner = ( { item }: { item: TimelineItem } ): JSX.Element | null => 
  * Timeline edit component.
  */
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< TimelineAttributes > ): JSX.Element {
-	const { items, className, responsiveVisibility, htmlTag, markerShape, timelineLayout, datePosition, imagePosition } = attributes;
+	const { items, className, responsiveVisibility, htmlTag, markerShape, timelineLayout, datePosition, imagePosition, hoverEffect } = attributes;
 	const imgPos = imagePosition || 'top';
 	const blockId = attributes.blockId;
 	const [ device ] = useDevice();
 
 	useBlockId( clientId, blockId, setAttributes );
+	// One-time move of legacy wrapper border/shadow onto the per-item attributes.
+	// TODO(remove in vNEXT): item-style migration.
+	useMigrateItemStyle( attributes, setAttributes );
 
 	const list: TimelineItem[] = Array.isArray( items ) ? items : [];
 
@@ -202,6 +227,20 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const markerStyle = buildMarkerStyle( attributes, device );
 	const imageStyle = buildImageStyle( attributes, device );
 	const cardStyle = buildCardStyle( attributes, device );
+
+	// A per-entry image, wrapped in a hover frame only when an effect is picked
+	// (the frame carries the top/bottom spacing so the motion stays clipped).
+	const renderImage = ( item: TimelineItem ): JSX.Element => {
+		const posClass = `flexa-timeline__image--${ imgPos }`;
+		const hover = hoverEffectClasses( hoverEffect );
+		return hover.length
+			? (
+				<span className={ cn( 'flexa-timeline__image-wrap', posClass, ...hover ) } style={ imageStyle }>
+					<img className="flexa-timeline__image" src={ item.image!.url } alt={ item.image!.alt || '' } />
+				</span>
+			)
+			: <img className={ cn( 'flexa-timeline__image', posClass ) } src={ item.image!.url } alt={ item.image!.alt || '' } style={ imageStyle } />;
+	};
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const Tag: any = htmlTag || 'div';
@@ -250,6 +289,8 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 								<BackgroundPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<BorderPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<ShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemBorderPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
 						}
 						advanced={
@@ -280,9 +321,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 								</div>
 								<div className="flexa-timeline__content" style={ buildContentStyle( attributes, device, isLast ) }>
 									<div className="flexa-timeline__card" style={ cardStyle }>
-										{ item.image?.url && imgPos === 'top' && (
-											<img className="flexa-timeline__image flexa-timeline__image--top" src={ item.image.url } alt={ item.image.alt || '' } style={ imageStyle } />
-										) }
+										{ item.image?.url && imgPos === 'top' && renderImage( item ) }
 										{ ( item.date || '' ) && (
 											<span className="flexa-timeline__date" style={ dateStyle }>
 												{ item.date }
@@ -298,9 +337,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 												{ item.description }
 											</span>
 										) }
-										{ item.image?.url && imgPos === 'bottom' && (
-											<img className="flexa-timeline__image flexa-timeline__image--bottom" src={ item.image.url } alt={ item.image.alt || '' } style={ imageStyle } />
-										) }
+										{ item.image?.url && imgPos === 'bottom' && renderImage( item ) }
 									</div>
 								</div>
 							</div>

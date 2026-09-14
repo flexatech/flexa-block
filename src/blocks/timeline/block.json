@@ -42,12 +42,20 @@
 			"default": "top",
 			"enum": [ "top", "bottom" ]
 		},
+		"hoverEffect": {
+			"type": "string",
+			"default": "none"
+		},
 		"imageAlign": {
 			"type": "string",
 			"default": "left",
 			"enum": [ "left", "center", "right" ]
 		},
 		"imageWidth": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"imageRadius": {
 			"type": "object",
 			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
 		},
@@ -199,6 +207,35 @@
 				"inset": false,
 				"enabled": false
 			}
+		},
+		"itemBorder": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"itemBoxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"itemStyleMigrated": {
+			"type": "boolean",
+			"default": false
 		},
 		"advancedLayout": {
 			"type": "object",

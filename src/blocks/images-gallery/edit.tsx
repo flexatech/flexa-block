@@ -27,7 +27,7 @@ import {
 	useDevice,
 	ExamplePreviewSkeleton,
 } from '@components';
-import { cn, effective, rawDevice, withUnit, spacingShorthand, applyTypography, applyBackgroundPreview, applyBorderPreview, boxShadowPreview, editorCss } from '@utils';
+import { cn, effective, rawDevice, withUnit, spacingShorthand, applyTypography, applyBackgroundPreview, applyBorderPreview, boxShadowPreview, editorCss, hoverEffectClasses } from '@utils';
 import { GalleryImagesPanel, GalleryPanel, GalleryEffectsPanel, GalleryCaptionPanel, GalleryInteractionPanel, toGalleryImages, useAttachmentCaptions, captionFor } from './panels';
 import type { MediaItem } from './panels';
 import type { DeviceKey, EditProps, ImagesGalleryAttributes } from '../../types';
@@ -151,7 +151,6 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 			attributes.blockId && `flexa-images-gallery-${ attributes.blockId }`,
 			`flexa-images-gallery--${ galleryLayout }`,
 			className,
-			hoverEffect && hoverEffect !== 'none' && `flexa-images-gallery--hover-${ hoverEffect }`,
 			captionShow && caption?.display === 'overlay' && `flexa-images-gallery--cap-${ caption?.position || 'bottom' }`,
 			captionShow && caption?.display === 'overlay' && caption?.visibility === 'hover' && 'flexa-images-gallery--cap-hover',
 			responsiveVisibility?.hideOnDesktop && 'flexa-hide-desktop',
@@ -256,7 +255,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 						const capText = captionFor( image, captionById );
 						return (
 							<div key={ image.id || index } className="flexa-images-gallery__item" style={ itemStyle }>
-								<figure className="flexa-images-gallery__media" style={ mediaStyle }>
+								<figure className={ cn( 'flexa-images-gallery__media', ...hoverEffectClasses( hoverEffect ) ) } style={ mediaStyle }>
 									<img className="flexa-images-gallery__image" src={ image.url } alt={ image.alt || '' } />
 									{ hasOverlay && <span className="flexa-images-gallery__overlay" style={ overlayStyle } aria-hidden="true" /> }
 									{ captionShow && captionDisplay === 'overlay' && capText && (

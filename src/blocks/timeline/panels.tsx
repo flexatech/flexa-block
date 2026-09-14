@@ -26,6 +26,7 @@ import {
 	IconPicker,
 	ItemListPanel,
 	CONTENT_ALIGN_OPTIONS,
+	HoverEffectControl,
 	useDevice,
 } from '@components';
 import {
@@ -166,7 +167,7 @@ const TimelineItemBody = ( { item, update }: { item: TimelineItem; update: ( pat
 				</MediaUploadCheck>
 			</BaseControl>
 			<TimelineDateField item={ item } update={ update } />
-			<TextControl __nextHasNoMarginBottom label={ __( 'Title', 'flexa-block' ) } value={ item.title ?? '' } onChange={ ( v: string ) => update( { title: v } ) } />
+			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Title', 'flexa-block' ) } value={ item.title ?? '' } onChange={ ( v: string ) => update( { title: v } ) } />
 			<TextareaControl __nextHasNoMarginBottom label={ __( 'Description', 'flexa-block' ) } value={ item.description ?? '' } onChange={ ( v: string ) => update( { description: v } ) } />
 		</>
 	);
@@ -260,7 +261,7 @@ export const TimelineLayoutPanel = ( { attributes, setAttributes }: TPanelProps 
  */
 export const TimelineImagePanel = ( { attributes, setAttributes }: TPanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { imagePosition, imageAlign, imageWidth } = attributes;
+	const { imagePosition, imageAlign, imageWidth, imageRadius, hoverEffect } = attributes;
 
 	return (
 		<PanelBody title={ __( 'Image', 'flexa-block' ) } initialOpen={ false }>
@@ -284,6 +285,15 @@ export const TimelineImagePanel = ( { attributes, setAttributes }: TPanelProps )
 				max={ { px: 800, '%': 100, vw: 100, rem: 60 } }
 				onChange={ ( v: LengthValue ) => setAttributes( { imageWidth: { ...imageWidth, [ device ]: v } } ) }
 			/>
+			<SliderUnit
+				label={ __( 'Corner radius', 'flexa-block' ) }
+				value={ imageRadius?.[ device ] || {} }
+				units={ LENGTH_UNITS }
+				defaultUnit="px"
+				max={ { px: 200, em: 12, rem: 12, '%': 50, vw: 50, vh: 50 } }
+				onChange={ ( v: LengthValue ) => setAttributes( { imageRadius: { ...imageRadius, [ device ]: v } } ) }
+			/>
+			<HoverEffectControl value={ hoverEffect } onChange={ ( v ) => setAttributes( { hoverEffect: v } ) } />
 		</PanelBody>
 	);
 };

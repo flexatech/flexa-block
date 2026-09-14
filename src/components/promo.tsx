@@ -105,6 +105,7 @@ export const PromoHeadingPanel = ( { attributes, setAttributes }: PromoPanelProp
 		<PanelBody title={ __( 'Heading', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ attributes.headingTag || 'h2' }
 				options={ TEXT_TAG_OPTIONS }
@@ -157,6 +158,7 @@ const PromoButtonControls = ( { value, onChange }: { value: PromoButtonValue; on
 		<>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Link URL', 'flexa-block' ) }
 				type="url"
 				value={ value.url || '' }

@@ -47,6 +47,7 @@ export const MapPanel = ( { attributes, setAttributes }: PanelProps< GoogleMapAt
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Zoom', 'flexa-block' ) }
 				value={ zoom ?? 12 }
 				min={ 1 }
@@ -71,6 +72,7 @@ export const MapPanel = ( { attributes, setAttributes }: PanelProps< GoogleMapAt
 			{ apiEnabled && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Google Maps API Key', 'flexa-block' ) }
 					help={ __( 'Enables the official Embed API (satellite views, exact pins).', 'flexa-block' ) }
 					value={ apiKey?.key || '' }
@@ -119,6 +121,7 @@ export const MapLayoutPanel = ( { attributes, setAttributes }: PanelProps< Googl
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

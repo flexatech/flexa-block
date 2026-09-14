@@ -11,7 +11,7 @@
  * @package Flexa\Block
  *
  * @var array    $attributes Block attributes.
- * @var string   $content    Save content (unused — dynamic block).
+ * @var string   $content    InnerBlocks content — optional top region (breadcrumb / eyebrow / meta).
  * @var WP_Block $block      Block instance.
  */
 
@@ -28,8 +28,26 @@ $container_type = 'full-width' === ( $attributes['containerType'] ?? 'full-width
 $anchor         = $attributes['anchor'] ?? '';
 $html_tag       = HTML_Helpers::get_html_tag( $attributes, 'section' );
 
-$content_html = HTML_Helpers::promo_content_html( $attributes );
-if ( '' === $content_html ) {
+/*
+ * Where the content comes from. `fields` is the default, so a banner saved before
+ * this option existed takes exactly the path it always took — the fixed promo
+ * fields plus the narrow InnerBlocks strip above them. `custom` drops the fields
+ * and lets the InnerBlocks region be the whole content.
+ *
+ * The promo attributes are left untouched either way, so switching back to
+ * `fields` restores the heading / description / buttons unchanged.
+ */
+$content_source = 'custom' === ( $attributes['contentSource'] ?? 'fields' ) ? 'custom' : 'fields';
+$is_custom      = 'custom' === $content_source;
+
+$content_html = $is_custom ? '' : HTML_Helpers::promo_content_html( $attributes );
+
+// Optional top region from InnerBlocks (breadcrumb / eyebrow / meta). WP has already
+// rendered + escaped this. Render the banner if EITHER the promo fields or the inner
+// region has content, so a banner with only a breadcrumb + heading block still shows.
+// In `custom` the inner region is all there is, so it alone decides.
+$inner_html = trim( (string) $content );
+if ( '' === $content_html && '' === $inner_html ) {
 	return;
 }
 
@@ -41,6 +59,12 @@ $overlay_html = in_array( $overlay_type, [ 'color', 'gradient' ], true )
 	: '';
 
 $classes = [ 'flexa-banner', 'flexa-banner--' . sanitize_html_class( $container_type ) ];
+// Only the custom variant gets a class. `fields` is the base styling, so leaving
+// its markup untouched keeps already-published banners byte-identical — including
+// the per-instance CSS baked into their post meta, which knows nothing about it.
+if ( $is_custom ) {
+	$classes[] = 'flexa-banner--content-custom';
+}
 if ( '' !== $block_id ) {
 	$classes[] = 'flexa-banner-' . sanitize_html_class( $block_id );
 }
@@ -62,7 +86,12 @@ $lazy_marker = $is_lazy_bg ? ' data-flexa-lazy-bg' : '';
 // is width:100% (spans the banner) so it changes nothing; set a max-width and it
 // centres to that width — a full-bleed background with content on the site grid,
 // while `contentMaxWidth` + `contentAlign` still position the column inside it.
-$content_box = '<div class="flexa-banner__box">' . $content_html . '</div>';
+// In `custom` the region carries its own class: `__top` is a 12px-gap flex column
+// with a trailing margin, meant for a breadcrumb strip, and would reshape whatever
+// blocks the author put in.
+$inner_class = $is_custom ? 'flexa-banner__content-blocks' : 'flexa-banner__top';
+$top_html    = '' !== $inner_html ? '<div class="' . esc_attr( $inner_class ) . '">' . $inner_html . '</div>' : '';
+$content_box = '<div class="flexa-banner__box">' . $top_html . $content_html . '</div>';
 
 printf(
 	'<%1$s %2$s%3$s%4$s>%5$s%6$s</%1$s>',

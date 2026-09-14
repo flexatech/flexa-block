@@ -85,6 +85,7 @@ const BehaviourPanel = ( { attributes, setAttributes }: SlidesPanelProps ): JSX.
 				<>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Autoplay delay (ms)', 'flexa-block' ) }
 						value={ autoplayDelay ?? 3000 }
 						min={ 500 }
@@ -114,6 +115,7 @@ const BehaviourPanel = ( { attributes, setAttributes }: SlidesPanelProps ): JSX.
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Transition speed (ms)', 'flexa-block' ) }
 				value={ speed ?? 500 }
 				min={ 100 }
@@ -123,6 +125,7 @@ const BehaviourPanel = ( { attributes, setAttributes }: SlidesPanelProps ): JSX.
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Effect', 'flexa-block' ) }
 				value={ effect || 'slide' }
 				options={ EFFECT_OPTIONS }
@@ -147,6 +150,7 @@ const SlidesLayoutPanel = ( { attributes, setAttributes }: SlidesPanelProps ): J
 				<FieldHead label={ __( 'Slides per view', 'flexa-block' ) } />
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					value={ perView }
 					min={ 1 }
 					max={ 6 }
@@ -156,6 +160,7 @@ const SlidesLayoutPanel = ( { attributes, setAttributes }: SlidesPanelProps ): J
 			</div>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Space between slides (px)', 'flexa-block' ) }
 				value={ spaceBetween ?? 0 }
 				min={ 0 }

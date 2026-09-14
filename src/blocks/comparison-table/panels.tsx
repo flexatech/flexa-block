@@ -83,7 +83,7 @@ const blankRow = (): ComparisonRow => ( { label: '', values: [] } );
  */
 export const ComparisonWidthPanel = ( { attributes, setAttributes }: CtPanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { containerType, widthBoxed, widthFullWidth, htmlTag } = attributes;
+	const { containerType, widthBoxed, widthFullWidth, tableMinWidth, htmlTag } = attributes;
 	const isBoxed = containerType === 'boxed';
 	const widthGroup: 'widthBoxed' | 'widthFullWidth' = isBoxed ? 'widthBoxed' : 'widthFullWidth';
 	const widthVal = ( isBoxed ? widthBoxed : widthFullWidth )?.[ device ] || {};
@@ -110,8 +110,27 @@ export const ComparisonWidthPanel = ( { attributes, setAttributes }: CtPanelProp
 				max={ { px: 3000, '%': 100, vw: 100, rem: 100 } }
 				onChange={ setWidth }
 			/>
+			{ /* A floor for the table, not the wrapper: below it `table-layout: auto` collapses
+			     every column to its longest word and long labels stack several lines high,
+			     inside a scroller that then has nothing to scroll. Leave desktop empty. */ }
+			<SliderUnit
+				label={ __( 'Table Min Width', 'flexa-block' ) }
+				value={ tableMinWidth?.[ device ] || {} }
+				units={ WIDTH_UNITS }
+				defaultUnit="px"
+				max={ { px: 3000, '%': 100, vw: 100, rem: 100 } }
+				onChange={ ( val: LengthValue ) =>
+					setAttributes( {
+						tableMinWidth: {
+							...attributes.tableMinWidth,
+							[ device ]: { value: val.value ?? '', unit: val.unit || 'px' },
+						},
+					} )
+				}
+			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -152,12 +171,12 @@ const ColumnBody = ( { item, update }: { item: ComparisonColumn; update: ( patch
 				/>
 			</MediaUploadCheck>
 		</BaseControl>
-		<TextControl __nextHasNoMarginBottom label={ __( 'Title', 'flexa-block' ) } value={ item.title ?? '' } onChange={ ( v: string ) => update( { title: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Subtitle', 'flexa-block' ) } value={ item.subtitle ?? '' } onChange={ ( v: string ) => update( { subtitle: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Badge', 'flexa-block' ) } help={ __( 'Small ribbon shown above the title, e.g. "Popular".', 'flexa-block' ) } value={ item.badge ?? '' } onChange={ ( v: string ) => update( { badge: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Title', 'flexa-block' ) } value={ item.title ?? '' } onChange={ ( v: string ) => update( { title: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Subtitle', 'flexa-block' ) } value={ item.subtitle ?? '' } onChange={ ( v: string ) => update( { subtitle: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Badge', 'flexa-block' ) } help={ __( 'Small ribbon shown above the title, e.g. "Popular".', 'flexa-block' ) } value={ item.badge ?? '' } onChange={ ( v: string ) => update( { badge: v } ) } />
 		<ToggleControl __nextHasNoMarginBottom label={ __( 'Spotlight this column', 'flexa-block' ) } checked={ !! item.highlighted } onChange={ ( v: boolean ) => update( { highlighted: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Button text', 'flexa-block' ) } value={ item.ctaText ?? '' } onChange={ ( v: string ) => update( { ctaText: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Button link', 'flexa-block' ) } value={ item.ctaUrl ?? '' } onChange={ ( v: string ) => update( { ctaUrl: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Button text', 'flexa-block' ) } value={ item.ctaText ?? '' } onChange={ ( v: string ) => update( { ctaText: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Button link', 'flexa-block' ) } value={ item.ctaUrl ?? '' } onChange={ ( v: string ) => update( { ctaUrl: v } ) } />
 	</>
 );
 
@@ -195,11 +214,12 @@ const RowBody = ( { item, columns, update }: { item: ComparisonRow; columns: Com
 
 	return (
 		<>
-			<TextControl __nextHasNoMarginBottom label={ __( 'Feature', 'flexa-block' ) } value={ item.label ?? '' } onChange={ ( v: string ) => update( { label: v } ) } />
+			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Feature', 'flexa-block' ) } value={ item.label ?? '' } onChange={ ( v: string ) => update( { label: v } ) } />
 			{ columns.map( ( col, i ) => (
 				<TextControl
 					key={ i }
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ ( col.title || __( 'Column', 'flexa-block' ) + ' ' + ( i + 1 ) ) }
 					help={ 0 === i ? __( 'Type "true" for a check or "false" for a cross; anything else shows as text.', 'flexa-block' ) : undefined }
 					value={ values[ i ] ?? '' }
@@ -348,6 +368,7 @@ export const ComparisonMarksPanel = ( { attributes, setAttributes }: CtPanelProp
 	<PanelBody title={ __( 'Check & Cross', 'flexa-block' ) } initialOpen={ false }>
 		<SelectControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Check icon', 'flexa-block' ) }
 			value={ attributes.checkIcon || 'check' }
 			options={ CHECK_ICON_OPTIONS }
@@ -356,6 +377,7 @@ export const ComparisonMarksPanel = ( { attributes, setAttributes }: CtPanelProp
 		<DualColor label={ __( 'Check colour', 'flexa-block' ) } value={ attributes.checkColor || {} } onChange={ ( v ) => setAttributes( { checkColor: v } ) } />
 		<SelectControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Cross icon', 'flexa-block' ) }
 			value={ attributes.crossIcon || 'cross' }
 			options={ CROSS_ICON_OPTIONS }

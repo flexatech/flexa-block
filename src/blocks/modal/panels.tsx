@@ -62,6 +62,7 @@ export const TriggerPanel = ( { attributes, setAttributes }: Props ): JSX.Elemen
 			{ ( type === 'button' || type === 'text' ) && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Trigger Text', 'flexa-block' ) }
 					value={ triggerText ?? 'Open' }
 					onChange={ ( v: string ) => setAttributes( { triggerText: v } ) }

@@ -35,12 +35,22 @@ const VERTICAL_ALIGN_OPTIONS = [
 ];
 
 /**
+ * Where the banner's content comes from. `fields` is the default so every banner
+ * saved before this option existed keeps behaving exactly as it did.
+ */
+const CONTENT_SOURCE_OPTIONS = [
+	{ value: 'fields', label: __( 'Fields', 'flexa-block' ) },
+	{ value: 'custom', label: __( 'Any blocks', 'flexa-block' ) },
+];
+
+/**
  * Layout panel — section width, min-height, vertical content placement and tag.
  */
 export const BannerLayoutPanel = ( { attributes, setAttributes }: BannerPanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { containerType, widthBoxed, widthFullWidth, contentBoxWidth, size, verticalAlign, htmlTag } = attributes;
+	const { contentSource, containerType, widthBoxed, widthFullWidth, contentBoxWidth, size, verticalAlign, htmlTag } = attributes;
 	const isBoxed = containerType !== 'full-width';
+	const isCustom = 'custom' === ( contentSource || 'fields' );
 
 	const widthGroup: 'widthBoxed' | 'widthFullWidth' = isBoxed ? 'widthBoxed' : 'widthFullWidth';
 	const widthVal = ( isBoxed ? widthBoxed : widthFullWidth )?.[ device ] || {};
@@ -56,6 +66,27 @@ export const BannerLayoutPanel = ( { attributes, setAttributes }: BannerPanelPro
 
 	return (
 		<PanelBody title={ __( 'Layout', 'flexa-block' ) } initialOpen={ true }>
+			<Segmented
+				label={ __( 'Content', 'flexa-block' ) }
+				value={ contentSource || 'fields' }
+				onChange={ ( v ) => setAttributes( { contentSource: v as BannerAttributes[ 'contentSource' ] } ) }
+				options={ CONTENT_SOURCE_OPTIONS }
+			/>
+			{ /* Segmented takes no `help`, so the explanation uses WordPress's own
+			     help class rather than inventing one — it inherits the same small,
+			     muted styling every other control's help text has. Saying the fields
+			     are KEPT matters: switching mode looks like losing them otherwise. */ }
+			<p className="components-base-control__help">
+				{ isCustom
+					? __(
+							'Build the banner from any blocks. The heading, description and buttons are kept — switch back to Fields to use them again.',
+							'flexa-block'
+					  )
+					: __(
+							'Use the built-in heading, description and buttons. Choose “Any blocks” to build the banner from blocks instead.',
+							'flexa-block'
+					  ) }
+			</p>
 			<Segmented
 				label={ __( 'Section Width', 'flexa-block' ) }
 				value={ containerType || 'full-width' }
@@ -94,6 +125,7 @@ export const BannerLayoutPanel = ( { attributes, setAttributes }: BannerPanelPro
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'section' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -133,6 +165,7 @@ export const BannerOverlayPanel = ( { attributes, setAttributes }: BannerPanelPr
 				<>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Opacity', 'flexa-block' ) }
 						value={ typeof overlay.opacity === 'number' ? overlay.opacity : 50 }
 						min={ 0 }
@@ -141,6 +174,7 @@ export const BannerOverlayPanel = ( { attributes, setAttributes }: BannerPanelPr
 					/>
 					<SelectControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Blend Mode', 'flexa-block' ) }
 						value={ overlay.blendMode || '' }
 						options={ BLEND_MODE_OPTIONS }

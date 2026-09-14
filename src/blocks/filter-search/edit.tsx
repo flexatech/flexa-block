@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, TextControl, ToggleControl } from '@wordpress/components';
 
-import { Segmented, VisibilityPanel, useBlockId, useDevice } from '@components';
+import { Segmented, VisibilityPanel, useBlockId, useDevice, ExamplePreviewSkeleton } from '@components';
 import { cn } from '@utils';
 import type { EditProps, FilterSearchAttributes } from '../../types';
 import { FIELD_WIDTH_OPTIONS } from '@shared/filter-widths';
@@ -37,6 +37,15 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		),
 	} );
 
+	// Inserter hover-preview → faint skeleton mock-up instead of the live control.
+	if ( ( attributes as { isExamplePreview?: boolean } ).isExamplePreview ) {
+		return (
+			<div { ...blockProps }>
+				<ExamplePreviewSkeleton kind="filter-search" />
+			</div>
+		);
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -44,6 +53,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 					<PanelBody title={ __( 'Search', 'flexa-block' ) } initialOpen={ true }>
 						<TextControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Label', 'flexa-block' ) }
 							value={ label ?? '' }
 							onChange={ ( v: string ) => setAttributes( { label: v } ) }
@@ -57,6 +67,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 						/>
 						<TextControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Placeholder', 'flexa-block' ) }
 							value={ placeholder ?? '' }
 							onChange={ ( v: string ) => setAttributes( { placeholder: v } ) }

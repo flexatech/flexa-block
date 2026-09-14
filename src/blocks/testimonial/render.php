@@ -79,6 +79,13 @@ $quote_html = '' !== trim( $quote ) ? '<blockquote class="flexa-testimonial__quo
 $avatar_html = '';
 if ( $show_avatar && '' !== $avatar_url ) {
 	$avatar_html = '<img class="flexa-testimonial__avatar" src="' . esc_url( $avatar_url ) . '" alt="' . esc_attr( $avatar_alt ) . '" loading="lazy" decoding="async" />';
+	// Wrap in a hover frame only when an effect is picked, so the default markup
+	// (a bare avatar) is unchanged.
+	$avatar_hover = HTML_Helpers::hover_effect_classes( (string) ( $attributes['hoverEffect'] ?? 'none' ) );
+	if ( $avatar_hover ) {
+		$wrap_class  = implode( ' ', array_merge( [ 'flexa-testimonial__avatar-wrap' ], $avatar_hover ) );
+		$avatar_html = '<span class="' . esc_attr( $wrap_class ) . '">' . $avatar_html . '</span>';
+	}
 }
 
 $name_html = '' !== trim( $name ) ? '<span class="flexa-testimonial__name">' . wp_kses( $name, $inline_allowed ) . '</span>' : '';

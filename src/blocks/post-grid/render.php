@@ -46,7 +46,7 @@ $paged   = Post_Query::paged( is_array( $request ) ? $request : [], $block_id );
 
 $result = Post_Query::run( $cfg, $filters, $paged );
 
-$grid_html       = Post_Query::render_grid( Post_Query::render_cards( $result['query'], $cfg ), ! empty( $cfg['showResultCount'] ) );
+$grid_html       = Post_Query::render_grid( Post_Query::render_cards( $result['query'], $cfg ), ! empty( $cfg['showResultCount'] ), Post_Query::grid_modifier_classes( $cfg ) );
 $pagination_html = Post_Query::render_pagination( $cfg, $block_id, $result['paged'], $result['totalPages'] );
 $status_html     = Post_Query::render_status( $result['total'], ! empty( $cfg['showResultCount'] ), (string) ( $cfg['resultCountText'] ?? '' ) );
 

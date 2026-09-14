@@ -72,6 +72,7 @@ export const CtaLayoutPanel = ( { attributes, setAttributes }: CtaPanelProps ): 
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'section' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

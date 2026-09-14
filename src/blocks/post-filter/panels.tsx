@@ -94,6 +94,7 @@ export const PostFilterTargetPanel = ( { attributes, setAttributes }: FilterPane
 			) }
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Post Grid to filter', 'flexa-block' ) }
 				help={ __( 'The grid can sit anywhere on the page — a sidebar filter driving a grid in the main column works fine.', 'flexa-block' ) }
 				value={ targetGridId || '' }
@@ -108,6 +109,7 @@ export const PostFilterTargetPanel = ( { attributes, setAttributes }: FilterPane
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Grid ID', 'flexa-block' ) }
 				help={ __( 'Only needed when the grid lives in a template rather than in this content.', 'flexa-block' ) }
 				value={ targetGridId || '' }
@@ -115,12 +117,14 @@ export const PostFilterTargetPanel = ( { attributes, setAttributes }: FilterPane
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Button text', 'flexa-block' ) }
 				value={ submitText ?? '' }
 				onChange={ ( v: string ) => setAttributes( { submitText: v } ) }
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Accessible name', 'flexa-block' ) }
 				help={ __( 'Announced to screen readers as the name of this search region.', 'flexa-block' ) }
 				value={ formLabel ?? '' }
@@ -233,6 +237,7 @@ export const PostFilterControlBorderPanel = ( { attributes, setAttributes }: Fil
 		<PanelBody title={ __( 'Control border', 'flexa-block' ) } initialOpen={ false }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Style', 'flexa-block' ) }
 				value={ border.style || '' }
 				options={ [ { value: '', label: __( 'None', 'flexa-block' ) }, ...LINE_STYLE_OPTIONS ] }

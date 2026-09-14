@@ -60,9 +60,6 @@ $inline_allowed = [
 
 // Wrapper classes.
 $classes = [ 'flexa-images-gallery', 'flexa-images-gallery-' . sanitize_html_class( $block_id ), 'flexa-images-gallery--' . sanitize_html_class( $layout ) ];
-if ( 'none' !== $hover_effect ) {
-	$classes[] = 'flexa-images-gallery--hover-' . sanitize_html_class( $hover_effect );
-}
 if ( $caption_show && 'overlay' === $caption_display ) {
 	$classes[] = 'flexa-images-gallery--cap-' . sanitize_html_class( $caption_pos );
 	if ( $caption_hover ) {
@@ -172,8 +169,9 @@ foreach ( $images as $image ) {
 		}
 	}
 
-	$items_html .= '<div class="flexa-images-gallery__item"' . $item_data . '>'
-		. '<figure class="flexa-images-gallery__media">' . $img_html . $overlay_html . $overlay_caption . '</figure>'
+	$media_classes = array_merge( [ 'flexa-images-gallery__media' ], HTML_Helpers::hover_effect_classes( $hover_effect ) );
+	$items_html   .= '<div class="flexa-images-gallery__item"' . $item_data . '>'
+		. '<figure class="' . esc_attr( implode( ' ', $media_classes ) ) . '">' . $img_html . $overlay_html . $overlay_caption . '</figure>'
 		. $below_caption
 		. '</div>';
 }

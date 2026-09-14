@@ -94,6 +94,7 @@ const ContainerPanel = ( { attributes, setAttributes }: PanelProps ): JSX.Elemen
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

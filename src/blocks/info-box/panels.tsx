@@ -25,6 +25,7 @@ import {
 	useDevice,
 	CONTENT_ALIGN_OPTIONS,
 	TEXT_TAG_OPTIONS,
+	HoverEffectControl,
 } from '@components';
 import { rawDevice, patchDevice, LENGTH_UNITS, SPACING_UNITS, WEIGHT_UNITS, HTML_TAGS, LINE_STYLE_OPTIONS } from '@utils';
 import type { ButtonIconAttr, ColorPair, ControlOption, ImageMedia, InfoBoxAttributes, LengthValue, PanelProps, TypographyDevice } from '../../types';
@@ -82,6 +83,7 @@ export const InfoBoxLayoutPanel = ( { attributes, setAttributes }: IBPanelProps 
 			{ iconPosition === 'left' && (
 				<SelectControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Stack media on', 'flexa-block' ) }
 					value={ stackOn || 'none' }
 					options={ STACK_OPTIONS }
@@ -106,6 +108,7 @@ export const InfoBoxLayoutPanel = ( { attributes, setAttributes }: IBPanelProps 
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -138,7 +141,7 @@ export const InfoBoxLayoutPanel = ( { attributes, setAttributes }: IBPanelProps 
  */
 export const InfoBoxMediaPanel = ( { attributes, setAttributes }: IBPanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { showMedia, mediaType, icon, image, iconSize, imageWidth, iconColor, mediaBackground, mediaPadding, mediaRadius } = attributes;
+	const { showMedia, mediaType, icon, image, iconSize, imageWidth, iconColor, mediaBackground, mediaPadding, mediaRadius, hoverEffect } = attributes;
 	const img: ImageMedia = image || {};
 	const type = mediaType || 'icon';
 
@@ -217,6 +220,7 @@ export const InfoBoxMediaPanel = ( { attributes, setAttributes }: IBPanelProps )
 								max={ { px: 600, em: 40, rem: 40, '%': 100 } }
 								onChange={ ( v: LengthValue ) => setAttributes( { imageWidth: { ...imageWidth, [ device ]: v } } ) }
 							/>
+							<HoverEffectControl value={ hoverEffect } onChange={ ( v ) => setAttributes( { hoverEffect: v } ) } />
 						</>
 					) }
 
@@ -270,6 +274,7 @@ export const InfoBoxTitlePanel = ( { attributes, setAttributes }: IBPanelProps )
 		<PanelBody title={ __( 'Title', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ attributes.titleTag || 'h3' }
 				options={ TEXT_TAG_OPTIONS }
@@ -327,6 +332,7 @@ export const InfoBoxSeparatorPanel = ( { attributes, setAttributes }: IBPanelPro
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Style', 'flexa-block' ) }
 				value={ separatorStyle || 'solid' }
 				options={ LINE_STYLE_OPTIONS }
@@ -350,6 +356,7 @@ export const InfoBoxButtonPanel = ( { attributes, setAttributes }: IBPanelProps 
 		<PanelBody title={ __( 'Button', 'flexa-block' ) } initialOpen={ false }>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Link URL', 'flexa-block' ) }
 				type="url"
 				value={ buttonUrl || '' }

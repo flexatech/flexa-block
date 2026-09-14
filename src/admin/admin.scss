@@ -15,6 +15,23 @@ $muted: #646970;
 $line: #e0e0e0;
 $radius: 10px;
 
+/*
+ * Add-on badge accent — the mark for a block that comes from a paid add-on.
+ *
+ * Fixed on purpose, and deliberately NOT the block's group accent like the
+ * thumbnail is: a badge that changed colour per card would read as decoration
+ * rather than as one recognisable mark.
+ *
+ * Indigo rather than either extreme. It is already in this plugin's palette
+ * (the Layout group's accent in GROUP_META), so it sits in the same family as
+ * the interface blue above — but it is not that blue, which matters: $accent
+ * and the #2563eb block glyphs are the plugin's *default* colour, used on every
+ * card, so a badge painted in it would disappear into the grid instead of
+ * standing out. Violet reads "premium" more loudly still; this is the version
+ * that stays in key with the rest of the screen.
+ */
+$addon: #4f46e5;
+
 .flexa-app {
 	display: flex;
 	align-items: flex-start;
@@ -461,6 +478,7 @@ $radius: 10px;
 
 /* -------- Block card -------- */
 .flexa-block-card {
+	position: relative; /* Positioning context for the add-on badge. */
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
@@ -471,6 +489,32 @@ $radius: 10px;
 
 	&:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1); border-color: #c9c9c9; }
 	&.is-off { opacity: 0.62; }
+
+	/*
+	 * Block from an add-on this site does not have. Dimmed like a switched-off
+	 * card but flatter still — no hover lift, because nothing here responds to a
+	 * click. The badge and the padlock carry the meaning; the dimming only keeps
+	 * it from competing with the blocks the user actually owns.
+	 */
+	&.is-locked {
+		opacity: 0.72;
+		background: #fafafa;
+
+		&:hover { transform: none; box-shadow: none; border-color: $line; }
+	}
+
+	&__lock {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;   /* same footprint as .flexa-switch, so heads line up */
+		height: 22px;
+		flex: 0 0 auto;
+		color: $muted;
+		cursor: default;
+
+		svg { width: 17px; height: 17px; }
+	}
 
 	&__body { padding: 14px 16px 16px; }
 
@@ -486,6 +530,7 @@ $radius: 10px;
 	}
 
 	&__badge {
+		flex: none;
 		padding: 1px 7px;
 		border-radius: 4px;
 		background: #f0f0f1;
@@ -494,6 +539,38 @@ $radius: 10px;
 		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.4px;
+	}
+
+	/*
+	 * Origin label from an add-on plugin, floated over the thumbnail's top-right
+	 * corner. One mark, one colour on every card (see $addon) — a white chip so
+	 * it holds the same contrast over all eleven group gradients, with the label
+	 * and crown in the fixed add-on violet.
+	 */
+	&__addon {
+		position: absolute;
+		top: 12px;
+		right: 12px;
+		z-index: 1;
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		padding: 5px 11px;
+		border-radius: 8px;
+		background: #fff;
+		color: $addon;
+		font-size: 11px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.6px;
+		line-height: 1;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+	}
+
+	&__addon-icon {
+		width: 14px;
+		height: 14px;
+		flex: none;
 	}
 
 	&__desc {

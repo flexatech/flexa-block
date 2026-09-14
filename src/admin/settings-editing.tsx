@@ -13,6 +13,7 @@ import { ToggleControl } from '@wordpress/components';
 import { CardHeader } from './settings-general';
 import { FilterPill } from './blocks-panel';
 import { BlockThumb } from './block-thumb';
+import { CrownIcon } from './icons';
 import { GROUP_ORDER, groupMeta, groupOf } from './block-groups';
 
 type Settings = Record< string, any >;
@@ -339,6 +340,18 @@ function EditableBlockCard( {
 	return (
 		<div className={ `flexa-block-card${ enabled ? '' : ' is-off' }` }>
 			<BlockThumb block={ block } />
+			{ /*
+			 * Same origin label as the Blocks grid, in the same place over the
+			 * thumbnail. This list mixes core and add-on blocks exactly as that one
+			 * does, so leaving it out here made add-on blocks look like core blocks
+			 * on the only screen that can switch their editing off.
+			 */ }
+			{ ! block.is_core && block.badge && (
+				<span className="flexa-block-card__addon">
+					<CrownIcon className="flexa-block-card__addon-icon" />
+					{ block.badge }
+				</span>
+			) }
 			<div className="flexa-block-card__body">
 				<div className="flexa-block-card__head">
 					<h3 className="flexa-block-card__title">{ title }</h3>

@@ -34,6 +34,10 @@
 			"default": "circle",
 			"enum": [ "circle", "rounded", "square" ]
 		},
+		"hoverEffect": {
+			"type": "string",
+			"default": "none"
+		},
 		"stackOn": {
 			"type": "string",
 			"default": "none",

@@ -26,6 +26,7 @@ import {
 	CONTAINER_WIDTH_OPTIONS,
 	TEXT_TAG_OPTIONS,
 	ASPECT_RATIO_OPTIONS,
+	HoverEffectControl,
 	useDevice,
 } from '@components';
 import { HTML_TAGS, LENGTH_UNITS, SPACING_UNITS, rawDevice, patchDevice } from '@utils';
@@ -46,6 +47,12 @@ const ORDER_BY_OPTIONS = [
 const ORDER_OPTIONS = [
 	{ value: 'desc', label: __( 'Descending', 'flexa-block' ) },
 	{ value: 'asc', label: __( 'Ascending', 'flexa-block' ) },
+];
+
+/** Card layout: image over body (stacked) vs body over image (overlay). */
+const CARD_STYLE_OPTIONS = [
+	{ value: 'stacked', label: __( 'Stacked', 'flexa-block' ) },
+	{ value: 'overlay', label: __( 'Overlay', 'flexa-block' ) },
 ];
 
 /** Where a Post Filter's search box looks. See PostGridAttributes.searchScope. */
@@ -118,6 +125,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 		<PanelBody title={ __( 'Query', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Post type', 'flexa-block' ) }
 				value={ postType || 'post' }
 				options={ typeOptions }
@@ -125,6 +133,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Posts per page', 'flexa-block' ) }
 				value={ typeof postsPerPage === 'number' ? postsPerPage : 6 }
 				min={ 1 }
@@ -133,6 +142,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				type="number"
 				label={ __( 'Offset', 'flexa-block' ) }
 				help={ __( 'Skip this many posts before the first shown.', 'flexa-block' ) }
@@ -141,6 +151,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Order by', 'flexa-block' ) }
 				value={ orderBy || 'date' }
 				options={ ORDER_BY_OPTIONS }
@@ -154,6 +165,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Filter by taxonomy', 'flexa-block' ) }
 				value={ taxonomy || '' }
 				options={ taxonomyOptions }
@@ -181,6 +193,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Visitor search looks in', 'flexa-block' ) }
 				help={ __( 'Used by a Post Filter search box. "Everything" is WordPress\'s own behaviour — it searches the raw content, block markup included, so a search for "container" matches every post built with one.', 'flexa-block' ) }
 				value={ searchScope || 'title_excerpt' }
@@ -197,6 +210,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 			{ !! showResultCount && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Result count text', 'flexa-block' ) }
 					help={ __( '%s is the number of posts. Leave empty for "%s posts found".', 'flexa-block' ) }
 					placeholder={ __( '%s posts found', 'flexa-block' ) }
@@ -206,6 +220,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 			) }
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				readOnly
 				label={ __( 'Grid ID', 'flexa-block' ) }
 				help={ __( 'This grid\'s id. A Post Filter normally finds it on its own — copy this only when the filter bar lives somewhere the editor can\'t see it, like a template.', 'flexa-block' ) }
@@ -214,6 +229,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'section' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -229,7 +245,7 @@ export const PostGridQueryPanel = ( { attributes, setAttributes }: PgPanelProps 
  */
 export const PostGridLayoutPanel = ( { attributes, setAttributes }: PgPanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { containerType, widthBoxed, widthFullWidth, columns, rowGap, columnGap, equalHeight, contentAlign, contentPadding, contentGap } = attributes;
+	const { containerType, widthBoxed, widthFullWidth, columns, rowGap, columnGap, equalHeight, cardStyle, featureFirst, contentAlign, contentPadding, contentGap } = attributes;
 	const isBoxed = ( containerType || 'boxed' ) === 'boxed';
 	const widthGroup: 'widthBoxed' | 'widthFullWidth' = isBoxed ? 'widthBoxed' : 'widthFullWidth';
 	const widthVal = ( isBoxed ? widthBoxed : widthFullWidth )?.[ device ] || {};
@@ -306,6 +322,19 @@ export const PostGridLayoutPanel = ( { attributes, setAttributes }: PgPanelProps
 				checked={ equalHeight !== false }
 				onChange={ ( v: boolean ) => setAttributes( { equalHeight: v } ) }
 			/>
+			<Segmented
+				label={ __( 'Card style', 'flexa-block' ) }
+				value={ cardStyle || 'stacked' }
+				onChange={ ( v ) => setAttributes( { cardStyle: v as PostGridAttributes[ 'cardStyle' ] } ) }
+				options={ CARD_STYLE_OPTIONS }
+			/>
+			<ToggleControl
+				__nextHasNoMarginBottom
+				label={ __( 'Feature first post', 'flexa-block' ) }
+				help={ __( 'The first post spans the full row (image beside the text). Applies on page one.', 'flexa-block' ) }
+				checked={ !! featureFirst }
+				onChange={ ( v: boolean ) => setAttributes( { featureFirst: v } ) }
+			/>
 		</PanelBody>
 	);
 };
@@ -317,9 +346,10 @@ export const PostGridLayoutPanel = ( { attributes, setAttributes }: PgPanelProps
  */
 export const PostGridElementsPanel = ( { attributes, setAttributes }: PgPanelProps ): JSX.Element => {
 	const {
-		showImage, imageSize, imageRatio,
+		showImage, imageSize, imageRatio, hoverEffect,
 		showTitle, titleTag,
 		showMeta, showAuthor, showAvatar, avatarSize, showDate, showComments, showTaxonomy,
+		showReadingTime, wordsPerMinute,
 		showExcerpt, excerptLength,
 		showReadMore, readMoreText,
 	} = attributes;
@@ -336,6 +366,7 @@ export const PostGridElementsPanel = ( { attributes, setAttributes }: PgPanelPro
 				<>
 					<SelectControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Image ratio', 'flexa-block' ) }
 						value={ imageRatio || '16/9' }
 						options={ [ { value: '', label: __( 'Original', 'flexa-block' ) }, ...ASPECT_RATIO_OPTIONS ] }
@@ -343,11 +374,13 @@ export const PostGridElementsPanel = ( { attributes, setAttributes }: PgPanelPro
 					/>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Image source size', 'flexa-block' ) }
 						help={ __( 'Registered size name (e.g. large, medium, full).', 'flexa-block' ) }
 						value={ imageSize || 'large' }
 						onChange={ ( v: string ) => setAttributes( { imageSize: v } ) }
 					/>
+					<HoverEffectControl value={ hoverEffect } onChange={ ( v ) => setAttributes( { hoverEffect: v } ) } />
 				</>
 			) }
 
@@ -360,6 +393,7 @@ export const PostGridElementsPanel = ( { attributes, setAttributes }: PgPanelPro
 			{ showTitle !== false && (
 				<SelectControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Title tag', 'flexa-block' ) }
 					value={ titleTag || 'h3' }
 					options={ TEXT_TAG_OPTIONS }
@@ -382,6 +416,7 @@ export const PostGridElementsPanel = ( { attributes, setAttributes }: PgPanelPro
 							{ !! showAvatar && (
 								<RangeControl
 									__nextHasNoMarginBottom
+									__next40pxDefaultSize
 									label={ __( 'Avatar size', 'flexa-block' ) }
 									value={ typeof avatarSize === 'number' ? avatarSize : 24 }
 									min={ 12 }
@@ -392,6 +427,20 @@ export const PostGridElementsPanel = ( { attributes, setAttributes }: PgPanelPro
 						</>
 					) }
 					<ToggleControl __nextHasNoMarginBottom label={ __( 'Date', 'flexa-block' ) } checked={ showDate !== false } onChange={ ( v: boolean ) => setAttributes( { showDate: v } ) } />
+					<ToggleControl __nextHasNoMarginBottom label={ __( 'Reading time', 'flexa-block' ) } help={ __( 'Each post shows its own time, calculated from that post’s length.', 'flexa-block' ) } checked={ !! showReadingTime } onChange={ ( v: boolean ) => setAttributes( { showReadingTime: v } ) } />
+					{ !! showReadingTime && (
+						<RangeControl
+							__nextHasNoMarginBottom
+							__next40pxDefaultSize
+							label={ __( 'Reading speed (words per minute)', 'flexa-block' ) }
+							help={ __( 'How fast a reader is assumed to read. Each post’s time = its word count ÷ this. Average is ~200–250.', 'flexa-block' ) }
+							value={ typeof wordsPerMinute === 'number' ? wordsPerMinute : 200 }
+							min={ 100 }
+							max={ 600 }
+							step={ 10 }
+							onChange={ ( v?: number ) => setAttributes( { wordsPerMinute: v ?? 200 } ) }
+						/>
+					) }
 					<ToggleControl __nextHasNoMarginBottom label={ __( 'Comments', 'flexa-block' ) } checked={ !! showComments } onChange={ ( v: boolean ) => setAttributes( { showComments: v } ) } />
 					<ToggleControl __nextHasNoMarginBottom label={ __( 'Taxonomy', 'flexa-block' ) } checked={ !! showTaxonomy } onChange={ ( v: boolean ) => setAttributes( { showTaxonomy: v } ) } />
 				</>
@@ -406,6 +455,7 @@ export const PostGridElementsPanel = ( { attributes, setAttributes }: PgPanelPro
 			{ showExcerpt !== false && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Excerpt length (words)', 'flexa-block' ) }
 					value={ typeof excerptLength === 'number' ? excerptLength : 20 }
 					min={ 0 }
@@ -423,6 +473,7 @@ export const PostGridElementsPanel = ( { attributes, setAttributes }: PgPanelPro
 			{ showReadMore !== false && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Read more text', 'flexa-block' ) }
 					value={ readMoreText ?? '' }
 					onChange={ ( v: string ) => setAttributes( { readMoreText: v } ) }

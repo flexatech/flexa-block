@@ -14,7 +14,7 @@
 import { __ } from '@wordpress/i18n';
 import { PanelBody, SelectControl, ToggleControl, RangeControl } from '@wordpress/components';
 
-import { Segmented, SliderUnit, useDevice, CONTENT_ALIGN_OPTIONS } from '@components';
+import { Segmented, SliderUnit, useDevice, CONTENT_ALIGN_OPTIONS, HoverEffectControl } from '@components';
 import { patchDevice, LENGTH_UNITS } from '@utils';
 import type { LengthValue, PanelProps, ProductImageAttributes } from '../../types';
 
@@ -126,7 +126,9 @@ export const ProductImageGalleryPanel = ( { attributes, setAttributes }: PImgPan
  */
 export const ProductImageFeaturedPanel = ( { attributes, setAttributes }: PImgPanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { imageHeight, imageScale, adaptiveHeight, zoomOnHover, imageRadius } = attributes;
+	const { imageHeight, imageScale, adaptiveHeight, zoomOnHover, hoverEffect, imageRadius } = attributes;
+	// `hoverEffect` supersedes the legacy `zoomOnHover` toggle; show the fallback.
+	const effect = hoverEffect && hoverEffect !== 'none' ? hoverEffect : ( zoomOnHover ? 'zoom-in' : 'none' );
 
 	return (
 		<PanelBody title={ __( 'Featured Image', 'flexa-block' ) } initialOpen={ false }>
@@ -150,6 +152,7 @@ export const ProductImageFeaturedPanel = ( { attributes, setAttributes }: PImgPa
 					/>
 					<SelectControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Image scale', 'flexa-block' ) }
 						value={ imageScale || 'cover' }
 						options={ SCALE_OPTIONS }
@@ -158,11 +161,9 @@ export const ProductImageFeaturedPanel = ( { attributes, setAttributes }: PImgPa
 				</>
 			) }
 
-			<ToggleControl
-				__nextHasNoMarginBottom
-				label={ __( 'Zoom on hover', 'flexa-block' ) }
-				checked={ !! zoomOnHover }
-				onChange={ ( v: boolean ) => setAttributes( { zoomOnHover: v } ) }
+			<HoverEffectControl
+				value={ effect }
+				onChange={ ( v ) => setAttributes( { hoverEffect: v, zoomOnHover: false } ) }
 			/>
 
 			<SliderUnit

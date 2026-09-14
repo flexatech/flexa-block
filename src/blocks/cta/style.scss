@@ -30,6 +30,10 @@
 		margin-inline: auto;
 	}
 
+	.flexa-promo__buttons{
+		justify-content: center;
+	}
+
 	// Split layout — text and buttons side by side, wrapping on narrow screens.
 	&--split {
 		.flexa-promo__content {

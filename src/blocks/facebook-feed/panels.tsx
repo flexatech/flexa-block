@@ -58,6 +58,7 @@ export const FbSourcePanel = ( { attributes, setAttributes }: FbPanelProps ): JS
 			<FeedTokenControl service="facebook" label={ __( 'Page access token', 'flexa-block' ) } />
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Page ID', 'flexa-block' ) }
 				help={ __( 'Leave empty for the token’s own page.', 'flexa-block' ) }
 				value={ pageId ?? '' }
@@ -65,6 +66,7 @@ export const FbSourcePanel = ( { attributes, setAttributes }: FbPanelProps ): JS
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Number of posts', 'flexa-block' ) }
 				value={ typeof numberOfPosts === 'number' ? numberOfPosts : 6 }
 				min={ 1 }
@@ -79,6 +81,7 @@ export const FbSourcePanel = ( { attributes, setAttributes }: FbPanelProps ): JS
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Cache time (minutes)', 'flexa-block' ) }
 				help={ __( 'How long the fetched posts are cached before refreshing.', 'flexa-block' ) }
 				value={ typeof cacheTime === 'number' ? cacheTime : 30 }
@@ -89,6 +92,7 @@ export const FbSourcePanel = ( { attributes, setAttributes }: FbPanelProps ): JS
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'section' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -198,6 +202,7 @@ export const FbContentPanel = ( { attributes, setAttributes }: FbPanelProps ): J
 			{ showMessage !== false && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Message length (words)', 'flexa-block' ) }
 					value={ typeof messageLimit === 'number' ? messageLimit : 20 }
 					min={ 0 }

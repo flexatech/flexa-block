@@ -43,6 +43,7 @@ export const ProductNameContentPanel = ( { attributes, setAttributes }: ProductN
 		<PanelBody title={ __( 'Product Name', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'h2' }
 				options={ TAG_OPTIONS }

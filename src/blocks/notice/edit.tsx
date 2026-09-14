@@ -98,7 +98,7 @@ const buildBodyStyle = ( attributes: NoticeAttributes, device: DeviceKey ): CssP
 	return s;
 };
 
-/** Icon preview: size (width/height/font-size) + colour. */
+/** Icon preview: size (width/height/font-size) + colour + cross-axis alignment. */
 const buildIconStyle = ( attributes: NoticeAttributes, device: DeviceKey ): CssProps => {
 	const s: CssProps = {};
 	const size = effective( attributes.iconSize, device );
@@ -108,6 +108,7 @@ const buildIconStyle = ( attributes: NoticeAttributes, device: DeviceKey ): CssP
 		s.height = v;
 		s.fontSize = v;
 	}
+	if ( attributes.iconAlign ) s.alignSelf = attributes.iconAlign;
 	if ( attributes.iconColor?.light ) s.color = attributes.iconColor.light;
 	return s;
 };

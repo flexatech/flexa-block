@@ -101,6 +101,7 @@ export const ProcessBarValuePanel = ( { attributes, setAttributes }: PPanelProps
 				<>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Value', 'flexa-block' ) }
 						type="number"
 						value={ String( typeof value === 'number' ? value : 75 ) }
@@ -108,6 +109,7 @@ export const ProcessBarValuePanel = ( { attributes, setAttributes }: PPanelProps
 					/>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Maximum', 'flexa-block' ) }
 						type="number"
 						value={ String( typeof max === 'number' ? max : 100 ) }
@@ -117,6 +119,7 @@ export const ProcessBarValuePanel = ( { attributes, setAttributes }: PPanelProps
 			) : (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Value (%)', 'flexa-block' ) }
 					value={ typeof value === 'number' ? value : 75 }
 					min={ 0 }
@@ -133,6 +136,7 @@ export const ProcessBarValuePanel = ( { attributes, setAttributes }: PPanelProps
 			{ showCounter !== false && isAbsolute && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Divider character', 'flexa-block' ) }
 					help={ __( 'Shown between the value and the maximum, e.g. 75 / 100.', 'flexa-block' ) }
 					value={ dividerChar ?? '/' }
@@ -162,12 +166,14 @@ export const ProcessBarTitlePanel = ( { attributes, setAttributes }: PPanelProps
 				<>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Title', 'flexa-block' ) }
 						value={ title ?? '' }
 						onChange={ ( v: string ) => setAttributes( { title: v } ) }
 					/>
 					<SelectControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Title tag', 'flexa-block' ) }
 						value={ titleTag || 'div' }
 						options={ TEXT_TAG_OPTIONS }
@@ -264,6 +270,7 @@ export const ProcessBarBarPanel = ( { attributes, setAttributes }: PPanelProps )
 			) }
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Fill style', 'flexa-block' ) }
 				value={ fillStyle || 'solid' }
 				options={ FILL_STYLE_OPTIONS }
@@ -278,6 +285,7 @@ export const ProcessBarBarPanel = ( { attributes, setAttributes }: PPanelProps )
 			{ animateFill !== false && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Fill duration (ms)', 'flexa-block' ) }
 					value={ typeof fillDuration === 'number' ? fillDuration : 1500 }
 					min={ 200 }

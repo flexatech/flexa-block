@@ -63,6 +63,7 @@ export const VideoPanel = ( { attributes, setAttributes }: Props ): JSX.Element 
 		<PanelBody title={ __( 'Video', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Source', 'flexa-block' ) }
 				value={ source }
 				options={ SOURCE_OPTIONS }
@@ -70,6 +71,7 @@ export const VideoPanel = ( { attributes, setAttributes }: Props ): JSX.Element 
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ source === 'mp4' ? __( 'MP4 URL', 'flexa-block' ) : __( 'Video URL', 'flexa-block' ) }
 				value={ videoUrl || '' }
 				placeholder={ placeholder }
@@ -194,6 +196,7 @@ export const TriggerPanel = ( { attributes, setAttributes }: Props ): JSX.Elemen
 					</BaseControl>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Overlay Darkness', 'flexa-block' ) }
 						value={ scrimOpacity ?? 30 }
 						min={ 0 }
@@ -206,6 +209,7 @@ export const TriggerPanel = ( { attributes, setAttributes }: Props ): JSX.Elemen
 			{ ! isInline && mode === 'button' && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Button Text', 'flexa-block' ) }
 					value={ buttonText ?? 'Play Video' }
 					onChange={ ( v: string ) => setAttributes( { buttonText: v } ) }
@@ -215,6 +219,7 @@ export const TriggerPanel = ( { attributes, setAttributes }: Props ): JSX.Elemen
 			{ ! isInline && mode === 'text' && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Link Text', 'flexa-block' ) }
 					value={ linkText ?? 'Watch the video' }
 					onChange={ ( v: string ) => setAttributes( { linkText: v } ) }
@@ -291,6 +296,7 @@ export const PopupPanel = ( { attributes, setAttributes }: Props ): JSX.Element 
 			<DualColor label={ __( 'Backdrop Color', 'flexa-block' ) } value={ overlayColor || {} } onChange={ ( v ) => setAttributes( { overlayColor: v } ) } />
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Backdrop Opacity', 'flexa-block' ) }
 				value={ overlayOpacity ?? 90 }
 				min={ 0 }

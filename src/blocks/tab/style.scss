@@ -1,0 +1,16 @@
+/**
+ * Tab block — frontend + editor base styles (child of flexa/tabs).
+ *
+ * Structure only. The tab's default text sits above its inner blocks; both are
+ * rendered inside the parent's `.flexa-tabs__panel` on the front end.
+ */
+
+.flexa-tab {
+	&__text {
+		margin: 0;
+
+		&:not(:last-child) {
+			margin-bottom: 0.75em;
+		}
+	}
+}

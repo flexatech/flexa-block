@@ -14,7 +14,7 @@
  */
 
 import { __ } from '@wordpress/i18n';
-import { PanelBody, SelectControl, ToggleControl, TextControl, TextareaControl, RangeControl } from '@wordpress/components';
+import { PanelBody, SelectControl, ToggleControl, TextControl, RangeControl, BaseControl, Button, Flex, FlexItem, FlexBlock } from '@wordpress/components';
 
 import {
 	Segmented,
@@ -44,6 +44,7 @@ import type {
 	BoxValue,
 	LengthValue,
 	PanelProps,
+	PricingFeature,
 	PricingPlan,
 	PricingTableAttributes,
 	TypographyDevice,
@@ -60,6 +61,7 @@ const BorderFields = ( { value, onChange }: { value: BorderDevice; onChange: ( p
 	<>
 		<SelectControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Style', 'flexa-block' ) }
 			value={ value.style || '' }
 			options={ BORDER_STYLE_OPTIONS }
@@ -106,6 +108,7 @@ const ShadowFields = ( { value, onChange }: { value: BoxShadowAttr; onChange: ( 
 					<RangeControl
 						key={ f.k }
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ f.l }
 						value={ parseInt( String( value[ f.k ] ?? '' ), 10 ) || 0 }
 						min={ -100 }
@@ -187,6 +190,7 @@ export const PricingWidthPanel = ( { attributes, setAttributes }: PtPanelProps )
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -196,19 +200,84 @@ export const PricingWidthPanel = ( { attributes, setAttributes }: PtPanelProps )
 	);
 };
 
+/** Normalise a plan's `features` into { text, included } rows, accepting legacy
+ *  string / string[] content (read as all-included). */
+const toFeatureRows = ( features: PricingPlan[ 'features' ] ): PricingFeature[] => {
+	if ( Array.isArray( features ) ) {
+		return features.map( ( f ) =>
+			f && typeof f === 'object'
+				? { text: String( ( f as PricingFeature ).text ?? '' ), included: ( f as PricingFeature ).included !== false }
+				: { text: String( f ?? '' ), included: true }
+		);
+	}
+	return String( features ?? '' )
+		.split( /\r?\n/ )
+		.map( ( l ) => ( { text: l.trim(), included: true } ) )
+		.filter( ( r ) => r.text !== '' );
+};
+
+/** Per-feature editor: a row of [✓/✕ toggle][text][remove] + an add button. */
+const FeaturesEditor = ( { value, onChange }: { value: PricingPlan[ 'features' ]; onChange: ( next: PricingFeature[] ) => void } ): JSX.Element => {
+	const rows = toFeatureRows( value );
+	const setRow = ( i: number, patch: Partial< PricingFeature > ) => onChange( rows.map( ( r, idx ) => ( idx === i ? { ...r, ...patch } : r ) ) );
+	const removeRow = ( i: number ) => onChange( rows.filter( ( _r, idx ) => idx !== i ) );
+	const addRow = () => onChange( [ ...rows, { text: '', included: true } ] );
+
+	return (
+		<BaseControl __nextHasNoMarginBottom label={ __( 'Features', 'flexa-block' ) } help={ __( 'Toggle the ✓/✕ to mark a feature as included or not.', 'flexa-block' ) }>
+			<div style={ { display: 'flex', flexDirection: 'column', gap: '6px' } }>
+				{ rows.map( ( row, i ) => (
+					<Flex key={ i } gap={ 1 } align="center" justify="flex-start">
+						<FlexItem>
+							<Button
+								variant={ row.included ? 'primary' : 'secondary' }
+								size="small"
+								onClick={ () => setRow( i, { included: ! row.included } ) }
+								label={ row.included ? __( 'Included', 'flexa-block' ) : __( 'Not included', 'flexa-block' ) }
+								showTooltip
+							>
+								{ row.included ? '✓' : '✕' }
+							</Button>
+						</FlexItem>
+						<FlexBlock>
+							<TextControl
+								__nextHasNoMarginBottom
+								__next40pxDefaultSize
+								hideLabelFromVision
+								label={ __( 'Feature', 'flexa-block' ) }
+								placeholder={ __( 'Feature', 'flexa-block' ) }
+								value={ row.text }
+								onChange={ ( v: string ) => setRow( i, { text: v } ) }
+							/>
+						</FlexBlock>
+						<FlexItem>
+							<Button variant="tertiary" size="small" isDestructive onClick={ () => removeRow( i ) } label={ __( 'Remove', 'flexa-block' ) } showTooltip>
+								×
+							</Button>
+						</FlexItem>
+					</Flex>
+				) ) }
+				<div>
+					<Button variant="secondary" size="small" onClick={ addRow }>{ __( 'Add feature', 'flexa-block' ) }</Button>
+				</div>
+			</div>
+		</BaseControl>
+	);
+};
+
 /** Body controls for one plan: name, prices, periods, features, CTA, badge. */
 const PlanBody = ( { item, update }: { item: PricingPlan; update: ( patch: Partial< PricingPlan > ) => void } ): JSX.Element => (
 	<>
-		<TextControl __nextHasNoMarginBottom label={ __( 'Plan name', 'flexa-block' ) } value={ item.name ?? '' } onChange={ ( v: string ) => update( { name: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Monthly price', 'flexa-block' ) } value={ item.priceMonthly ?? '' } onChange={ ( v: string ) => update( { priceMonthly: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Monthly period', 'flexa-block' ) } help={ __( 'Shown next to the price, e.g. "/month".', 'flexa-block' ) } value={ item.periodMonthly ?? '' } onChange={ ( v: string ) => update( { periodMonthly: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Yearly price', 'flexa-block' ) } help={ __( 'Used when the monthly/yearly toggle is on.', 'flexa-block' ) } value={ item.priceYearly ?? '' } onChange={ ( v: string ) => update( { priceYearly: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Yearly period', 'flexa-block' ) } value={ item.periodYearly ?? '' } onChange={ ( v: string ) => update( { periodYearly: v } ) } />
-		<TextareaControl __nextHasNoMarginBottom label={ __( 'Features', 'flexa-block' ) } help={ __( 'One feature per line.', 'flexa-block' ) } value={ typeof item.features === 'string' ? item.features : ( Array.isArray( item.features ) ? item.features.join( '\n' ) : '' ) } onChange={ ( v: string ) => update( { features: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Plan name', 'flexa-block' ) } value={ item.name ?? '' } onChange={ ( v: string ) => update( { name: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Monthly price', 'flexa-block' ) } value={ item.priceMonthly ?? '' } onChange={ ( v: string ) => update( { priceMonthly: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Monthly period', 'flexa-block' ) } help={ __( 'Shown next to the price, e.g. "/month".', 'flexa-block' ) } value={ item.periodMonthly ?? '' } onChange={ ( v: string ) => update( { periodMonthly: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Yearly price', 'flexa-block' ) } help={ __( 'Used when the monthly/yearly toggle is on.', 'flexa-block' ) } value={ item.priceYearly ?? '' } onChange={ ( v: string ) => update( { priceYearly: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Yearly period', 'flexa-block' ) } value={ item.periodYearly ?? '' } onChange={ ( v: string ) => update( { periodYearly: v } ) } />
+		<FeaturesEditor value={ item.features } onChange={ ( next: PricingFeature[] ) => update( { features: next } ) } />
 		<ToggleControl __nextHasNoMarginBottom label={ __( 'Highlight this plan', 'flexa-block' ) } checked={ !! item.highlighted } onChange={ ( v: boolean ) => update( { highlighted: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Badge', 'flexa-block' ) } help={ __( 'Small ribbon shown above the name, e.g. "Most popular".', 'flexa-block' ) } value={ item.badge ?? '' } onChange={ ( v: string ) => update( { badge: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Button text', 'flexa-block' ) } value={ item.ctaText ?? '' } onChange={ ( v: string ) => update( { ctaText: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Button link', 'flexa-block' ) } value={ item.ctaUrl ?? '' } onChange={ ( v: string ) => update( { ctaUrl: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Badge', 'flexa-block' ) } help={ __( 'Small ribbon shown above the name, e.g. "Most popular".', 'flexa-block' ) } value={ item.badge ?? '' } onChange={ ( v: string ) => update( { badge: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Button text', 'flexa-block' ) } value={ item.ctaText ?? '' } onChange={ ( v: string ) => update( { ctaText: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Button link', 'flexa-block' ) } value={ item.ctaUrl ?? '' } onChange={ ( v: string ) => update( { ctaUrl: v } ) } />
 	</>
 );
 
@@ -262,6 +331,7 @@ export const PricingOptionsPanel = ( { attributes, setAttributes }: PtPanelProps
 				<FieldHead label={ __( 'Billing switch', 'flexa-block' ) } />
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Monthly label', 'flexa-block' ) }
 					placeholder={ __( 'Monthly', 'flexa-block' ) }
 					value={ attributes.billingMonthlyLabel ?? '' }
@@ -269,6 +339,7 @@ export const PricingOptionsPanel = ( { attributes, setAttributes }: PtPanelProps
 				/>
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Yearly label', 'flexa-block' ) }
 					placeholder={ __( 'Yearly', 'flexa-block' ) }
 					value={ attributes.billingYearlyLabel ?? '' }

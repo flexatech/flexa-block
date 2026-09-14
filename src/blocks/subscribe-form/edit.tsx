@@ -89,12 +89,14 @@ const FormPanel = ( { attributes, setAttributes }: FormPanelProps ): JSX.Element
 		<PanelBody title={ __( 'Form', 'flexa-block' ) } initialOpen={ true }>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Submit button text', 'flexa-block' ) }
 				value={ submitText ?? '' }
 				onChange={ ( v: string ) => setAttributes( { submitText: v } ) }
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				type="email"
 				label={ __( 'Send entries to', 'flexa-block' ) }
 				help={ __( 'Where submissions are emailed. Leave blank to use the site admin email.', 'flexa-block' ) }
@@ -103,6 +105,7 @@ const FormPanel = ( { attributes, setAttributes }: FormPanelProps ): JSX.Element
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Email subject', 'flexa-block' ) }
 				value={ emailSubject ?? '' }
 				onChange={ ( v: string ) => setAttributes( { emailSubject: v } ) }
@@ -119,6 +122,7 @@ const FormPanel = ( { attributes, setAttributes }: FormPanelProps ): JSX.Element
 			{ 'url' === confirmationType ? (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					type="url"
 					label={ __( 'Redirect URL', 'flexa-block' ) }
 					value={ redirectUrl ?? '' }
@@ -195,6 +199,7 @@ const InputStylePanel = ( { attributes, setAttributes }: FormPanelProps ): JSX.E
 			<FieldHead label={ __( 'Border', 'flexa-block' ) } />
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Style', 'flexa-block' ) }
 				value={ border.style || '' }
 				options={ [ { value: '', label: __( 'None', 'flexa-block' ) }, ...LINE_STYLE_OPTIONS ] }

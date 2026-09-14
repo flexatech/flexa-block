@@ -92,12 +92,14 @@ const IconListItemBody = ( { item, update }: { item: IconListItem; update: ( pat
 			<IconPicker label={ __( 'Icon', 'flexa-block' ) } value={ item.icon || {} } onChange={ ( v: IconValue ) => update( { icon: v } ) } />
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Text', 'flexa-block' ) }
 				value={ item.text ?? '' }
 				onChange={ ( v: string ) => update( { text: v } ) }
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Link', 'flexa-block' ) }
 				type="url"
 				placeholder="https://"
@@ -196,6 +198,7 @@ export const IconListLayoutPanel = ( { attributes, setAttributes }: IconListPane
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

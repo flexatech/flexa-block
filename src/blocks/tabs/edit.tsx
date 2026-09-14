@@ -1,20 +1,19 @@
 /**
  * Tabs block — editor component.
  *
- * Assembles the tabs-specific panels (./panels) with the shared inspector panels
- * (@components) for spacing / background / border / shadow / position /
- * visibility. The canvas renders the horizontal tab bar; clicking a tab previews
- * its panel, and the active tab's content is edited inline in a textarea (the
- * accordion collapse is a front-end concern handled by view.ts). Inline styles
- * mirror the PHP CSS generator, and nothing is styled by default so the tabs
- * inherit the theme until the user picks a value.
+ * The tab panels are now `flexa/tab` child blocks (each with a label, optional
+ * text and its own inner blocks). This parent renders the tab bar from the
+ * children's labels, shows one tab at a time on the canvas, and lets you add /
+ * select tabs. All the tab-bar / panel styling controls are unchanged.
  *
  * @package Flexa\Block
  */
 
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { useState, useEffect } from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { createBlock } from '@wordpress/blocks';
+import { InspectorControls, useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor';
 
 import {
 	InspectorTabs,
@@ -45,26 +44,31 @@ import {
 	type CssProps,
 } from '@utils';
 import {
-	TabsListPanel,
 	TabsLayoutPanel,
 	TabsIconPanel,
 	TabsBarPanel,
 	TabsContentPanel,
 } from './panels';
-import type { DeviceKey, EditProps, TabItem, TabsAttributes } from '../../types';
+import type { DeviceKey, EditProps, TabsAttributes } from '../../types';
+
+const ALLOWED_BLOCKS = [ 'flexa/tab' ];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TEMPLATE: any = [
+	[ 'flexa/tab', { label: __( 'Tab 1', 'flexa-block' ) } ],
+	[ 'flexa/tab', { label: __( 'Tab 2', 'flexa-block' ) } ],
+	[ 'flexa/tab', { label: __( 'Tab 3', 'flexa-block' ) } ],
+];
 
 /** Wrapper preview: max width, spacing, background. */
 const buildWrapperStyle = ( attributes: TabsAttributes, device: DeviceKey ): CssProps => {
 	const s: CssProps = {};
 	const w = effective( attributes.maxWidth, device );
 	if ( w.value ) s.maxWidth = withUnit( w.value, w.unit || 'px' );
-
 	const sp = effective( attributes.spacing, device );
 	const padding = spacingShorthand( sp.padding );
 	if ( padding ) s.padding = padding;
 	const margin = spacingShorthand( sp.margin );
 	if ( margin ) s.margin = margin;
-
 	applyBackgroundPreview( s, attributes.background );
 	return s;
 };
@@ -135,18 +139,52 @@ const buildIconStyle = ( attributes: TabsAttributes, device: DeviceKey ): CssPro
  * Tabs edit component.
  */
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< TabsAttributes > ): JSX.Element {
-	const { tabs, className, responsiveVisibility, htmlTag, tabStyle, tabAlign, showIcon } = attributes;
+	const { className, responsiveVisibility, htmlTag, tabStyle, tabAlign, showIcon } = attributes;
 	const blockId = attributes.blockId;
 	const [ device ] = useDevice();
 
 	useBlockId( clientId, blockId, setAttributes );
 
-	const list: TabItem[] = Array.isArray( tabs ) ? tabs : [];
-	const [ preview, setPreview ] = useState< number >( 0 );
-	const active = Math.min( Math.max( preview, 0 ), Math.max( list.length - 1, 0 ) );
+	// One-tab-at-a-time editing: track the active tab and show only that panel.
+	const [ active, setActive ] = useState( 0 );
 
-	const updateTab = ( index: number, patch: Partial< TabItem > ): void => {
-		setAttributes( { tabs: list.map( ( it, i ) => ( i === index ? { ...it, ...patch } : it ) ) } );
+	const { children, selectedTab } = useSelect(
+		( select: ( store: string ) => any ) => {
+			const { getBlock, getSelectedBlockClientId, getBlockParents } = select( 'core/block-editor' );
+			const block = getBlock( clientId );
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const kids: any[] = block ? block.innerBlocks : [];
+			const list = kids.map( ( b: any ) => ( {
+				clientId: b.clientId as string,
+				label: ( b.attributes?.label as string ) || '',
+				icon: b.attributes?.icon || null,
+			} ) );
+			const selectedId = getSelectedBlockClientId();
+			let sel = -1;
+			if ( selectedId ) {
+				const chain: string[] = [ selectedId, ...getBlockParents( selectedId ) ];
+				sel = list.findIndex( ( t: { clientId: string } ) => chain.includes( t.clientId ) );
+			}
+			return { children: list, selectedTab: sel };
+		},
+		[ clientId ]
+	);
+	const { selectBlock, insertBlock } = useDispatch( 'core/block-editor' );
+
+	// Follow the selection: clicking inside a tab makes it the active one.
+	useEffect( () => {
+		if ( selectedTab >= 0 && selectedTab !== active ) {
+			setActive( selectedTab );
+		}
+	}, [ selectedTab ] ); // eslint-disable-line react-hooks/exhaustive-deps
+
+	const count = children.length;
+	const activeIndex = count ? Math.min( Math.max( active, 0 ), count - 1 ) : 0;
+
+	const addTab = () => {
+		const block = createBlock( 'flexa/tab', { label: `${ __( 'Tab', 'flexa-block' ) } ${ count + 1 }` } );
+		insertBlock( block, count, clientId );
+		setActive( count );
 	};
 
 	const navStyle = buildNavStyle( attributes, device );
@@ -156,19 +194,12 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const iconStyleObj = buildIconStyle( attributes, device );
 	const showIcons = showIcon !== false;
 
-	// Hover colour can't be expressed inline; mirror the generator's `:hover`
-	// rule in a scoped <style> so the editor previews it (light value).
-	const hoverCss = blockId
-		? editorCss( [
-				{ selector: `.flexa-tabs-${ blockId } .flexa-tabs__tab:hover`, prop: 'color', value: attributes.tabHoverColor?.light },
-		  ] )
-		: '';
-
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const Tag: any = htmlTag || 'div';
 	const blockProps = useBlockProps( {
 		className: cn(
 			'flexa-tabs',
+			'flexa-tabs--editing',
 			`flexa-tabs--${ tabStyle || 'underline' }`,
 			`flexa-tabs--align-${ tabAlign || 'left' }`,
 			blockId && `flexa-tabs-${ blockId }`,
@@ -177,6 +208,22 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		),
 		style: buildWrapperStyle( attributes, device ),
 	} );
+
+	const innerBlocksProps = useInnerBlocksProps(
+		{ className: 'flexa-tabs__editor', style: panelStyle },
+		{ allowedBlocks: ALLOWED_BLOCKS, template: TEMPLATE, templateLock: false, renderAppender: false, orientation: 'vertical' }
+	);
+
+	// Show only the active tab's child on the canvas (scoped to this instance).
+	const soloStyle =
+		blockId && count > 0
+			? `.flexa-tabs-${ blockId } > .flexa-tabs__panels > .flexa-tabs__editor > *:not(:nth-child(${ activeIndex + 1 })) { display: none !important; }`
+			: '';
+
+	// Mirror the generator's tab :hover rule so the editor previews it.
+	const hoverCss = blockId
+		? editorCss( [ { selector: `.flexa-tabs-${ blockId } .flexa-tabs__tab:hover`, prop: 'color', value: attributes.tabHoverColor?.light } ] )
+		: '';
 
 	// Inserter hover-preview → faint skeleton mock-up instead of the real tabs.
 	if ( ( attributes as unknown as { isExamplePreview?: boolean } ).isExamplePreview ) {
@@ -194,7 +241,6 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 					<InspectorTabs
 						layout={
 							<>
-								<TabsListPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<TabsLayoutPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<TabsIconPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<SpacingPanel attributes={ attributes } setAttributes={ setAttributes } />
@@ -222,17 +268,21 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 
 			<Tag { ...blockProps }>
 				{ hoverCss && <style>{ hoverCss }</style> }
+				{ soloStyle && <style>{ soloStyle }</style> }
 				<div className="flexa-tabs__nav" role="tablist" style={ navStyle }>
-					{ list.map( ( tab, index ) => {
-						const isActive = index === active;
+					{ children.map( ( tab: { clientId: string; label: string; icon: any }, index: number ) => {
+						const isActive = index === activeIndex;
 						return (
 							<button
-								key={ index }
+								key={ tab.clientId }
 								type="button"
 								className={ cn( 'flexa-tabs__tab', isActive && 'is-active' ) }
 								role="tab"
 								aria-selected={ isActive }
-								onClick={ () => setPreview( index ) }
+								onClick={ () => {
+									setActive( index );
+									selectBlock( tab.clientId );
+								} }
 								style={ isActive ? { ...tabStyleObj, ...activeStyleObj } : tabStyleObj }
 							>
 								{ showIcons && tab.icon?.markup && (
@@ -242,18 +292,10 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 							</button>
 						);
 					} ) }
+					<button type="button" className="flexa-tabs__add" onClick={ addTab } aria-label={ __( 'Add tab', 'flexa-block' ) }>+</button>
 				</div>
 				<div className="flexa-tabs__panels">
-					{ list[ active ] && (
-						<div className="flexa-tabs__panel" role="tabpanel" style={ panelStyle }>
-							<textarea
-								className="flexa-tabs__content-input"
-								value={ list[ active ].content ?? '' }
-								placeholder={ __( 'Tab content…', 'flexa-block' ) }
-								onChange={ ( e ) => updateTab( active, { content: e.target.value } ) }
-							/>
-						</div>
-					) }
+					<div { ...innerBlocksProps } />
 				</div>
 			</Tag>
 		</>

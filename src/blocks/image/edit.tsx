@@ -27,7 +27,7 @@ import {
 	useDevice,
 	ExamplePreviewSkeleton,
 } from '@components';
-import { cn, effective, rawDevice, withUnit, spacingShorthand, applyTypography, applyBackgroundPreview, applyBorderPreview, boxShadowPreview } from '@utils';
+import { cn, effective, rawDevice, withUnit, spacingShorthand, applyTypography, applyBackgroundPreview, applyBorderPreview, boxShadowPreview, hoverEffectClasses } from '@utils';
 import { ImagePanel, ImageEffectsPanel, ImageCaptionPanel, ImageLinkPanel } from './panels';
 import type { DeviceKey, EditProps, ImageAttributes, ImageMedia } from '../../types';
 
@@ -154,7 +154,6 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 			'flexa-image',
 			blockId && `flexa-image-${ blockId }`,
 			className,
-			hoverEffect && hoverEffect !== 'none' && `flexa-image--hover-${ hoverEffect }`,
 			hasMask && 'flexa-image--masked',
 			isBuiltInMask && `flexa-image--mask-${ mask!.shape }`,
 			aspectRatio?.enabled && 'flexa-image--has-ratio',
@@ -245,7 +244,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 			</InspectorControls>
 
 			<figure { ...blockProps }>
-				<div className="flexa-image__frame" style={ frameStyle }>
+				<div className={ cn( 'flexa-image__frame', ...hoverEffectClasses( hoverEffect ) ) } style={ frameStyle }>
 					<img className="flexa-image__img" src={ image.url } alt={ altText || image.alt || '' } style={ imgStyle } />
 					{ hasOverlay && <span className="flexa-image__overlay" style={ overlayStyle } aria-hidden="true" /> }
 					{ showCaption && isOverlayCaption && (

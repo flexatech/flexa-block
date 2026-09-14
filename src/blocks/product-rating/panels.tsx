@@ -47,6 +47,7 @@ export const ProductRatingSettingsPanel = ( { attributes, setAttributes }: PRPan
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Display type', 'flexa-block' ) }
 				value={ displayType || 'stars' }
 				options={ DISPLAY_TYPE_OPTIONS }

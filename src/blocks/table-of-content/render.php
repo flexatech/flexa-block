@@ -43,6 +43,7 @@ $title_tag    = in_array( $attributes['titleTag'] ?? 'h2', [ 'h1', 'h2', 'h3', '
 $empty_text   = (string) ( $attributes['emptyText'] ?? '' );
 $smooth       = false !== ( $attributes['smoothScroll'] ?? true );
 $offset       = (int) ( $attributes['scrollOffset'] ?? 0 );
+$scroll_spy   = ! empty( $attributes['scrollSpy'] );
 $collapsible  = ! empty( $attributes['collapsible'] );
 $collapsed    = $collapsible && ! empty( $attributes['initialCollapsed'] );
 
@@ -63,7 +64,13 @@ $data_attrs         = HTML_Helpers::build_data_attrs( $attributes );
 // Behaviour flags for view.js.
 $toc_attrs = ' data-flexa-toc data-levels="' . esc_attr( implode( ',', $level_tags ) ) . '"';
 if ( $smooth ) {
-	$toc_attrs .= ' data-smooth data-offset="' . esc_attr( (string) $offset ) . '"';
+	$toc_attrs .= ' data-smooth';
+}
+if ( $scroll_spy ) {
+	$toc_attrs .= ' data-spy';
+}
+if ( $smooth || $scroll_spy ) {
+	$toc_attrs .= ' data-offset="' . esc_attr( (string) $offset ) . '"';
 }
 if ( $collapsible ) {
 	$toc_attrs .= ' data-collapsible';

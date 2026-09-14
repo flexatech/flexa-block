@@ -31,6 +31,7 @@ export const TextContentPanel = ( { attributes, setAttributes }: TextPanelProps 
 		<PanelBody title={ __( 'Text', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'p' }
 				options={ TEXT_TAG_OPTIONS }

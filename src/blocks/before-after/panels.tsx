@@ -79,13 +79,14 @@ export const MediaPanel = ( { attributes, setAttributes }: Props ): JSX.Element 
 	return (
 		<PanelBody title={ __( 'Images', 'flexa-block' ) } initialOpen={ true }>
 			<MediaField label={ __( 'Before Image', 'flexa-block' ) } value={ beforeImage } onChange={ ( m ) => setAttributes( { beforeImage: m } ) } />
-			<TextControl __nextHasNoMarginBottom label={ __( 'Before Alt Text', 'flexa-block' ) } value={ beforeAlt || '' } onChange={ ( v: string ) => setAttributes( { beforeAlt: v } ) } />
+			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Before Alt Text', 'flexa-block' ) } value={ beforeAlt || '' } onChange={ ( v: string ) => setAttributes( { beforeAlt: v } ) } />
 
 			<MediaField label={ __( 'After Image', 'flexa-block' ) } value={ afterImage } onChange={ ( m ) => setAttributes( { afterImage: m } ) } />
-			<TextControl __nextHasNoMarginBottom label={ __( 'After Alt Text', 'flexa-block' ) } value={ afterAlt || '' } onChange={ ( v: string ) => setAttributes( { afterAlt: v } ) } />
+			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'After Alt Text', 'flexa-block' ) } value={ afterAlt || '' } onChange={ ( v: string ) => setAttributes( { afterAlt: v } ) } />
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Object Fit', 'flexa-block' ) }
 				value={ objectFit || 'cover' }
 				options={ OBJECT_FIT_OPTIONS }
@@ -102,6 +103,7 @@ export const MediaPanel = ( { attributes, setAttributes }: Props ): JSX.Element 
 			{ ratio.enabled && (
 				<SelectControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Aspect Ratio', 'flexa-block' ) }
 					value={ ratio.ratio || '16/9' }
 					options={ ASPECT_RATIO_OPTIONS }
@@ -132,6 +134,7 @@ export const ComparePanel = ( { attributes, setAttributes }: Props ): JSX.Elemen
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Start Position', 'flexa-block' ) }
 				value={ initialPosition ?? 50 }
 				min={ 0 }
@@ -155,8 +158,8 @@ export const ComparePanel = ( { attributes, setAttributes }: Props ): JSX.Elemen
 			/>
 			{ showLabels !== false && (
 				<>
-					<TextControl __nextHasNoMarginBottom label={ __( 'Before Label', 'flexa-block' ) } value={ beforeLabel ?? 'Before' } onChange={ ( v: string ) => setAttributes( { beforeLabel: v } ) } />
-					<TextControl __nextHasNoMarginBottom label={ __( 'After Label', 'flexa-block' ) } value={ afterLabel ?? 'After' } onChange={ ( v: string ) => setAttributes( { afterLabel: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Before Label', 'flexa-block' ) } value={ beforeLabel ?? 'Before' } onChange={ ( v: string ) => setAttributes( { beforeLabel: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'After Label', 'flexa-block' ) } value={ afterLabel ?? 'After' } onChange={ ( v: string ) => setAttributes( { afterLabel: v } ) } />
 				</>
 			) }
 		</PanelBody>

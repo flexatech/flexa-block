@@ -32,6 +32,7 @@ import {
 import {
 	cn,
 	visibilityClasses,
+	hoverEffectClasses,
 	effective,
 	rawDevice,
 	withUnit,
@@ -125,19 +126,20 @@ const buildThumbImgStyle = ( attributes: ProductImageAttributes, device: DeviceK
  * Product Image edit component.
  */
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< ProductImageAttributes > ): JSX.Element {
-	const { galleryPosition = 'bottom', showThumbnails, zoomOnHover, className, responsiveVisibility } = attributes;
+	const { galleryPosition = 'bottom', showThumbnails, zoomOnHover, hoverEffect, className, responsiveVisibility } = attributes;
 	const [ device ] = useDevice();
 
 	useBlockId( clientId, attributes.blockId, setAttributes );
 
 	const blockId = attributes.blockId;
 	const showThumbs = showThumbnails !== false;
+	// `hoverEffect` supersedes the legacy `zoomOnHover` toggle; fall back to it.
+	const effect = hoverEffect && hoverEffect !== 'none' ? hoverEffect : ( zoomOnHover ? 'zoom-in' : 'none' );
 
 	const blockProps = useBlockProps( {
 		className: cn(
 			'flexa-product-image',
 			`flexa-product-image--pos-${ galleryPosition }`,
-			zoomOnHover && 'flexa-product-image--zoom',
 			blockId && `flexa-product-image-${ blockId }`,
 			className,
 			...visibilityClasses( responsiveVisibility )
@@ -191,7 +193,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 			</InspectorControls>
 
 			<div { ...blockProps }>
-				<div className="flexa-product-image__main" style={ mainStyle }>
+				<div className={ cn( 'flexa-product-image__main', ...hoverEffectClasses( effect ) ) } style={ mainStyle }>
 					<img src={ PLACEHOLDER } alt="" style={ mainImgStyle } />
 				</div>
 				{ showThumbs && (

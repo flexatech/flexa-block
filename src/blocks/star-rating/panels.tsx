@@ -46,6 +46,7 @@ export const StarRatingRatingPanel = ( { attributes, setAttributes }: SPanelProp
 		<PanelBody title={ __( 'Rating', 'flexa-block' ) } initialOpen={ true }>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Rating', 'flexa-block' ) }
 				value={ typeof rating === 'number' ? rating : 4 }
 				min={ 0 }
@@ -55,6 +56,7 @@ export const StarRatingRatingPanel = ( { attributes, setAttributes }: SPanelProp
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Out of', 'flexa-block' ) }
 				value={ max }
 				min={ 1 }
@@ -119,6 +121,7 @@ export const StarRatingLayoutPanel = ( { attributes, setAttributes }: SPanelProp
 				<>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Title', 'flexa-block' ) }
 						value={ title || '' }
 						onChange={ ( v: string ) => setAttributes( { title: v } ) }

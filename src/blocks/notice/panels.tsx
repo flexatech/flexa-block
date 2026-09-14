@@ -22,7 +22,7 @@ import {
 	useDevice,
 	TEXT_ALIGN_OPTIONS,
 } from '@components';
-import { rawDevice, patchDevice, LENGTH_UNITS, HTML_TAGS } from '@utils';
+import { rawDevice, patchDevice, LENGTH_UNITS, HTML_TAGS, ALIGN_OPTIONS_ROW, ALIGN_OPTIONS_COLUMN } from '@utils';
 import type { ControlOption, LengthValue, NoticeAttributes, PanelProps, TypographyDevice } from '../../types';
 
 type NoticePanelProps = PanelProps< NoticeAttributes >;
@@ -43,6 +43,16 @@ const ICON_POSITION_OPTIONS: ControlOption[] = [
 ];
 
 /**
+ * Icon cross-axis alignment (align-self) — the meaningful axis follows the icon
+ * position: with the icon on the left the row's cross axis is vertical
+ * (top / middle / bottom → V-bar icons), with the icon on top the column's cross
+ * axis is horizontal (left / center / right → H-bar icons). "stretch" is dropped
+ * as it is meaningless for a fixed-size glyph.
+ */
+const ICON_ALIGN_ROW_OPTIONS: ControlOption[] = ALIGN_OPTIONS_ROW.slice( 0, 3 );
+const ICON_ALIGN_COLUMN_OPTIONS: ControlOption[] = ALIGN_OPTIONS_COLUMN.slice( 0, 3 );
+
+/**
  * Notice settings panel — severity preset, dismiss behaviour, content alignment
  * and the wrapper tag.
  */
@@ -55,6 +65,7 @@ export const NoticeSettingsPanel = ( { attributes, setAttributes }: NoticePanelP
 		<PanelBody title={ __( 'Notice', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Type', 'flexa-block' ) }
 				value={ noticeType || 'info' }
 				options={ NOTICE_TYPE_OPTIONS }
@@ -74,6 +85,7 @@ export const NoticeSettingsPanel = ( { attributes, setAttributes }: NoticePanelP
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -103,7 +115,8 @@ export const NoticeSettingsPanel = ( { attributes, setAttributes }: NoticePanelP
  */
 export const NoticeIconPanel = ( { attributes, setAttributes }: NoticePanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { showIcon, icon, iconPosition, iconSize, iconColor } = attributes;
+	const { showIcon, icon, iconPosition, iconAlign, iconSize, iconColor } = attributes;
+	const isTop = ( iconPosition || 'left' ) === 'top';
 
 	return (
 		<PanelBody title={ __( 'Icon', 'flexa-block' ) } initialOpen={ false }>
@@ -125,6 +138,12 @@ export const NoticeIconPanel = ( { attributes, setAttributes }: NoticePanelProps
 						value={ iconPosition || 'left' }
 						onChange={ ( v ) => setAttributes( { iconPosition: v as NoticeAttributes[ 'iconPosition' ] } ) }
 						options={ ICON_POSITION_OPTIONS }
+					/>
+					<Segmented
+						label={ isTop ? __( 'Icon alignment (horizontal)', 'flexa-block' ) : __( 'Icon alignment (vertical)', 'flexa-block' ) }
+						value={ iconAlign || '' }
+						onChange={ ( v ) => setAttributes( { iconAlign: v as NoticeAttributes[ 'iconAlign' ] } ) }
+						options={ isTop ? ICON_ALIGN_COLUMN_OPTIONS : ICON_ALIGN_ROW_OPTIONS }
 					/>
 					<SliderUnit
 						label={ __( 'Icon size', 'flexa-block' ) }

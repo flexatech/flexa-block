@@ -7,6 +7,8 @@
 import { useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 
+import type { BorderDevice, BoxShadowAttr, ResponsiveValue } from '../types';
+
 /** Prefix for ids that outlive the session, so they read as ours at a glance. */
 const STABLE_PREFIX = 'fx-';
 
@@ -92,4 +94,99 @@ export const useBlockId = (
 			setAttributes( { blockId: expected } );
 		}
 	}, [ blockId, clientId, setAttributes ] );
+};
+
+// --- Item-style migration -------------------------------------------------
+// TODO(remove in vNEXT): the whole block below (constants, helpers and the
+// `useMigrateItemStyle` hook) is a one-time bridge. The collection blocks used
+// to apply the wrapper `border`/`boxShadow` to each item; those attributes now
+// mean "the block wrapper" and a new `itemBorder`/`itemBoxShadow` styles each
+// item. This hook moves any legacy value onto the item once, on first open, so
+// existing content keeps its look. Delete it (and the PHP fallback) once the
+// grace period is over.
+
+const MIGRATE_DEVICES: Array< 'desktop' | 'tablet' | 'mobile' > = [ 'desktop', 'tablet', 'mobile' ];
+
+/** The block.json empty-border default — used to clear `border` after moving. */
+const EMPTY_BORDER: ResponsiveValue< BorderDevice > = {
+	desktop: {
+		style: '',
+		width: { top: '', right: '', bottom: '', left: '', unit: 'px' },
+		color: { light: '', dark: '' },
+		radius: { topLeft: '', topRight: '', bottomRight: '', bottomLeft: '', unit: 'px' },
+	},
+	tablet: {},
+	mobile: {},
+};
+
+/** True if a single-device border carries any author-set value. */
+const borderDeviceHasValue = ( b?: BorderDevice ): boolean => {
+	if ( ! b ) {
+		return false;
+	}
+	if ( b.style ) {
+		return true;
+	}
+	const w = b.width || {};
+	if ( w.top || w.right || w.bottom || w.left ) {
+		return true;
+	}
+	const c = b.color || {};
+	if ( c.light || c.dark ) {
+		return true;
+	}
+	const r = b.radius || {};
+	return !! ( r.topLeft || r.topRight || r.bottomRight || r.bottomLeft );
+};
+
+/** True if any device of a responsive border carries a value. */
+const borderHasValue = ( border?: ResponsiveValue< BorderDevice > ): boolean =>
+	MIGRATE_DEVICES.some( ( d ) => borderDeviceHasValue( border?.[ d ] ) );
+
+/** The subset of a block's attributes this migration touches. */
+interface ItemStyleAttrs {
+	border?: ResponsiveValue< BorderDevice >;
+	boxShadow?: BoxShadowAttr;
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
+}
+
+/**
+ * One-time bridge for the collection blocks (post-grid, rss, taxonomy, the
+ * feeds, timeline, faq). Runs once when a block that predates the split is
+ * opened: it moves the legacy wrapper `border`/`boxShadow` (which used to paint
+ * each item) onto the new per-item `itemBorder`/`itemBoxShadow`, clears the
+ * legacy values so `border`/`boxShadow` are free to style the wrapper, and sets
+ * `itemStyleMigrated` so the front-end PHP switches from the legacy fallback to
+ * the per-item attributes. Blocks with nothing to move are still marked migrated
+ * so the wrapper semantics apply going forward.
+ *
+ * @param attributes    The block's attributes (only the style fields are read).
+ * @param setAttributes Block setAttributes.
+ */
+export const useMigrateItemStyle = (
+	attributes: ItemStyleAttrs,
+	setAttributes: ( attrs: Partial< ItemStyleAttrs > ) => void
+): void => {
+	const { border, boxShadow, itemStyleMigrated } = attributes;
+
+	useEffect( () => {
+		if ( itemStyleMigrated ) {
+			return;
+		}
+		const patch: Partial< ItemStyleAttrs > = { itemStyleMigrated: true };
+		if ( borderHasValue( border ) ) {
+			patch.itemBorder = border;
+			patch.border = EMPTY_BORDER;
+		}
+		if ( boxShadow?.enabled ) {
+			patch.itemBoxShadow = boxShadow;
+			patch.boxShadow = { ...boxShadow, enabled: false };
+		}
+		setAttributes( patch );
+		// Only re-run if the block flips back to un-migrated (it won't); the
+		// legacy values are captured on the first pass.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ itemStyleMigrated ] );
 };

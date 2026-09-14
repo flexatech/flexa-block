@@ -6,14 +6,17 @@
  * This file outputs the accessible tab markup: a role="tablist" bar of <button>
  * tabs plus one role="tabpanel" per tab, with the active panel visible by default
  * so it works without JS. Each panel also carries a mobile accordion header (the
- * bar collapses to an accordion on small screens, driven by view.js). Tab labels
- * are plain text; panel content runs through wp_kses with a small whitelist, and
- * icons through svg_kses — so stored data can never become an XSS vector.
+ * bar collapses to an accordion on small screens, driven by view.js).
+ *
+ * Tab content now comes from `flexa/tab` child blocks — each contributes a label,
+ * an optional line of text and its own inner blocks. Legacy content that still
+ * stores the old `tabs` attribute (label + plain-text content, no child blocks)
+ * keeps rendering unchanged, so nothing breaks before it is re-saved/migrated.
  *
  * @package Flexa\Block
  *
  * @var array    $attributes Block attributes.
- * @var string   $content    Save content (unused — dynamic block).
+ * @var string   $content    InnerBlocks content (unused — panels are built below).
  * @var WP_Block $block      Block instance.
  */
 
@@ -29,38 +32,7 @@ $block_id = $attributes['blockId'] ?? '';
 $anchor   = $attributes['anchor'] ?? '';
 $html_tag = HTML_Helpers::get_html_tag( $attributes );
 
-$tabs = $attributes['tabs'] ?? [];
-if ( ! is_array( $tabs ) ) {
-	$tabs = [];
-}
-
-// Keep only tabs that have a label or some content. Preserve the original
-// attribute keys ($tab_source_keys) so the inline editor can map a rendered tab
-// back to its exact `tabs` array entry even after empty tabs are dropped.
-$filtered_tabs = array_filter(
-	$tabs,
-	static function ( $tab ) {
-		return is_array( $tab )
-			&& ( '' !== trim( (string) ( $tab['label'] ?? '' ) ) || '' !== trim( (string) ( $tab['content'] ?? '' ) ) );
-	}
-);
-$tab_source_keys = array_keys( $filtered_tabs );
-$tabs            = array_values( $filtered_tabs );
-if ( empty( $tabs ) ) {
-	return;
-}
-
-$tab_style = in_array( $attributes['tabStyle'] ?? 'underline', [ 'underline', 'pill', 'boxed' ], true ) ? $attributes['tabStyle'] : 'underline';
-$tab_align = in_array( $attributes['tabAlign'] ?? 'left', [ 'left', 'center', 'right', 'justify' ], true ) ? $attributes['tabAlign'] : 'left';
-$show_icon = false !== ( $attributes['showIcon'] ?? true );
-
-$count        = count( $tabs );
-$active_index = (int) ( $attributes['activeTab'] ?? 0 );
-if ( $active_index < 0 || $active_index >= $count ) {
-	$active_index = 0;
-}
-
-// Tags allowed inside a tab's panel content (plain multiline text, formatted).
+// Tags allowed inside a tab's default text (plain multiline text, formatted).
 $content_allowed = [
 	'p'      => [],
 	'br'     => [],
@@ -79,18 +51,85 @@ $content_allowed = [
 	'h4'     => [],
 ];
 
+// Normalise tabs to a list of { label, icon, content_html }. Prefer the new
+// flexa/tab child blocks; fall back to the legacy `tabs` attribute.
+$items       = [];
+$child_blocks = ( isset( $block ) && is_object( $block ) && ! empty( $block->parsed_block['innerBlocks'] ) )
+	? $block->parsed_block['innerBlocks']
+	: [];
+
+if ( ! empty( $child_blocks ) ) {
+	foreach ( $child_blocks as $child ) {
+		if ( ! is_array( $child ) || 'flexa/tab' !== ( $child['blockName'] ?? '' ) ) {
+			continue;
+		}
+		$attrs = is_array( $child['attrs'] ?? null ) ? $child['attrs'] : [];
+		$text  = wpautop( wp_kses( (string) ( $attrs['text'] ?? '' ), $content_allowed ) );
+
+		$inner = '';
+		foreach ( (array) ( $child['innerBlocks'] ?? [] ) as $grandchild ) {
+			$inner .= render_block( $grandchild );
+		}
+
+		$text_html    = '' !== trim( wp_strip_all_tags( $text ) ) ? $text : '';
+		$content_html = $text_html . $inner;
+
+		if ( '' === trim( (string) ( $attrs['label'] ?? '' ) ) && '' === trim( wp_strip_all_tags( $content_html ) ) && '' === trim( $inner ) ) {
+			continue;
+		}
+
+		$items[] = [
+			'label'        => (string) ( $attrs['label'] ?? '' ),
+			'icon'         => is_array( $attrs['icon'] ?? null ) ? $attrs['icon'] : [],
+			'content_html' => $content_html,
+		];
+	}
+} else {
+	// Legacy: content stored in the `tabs` attribute (label + plain text).
+	$legacy = is_array( $attributes['tabs'] ?? null ) ? $attributes['tabs'] : [];
+	foreach ( $legacy as $tab ) {
+		if ( ! is_array( $tab ) ) {
+			continue;
+		}
+		$label = (string) ( $tab['label'] ?? '' );
+		$raw   = (string) ( $tab['content'] ?? '' );
+		if ( '' === trim( $label ) && '' === trim( $raw ) ) {
+			continue;
+		}
+		$items[] = [
+			'label'        => $label,
+			'icon'         => is_array( $tab['icon'] ?? null ) ? $tab['icon'] : [],
+			'content_html' => wpautop( wp_kses( $raw, $content_allowed ) ),
+		];
+	}
+}
+
+if ( empty( $items ) ) {
+	return;
+}
+
+$tab_style = in_array( $attributes['tabStyle'] ?? 'underline', [ 'underline', 'pill', 'boxed' ], true ) ? $attributes['tabStyle'] : 'underline';
+$tab_align = in_array( $attributes['tabAlign'] ?? 'left', [ 'left', 'center', 'right', 'justify' ], true ) ? $attributes['tabAlign'] : 'left';
+$show_icon = false !== ( $attributes['showIcon'] ?? true );
+
+$count        = count( $items );
+$active_index = (int) ( $attributes['activeTab'] ?? 0 );
+if ( $active_index < 0 || $active_index >= $count ) {
+	$active_index = 0;
+}
+
 /**
  * Build the icon markup for one tab (inline SVG for builtin/library, <img> for an
  * uploaded SVG). Returns '' when icons are off or the tab has none.
  *
- * @param array $tab Tab data.
+ * @param array $item Normalised tab item.
  * @return string
  */
-$icon_html = static function ( $tab ) use ( $show_icon ) {
+$icon_html = static function ( $item ) use ( $show_icon ) {
 	if ( ! $show_icon ) {
 		return '';
 	}
-	$icon = is_array( $tab['icon'] ?? null ) ? $tab['icon'] : [];
+	$icon = is_array( $item['icon'] ?? null ) ? $item['icon'] : [];
 	if ( 'upload' === ( $icon['source'] ?? '' ) && '' !== (string) ( $icon['url'] ?? '' ) ) {
 		return '<span class="flexa-tabs__icon"><img class="flexa-icon" src="' . esc_url( $icon['url'] ) . '" alt="" width="20" height="20" loading="lazy" /></span>';
 	}
@@ -103,17 +142,15 @@ $icon_html = static function ( $tab ) use ( $show_icon ) {
 	return '';
 };
 
-$id_base    = '' !== $block_id ? sanitize_html_class( $block_id ) : 'tabs';
+$id_base     = '' !== $block_id ? sanitize_html_class( $block_id ) : 'tabs';
 $nav_html    = '';
 $panels_html = '';
 
-foreach ( $tabs as $index => $tab ) {
-	$label        = esc_html( (string) ( $tab['label'] ?? '' ) );
-	$icon         = $icon_html( $tab );
-	$content      = wpautop( wp_kses( (string) ( $tab['content'] ?? '' ), $content_allowed ) );
-	$is_active    = $index === $active_index;
-	$source_index = $tab_source_keys[ $index ] ?? $index;
-	$edit_attr    = \Flexa\Block\Inline_Editor::item_attr( $source_index );
+foreach ( $items as $index => $item ) {
+	$label     = esc_html( (string) ( $item['label'] ?? '' ) );
+	$icon      = $icon_html( $item );
+	$panel     = (string) $item['content_html'];
+	$is_active = $index === $active_index;
 
 	$tab_id   = 'flexa-tabs-' . $id_base . '-t' . $index;
 	$panel_id = 'flexa-tabs-' . $id_base . '-p' . $index;
@@ -126,17 +163,17 @@ foreach ( $tabs as $index => $tab ) {
 	// Nav tab (horizontal bar).
 	$tab_class = 'flexa-tabs__tab' . ( $is_active ? ' is-active' : '' );
 	$nav_html .= '<button type="button" class="' . esc_attr( $tab_class ) . '" role="tab" id="' . esc_attr( $tab_id ) . '"'
-		. ' aria-selected="' . $selected . '" aria-controls="' . esc_attr( $panel_id ) . '" tabindex="' . $tabindex . '"' . $edit_attr . '>'
+		. ' aria-selected="' . $selected . '" aria-controls="' . esc_attr( $panel_id ) . '" tabindex="' . $tabindex . '">'
 		. $icon . $label_html . '</button>';
 
 	// Panel + its mobile accordion header (shares the tab styling via .flexa-tabs__tab).
 	$wrap_class   = 'flexa-tabs__panel-wrap' . ( $is_active ? ' is-active is-open' : '' );
 	$header_class = 'flexa-tabs__tab flexa-tabs__accordion-header' . ( $is_active ? ' is-active' : '' );
 
-	$panels_html .= '<div class="' . esc_attr( $wrap_class ) . '" data-index="' . (int) $index . '"' . $edit_attr . '>';
+	$panels_html .= '<div class="' . esc_attr( $wrap_class ) . '" data-index="' . (int) $index . '">';
 	$panels_html .= '<button type="button" class="' . esc_attr( $header_class ) . '" aria-expanded="' . $expanded . '" aria-controls="' . esc_attr( $panel_id ) . '">'
 		. $icon . $label_html . '</button>';
-	$panels_html .= '<div class="flexa-tabs__panel" id="' . esc_attr( $panel_id ) . '" role="tabpanel" aria-labelledby="' . esc_attr( $tab_id ) . '">' . $content . '</div>';
+	$panels_html .= '<div class="flexa-tabs__panel" id="' . esc_attr( $panel_id ) . '" role="tabpanel" aria-labelledby="' . esc_attr( $tab_id ) . '">' . $panel . '</div>';
 	$panels_html .= '</div>';
 }
 
@@ -170,5 +207,5 @@ printf(
 	$data_attrs,         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- keys sanitized, values escaped in helper.
 	$lazy_marker,        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static literal.
 	$nav_html,           // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- labels esc_html'd, icons svg_kses'd, ids esc_attr'd above.
-	$panels_html         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- content wp_kses'd, labels esc_html'd, ids esc_attr'd above.
+	$panels_html         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- text wp_kses'd, inner blocks rendered by WP, labels esc_html'd.
 );

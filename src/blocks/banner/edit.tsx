@@ -13,7 +13,7 @@
  */
 
 import { __ } from '@wordpress/i18n';
-import { InspectorControls, useBlockProps, MediaPlaceholder } from '@wordpress/block-editor';
+import { InspectorControls, useBlockProps, MediaPlaceholder, useInnerBlocksProps, InnerBlocks } from '@wordpress/block-editor';
 
 import {
 	InspectorTabs,
@@ -112,12 +112,36 @@ const buildOverlayStyle = ( overlay: ImageOverlayAttr = {} ): CssProps => {
 };
 
 /**
+ * Optional top region above the heading — for a breadcrumb, an eyebrow (text) or a
+ * meta line (icon-list). Kept as InnerBlocks so any of these blocks can sit inside
+ * the banner over the background/overlay, which the fixed promo fields can't hold.
+ *
+ * This list applies to `contentSource: 'fields'` only. It is a curated set on
+ * purpose there: the region is a narrow strip above the promo fields, styled as a
+ * 12px-gap column with a trailing margin, so an arbitrary block would fight that
+ * layout. With `contentSource: 'custom'` the region IS the content and the
+ * restriction is lifted entirely.
+ */
+const BANNER_INNER_ALLOWED = [
+	'flexa/breadcrumb',
+	'flexa/heading',
+	'flexa/text',
+	'flexa/icon-list',
+	'flexa/icon',
+	'flexa/button',
+];
+
+/**
  * Banner edit component.
  */
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< BannerAttributes > ): JSX.Element {
-	const { containerType, overlay, background, className, responsiveVisibility } = attributes;
+	const { contentSource, containerType, overlay, background, className, responsiveVisibility } = attributes;
 	const blockId = attributes.blockId;
 	const [ device ] = useDevice();
+
+	// `fields` is the default, so a banner saved before this option existed takes
+	// exactly the path it always took.
+	const isCustom = 'custom' === ( contentSource || 'fields' );
 
 	useBlockId( clientId, blockId, setAttributes );
 
@@ -131,11 +155,20 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		( bg.type === 'classic' && !! bg.color?.light ) ||
 		( bg.type === 'gradient' && !! bg.gradient?.light );
 
+	// In `custom` the InnerBlocks region IS the content, so the "pick a background
+	// image" placeholder must not stand in front of it — the author would have
+	// nowhere to add blocks. A hero built from blocks is perfectly usable with no
+	// backdrop at all.
+	const showPlaceholder = ! hasBackdrop && ! isCustom;
+
 	const blockProps = useBlockProps( {
 		className: cn(
 			'flexa-banner',
 			`flexa-banner--${ containerType || 'full-width' }`,
-			! hasBackdrop && 'flexa-banner--placeholder',
+			// Only the custom variant gets a class: `fields` is the base styling, so
+			// leaving its markup untouched keeps every saved banner byte-identical.
+			isCustom && 'flexa-banner--content-custom',
+			showPlaceholder && 'flexa-banner--placeholder',
 			blockId && `flexa-banner-${ blockId }`,
 			className,
 			...visibilityClasses( responsiveVisibility )
@@ -145,9 +178,23 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 
 	const hasOverlay = overlay?.type && overlay.type !== 'none';
 
+	// The InnerBlocks region. In `fields` it is the narrow strip above the promo
+	// content (breadcrumb / eyebrow / meta, curated list). In `custom` it is the
+	// whole content: no allow-list, and its own class so the strip's column layout
+	// and trailing margin don't reshape arbitrary blocks.
+	const innerBlocksProps = useInnerBlocksProps(
+		{ className: isCustom ? 'flexa-banner__content-blocks' : 'flexa-banner__top' },
+		{
+			...( isCustom ? {} : { allowedBlocks: BANNER_INNER_ALLOWED } ),
+			renderAppender: InnerBlocks.ButtonBlockAppender,
+		}
+	);
+
 	// Hover state — inline styles can't express `:hover`, so mirror the shared promo
-	// button hover rules in a scoped <style> (light values, only what's set).
-	const hoverCss = blockId
+	// button hover rules in a scoped <style> (light values, only what's set). The
+	// promo buttons don't exist in `custom`, so neither does their hover CSS.
+	const hoverCss =
+		blockId && ! isCustom
 		? editorCss( [
 				{ selector: `.flexa-banner-${ blockId } .flexa-promo__button--primary:hover`, prop: 'color', value: attributes.primaryHover?.text?.light },
 				{ selector: `.flexa-banner-${ blockId } .flexa-promo__button--primary:hover`, prop: 'background-color', value: attributes.primaryHover?.background?.light },
@@ -167,15 +214,21 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 						layout={
 							<>
 								<BannerLayoutPanel attributes={ attributes } setAttributes={ setAttributes } />
-								<PromoContentPanel attributes={ attributes } setAttributes={ setAttributes } />
+								{ /* The promo panels edit fields that `custom` does not render, so
+								     showing them would be offering controls with no effect. */ }
+								{ ! isCustom && <PromoContentPanel attributes={ attributes } setAttributes={ setAttributes } /> }
 								<SpacingPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
 						}
 						style={
 							<>
-								<PromoHeadingPanel attributes={ attributes } setAttributes={ setAttributes } />
-								<PromoDescriptionPanel attributes={ attributes } setAttributes={ setAttributes } />
-								<PromoButtonsPanel attributes={ attributes } setAttributes={ setAttributes } />
+								{ ! isCustom && (
+									<>
+										<PromoHeadingPanel attributes={ attributes } setAttributes={ setAttributes } />
+										<PromoDescriptionPanel attributes={ attributes } setAttributes={ setAttributes } />
+										<PromoButtonsPanel attributes={ attributes } setAttributes={ setAttributes } />
+									</>
+								) }
 								<BannerOverlayPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<BackgroundPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<BorderPanel attributes={ attributes } setAttributes={ setAttributes } />
@@ -195,11 +248,12 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 
 			<div { ...blockProps }>
 				{ hoverCss && <style>{ hoverCss }</style> }
-				{ hasBackdrop ? (
+				{ ! showPlaceholder ? (
 					<>
 						{ hasOverlay && <div className="flexa-banner__overlay" style={ buildOverlayStyle( overlay ) } aria-hidden="true" /> }
 						<div className="flexa-banner__box" style={ buildBoxStyle( attributes, device ) }>
-							<PromoContent attributes={ attributes } setAttributes={ setAttributes } />
+							<div { ...innerBlocksProps } />
+							{ ! isCustom && <PromoContent attributes={ attributes } setAttributes={ setAttributes } /> }
 						</div>
 					</>
 				) : (

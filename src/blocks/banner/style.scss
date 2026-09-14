@@ -41,6 +41,36 @@
 		align-items: inherit;
 	}
 
+	// Optional InnerBlocks region above the promo content (breadcrumb / eyebrow /
+	// meta). Sits over the overlay; inherits the banner's content alignment.
+	&__top {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: inherit;
+		gap: 12px;
+		margin-bottom: 20px;
+
+		> * {
+			margin: 0;
+		}
+	}
+
+	// `contentSource: 'custom'` — the InnerBlocks region IS the content, so it gets
+	// its own class rather than reusing `__top`. Deliberately minimal: no flex
+	// column, no gap, no trailing margin. Arbitrary blocks (columns, images, forms)
+	// bring their own spacing and their own layout, and `__top`'s column would
+	// override it — a Columns block would stack instead of sitting side by side.
+	// Adding a class instead of editing `__top` also leaves every banner published
+	// before this option existed exactly as it was.
+	&__content-blocks {
+		position: relative;
+		z-index: 1;
+		width: 100%;
+	}
+
 	.flexa-promo__content {
 		position: relative;
 		z-index: 1;

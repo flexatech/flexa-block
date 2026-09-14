@@ -112,6 +112,7 @@ const SourcePanel = ( { attributes, setAttributes }: Props ): JSX.Element => {
 			) : (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Animation URL', 'flexa-block' ) }
 					value={ url || '' }
 					placeholder="https://example.com/animation.json"
@@ -132,6 +133,7 @@ const PlaybackPanel = ( { attributes, setAttributes }: Props ): JSX.Element => {
 		<PanelBody title={ __( 'Playback', 'flexa-block' ) } initialOpen={ false }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Play', 'flexa-block' ) }
 				value={ playOn || 'autoplay' }
 				options={ PLAY_ON_OPTIONS }
@@ -151,6 +153,7 @@ const PlaybackPanel = ( { attributes, setAttributes }: Props ): JSX.Element => {
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Speed', 'flexa-block' ) }
 				value={ speed ?? 1 }
 				min={ 0.25 }
@@ -304,7 +307,11 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		return () => {
 			cancelled = true;
 			if ( anim ) {
-				anim.destroy();
+				try {
+					anim.destroy();
+				} catch {
+					// lottie may have already torn its SVG down — nothing left to clean.
+				}
 			}
 		};
 	}, [ src, loop, speed, reverse ] );
@@ -379,19 +386,28 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 			{ inspector }
 			<div { ...blockProps }>
 				{ hoverCss && <style>{ hoverCss }</style> }
-				{ src && ! failed ? (
-					/* Live preview — plays the real animation via lottie-web (view.ts mirror). */
-					<div ref={ playerRef } className="flexa-lottie__player" style={ buildPlayerStyle( attributes, device ) } />
-				) : (
-					/* No source yet, or it couldn't be read — show the placeholder. */
-					<div className="flexa-lottie__player flexa-lottie__placeholder" style={ buildPlayerStyle( attributes, device ) }>
-						<span className="flexa-lottie__placeholder-icon">{ BLOCK_ICONS[ 'lottie' ].src }</span>
-						<span className="flexa-lottie__placeholder-label">
-							{ failed ? __( 'Could not read this Lottie source', 'flexa-block' ) : __( 'Lottie animation', 'flexa-block' ) }
-						</span>
-						{ src && <span className="flexa-lottie__placeholder-src">{ fileName( src ) }</span> }
-					</div>
-				) }
+				{ /*
+				   The sized box is always mounted: lottie-web plays into the inner
+				   canvas (which React renders empty and never reconciles), while the
+				   placeholder is a plain React-owned sibling that toggles on/off. This
+				   keeps lottie's imperative SVG entirely outside React's conditional
+				   rendering. Previously we swapped the player div for the placeholder
+				   div — so switching source (e.g. File → URL) made React remove a node
+				   whose children lottie had already moved, crashing the block with a
+				   `removeChild` NotFoundError. */ }
+				<div className="flexa-lottie__player" style={ buildPlayerStyle( attributes, device ) }>
+					<div ref={ playerRef } className="flexa-lottie__canvas" />
+					{ ( ! src || failed ) && (
+						/* No source yet, or it couldn't be read — show the placeholder. */
+						<div className="flexa-lottie__placeholder">
+							<span className="flexa-lottie__placeholder-icon">{ BLOCK_ICONS[ 'lottie' ].src }</span>
+							<span className="flexa-lottie__placeholder-label">
+								{ failed ? __( 'Could not read this Lottie source', 'flexa-block' ) : __( 'Lottie animation', 'flexa-block' ) }
+							</span>
+							{ src && <span className="flexa-lottie__placeholder-src">{ fileName( src ) }</span> }
+						</div>
+					) }
+				</div>
 			</div>
 		</>
 	);

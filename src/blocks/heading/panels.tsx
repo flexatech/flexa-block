@@ -60,6 +60,7 @@ export const HeadingContentPanel = ( { attributes, setAttributes }: HeadingPanel
 		<PanelBody title={ __( 'Heading', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ tag || 'h2' }
 				options={ TEXT_TAG_OPTIONS }
@@ -88,6 +89,7 @@ export const HeadingContentPanel = ( { attributes, setAttributes }: HeadingPanel
 
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Link URL', 'flexa-block' ) }
 				type="url"
 				value={ url || '' }
@@ -148,6 +150,7 @@ export const SubheadingPanel = ( { attributes, setAttributes }: HeadingPanelProp
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ subheadingTag || 'span' }
 				options={ TEXT_TAG_OPTIONS }
@@ -195,6 +198,7 @@ export const SeparatorPanel = ( { attributes, setAttributes }: HeadingPanelProps
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Style', 'flexa-block' ) }
 				value={ separatorStyle || 'solid' }
 				options={ BORDER_STYLE_OPTIONS }

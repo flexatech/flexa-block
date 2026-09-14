@@ -10,9 +10,11 @@
 
 @use '../../styles/pagination' as *;
 @use '../../styles/image-placeholder' as *;
+@use '../../styles/hover-effect' as *;
 
 @include flexa-pagination();
 @include flexa-image-placeholder();
+@include flexa-hover-effect();
 
 .flexa-post-grid {
 	box-sizing: border-box;
@@ -160,6 +162,75 @@
 	&__empty {
 		margin: 0;
 		opacity: 0.7;
+	}
+
+	// --- Card style: overlay --------------------------------------------------
+	// The body sits over the image on a dark gradient. The image fills the card
+	// (absolutely positioned) and the body stacks at the foot.
+	&__grid--overlay &__item {
+		position: relative;
+		min-height: 320px;
+		justify-content: flex-end;
+	}
+
+	&__grid--overlay &__image-link,
+	&__grid--overlay &__image-wrap {
+		position: absolute;
+		inset: 0;
+		height: 100%;
+	}
+
+	&__grid--overlay &__image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	&__grid--overlay &__body {
+		position: relative;
+		z-index: 1;
+		flex: 0 0 auto;
+		margin-top: auto;
+		padding: 24px 20px 20px;
+		background: linear-gradient(to top, rgba(15, 23, 42, 0.88) 8%, rgba(15, 23, 42, 0) 100%);
+		color: #fff;
+	}
+
+	&__grid--overlay &__title a {
+		color: #fff;
+	}
+
+	&__grid--overlay &__meta,
+	&__grid--overlay &__excerpt {
+		color: rgba(255, 255, 255, 0.85);
+	}
+
+	// --- Feature-first: the first card spans the full row ---------------------
+	&__grid--feature-first &__item--featured {
+		grid-column: 1 / -1;
+	}
+
+	// From tablet up, lay the featured card out horizontally (image beside body).
+	@media (min-width: 782px) {
+		&__grid--feature-first &__item--featured {
+			display: grid;
+			grid-template-columns: 1.15fr 1fr;
+			align-items: stretch;
+		}
+
+		&__grid--feature-first &__item--featured &__image-link,
+		&__grid--feature-first &__item--featured &__image-wrap,
+		&__grid--feature-first &__item--featured &__image {
+			height: 100%;
+		}
+
+		&__grid--feature-first &__item--featured &__image {
+			object-fit: cover;
+		}
+
+		&__grid--feature-first &__item--featured &__body {
+			justify-content: center;
+		}
 	}
 }
 

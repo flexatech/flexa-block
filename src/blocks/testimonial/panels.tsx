@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
 import { PanelBody, RangeControl, ToggleControl, BaseControl, Flex, Button } from '@wordpress/components';
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 
-import { Segmented, SliderUnit, DualColor, TypographyControls, CONTENT_ALIGN_OPTIONS, useDevice } from '@components';
+import { Segmented, SliderUnit, DualColor, TypographyControls, CONTENT_ALIGN_OPTIONS, HoverEffectControl, useDevice } from '@components';
 import {
 	rawDevice,
 	patchDevice,
@@ -86,6 +86,7 @@ export const TestimonialRatingPanel = ( { attributes, setAttributes }: TPanelPro
 				<>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Stars', 'flexa-block' ) }
 						value={ typeof rating === 'number' ? rating : 5 }
 						min={ 0 }
@@ -121,7 +122,7 @@ export const TestimonialRatingPanel = ( { attributes, setAttributes }: TPanelPro
  */
 export const TestimonialAuthorPanel = ( { attributes, setAttributes }: TPanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { showAvatar, authorImage, authorImageSize, authorGap } = attributes;
+	const { showAvatar, authorImage, authorImageSize, authorGap, hoverEffect } = attributes;
 	const img: ImageMedia = authorImage || {};
 
 	return (
@@ -178,6 +179,7 @@ export const TestimonialAuthorPanel = ( { attributes, setAttributes }: TPanelPro
 						max={ { px: 80, em: 8, rem: 8, '%': 100 } }
 						onChange={ ( v: LengthValue ) => setAttributes( { authorGap: { ...authorGap, [ device ]: v } } ) }
 					/>
+					<HoverEffectControl value={ hoverEffect } onChange={ ( v ) => setAttributes( { hoverEffect: v } ) } />
 				</>
 			) }
 		</PanelBody>

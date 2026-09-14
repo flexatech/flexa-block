@@ -10,6 +10,10 @@
  * inserted; the generator overrides them once the user picks a value.
  */
 
+@use '../../styles/hover-effect' as *;
+
+@include flexa-hover-effect();
+
 .flexa-team-member {
 	box-sizing: border-box;
 	display: flex;

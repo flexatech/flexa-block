@@ -252,6 +252,48 @@ function BeforeAfterSkeleton(): JSX.Element {
 	);
 }
 
+function FilterSearchSkeleton(): JSX.Element {
+	return (
+		<div style={ { ...COL, gap: 8, alignItems: 'stretch' } }>
+			<SkeletonBar w="34%" h={ 10 } />
+			<SkeletonBox w="100%" h={ 40 } style={ { borderRadius: 8 } } />
+		</div>
+	);
+}
+
+function FilterTaxonomySkeleton(): JSX.Element {
+	return (
+		<div style={ { ...COL, gap: 8, alignItems: 'stretch' } }>
+			<SkeletonBar w="42%" h={ 10 } />
+			<div style={ { position: 'relative', width: '100%' } }>
+				<SkeletonBox w="100%" h={ 40 } style={ { borderRadius: 8 } } />
+				{ /* A chevron so it reads as a dropdown, not a plain box. */ }
+				<span
+					style={ {
+						position: 'absolute',
+						top: '50%',
+						right: 14,
+						width: 9,
+						height: 9,
+						marginTop: -6,
+						borderRight: '2px solid #c4cad2',
+						borderBottom: '2px solid #c4cad2',
+						transform: 'rotate(45deg)',
+					} }
+				/>
+			</div>
+		</div>
+	);
+}
+
+function FilterResetSkeleton(): JSX.Element {
+	return (
+		<div style={ ROW }>
+			<SkeletonBar w={ 84 } h={ 14 } style={ { borderRadius: 4 } } />
+		</div>
+	);
+}
+
 function ContainerSkeleton(): JSX.Element {
 	return (
 		<div
@@ -299,6 +341,12 @@ function variant( kind: string ): JSX.Element {
 			return <SeparatorSkeleton />;
 		case 'before-after':
 			return <BeforeAfterSkeleton />;
+		case 'filter-search':
+			return <FilterSearchSkeleton />;
+		case 'filter-taxonomy':
+			return <FilterTaxonomySkeleton />;
+		case 'filter-reset':
+			return <FilterResetSkeleton />;
 		case 'text':
 			return <TextSkeleton />;
 		case 'heading':
