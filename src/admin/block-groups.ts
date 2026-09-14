@@ -195,8 +195,22 @@ export const GROUP_ORDER: string[] = [
 	'other',
 ];
 
-/** Resolve a block's group key, falling back to its catalog category. */
+/**
+ * Resolve a block's group key, falling back to its catalog category.
+ *
+ * A catalog entry may name its own `group`, which wins. That exists for add-ons:
+ * SLUG_GROUP below only lists this plugin's slugs, and the category fallback
+ * recognises just `layout` and `woocommerce`, so an add-on block would otherwise
+ * always land in "Other" no matter what category it declares. An unknown group
+ * key is ignored rather than trusted, so a typo degrades to the old behaviour
+ * instead of producing an empty, unlabelled pill.
+ *
+ * @param block The catalog entry to place.
+ */
 export function groupOf( block: FlexaBlockAdminBlock ): string {
+	if ( block.group && GROUP_META[ block.group ] ) {
+		return block.group;
+	}
 	const mapped = SLUG_GROUP[ block.slug ];
 	if ( mapped ) {
 		return mapped;

@@ -119,6 +119,9 @@ export interface BackgroundImage {
 	size?: string;
 	position?: string;
 	repeat?: string;
+	// `fixed` pins the image to the viewport (content scrolls over it); the shared
+	// background CSS emits this as `background-attachment` (default `scroll`).
+	attachment?: 'scroll' | 'fixed' | 'local';
 }
 
 export interface BackgroundAttr {
@@ -176,6 +179,13 @@ export interface ContainerAttributes {
 	widthFullWidth?: ResponsiveValue< LengthValue >;
 	background?: BackgroundAttr;
 	boxShadow?: BoxShadowAttr;
+	// Per-item border/shadow (collection blocks). Read by the shared
+	// ItemBorderPanel/ItemShadowPanel; `itemStyleMigrated` gates the one-time
+	// move of legacy wrapper border/shadow onto the item.
+	// TODO(remove in vNEXT): item-style migration.
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
 	gridSpan?: ResponsiveValue< GridSpanDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	animation?: AnimationAttr;
@@ -703,6 +713,10 @@ export interface FaqAttributes {
 	background?: BackgroundAttr;
 	border?: ResponsiveValue< BorderDevice >;
 	boxShadow?: BoxShadowAttr;
+	// Per-item border/shadow + migration flag. TODO(remove in vNEXT): item-style migration.
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
 	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	htmlAttributes?: HtmlAttributesAttr;
@@ -875,6 +889,7 @@ export interface TestimonialAttributes {
 	authorImage?: ImageMedia;
 	authorImageSize?: ResponsiveValue< LengthValue >;
 	authorGap?: ResponsiveValue< LengthValue >;
+	hoverEffect?: string;
 	authorName?: string;
 	nameTypography?: ResponsiveValue< TypographyDevice >;
 	nameColor?: ColorPair;
@@ -925,6 +940,7 @@ export interface InfoBoxAttributes {
 	mediaType?: 'icon' | 'image';
 	icon?: IconValue;
 	image?: ImageMedia;
+	hoverEffect?: string;
 	iconSize?: ResponsiveValue< LengthValue >;
 	imageWidth?: ResponsiveValue< LengthValue >;
 	iconColor?: ColorPair;
@@ -1208,6 +1224,7 @@ export interface ProductImageAttributes {
 	imageHeight?: ResponsiveValue< LengthValue >;
 	adaptiveHeight?: boolean;
 	zoomOnHover?: boolean;
+	hoverEffect?: string;
 	imageRadius?: ResponsiveValue< LengthValue >;
 	// Layout.
 	alignment?: ResponsiveValue< string >;
@@ -1328,6 +1345,8 @@ export interface TableOfContentAttributes {
 	// Behaviour (view.ts reads these; smooth scroll + collapse emit no CSS).
 	smoothScroll?: boolean;
 	scrollOffset?: number;
+	/** Highlight the link of the section currently in view (view.ts scroll-spy). */
+	scrollSpy?: boolean;
 	collapsible?: boolean;
 	initialCollapsed?: boolean;
 	// Title styling.
@@ -1337,6 +1356,8 @@ export interface TableOfContentAttributes {
 	linkTypography?: ResponsiveValue< TypographyDevice >;
 	linkColor?: ColorPair;
 	linkHoverColor?: ColorPair;
+	/** Colour of the active (in-view) link when scroll-spy is on. */
+	activeColor?: ColorPair;
 	markerColor?: ColorPair;
 	itemGap?: ResponsiveValue< LengthValue >;
 	indent?: ResponsiveValue< LengthValue >;
@@ -1400,6 +1421,8 @@ export interface ComparisonTableAttributes {
 	containerType?: 'boxed' | 'full-width';
 	widthBoxed?: ResponsiveValue< LengthValue >;
 	widthFullWidth?: ResponsiveValue< LengthValue >;
+	/** Floor for the table itself, so long labels can scroll instead of wrapping. */
+	tableMinWidth?: ResponsiveValue< LengthValue >;
 	// Behaviour / layout.
 	stickyHeader?: boolean;
 	zebra?: boolean;
@@ -1580,6 +1603,19 @@ export interface TabItem {
 	label?: string;
 	icon?: IconValue;
 	content?: string;
+}
+
+/**
+ * Tab block attributes (child of flexa/tabs). Holds the tab's label + icon (used
+ * by the parent to build the nav), an optional line of default `text`, and any
+ * blocks in its InnerBlocks area.
+ */
+export interface TabAttributes {
+	blockId?: string;
+	className?: string;
+	label?: string;
+	icon?: IconValue;
+	text?: string;
 }
 
 /**
@@ -1893,6 +1929,19 @@ export interface BannerAttributes extends PromoContentAttributes {
 	blockId?: string;
 	className?: string;
 	htmlTag?: string;
+	/**
+	 * Where the banner's content comes from.
+	 *
+	 * `fields` (the default, and what every banner saved before this option
+	 * existed resolves to) keeps the fixed promo fields — heading, description and
+	 * the two CTA buttons — with the small InnerBlocks region above them limited
+	 * to breadcrumb / eyebrow / meta blocks.
+	 *
+	 * `custom` hides those fields and opens that region to ANY block, so the
+	 * banner becomes a hero canvas: columns, images, forms, Pro blocks. The promo
+	 * attributes are kept, not cleared, so switching back restores them.
+	 */
+	contentSource?: 'fields' | 'custom';
 	// Width (boxed vs full-width, like the Container).
 	containerType?: 'boxed' | 'full-width';
 	widthBoxed?: ResponsiveValue< LengthValue >;
@@ -2160,9 +2209,19 @@ export interface FilterResetAttributes {
 }
 
 /**
- * One pricing plan (a column). `features` is a newline-separated string (one
- * feature per line) or an array of lines. `priceYearly` / `periodYearly` are
- * only shown when the monthly/yearly billing toggle is on.
+ * One feature row in a pricing plan. `included: false` renders it struck/muted
+ * with a ✕ instead of a ✓.
+ */
+export interface PricingFeature {
+	text: string;
+	included?: boolean;
+}
+
+/**
+ * One pricing plan (a column). `features` is an array of { text, included } rows.
+ * Legacy content may still store a newline-separated string or an array of lines
+ * (both read as all-included). `priceYearly` / `periodYearly` are only shown when
+ * the monthly/yearly billing toggle is on.
  */
 export interface PricingPlan {
 	name?: string;
@@ -2170,7 +2229,7 @@ export interface PricingPlan {
 	priceYearly?: string;
 	periodMonthly?: string;
 	periodYearly?: string;
-	features?: string | string[];
+	features?: string | string[] | PricingFeature[];
 	ctaText?: string;
 	ctaUrl?: string;
 	highlighted?: boolean;
@@ -2285,6 +2344,7 @@ export interface TeamMemberAttributes {
 	// Layout.
 	imagePosition?: 'top' | 'left' | 'right';
 	imageShape?: 'circle' | 'rounded' | 'square';
+	hoverEffect?: string;
 	stackOn?: 'none' | 'tablet' | 'mobile';
 	alignment?: ResponsiveValue< string >;
 	mediaGap?: ResponsiveValue< LengthValue >;
@@ -2393,6 +2453,10 @@ export interface PostGridAttributes {
 	rowGap?: ResponsiveValue< LengthValue >;
 	columnGap?: ResponsiveValue< LengthValue >;
 	equalHeight?: boolean;
+	/** Card layout: 'stacked' (image over body) or 'overlay' (body over image). */
+	cardStyle?: 'stacked' | 'overlay';
+	/** First card spans the full row (image beside body). Only meaningful on page 1. */
+	featureFirst?: boolean;
 	contentAlign?: ResponsiveValue< string >;
 	/** Inner padding of each card's text/body area (the image stays full-bleed). */
 	contentPadding?: ResponsiveValue< BoxValue >;
@@ -2411,6 +2475,10 @@ export interface PostGridAttributes {
 	showDate?: boolean;
 	showComments?: boolean;
 	showTaxonomy?: boolean;
+	/** Show an estimated "N min read" in the meta line. */
+	showReadingTime?: boolean;
+	/** Reading speed used to estimate reading time (default 200). */
+	wordsPerMinute?: number;
 	showExcerpt?: boolean;
 	excerptLength?: number;
 	showReadMore?: boolean;
@@ -2418,6 +2486,7 @@ export interface PostGridAttributes {
 	// Image.
 	imageSize?: string;
 	imageRatio?: string;
+	hoverEffect?: string;
 	// Pagination.
 	paginationType?: 'none' | 'numbered' | 'loadmore';
 	loadMoreText?: string;
@@ -2456,6 +2525,10 @@ export interface PostGridAttributes {
 	background?: BackgroundAttr;
 	border?: ResponsiveValue< BorderDevice >;
 	boxShadow?: BoxShadowAttr;
+	// Per-item border/shadow + migration flag. TODO(remove in vNEXT): item-style migration.
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
 	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	animation?: AnimationAttr;
@@ -2548,6 +2621,10 @@ export interface RssAttributes {
 	background?: BackgroundAttr;
 	border?: ResponsiveValue< BorderDevice >;
 	boxShadow?: BoxShadowAttr;
+	// Per-item border/shadow + migration flag. TODO(remove in vNEXT): item-style migration.
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
 	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	animation?: AnimationAttr;
@@ -2645,6 +2722,10 @@ export interface TimelineAttributes {
 	imageAlign?: 'left' | 'center' | 'right';
 	/** Per-entry image display width (shared across entries). */
 	imageWidth?: ResponsiveValue< LengthValue >;
+	/** Per-entry image corner radius (shared across entries). */
+	imageRadius?: ResponsiveValue< LengthValue >;
+	/** Hover motion on the per-entry image (shared across entries). */
+	hoverEffect?: string;
 	itemGap?: ResponsiveValue< LengthValue >;
 	markerGap?: ResponsiveValue< LengthValue >;
 	contentAlign?: ResponsiveValue< string >;
@@ -2675,6 +2756,10 @@ export interface TimelineAttributes {
 	background?: BackgroundAttr;
 	border?: ResponsiveValue< BorderDevice >;
 	boxShadow?: BoxShadowAttr;
+	// Per-item border/shadow + migration flag. TODO(remove in vNEXT): item-style migration.
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
 	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	htmlAttributes?: HtmlAttributesAttr;
@@ -2947,6 +3032,7 @@ export interface NoticeAttributes {
 	showIcon?: boolean;
 	icon?: IconValue;
 	iconPosition?: 'left' | 'top';
+	iconAlign?: '' | 'flex-start' | 'center' | 'flex-end';
 	iconSize?: ResponsiveValue< LengthValue >;
 	iconColor?: ColorPair;
 	// Title.
@@ -3044,6 +3130,10 @@ export interface FacebookFeedAttributes {
 	background?: BackgroundAttr;
 	border?: ResponsiveValue< BorderDevice >;
 	boxShadow?: BoxShadowAttr;
+	// Per-item border/shadow + migration flag. TODO(remove in vNEXT): item-style migration.
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
 	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	animation?: AnimationAttr;
@@ -3100,6 +3190,10 @@ export interface InstagramFeedAttributes {
 	background?: BackgroundAttr;
 	border?: ResponsiveValue< BorderDevice >;
 	boxShadow?: BoxShadowAttr;
+	// Per-item border/shadow + migration flag. TODO(remove in vNEXT): item-style migration.
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
 	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	animation?: AnimationAttr;
@@ -3164,6 +3258,10 @@ export interface TaxonomyAttributes {
 	background?: BackgroundAttr;
 	border?: ResponsiveValue< BorderDevice >;
 	boxShadow?: BoxShadowAttr;
+	// Per-item border/shadow + migration flag. TODO(remove in vNEXT): item-style migration.
+	itemBorder?: ResponsiveValue< BorderDevice >;
+	itemBoxShadow?: BoxShadowAttr;
+	itemStyleMigrated?: boolean;
 	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	animation?: AnimationAttr;

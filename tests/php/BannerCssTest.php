@@ -284,4 +284,53 @@ class BannerCssTest extends CssTestCase {
 		$this->assertCssHasInDark( $css, self::HEADING, 'color:#f3f4f6', true );
 		$this->assertStringNotContainsString( 'prefers-color-scheme', $css );
 	}
+
+	// --- contentSource ---------------------------------------------------------
+	//
+	// `fields` is the default so that every banner saved before this option existed
+	// keeps its CSS byte-for-byte. These tests are the guard on that promise.
+
+	public function test_missing_content_source_behaves_as_fields(): void {
+		$attrs = [
+			'blockId'      => 'a',
+			'headingColor' => [ 'light' => '#111827', 'dark' => '' ],
+		];
+
+		// A banner saved before the option existed has no `contentSource` key at all.
+		$legacy = $this->gen( $attrs );
+		$explicit = $this->gen( array_merge( $attrs, [ 'contentSource' => 'fields' ] ) );
+
+		$this->assertSame( $explicit, $legacy );
+		$this->assertCssHas( $legacy, self::HEADING, 'color:#111827' );
+	}
+
+	public function test_custom_content_source_skips_the_promo_declarations(): void {
+		$css = $this->gen( [
+			'blockId'           => 'a',
+			'contentSource'     => 'custom',
+			'headingColor'      => [ 'light' => '#111827', 'dark' => '' ],
+			'descriptionColor'  => [ 'light' => '#374151', 'dark' => '' ],
+			'primaryBgColor'    => [ 'light' => '#2563eb', 'dark' => '' ],
+		] );
+
+		// The promo elements are not rendered in this mode, so styling them would
+		// only bloat the baked CSS.
+		$this->assertStringNotContainsString( 'flexa-promo__heading', $css );
+		$this->assertStringNotContainsString( 'flexa-promo__description', $css );
+		$this->assertStringNotContainsString( 'flexa-promo__button', $css );
+	}
+
+	public function test_custom_content_source_still_emits_the_banner_box(): void {
+		// Everything that frames the banner — size, background, overlay, border —
+		// applies whatever the content is, so it must survive the switch.
+		$css = $this->gen( [
+			'blockId'       => 'a',
+			'contentSource' => 'custom',
+			'size'          => [ 'desktop' => [ 'minHeight' => [ 'value' => '520', 'unit' => 'px' ] ] ],
+			'overlay'       => [ 'type' => 'color', 'color' => [ 'light' => '#000000' ], 'opacity' => 40 ],
+		] );
+
+		$this->assertCssHas( $css, self::WRAP, 'min-height:520px' );
+		$this->assertCssHas( $css, self::OVERLAY, 'opacity:0.4' );
+	}
 }

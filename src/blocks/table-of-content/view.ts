@@ -161,6 +161,80 @@ function wireSmoothScroll( list: HTMLElement, offset: number ): void {
 }
 
 /**
+ * Wire scroll-spy: highlight the link of the heading currently in view by adding
+ * `is-active` to it (and removing it from the rest). Falls back to a no-op where
+ * IntersectionObserver is unavailable.
+ *
+ * @param list     The rendered list.
+ * @param headings Collected headings in document order.
+ * @param offset   Sticky-header offset, so "in view" matches the smooth-scroll target.
+ */
+function wireScrollSpy( list: HTMLElement, headings: TocHeading[], offset: number ): void {
+	if ( typeof window.IntersectionObserver === 'undefined' || ! headings.length ) {
+		return;
+	}
+
+	const linkById = new Map< string, HTMLAnchorElement >();
+	list.querySelectorAll< HTMLAnchorElement >( 'a.flexa-toc__link' ).forEach( ( a ) => {
+		const id = decodeURIComponent( ( a.getAttribute( 'href' ) || '' ).slice( 1 ) );
+		if ( id ) {
+			linkById.set( id, a );
+		}
+	} );
+
+	const visible = new Set< string >();
+	let current = '';
+
+	const setActive = ( id: string ): void => {
+		if ( id === current ) {
+			return;
+		}
+		current = id;
+		linkById.forEach( ( a, key ) => a.classList.toggle( 'is-active', key === id ) );
+	};
+
+	const pickActive = (): void => {
+		// Prefer the topmost heading currently in view.
+		let activeId = '';
+		for ( const h of headings ) {
+			if ( visible.has( h.id ) ) {
+				activeId = h.id;
+				break;
+			}
+		}
+		// None in view (between sections) → the last heading scrolled past the offset.
+		if ( ! activeId ) {
+			for ( const h of headings ) {
+				if ( h.el.getBoundingClientRect().top <= offset + 4 ) {
+					activeId = h.id;
+				}
+			}
+		}
+		if ( activeId ) {
+			setActive( activeId );
+		}
+	};
+
+	const observer = new window.IntersectionObserver(
+		( entries ) => {
+			entries.forEach( ( entry ) => {
+				const id = ( entry.target as HTMLElement ).id;
+				if ( entry.isIntersecting ) {
+					visible.add( id );
+				} else {
+					visible.delete( id );
+				}
+			} );
+			pickActive();
+		},
+		{ rootMargin: `-${ offset + 8 }px 0px -66% 0px`, threshold: 0 }
+	);
+
+	headings.forEach( ( h ) => observer.observe( h.el ) );
+	pickActive();
+}
+
+/**
  * Wire the collapse toggle: the header shows/hides the list, tracking state on
  * the wrapper (`data-collapsed`) and the toggle's `aria-expanded`.
  *
@@ -213,9 +287,12 @@ function initToc( toc: HTMLElement, used: Set< string > ): void {
 	const list = buildList( headings );
 	listHost.replaceWith( list );
 
+	const offset = Number( toc.getAttribute( 'data-offset' ) ) || 0;
 	if ( toc.hasAttribute( 'data-smooth' ) ) {
-		const offset = Number( toc.getAttribute( 'data-offset' ) ) || 0;
 		wireSmoothScroll( list, offset );
+	}
+	if ( toc.hasAttribute( 'data-spy' ) ) {
+		wireScrollSpy( list, headings, offset );
 	}
 	if ( toc.hasAttribute( 'data-collapsible' ) ) {
 		wireCollapse( toc );

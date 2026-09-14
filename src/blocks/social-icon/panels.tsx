@@ -83,6 +83,7 @@ const SocialItemBody = ( { item, update }: { item: SocialIconItem; update: ( pat
 		<>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Icon', 'flexa-block' ) }
 				value={ item.platform || 'facebook' }
 				options={ ICON_OPTIONS }
@@ -95,6 +96,7 @@ const SocialItemBody = ( { item, update }: { item: SocialIconItem; update: ( pat
 
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Link', 'flexa-block' ) }
 				type="url"
 				placeholder="https://"
@@ -184,6 +186,7 @@ export const SocialLayoutPanel = ( { attributes, setAttributes }: SocialPanelPro
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Hover effect', 'flexa-block' ) }
 				value={ hoverEffect || '' }
 				options={ HOVER_EFFECT_OPTIONS }
@@ -191,6 +194,7 @@ export const SocialLayoutPanel = ( { attributes, setAttributes }: SocialPanelPro
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

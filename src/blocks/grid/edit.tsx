@@ -169,6 +169,7 @@ const TrackControl = ( {
 			{ isCustom ? (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					value={ value?.value ?? '' }
 					placeholder={ customPlaceholder }
 					onChange={ ( v: string ) => onChange( { value: v, unit: 'custom' } ) }
@@ -176,6 +177,7 @@ const TrackControl = ( {
 			) : (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					value={ value?.value ? parseInt( value.value, 10 ) : undefined }
 					min={ 1 }
 					max={ 12 }
@@ -234,6 +236,7 @@ const GridContainerPanel = ( { attributes, setAttributes }: PanelProps< GridAttr
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

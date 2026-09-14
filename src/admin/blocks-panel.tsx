@@ -13,6 +13,7 @@ import { useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { GROUP_ORDER, groupMeta, groupOf } from './block-groups';
 import { BlockThumb } from './block-thumb';
+import { CrownIcon, LockIcon } from './icons';
 
 interface Props {
 	blocks: FlexaBlockAdminBlock[];
@@ -77,14 +78,24 @@ export function BlocksPanel( {
 		} );
 	}, [ topLevel, query, group ] );
 
-	const enabledCount = topLevel.filter(
+	// Locked blocks come from an add-on this site does not have. They are listed
+	// so the blocks are discoverable, but they are not blocks the site owns —
+	// counting them here would claim a total the user cannot reach, and feeding
+	// them to a bulk action would write a slug they do not own into the settings.
+	const owned = useMemo(
+		() => topLevel.filter( ( b ) => ! b.locked ),
+		[ topLevel ]
+	);
+
+	const enabledCount = owned.filter(
 		( b ) => ! disabled.includes( b.slug )
 	).length;
 
 	// Bulk actions operate on the currently visible (filtered + searched)
-	// blocks, and only Core-free ones can be switched off.
-	const visibleSlugs = visible.map( ( b ) => b.slug );
-	const toggleable = visible.filter( ( b ) => ! b.is_core );
+	// blocks, and only Core-free, unlocked ones can be switched off.
+	const switchable = visible.filter( ( b ) => ! b.locked );
+	const visibleSlugs = switchable.map( ( b ) => b.slug );
+	const toggleable = switchable.filter( ( b ) => ! b.is_core );
 	const allEnabled =
 		toggleable.length > 0 &&
 		toggleable.every( ( b ) => ! disabled.includes( b.slug ) );
@@ -104,7 +115,7 @@ export function BlocksPanel( {
 							/* translators: 1: enabled block count, 2: total block count. */
 							__( '%1$d of %2$d blocks enabled', 'flexa-block' ),
 							enabledCount,
-							topLevel.length
+							owned.length
 						) }
 					</p>
 				</div>
@@ -125,6 +136,13 @@ export function BlocksPanel( {
 
 			<div className="flexa-blocks__toolbar">
 				<div className="flexa-blocks__filters" role="tablist">
+					{ /*
+					 * Pills count the cards a click will reveal, so they include
+					 * locked ones — a pill that undercounted what it shows would
+					 * read as a bug. The "N of M enabled" line above answers a
+					 * different question (blocks this site owns) and so uses a
+					 * different total.
+					 */ }
 					<FilterPill
 						label={ __( 'All', 'flexa-block' ) }
 						count={ topLevel.length }
@@ -246,11 +264,42 @@ function BlockCard( {
 	onToggle: ( slug: string, enabled: boolean ) => void;
 } ): JSX.Element {
 	const isCore = !! block.is_core;
+	const isLocked = !! block.locked;
 	const title = block.title || block.slug;
 
+	// A locked block comes from an add-on this site does not have, so there is
+	// nothing to switch: the card is dimmed and the switch is replaced by a
+	// padlock. Not a disabled switch — a switch, even greyed, says "this is a
+	// setting you could reach", and this one is not.
+	const cardClass = [ 'flexa-block-card' ];
+	if ( isLocked ) {
+		cardClass.push( 'is-locked' );
+	} else if ( ! enabled ) {
+		cardClass.push( 'is-off' );
+	}
+
 	return (
-		<div className={ `flexa-block-card${ enabled ? '' : ' is-off' }` }>
+		<div className={ cardClass.join( ' ' ) }>
 			<BlockThumb block={ block } />
+			{ /*
+			 * Origin label contributed by an add-on plugin (e.g. "Pro"). Free text
+			 * rather than a boolean flag, so several add-ons can each name
+			 * themselves. It sits over the thumbnail rather than beside the title
+			 * so it reads at a glance while scanning the grid — and so it never
+			 * collides with the grey "Core" badge, which a block from an add-on
+			 * can never carry anyway.
+			 *
+			 * Styled entirely from CSS, with no per-card colour: unlike the
+			 * thumbnail, which is tinted by group, this badge is one fixed mark so
+			 * it stays recognisable at a glance across the whole grid. See
+			 * `$addon` in admin.scss.
+			 */ }
+			{ ! isCore && block.badge && (
+				<span className="flexa-block-card__addon">
+					<CrownIcon className="flexa-block-card__addon-icon" />
+					{ block.badge }
+				</span>
+			) }
 			<div className="flexa-block-card__body">
 				<div className="flexa-block-card__head">
 					<h3 className="flexa-block-card__title">
@@ -261,21 +310,39 @@ function BlockCard( {
 							</span>
 						) }
 					</h3>
-					<button
-						type="button"
-						role="switch"
-						aria-checked={ enabled }
-						aria-label={ sprintf(
-							/* translators: %s: block title. */
-							__( 'Enable %s block', 'flexa-block' ),
-							title
-						) }
-						className={ `flexa-switch${ enabled ? ' is-on' : '' }` }
-						disabled={ isCore }
-						onClick={ () => onToggle( block.slug, ! enabled ) }
-					>
-						<span className="flexa-switch__knob" />
-					</button>
+					{ isLocked ? (
+						<span
+							className="flexa-block-card__lock"
+							title={ sprintf(
+								/* translators: %s: origin label, e.g. "Pro". */
+								__(
+									'Available in %s',
+									'flexa-block'
+								),
+								block.badge || __( 'the add-on', 'flexa-block' )
+							) }
+						>
+							<LockIcon />
+						</span>
+					) : (
+						<button
+							type="button"
+							role="switch"
+							aria-checked={ enabled }
+							aria-label={ sprintf(
+								/* translators: %s: block title. */
+								__( 'Enable %s block', 'flexa-block' ),
+								title
+							) }
+							className={ `flexa-switch${
+								enabled ? ' is-on' : ''
+							}` }
+							disabled={ isCore }
+							onClick={ () => onToggle( block.slug, ! enabled ) }
+						>
+							<span className="flexa-switch__knob" />
+						</button>
+					) }
 				</div>
 				<p className="flexa-block-card__desc">
 					{ isCore

@@ -8,6 +8,10 @@
  * and hover effects are static, keyed by the class names set in render.php.
  */
 
+@use '../../styles/hover-effect' as *;
+
+@include flexa-hover-effect();
+
 .flexa-images-gallery {
 	box-sizing: border-box;
 
@@ -131,59 +135,9 @@
 		opacity: 1;
 	}
 
-	// =====================================================================
-	// Hover effects (applied to the image inside each item).
-	// =====================================================================
-	&--hover-zoom-in &__item:hover &__image {
-		transform: scale(1.08);
-	}
-
-	&--hover-zoom-out &__image {
-		transform: scale(1.08);
-	}
-
-	&--hover-zoom-out &__item:hover &__image {
-		transform: scale(1);
-	}
-
-	&--hover-grayscale &__image {
-		filter: grayscale(100%);
-	}
-
-	&--hover-grayscale &__item:hover &__image {
-		filter: grayscale(0%);
-	}
-
-	&--hover-blur &__item:hover &__image {
-		filter: blur(3px);
-	}
-
-	&--hover-rotate &__item:hover &__image {
-		transform: scale(1.1) rotate(3deg);
-	}
-
-	&--hover-slide &__item:hover &__image {
-		transform: scale(1.1) translateX(-3%);
-	}
-
-	// Shine — a diagonal highlight sweeps across on hover.
-	&--hover-shine &__media::after {
-		content: "";
-		position: absolute;
-		top: 0;
-		left: -75%;
-		width: 50%;
-		height: 100%;
-		background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0) 100%);
-		transform: skewX(-20deg);
-		z-index: 3;
-		pointer-events: none;
-	}
-
-	&--hover-shine &__item:hover &__media::after {
-		left: 125%;
-		transition: left 0.7s ease;
-	}
+	// Hover motion effects live in the shared `_hover-effect.scss` (included at
+	// the top of this file); `flexa-hover flexa-hover--<effect>` is attached to
+	// each __media frame in render.php / edit.tsx.
 }
 
 /* Responsive visibility helpers (shared class names with other Flexa blocks). */

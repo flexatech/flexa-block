@@ -23,6 +23,8 @@ import {
 	BackgroundPanel,
 	BorderPanel,
 	ShadowPanel,
+	ItemBorderPanel,
+	ItemShadowPanel,
 	PositionPanel,
 	VisibilityPanel,
 	AnimationPanel,
@@ -30,12 +32,14 @@ import {
 	PaginationNav,
 	ImagePlaceholder,
 	useStableBlockId,
+	useMigrateItemStyle,
 	useDevice,
 	ExamplePreviewSkeleton,
 } from '@components';
 import {
 	cn,
 	visibilityClasses,
+	hoverEffectClasses,
 	effective,
 	withUnit,
 	spacingShorthand,
@@ -68,7 +72,17 @@ const trimWords = ( text: string, words: number ): string => {
 	return parts.length > words ? parts.slice( 0, words ).join( ' ' ) + '…' : text;
 };
 
-/** Styled-wrapper preview (width, padding, background). Border + shadow live on each card. */
+/** Estimate reading time (whole minutes, min 1) from the post's content/excerpt. */
+const estimateMinutes = ( html: string, wpm: number ): number => {
+	const words = stripHtml( html ).split( /\s+/ ).filter( Boolean ).length;
+	return Math.max( 1, Math.ceil( words / ( wpm > 0 ? wpm : 200 ) ) );
+};
+
+/**
+ * Styled-wrapper preview (width, padding, background). Once migrated, the
+ * wrapper also carries the Style-tab border/shadow; before migration those live
+ * on each card (see buildCardStyle) so legacy content is unchanged.
+ */
 const buildWrapperStyle = ( attributes: PostGridAttributes, device: DeviceKey, isBoxed: boolean ): CssProps => {
 	const { widthBoxed, widthFullWidth, spacing, background } = attributes;
 	const s: CssProps = {};
@@ -87,6 +101,14 @@ const buildWrapperStyle = ( attributes: PostGridAttributes, device: DeviceKey, i
 	if ( padding ) s.padding = padding;
 
 	applyBackgroundPreview( s, background );
+
+	// Wrapper border/shadow apply only after migration; legacy content keeps
+	// them on the card. Mirrors Post_Grid_CSS. TODO(remove in vNEXT): the gate.
+	if ( attributes.itemStyleMigrated ) {
+		applyBorderPreview( s, effective( attributes.border, device ) );
+		const shadow = boxShadowPreview( attributes.boxShadow );
+		if ( shadow ) s.boxShadow = shadow;
+	}
 	return s;
 };
 
@@ -108,8 +130,12 @@ const buildCardStyle = ( attributes: PostGridAttributes, device: DeviceKey ): Cs
 	const s: CssProps = { display: 'flex', flexDirection: 'column' };
 	if ( attributes.cardBackground?.light ) s.background = attributes.cardBackground.light;
 	// Border + box-shadow apply to each card (matching the front-end generator).
-	applyBorderPreview( s, effective( attributes.border, device ) );
-	const shadow = boxShadowPreview( attributes.boxShadow );
+	// Post-migration this comes from the dedicated itemBorder/itemBoxShadow;
+	// legacy content falls back to the old wrapper border/boxShadow.
+	// TODO(remove in vNEXT): drop the legacy fallback, always use itemBorder/itemBoxShadow.
+	const migrated = !! attributes.itemStyleMigrated;
+	applyBorderPreview( s, effective( migrated ? attributes.itemBorder : attributes.border, device ) );
+	const shadow = boxShadowPreview( ( migrated ? attributes.itemBoxShadow : attributes.boxShadow ) || {} );
 	if ( shadow ) s.boxShadow = shadow;
 	const ca = attributes.contentAlign || {};
 	const a = ( device === 'mobile'
@@ -131,7 +157,7 @@ const buildCardStyle = ( attributes: PostGridAttributes, device: DeviceKey ): Cs
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< PostGridAttributes > ): JSX.Element {
 	const {
 		postType, postsPerPage, offset, orderBy, order, taxonomy, terms,
-		showImage, imageRatio, showTitle, titleTag, showMeta, showAuthor, showAvatar, avatarSize, showDate, showComments, showTaxonomy,
+		showImage, imageRatio, hoverEffect, showTitle, titleTag, showMeta, showAuthor, showAvatar, avatarSize, showDate, showComments, showTaxonomy, showReadingTime, wordsPerMinute,
 		showExcerpt, excerptLength, showReadMore, readMoreText, paginationType,
 		showResultCount, resultCountText,
 		containerType, className, responsiveVisibility, htmlTag,
@@ -145,6 +171,9 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const [ morePages, setMorePages ] = useState( 1 );
 
 	useStableBlockId( clientId, blockId, setAttributes );
+	// One-time move of legacy wrapper border/shadow onto the per-item attributes.
+	// TODO(remove in vNEXT): item-style migration.
+	useMigrateItemStyle( attributes, setAttributes );
 
 	// Live query preview: fetch the records for the chosen type, plus the real
 	// total-page count so both the numbered pager and the load-more button preview
@@ -280,7 +309,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const list = Array.isArray( posts ) ? posts : [];
 
 	// One real post card.
-	const renderCard = ( post: ( typeof list )[ number ] ): JSX.Element => {
+	const renderCard = ( post: ( typeof list )[ number ], cardIndex: number ): JSX.Element => {
 		const title = stripHtml( post?.title?.rendered || __( '(no title)', 'flexa-block' ) );
 		const excerpt = trimWords( stripHtml( post?.excerpt?.rendered || '' ), Number( excerptLength ) || 20 );
 		const dateStr = post?.date ? new Date( post.date ).toLocaleDateString() : '';
@@ -317,14 +346,29 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		if ( showDate !== false && dateStr ) {
 			metaParts.push( <span key="date" className="flexa-post-grid__date">{ dateStr }</span> );
 		}
+		if ( showReadingTime ) {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const html = ( post as any )?.content?.rendered || ( post as any )?.excerpt?.rendered || '';
+			const mins = estimateMinutes( String( html ), typeof wordsPerMinute === 'number' ? wordsPerMinute : 200 );
+			metaParts.push(
+				<span key="rt" className="flexa-post-grid__reading-time">
+					{ mins } { __( 'min read', 'flexa-block' ) }
+				</span>
+			);
+		}
 		if ( showTaxonomy && terms.length > 0 ) {
 			metaParts.push( <span key="tax" className="flexa-post-grid__taxonomy">{ terms.join( ', ' ) }</span> );
 		}
 
+		const itemClass = cn(
+			'flexa-post-grid__item',
+			attributes.featureFirst && cardIndex === 0 && 'flexa-post-grid__item--featured'
+		);
+
 		return (
-			<article key={ post.id } className="flexa-post-grid__item" style={ cardStyle }>
+			<article key={ post.id } className={ itemClass } style={ cardStyle }>
 				{ showImage !== false && (
-					<div className="flexa-post-grid__image-wrap">
+					<div className={ cn( 'flexa-post-grid__image-wrap', ...hoverEffectClasses( hoverEffect ) ) }>
 						{ imgUrl
 							? <img className="flexa-post-grid__image" src={ imgUrl } alt="" style={ imageStyle } />
 							: <ImagePlaceholder style={ imageStyle } /> }
@@ -366,7 +410,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const renderPlaceholderCard = ( key: number ): JSX.Element => (
 		<article key={ `ph-${ key }` } className="flexa-post-grid__item flexa-post-grid__item--skeleton" style={ cardStyle } aria-hidden="true">
 			{ showImage !== false && (
-				<div className="flexa-post-grid__image-wrap">
+				<div className={ cn( 'flexa-post-grid__image-wrap', ...hoverEffectClasses( hoverEffect ) ) }>
 					<div className="flexa-post-grid__image flexa-post-grid__image--placeholder" style={ imageStyle } />
 				</div>
 			) }
@@ -403,8 +447,14 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const cols = Math.max( 1, parseInt( String( effective( attributes.columns, device ).value || '1' ), 10 ) || 1 );
 	const placeholderCount = Math.min( 4, Math.max( 3, cols ) );
 
+	const gridClass = cn(
+		'flexa-post-grid__grid',
+		( attributes.cardStyle || 'stacked' ) === 'overlay' && 'flexa-post-grid__grid--overlay',
+		attributes.featureFirst && 'flexa-post-grid__grid--feature-first'
+	);
+
 	const grid = (
-		<div className="flexa-post-grid__grid" style={ gridStyle }>
+		<div className={ gridClass } style={ gridStyle }>
 			{ list.length
 				? list.map( renderCard )
 				: Array.from( { length: placeholderCount }, ( _v, i ) => renderPlaceholderCard( i ) ) }
@@ -447,6 +497,8 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 								<BackgroundPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<BorderPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<ShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemBorderPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
 						}
 						advanced={

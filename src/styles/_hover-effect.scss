@@ -1,0 +1,81 @@
+// Shared image hover effects — the same motion set the Image and Images Gallery
+// blocks ship, factored into generic classes so any media-showing block (Post
+// Grid, Product Image, Team Member, Testimonial, …) can opt in without
+// re-declaring the CSS. Pulled in via `@use '../../styles/hover-effect' as *;
+// @include flexa-hover-effect();`.
+//
+// Contract: put `flexa-hover flexa-hover--<effect>` on the element that DIRECTLY
+// wraps the picture (the "media frame"); the effect animates the descendant
+// `<img>`. The frame gets `position: relative` + `overflow: hidden` so scaled /
+// rotated images and the shine sweep stay clipped to the box. Structure/motion
+// only — no colours or instance values, matching the block-scoped originals in
+// image/images-gallery style.scss. Only emitted when the user picks an effect
+// (the class is absent for `none`), so the default is genuinely no-op.
+
+@mixin flexa-hover-effect() {
+	.flexa-hover {
+		position: relative;
+		overflow: hidden;
+
+		img {
+			transition: transform 0.4s ease, filter 0.4s ease;
+		}
+	}
+
+	// Zoom in — grow the image on hover.
+	.flexa-hover--zoom-in:hover img {
+		transform: scale(1.08);
+	}
+
+	// Zoom out — start scaled, settle back on hover.
+	.flexa-hover--zoom-out img {
+		transform: scale(1.08);
+	}
+
+	.flexa-hover--zoom-out:hover img {
+		transform: scale(1);
+	}
+
+	// Grayscale — desaturated at rest, colour on hover.
+	.flexa-hover--grayscale img {
+		filter: grayscale(100%);
+	}
+
+	.flexa-hover--grayscale:hover img {
+		filter: grayscale(0%);
+	}
+
+	// Blur — soften on hover.
+	.flexa-hover--blur:hover img {
+		filter: blur(3px);
+	}
+
+	// Rotate — slight scale + tilt on hover.
+	.flexa-hover--rotate:hover img {
+		transform: scale(1.1) rotate(3deg);
+	}
+
+	// Slide — scale + horizontal nudge on hover.
+	.flexa-hover--slide:hover img {
+		transform: scale(1.1) translateX(-3%);
+	}
+
+	// Shine — a diagonal highlight sweeps across on hover.
+	.flexa-hover--shine::after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: -75%;
+		width: 50%;
+		height: 100%;
+		background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.35) 50%, rgba(255, 255, 255, 0) 100%);
+		transform: skewX(-20deg);
+		z-index: 3;
+		pointer-events: none;
+	}
+
+	.flexa-hover--shine:hover::after {
+		left: 125%;
+		transition: left 0.7s ease;
+	}
+}

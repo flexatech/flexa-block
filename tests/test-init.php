@@ -277,6 +277,7 @@ require_once $flexa_inc . 'class-dark-mode-settings.php';
 require_once $flexa_inc . 'class-global-styles.php';
 require_once $flexa_inc . 'class-block-manager.php';
 require_once $flexa_inc . 'class-css-generator-service.php';
+require_once $flexa_inc . 'class-item-style-migration.php';
 require_once $flexa_inc . 'class-post-query.php';
 require_once $flexa_inc . 'css-generators/class-container-css.php';
 require_once $flexa_inc . 'css-generators/class-grid-css.php';

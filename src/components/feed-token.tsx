@@ -71,6 +71,7 @@ export const FeedTokenControl = ( { service, label }: FeedTokenControlProps ): J
 				<>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						type="password"
 						label={ label }
 						value={ token }

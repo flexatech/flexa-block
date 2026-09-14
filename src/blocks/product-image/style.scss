@@ -9,6 +9,10 @@
  * beside it) and prev / next arrows scroll through the rest.
  */
 
+@use '../../styles/hover-effect' as *;
+
+@include flexa-hover-effect();
+
 .flexa-product-image {
 	box-sizing: border-box;
 	display: flex;
@@ -181,19 +185,6 @@
 	&--pos-right .flexa-product-image__thumbs-wrap {
 		order: 1;
 	}
-}
-
-/* Zoom on hover (pure CSS → works in the editor; no generator :hover). */
-.flexa-product-image--zoom .flexa-product-image__main {
-	overflow: hidden;
-
-	img {
-		transition: transform 0.3s ease;
-	}
-}
-
-.flexa-product-image--zoom .flexa-product-image__main:hover img {
-	transform: scale(1.15);
 }
 
 /* Responsive visibility helpers (shared class names with other Flexa blocks). */

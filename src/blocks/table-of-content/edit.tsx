@@ -68,12 +68,13 @@ const buildTree = ( items: HeadingEntry[] ): HeadingNode[] => {
 	return roots;
 };
 
-/** Recursively render a preview list (links are inert in the editor). */
-const PreviewList = ( { nodes }: { nodes: HeadingNode[] } ): JSX.Element => (
+/** Recursively render a preview list (links are inert in the editor). When
+ *  `firstActive` is set, the very first link previews the scroll-spy active state. */
+const PreviewList = ( { nodes, firstActive = false }: { nodes: HeadingNode[]; firstActive?: boolean } ): JSX.Element => (
 	<ul className="flexa-toc__list">
 		{ nodes.map( ( node, i ) => (
 			<li key={ i } className="flexa-toc__item">
-				<span className="flexa-toc__link">{ node.text || __( '(untitled heading)', 'flexa-block' ) }</span>
+				<span className={ i === 0 && firstActive ? 'flexa-toc__link is-active' : 'flexa-toc__link' }>{ node.text || __( '(untitled heading)', 'flexa-block' ) }</span>
 				{ node.children.length > 0 && <PreviewList nodes={ node.children } /> }
 			</li>
 		) ) }
@@ -188,6 +189,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const hoverCss = blockId
 		? editorCss( [
 				{ selector: `.flexa-table-of-content-${ blockId } .flexa-toc__link:hover`, prop: 'color', value: attributes.linkHoverColor?.light },
+				{ selector: `.flexa-table-of-content-${ blockId } .flexa-toc__link.is-active`, prop: 'color', value: attributes.activeColor?.light },
 		  ] )
 		: '';
 
@@ -274,7 +276,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 				<div className="flexa-toc__body" style={ bodyStyle }>
 					{ tree.length > 0 ? (
 						<div className="flexa-toc__link-style" style={ linkStyle }>
-							<PreviewList nodes={ tree } />
+							<PreviewList nodes={ tree } firstActive={ !! attributes.scrollSpy } />
 						</div>
 					) : (
 						<p className="flexa-toc__empty">{ emptyText || __( 'Add headings to the page to build the table of contents.', 'flexa-block' ) }</p>

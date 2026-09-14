@@ -92,6 +92,7 @@ const ButtonContentPanel = ( { attributes, setAttributes }: ButtonPanelProps ): 
 		<PanelBody title={ __( 'Button', 'flexa-block' ) } initialOpen={ true }>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Link URL', 'flexa-block' ) }
 				type="url"
 				value={ url || '' }
@@ -217,6 +218,7 @@ const HoverPanel = ( { attributes, setAttributes }: ButtonPanelProps ): JSX.Elem
 			<DualColor label={ __( 'Border', 'flexa-block' ) } value={ hover.border || {} } onChange={ ( v: ColorPair ) => set( { border: v } ) } />
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Transform', 'flexa-block' ) }
 				value={ hover.transform || 'none' }
 				onChange={ ( v: string ) => set( { transform: v as ButtonHoverTransform } ) }

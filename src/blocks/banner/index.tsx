@@ -5,6 +5,7 @@
  */
 
 import { registerBlockType } from '@wordpress/blocks';
+import { InnerBlocks } from '@wordpress/block-editor';
 
 import metadata from './block.json';
 import { BLOCK_ICONS } from '@shared/block-icons';
@@ -17,5 +18,7 @@ const icon = BLOCK_ICONS[ 'banner' ];
 registerBlockType( metadata.name, {
 	icon,
 	edit: Edit,
-	save: () => null,
+	// Dynamic block (render.php), but the optional top InnerBlocks region
+	// (breadcrumb / eyebrow / meta) is serialized so render.php gets it as $content.
+	save: () => <InnerBlocks.Content />,
 } );

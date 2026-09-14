@@ -37,9 +37,20 @@ $zoom        = ! empty( $attributes['zoomOnHover'] );
 $autoplay    = ! empty( $attributes['autoplay'] );
 $autoplay_ms = max( 1, (int) ( $attributes['autoplaySpeed'] ?? 4 ) ) * 1000;
 
+// Hover motion on the featured image. `hoverEffect` supersedes the legacy
+// `zoomOnHover` toggle; an old block with only the toggle still zooms.
+$hover_effect = (string) ( $attributes['hoverEffect'] ?? 'none' );
+if ( 'none' === $hover_effect && $zoom ) {
+	$hover_effect = 'zoom-in';
+}
+
 // Featured image ( get_image() returns an escaped <img> ).
-$main_html = $product->get_image( 'woocommerce_single' );
-$main      = '<div class="flexa-product-image__main">' . $main_html . '</div>';
+$main_html  = $product->get_image( 'woocommerce_single' );
+$main_class = implode(
+	' ',
+	array_merge( [ 'flexa-product-image__main' ], HTML_Helpers::hover_effect_classes( $hover_effect ) )
+);
+$main       = '<div class="' . esc_attr( $main_class ) . '">' . $main_html . '</div>';
 
 // Thumbnail ids: the featured image first, then the product gallery images.
 $ids         = (array) $product->get_gallery_image_ids();
@@ -83,9 +94,6 @@ $classes = [
 	'flexa-product-image',
 	'flexa-product-image--pos-' . sanitize_html_class( $position ),
 ];
-if ( $zoom ) {
-	$classes[] = 'flexa-product-image--zoom';
-}
 if ( '' !== $block_id ) {
 	$classes[] = 'flexa-product-image-' . sanitize_html_class( $block_id );
 }

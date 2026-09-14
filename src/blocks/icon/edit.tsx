@@ -116,6 +116,7 @@ const IconPanel = ( { attributes, setAttributes }: IconPanelProps ): JSX.Element
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Link URL', 'flexa-block' ) }
 				type="url"
 				value={ linkCfg.url || '' }

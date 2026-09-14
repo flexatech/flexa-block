@@ -55,7 +55,7 @@ const blankTab = (): TabItem => ( { label: '', content: '', icon: {} } );
 /** Body controls for one tab: its label, an optional icon and its content. */
 const TabBody = ( { item, showIcon, update }: { item: TabItem; showIcon: boolean; update: ( patch: Partial< TabItem > ) => void } ): JSX.Element => (
 	<>
-		<TextControl __nextHasNoMarginBottom label={ __( 'Label', 'flexa-block' ) } value={ item.label ?? '' } onChange={ ( v: string ) => update( { label: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Label', 'flexa-block' ) } value={ item.label ?? '' } onChange={ ( v: string ) => update( { label: v } ) } />
 		{ showIcon && (
 			<IconPicker
 				label={ __( 'Icon', 'flexa-block' ) }
@@ -138,6 +138,7 @@ export const TabsLayoutPanel = ( { attributes, setAttributes }: TabsPanelProps )
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

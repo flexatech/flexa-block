@@ -177,6 +177,40 @@ export const ASPECT_RATIO_OPTIONS: ControlOption[] = [
 ];
 
 /**
+ * Image hover-motion effects. The same set the Image / Images Gallery blocks
+ * expose, shared here so every media-showing block (Post Grid, Product Image,
+ * Team Member, …) offers the identical choices. Rendered with a SelectControl
+ * via `<HoverEffectControl>`; the CSS lives in `src/styles/_hover-effect.scss`.
+ */
+export const HOVER_EFFECT_OPTIONS: ControlOption[] = [
+	{ value: 'none', label: __( 'None', 'flexa-block' ) },
+	{ value: 'zoom-in', label: __( 'Zoom in', 'flexa-block' ) },
+	{ value: 'zoom-out', label: __( 'Zoom out', 'flexa-block' ) },
+	{ value: 'grayscale', label: __( 'Grayscale', 'flexa-block' ) },
+	{ value: 'blur', label: __( 'Blur', 'flexa-block' ) },
+	{ value: 'rotate', label: __( 'Rotate', 'flexa-block' ) },
+	{ value: 'shine', label: __( 'Shine', 'flexa-block' ) },
+	{ value: 'slide', label: __( 'Slide', 'flexa-block' ) },
+];
+
+/**
+ * Hover Effect control — a single SelectControl bound to a block's `hoverEffect`
+ * string attribute. Pair with `hoverEffectClasses()` (edit.tsx) and
+ * `HTML_Helpers::hover_effect_classes()` (render.php) to attach the matching
+ * `flexa-hover flexa-hover--<effect>` classes to the media frame.
+ */
+export const HoverEffectControl = ( { value, onChange }: { value?: string; onChange: ( v: string ) => void } ): JSX.Element => (
+	<SelectControl
+		__nextHasNoMarginBottom
+		__next40pxDefaultSize
+		label={ __( 'Hover Effect', 'flexa-block' ) }
+		value={ value || 'none' }
+		options={ HOVER_EFFECT_OPTIONS }
+		onChange={ onChange }
+	/>
+);
+
+/**
  * Typography field group (font size / weight / letter spacing / transform /
  * line height) on one device's TypographyDevice object. Shared by any block
  * that exposes typography (button, heading, …) so the controls stay identical.
@@ -193,6 +227,7 @@ export const TypographyControls = ( { value, onChange }: { value: Partial< Typog
 		/>
 		<SelectControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Font Weight', 'flexa-block' ) }
 			value={ value.fontWeight || '' }
 			options={ FONT_WEIGHT_OPTIONS }
@@ -209,6 +244,7 @@ export const TypographyControls = ( { value, onChange }: { value: Partial< Typog
 		/>
 		<SelectControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Text Transform', 'flexa-block' ) }
 			value={ value.textTransform || '' }
 			options={ TEXT_TRANSFORM_OPTIONS }
@@ -216,6 +252,7 @@ export const TypographyControls = ( { value, onChange }: { value: Partial< Typog
 		/>
 		<TextControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Line Height', 'flexa-block' ) }
 			type="number"
 			step={ 0.1 }
@@ -275,6 +312,7 @@ export const TextColorsPanel = ( { attributes, setAttributes, initialOpen = true
 		/>
 		<SelectControl
 			__nextHasNoMarginBottom
+			__next40pxDefaultSize
 			label={ __( 'Blend Mode', 'flexa-block' ) }
 			value={ attributes.blendMode || '' }
 			options={ BLEND_MODE_OPTIONS }
@@ -330,9 +368,9 @@ export const EffectsPanel = ( { attributes, setAttributes, initialOpen = false }
 			/>
 			{ shadow.enabled && (
 				<>
-					<RangeControl __nextHasNoMarginBottom label={ __( 'X offset', 'flexa-block' ) } value={ parseInt( String( shadow.horizontal ?? '0' ), 10 ) || 0 } min={ -50 } max={ 50 } onChange={ ( v: number ) => setShadow( { horizontal: String( v ) } ) } />
-					<RangeControl __nextHasNoMarginBottom label={ __( 'Y offset', 'flexa-block' ) } value={ parseInt( String( shadow.vertical ?? '0' ), 10 ) || 0 } min={ -50 } max={ 50 } onChange={ ( v: number ) => setShadow( { vertical: String( v ) } ) } />
-					<RangeControl __nextHasNoMarginBottom label={ __( 'Blur', 'flexa-block' ) } value={ parseInt( String( shadow.blur ?? '0' ), 10 ) || 0 } min={ 0 } max={ 100 } onChange={ ( v: number ) => setShadow( { blur: String( v ) } ) } />
+					<RangeControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'X offset', 'flexa-block' ) } value={ parseInt( String( shadow.horizontal ?? '0' ), 10 ) || 0 } min={ -50 } max={ 50 } onChange={ ( v: number ) => setShadow( { horizontal: String( v ) } ) } />
+					<RangeControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Y offset', 'flexa-block' ) } value={ parseInt( String( shadow.vertical ?? '0' ), 10 ) || 0 } min={ -50 } max={ 50 } onChange={ ( v: number ) => setShadow( { vertical: String( v ) } ) } />
+					<RangeControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Blur', 'flexa-block' ) } value={ parseInt( String( shadow.blur ?? '0' ), 10 ) || 0 } min={ 0 } max={ 100 } onChange={ ( v: number ) => setShadow( { blur: String( v ) } ) } />
 					<DualColor label={ __( 'Shadow Color', 'flexa-block' ) } value={ shadow.color || {} } onChange={ ( v ) => setShadow( { color: v } ) } />
 				</>
 			) }
@@ -411,6 +449,7 @@ export const GridItemPanel = ( { attributes, setAttributes, initialOpen = true }
 				<FieldHead label={ __( 'Column Span', 'flexa-block' ) } />
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					value={ value.column ? parseInt( value.column, 10 ) : undefined }
 					min={ 1 }
 					max={ 12 }
@@ -422,6 +461,7 @@ export const GridItemPanel = ( { attributes, setAttributes, initialOpen = true }
 				<FieldHead label={ __( 'Row Span', 'flexa-block' ) } />
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					value={ value.row ? parseInt( value.row, 10 ) : undefined }
 					min={ 1 }
 					max={ 12 }
@@ -513,6 +553,21 @@ export const BackgroundPanel = ( { attributes, setAttributes, initialOpen = fals
 			) }
 
 			{ bg.type === 'image' && bg.image?.url && (
+				<SelectControl
+					__nextHasNoMarginBottom
+					__next40pxDefaultSize
+					label={ __( 'Scroll behavior', 'flexa-block' ) }
+					value={ bg.image?.attachment || 'scroll' }
+					options={ [
+						{ value: 'scroll', label: __( 'Scroll with page', 'flexa-block' ) },
+						{ value: 'fixed', label: __( 'Fixed — image stays, content scrolls', 'flexa-block' ) },
+					] }
+					help={ __( 'Fixed keeps the background image still while the content scrolls over it. Some mobile browsers ignore this and fall back to scrolling.', 'flexa-block' ) }
+					onChange={ ( v: string ) => set( { image: { ...bg.image, attachment: v as NonNullable< BackgroundAttr[ 'image' ] >[ 'attachment' ] } } ) }
+				/>
+			) }
+
+			{ bg.type === 'image' && bg.image?.url && (
 				<ToggleControl
 					__nextHasNoMarginBottom
 					label={ __( 'Lazy load image', 'flexa-block' ) }
@@ -539,7 +594,7 @@ export const BorderPanel = ( { attributes, setAttributes, initialOpen = false }:
 
 	return (
 		<PanelBody title={ __( 'Border', 'flexa-block' ) } initialOpen={ initialOpen }>
-			<SelectControl __nextHasNoMarginBottom label={ __( 'Style', 'flexa-block' ) } value={ value.style || '' } options={ BORDER_STYLE_OPTIONS } onChange={ ( v: string ) => set( { style: v } ) } />
+			<SelectControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Style', 'flexa-block' ) } value={ value.style || '' } options={ BORDER_STYLE_OPTIONS } onChange={ ( v: string ) => set( { style: v } ) } />
 			<Dimensions label={ __( 'Width', 'flexa-block' ) } responsive value={ value.width || {} } units={ SPACING_UNITS } onChange={ ( v ) => set( { width: v } ) } />
 			<DualColor label={ __( 'Color', 'flexa-block' ) } value={ value.color || {} } onChange={ ( v ) => set( { color: v } ) } />
 			<Dimensions label={ __( 'Radius', 'flexa-block' ) } responsive value={ mapRadiusToBox( value.radius || {} ) } units={ SPACING_UNITS } onChange={ ( v ) => set( { radius: mapBoxToRadius( v ) } ) } />
@@ -568,7 +623,52 @@ export const ShadowPanel = ( { attributes, setAttributes, initialOpen = false }:
 			{ shadow.enabled && (
 				<>
 					{ SHADOW_FIELDS.map( ( f ) => (
-						<RangeControl key={ f.k } __nextHasNoMarginBottom label={ f.l } value={ parseInt( String( shadow[ f.k ] ?? '' ), 10 ) || 0 } min={ -100 } max={ 100 } onChange={ ( v: number ) => set( { [ f.k ]: String( v ) } ) } />
+						<RangeControl key={ f.k } __nextHasNoMarginBottom __next40pxDefaultSize label={ f.l } value={ parseInt( String( shadow[ f.k ] ?? '' ), 10 ) || 0 } min={ -100 } max={ 100 } onChange={ ( v: number ) => set( { [ f.k ]: String( v ) } ) } />
+					) ) }
+					<DualColor label={ __( 'Color', 'flexa-block' ) } value={ shadow.color || {} } onChange={ ( v ) => set( { color: v } ) } />
+					<ToggleControl __nextHasNoMarginBottom label={ __( 'Inset', 'flexa-block' ) } checked={ !! shadow.inset } onChange={ ( v: boolean ) => set( { inset: v } ) } />
+				</>
+			) }
+		</PanelBody>
+	);
+};
+
+/**
+ * Item border panel — same controls as {@link BorderPanel}, but bound to the
+ * per-item `itemBorder` attribute so it styles each card/item rather than the
+ * block wrapper. Used by the collection blocks (post-grid, rss, taxonomy, feeds,
+ * timeline, faq) that render a repeated item.
+ */
+export const ItemBorderPanel = ( { attributes, setAttributes, initialOpen = false }: PanelProps ): JSX.Element => {
+	const [ device ] = useDevice();
+	const value = rawDevice( attributes.itemBorder, device );
+	const set = ( patch: Partial< BorderDevice > ) => setAttributes( { itemBorder: patchDevice( attributes.itemBorder, device, patch ) } );
+
+	return (
+		<PanelBody title={ __( 'Item border', 'flexa-block' ) } initialOpen={ initialOpen }>
+			<SelectControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Style', 'flexa-block' ) } value={ value.style || '' } options={ BORDER_STYLE_OPTIONS } onChange={ ( v: string ) => set( { style: v } ) } />
+			<Dimensions label={ __( 'Width', 'flexa-block' ) } responsive value={ value.width || {} } units={ SPACING_UNITS } onChange={ ( v ) => set( { width: v } ) } />
+			<DualColor label={ __( 'Color', 'flexa-block' ) } value={ value.color || {} } onChange={ ( v ) => set( { color: v } ) } />
+			<Dimensions label={ __( 'Radius', 'flexa-block' ) } responsive value={ mapRadiusToBox( value.radius || {} ) } units={ SPACING_UNITS } onChange={ ( v ) => set( { radius: mapBoxToRadius( v ) } ) } />
+		</PanelBody>
+	);
+};
+
+/**
+ * Item box-shadow panel — same controls as {@link ShadowPanel}, bound to the
+ * per-item `itemBoxShadow` attribute.
+ */
+export const ItemShadowPanel = ( { attributes, setAttributes, initialOpen = false }: PanelProps ): JSX.Element => {
+	const shadow: BoxShadowAttr = attributes.itemBoxShadow || {};
+	const set = ( patch: Partial< BoxShadowAttr > ) => setAttributes( { itemBoxShadow: { ...shadow, ...patch } } );
+
+	return (
+		<PanelBody title={ __( 'Item box shadow', 'flexa-block' ) } initialOpen={ initialOpen }>
+			<ToggleControl __nextHasNoMarginBottom label={ __( 'Enable', 'flexa-block' ) } checked={ !! shadow.enabled } onChange={ ( v: boolean ) => set( { enabled: v } ) } />
+			{ shadow.enabled && (
+				<>
+					{ SHADOW_FIELDS.map( ( f ) => (
+						<RangeControl key={ f.k } __nextHasNoMarginBottom __next40pxDefaultSize label={ f.l } value={ parseInt( String( shadow[ f.k ] ?? '' ), 10 ) || 0 } min={ -100 } max={ 100 } onChange={ ( v: number ) => set( { [ f.k ]: String( v ) } ) } />
 					) ) }
 					<DualColor label={ __( 'Color', 'flexa-block' ) } value={ shadow.color || {} } onChange={ ( v ) => set( { color: v } ) } />
 					<ToggleControl __nextHasNoMarginBottom label={ __( 'Inset', 'flexa-block' ) } checked={ !! shadow.inset } onChange={ ( v: boolean ) => set( { inset: v } ) } />
@@ -591,12 +691,12 @@ export const PositionPanel = ( { attributes, setAttributes, initialOpen = true }
 
 	return (
 		<PanelBody title={ __( 'Position & Overflow', 'flexa-block' ) } initialOpen={ initialOpen }>
-			<SelectControl __nextHasNoMarginBottom label={ __( 'Position', 'flexa-block' ) } value={ value.position || '' } options={ POSITION_OPTIONS } onChange={ ( v: string ) => set( { position: v } ) } />
+			<SelectControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Position', 'flexa-block' ) } value={ value.position || '' } options={ POSITION_OPTIONS } onChange={ ( v: string ) => set( { position: v } ) } />
 			{ positioned && (
 				<Dimensions label={ __( 'Offset (T/R/B/L)', 'flexa-block' ) } responsive value={ value.inset || {} } units={ SPACING_UNITS } onChange={ ( v ) => set( { inset: v } ) } />
 			) }
-			<SelectControl __nextHasNoMarginBottom label={ __( 'Overflow', 'flexa-block' ) } value={ value.overflow || '' } options={ OVERFLOW_OPTIONS } onChange={ ( v: string ) => set( { overflow: v } ) } />
-			<TextControl __nextHasNoMarginBottom type="number" label={ __( 'Z-Index', 'flexa-block' ) } value={ value.zIndex ?? '' } onChange={ ( v: string ) => set( { zIndex: v } ) } />
+			<SelectControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Overflow', 'flexa-block' ) } value={ value.overflow || '' } options={ OVERFLOW_OPTIONS } onChange={ ( v: string ) => set( { overflow: v } ) } />
+			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize type="number" label={ __( 'Z-Index', 'flexa-block' ) } value={ value.zIndex ?? '' } onChange={ ( v: string ) => set( { zIndex: v } ) } />
 		</PanelBody>
 	);
 };
@@ -664,6 +764,7 @@ export const AnimationPanel = ( { attributes, setAttributes, initialOpen = false
 		<PanelBody title={ __( 'Animation', 'flexa-block' ) } initialOpen={ initialOpen }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Effect', 'flexa-block' ) }
 				value={ anim.type || 'none' }
 				options={ ANIMATION_OPTIONS }
@@ -673,6 +774,7 @@ export const AnimationPanel = ( { attributes, setAttributes, initialOpen = false
 				<>
 					<SelectControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Speed', 'flexa-block' ) }
 						value={ anim.duration || 'normal' }
 						options={ ANIMATION_DURATION_OPTIONS }
@@ -680,6 +782,7 @@ export const AnimationPanel = ( { attributes, setAttributes, initialOpen = false
 					/>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Delay (ms)', 'flexa-block' ) }
 						value={ delay }
 						min={ 0 }

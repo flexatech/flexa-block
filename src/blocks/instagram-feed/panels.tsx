@@ -59,6 +59,7 @@ export const IgSourcePanel = ( { attributes, setAttributes }: IgPanelProps ): JS
 			<FeedTokenControl service="instagram" label={ __( 'Access token', 'flexa-block' ) } />
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Number of images', 'flexa-block' ) }
 				value={ typeof numberOfImages === 'number' ? numberOfImages : 8 }
 				min={ 1 }
@@ -73,6 +74,7 @@ export const IgSourcePanel = ( { attributes, setAttributes }: IgPanelProps ): JS
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Cache time (minutes)', 'flexa-block' ) }
 				help={ __( 'How long the fetched media is cached before refreshing.', 'flexa-block' ) }
 				value={ typeof cacheTime === 'number' ? cacheTime : 30 }
@@ -83,6 +85,7 @@ export const IgSourcePanel = ( { attributes, setAttributes }: IgPanelProps ): JS
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'section' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -188,6 +191,7 @@ export const IgContentPanel = ( { attributes, setAttributes }: IgPanelProps ): J
 			{ showCaption !== false && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Caption length (words)', 'flexa-block' ) }
 					value={ typeof captionLimit === 'number' ? captionLimit : 15 }
 					min={ 0 }

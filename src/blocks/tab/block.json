@@ -1,0 +1,39 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/tab",
+	"version": "1.0.0",
+	"title": "Tab",
+	"category": "flexa",
+	"description": "A single tab inside a Tabs block — a label, an optional line of text and any blocks you drop below it.",
+	"keywords": [ "flexa", "tab", "tabs" ],
+	"textdomain": "flexa-block",
+	"parent": [ "flexa/tabs" ],
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"reusable": false
+	},
+	"attributes": {
+		"blockId": {
+			"type": "string"
+		},
+		"label": {
+			"type": "string",
+			"default": ""
+		},
+		"icon": {
+			"type": "object",
+			"default": { "source": "none", "name": "", "markup": "", "url": "", "id": null }
+		},
+		"text": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

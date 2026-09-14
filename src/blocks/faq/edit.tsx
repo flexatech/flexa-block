@@ -22,9 +22,12 @@ import {
 	BackgroundPanel,
 	BorderPanel,
 	ShadowPanel,
+	ItemBorderPanel,
+	ItemShadowPanel,
 	PositionPanel,
 	VisibilityPanel,
 	AnimationPanel,
+	useMigrateItemStyle,
 	useDevice,
 	ExamplePreviewSkeleton,
 } from '@components';
@@ -42,7 +45,11 @@ import type { ColorPair, DeviceKey, EditProps, FaqAttributes, FaqItem } from '..
 type CssProps = Record< string, string >;
 
 
-/** Wrapper preview: max width, spacing, background (border + shadow are per item). */
+/**
+ * Wrapper preview: max width, spacing, background. Once migrated, the wrapper
+ * also carries the Style-tab border/shadow; before migration those live on each
+ * item (see buildItemStyle) so legacy content is unchanged.
+ */
 const buildWrapperStyle = ( attributes: FaqAttributes, device: DeviceKey ): CssProps => {
 	const { maxWidth, spacing, background } = attributes;
 	const sp = effective( spacing, device );
@@ -58,6 +65,14 @@ const buildWrapperStyle = ( attributes: FaqAttributes, device: DeviceKey ): CssP
 
 	applyBackgroundPreview( s, background );
 
+	// Wrapper border/shadow apply only after migration; legacy content keeps
+	// them on the item. Mirrors Faq_CSS. TODO(remove in vNEXT): the gate.
+	if ( attributes.itemStyleMigrated ) {
+		applyBorderPreview( s, effective( attributes.border, device ) );
+		const shadow = boxShadowPreview( attributes.boxShadow );
+		if ( shadow ) s.boxShadow = shadow;
+	}
+
 	return s;
 };
 
@@ -71,23 +86,31 @@ const buildListStyle = ( attributes: FaqAttributes, device: DeviceKey ): CssProp
 
 /** Item preview: background + the shared Border (4-side outline, radius) + shadow. */
 const buildItemStyle = ( attributes: FaqAttributes, device: DeviceKey ): CssProps => {
-	const { itemBackgroundType, itemBackground, itemBackgroundGradient, boxShadow } = attributes;
+	const { itemBackgroundType, itemBackground, itemBackgroundGradient } = attributes;
 	const s: CssProps = {};
 	applyBgFill( s, itemBackgroundType, itemBackground, itemBackgroundGradient );
 
-	const b = effective( attributes.border, device );
+	// Border + box-shadow apply to each item (matching the front-end generator).
+	// Post-migration this comes from the dedicated itemBorder/itemBoxShadow;
+	// legacy content falls back to the old wrapper border/boxShadow.
+	// TODO(remove in vNEXT): drop the legacy fallback, always use itemBorder/itemBoxShadow.
+	const migrated = !! attributes.itemStyleMigrated;
+	const b = effective( migrated ? attributes.itemBorder : attributes.border, device );
 	applyBorderPreview( s, b );
 	// FAQ item clips its content to the rounded corners.
 	if ( radiusShorthand( b.radius ) ) s.overflow = 'hidden';
 
-	const shadow = boxShadowPreview( boxShadow );
+	const shadow = boxShadowPreview( ( migrated ? attributes.itemBoxShadow : attributes.boxShadow ) || {} );
 	if ( shadow ) s.boxShadow = shadow;
 	return s;
 };
 
 /** Apply the Q/A divider (a bottom border mirroring the item border) to a box. */
 const applyQaDivider = ( s: CssProps, attributes: FaqAttributes, device: DeviceKey ): void => {
-	const b = effective( attributes.border, device );
+	// The divider mirrors the item border, so it reads the same migration-aware
+	// source. TODO(remove in vNEXT): drop the legacy fallback, always itemBorder.
+	const migrated = !! attributes.itemStyleMigrated;
+	const b = effective( migrated ? attributes.itemBorder : attributes.border, device );
 	if ( ! b.style ) return;
 	s.borderBottomStyle = b.style;
 	const w = b.width || {};
@@ -216,6 +239,10 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		}
 	}, [ blockId, clientId, setAttributes ] );
 
+	// One-time move of legacy wrapper border/shadow onto the per-item attributes.
+	// TODO(remove in vNEXT): item-style migration.
+	useMigrateItemStyle( attributes, setAttributes );
+
 	const list: FaqItem[] = Array.isArray( items ) ? items : [];
 
 	const updateItem = ( index: number, patch: Partial< FaqItem > ): void => {
@@ -284,6 +311,8 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 								<BackgroundPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<BorderPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<ShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemBorderPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
 						}
 						advanced={

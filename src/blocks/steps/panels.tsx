@@ -115,6 +115,7 @@ const StepItemBody = ( { item, update, globalType }: { item: StepItem; update: (
 		<>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Marker', 'flexa-block' ) }
 				value={ item.markerType || '' }
 				options={ ITEM_MARKER_OPTIONS }
@@ -146,10 +147,11 @@ const StepItemBody = ( { item, update, globalType }: { item: StepItem; update: (
 					</MediaUploadCheck>
 				</BaseControl>
 			) }
-			<TextControl __nextHasNoMarginBottom label={ __( 'Title', 'flexa-block' ) } value={ item.title ?? '' } onChange={ ( v: string ) => update( { title: v } ) } />
+			<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Title', 'flexa-block' ) } value={ item.title ?? '' } onChange={ ( v: string ) => update( { title: v } ) } />
 			<TextareaControl __nextHasNoMarginBottom label={ __( 'Description', 'flexa-block' ) } value={ item.description ?? '' } onChange={ ( v: string ) => update( { description: v } ) } />
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Status', 'flexa-block' ) }
 				value={ item.status || '' }
 				options={ STATUS_OPTIONS }

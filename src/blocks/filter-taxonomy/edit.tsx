@@ -17,7 +17,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, TextControl, ToggleControl, RangeControl, Notice } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 
-import { Segmented, VisibilityPanel, useBlockId, useDevice } from '@components';
+import { Segmented, VisibilityPanel, useBlockId, useDevice, ExamplePreviewSkeleton } from '@components';
 import { cn } from '@utils';
 import { FIELD_WIDTH_OPTIONS } from '@shared/filter-widths';
 import { FilterFieldStylePanels, filterFieldCss } from '@shared/filter-field-style';
@@ -149,6 +149,15 @@ export default function Edit( { attributes, setAttributes, clientId, context }: 
 		),
 	} );
 
+	// Inserter hover-preview → faint skeleton mock-up instead of the live control.
+	if ( ( attributes as { isExamplePreview?: boolean } ).isExamplePreview ) {
+		return (
+			<div { ...blockProps }>
+				<ExamplePreviewSkeleton kind="filter-taxonomy" />
+			</div>
+		);
+	}
+
 	/** One term's chip / checkbox label, with the post count when asked for. */
 	const termText = ( term: TermRecord ): JSX.Element => (
 		<span className="flexa-filter-field__option-text">
@@ -178,6 +187,7 @@ export default function Edit( { attributes, setAttributes, clientId, context }: 
 						) }
 						<SelectControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Taxonomy', 'flexa-block' ) }
 							value={ taxonomy || '' }
 							options={ options }
@@ -185,6 +195,7 @@ export default function Edit( { attributes, setAttributes, clientId, context }: 
 						/>
 						<TextControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Label', 'flexa-block' ) }
 							value={ label ?? '' }
 							onChange={ ( v: string ) => setAttributes( { label: v } ) }
@@ -217,6 +228,7 @@ export default function Edit( { attributes, setAttributes, clientId, context }: 
 								{ ! multiple && (
 									<TextControl
 										__nextHasNoMarginBottom
+										__next40pxDefaultSize
 										label={ __( '"Any term" label', 'flexa-block' ) }
 										value={ allTermsLabel ?? '' }
 										onChange={ ( v: string ) => setAttributes( { allTermsLabel: v } ) }
@@ -238,6 +250,7 @@ export default function Edit( { attributes, setAttributes, clientId, context }: 
 						/>
 						<SelectControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Order terms by', 'flexa-block' ) }
 							value={ orderBy || 'name' }
 							options={ ORDER_BY_OPTIONS }
@@ -245,6 +258,7 @@ export default function Edit( { attributes, setAttributes, clientId, context }: 
 						/>
 						<RangeControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Max terms', 'flexa-block' ) }
 							value={ typeof limit === 'number' ? limit : 50 }
 							min={ 1 }

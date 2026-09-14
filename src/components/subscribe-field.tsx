@@ -91,6 +91,7 @@ export const FieldSettingsPanel = ( {
 			<PanelBody title={ __( 'Hidden field', 'flexa-block' ) } initialOpen={ true }>
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Field name', 'flexa-block' ) }
 					value={ fieldName ?? '' }
 					placeholder={ fallbackName }
@@ -98,6 +99,7 @@ export const FieldSettingsPanel = ( {
 				/>
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Value', 'flexa-block' ) }
 					help={ __( 'A fixed value sent with the submission (e.g. a source tag).', 'flexa-block' ) }
 					value={ value ?? '' }
@@ -118,6 +120,7 @@ export const FieldSettingsPanel = ( {
 			{ showLabel !== false && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Label', 'flexa-block' ) }
 					value={ label ?? '' }
 					onChange={ ( v: string ) => setAttributes( { label: v } ) }
@@ -126,6 +129,7 @@ export const FieldSettingsPanel = ( {
 			{ hasPlaceholder( kind ) && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ 'select' === kind ? __( 'Prompt', 'flexa-block' ) : __( 'Placeholder', 'flexa-block' ) }
 					value={ placeholder ?? '' }
 					onChange={ ( v: string ) => setAttributes( { placeholder: v } ) }
@@ -144,6 +148,7 @@ export const FieldSettingsPanel = ( {
 				<>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Accepted files', 'flexa-block' ) }
 						help={ __( 'An accept list, e.g. ".pdf,.jpg,image/*". Leave blank to allow any.', 'flexa-block' ) }
 						value={ accept ?? '' }
@@ -157,6 +162,7 @@ export const FieldSettingsPanel = ( {
 					/>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Max size (MB)', 'flexa-block' ) }
 						value={ maxSize ?? 5 }
 						min={ 1 }
@@ -167,6 +173,7 @@ export const FieldSettingsPanel = ( {
 			) }
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Field name', 'flexa-block' ) }
 				help={ __( 'The key this field is emailed under. Leave blank to derive it from the label.', 'flexa-block' ) }
 				value={ fieldName ?? '' }
@@ -188,6 +195,7 @@ export const FieldSettingsPanel = ( {
 			{ 'textarea' === kind && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Rows', 'flexa-block' ) }
 					value={ rows ?? 4 }
 					min={ 2 }

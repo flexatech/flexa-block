@@ -77,6 +77,7 @@ export const ShareItemsPanel = ( { attributes, setAttributes }: SharePanelProps 
 			renderBody={ ( item, _index, update ) => (
 				<SelectControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Network', 'flexa-block' ) }
 					value={ item.network || 'facebook' }
 					options={ NETWORK_OPTIONS }
@@ -107,6 +108,7 @@ export const ShareSourcePanel = ( { attributes, setAttributes }: SharePanelProps
 				<>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'URL', 'flexa-block' ) }
 						type="url"
 						placeholder="https://"
@@ -115,12 +117,14 @@ export const ShareSourcePanel = ( { attributes, setAttributes }: SharePanelProps
 					/>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Title', 'flexa-block' ) }
 						value={ shareTitle || '' }
 						onChange={ ( v: string ) => setAttributes( { shareTitle: v } ) }
 					/>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Image URL (Pinterest)', 'flexa-block' ) }
 						type="url"
 						placeholder="https://"
@@ -179,6 +183,7 @@ export const ShareLayoutPanel = ( { attributes, setAttributes }: SharePanelProps
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Hover effect', 'flexa-block' ) }
 				value={ hoverEffect || '' }
 				options={ HOVER_EFFECT_OPTIONS }
@@ -186,6 +191,7 @@ export const ShareLayoutPanel = ( { attributes, setAttributes }: SharePanelProps
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

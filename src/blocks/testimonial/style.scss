@@ -8,6 +8,10 @@
  * text row (or column when stacked).
  */
 
+@use '../../styles/hover-effect' as *;
+
+@include flexa-hover-effect();
+
 .flexa-testimonial {
 	box-sizing: border-box;
 	display: flex;
@@ -60,6 +64,19 @@
 		display: flex;
 		flex-direction: column;
 		min-width: 0;
+	}
+
+	// Optional hover frame around the avatar (present only when a hover effect is
+	// picked). Takes over the avatar's flex slot and clips the motion to the circle.
+	&__avatar-wrap {
+		flex: 0 0 auto;
+		display: block;
+		border-radius: 50%;
+		line-height: 0;
+
+		.flexa-testimonial__avatar {
+			flex: none;
+		}
 	}
 
 	&__avatar {

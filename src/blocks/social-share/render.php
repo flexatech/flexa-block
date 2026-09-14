@@ -5,8 +5,9 @@
  * CSS is generated at save time by Social_Share_CSS and printed inline on the
  * front end. This file outputs one share link per network: the destination is
  * built from a share endpoint (Facebook sharer, X intent, LinkedIn share,
- * Pinterest pin) pointed at the current page — or a fixed URL/title/image when
- * the "Custom" source is chosen. Brand artwork comes from the shared
+ * Pinterest pin, WhatsApp, Telegram) pointed at the current page — or a fixed
+ * URL/title/image when the "Custom" source is chosen. Brand artwork comes from
+ * the shared
  * Flexa\Block\Social_Catalog (static, code-owned literals — safe to echo).
  *
  * @package Flexa\Block
@@ -86,6 +87,10 @@ $build_share = static function ( $network, $enc_url, $enc_title, $enc_image ) {
 			return 'https://www.linkedin.com/sharing/share-offsite/?url=' . $enc_url;
 		case 'pinterest':
 			return 'https://www.pinterest.com/pin/create/button/?url=' . $enc_url . '&media=' . $enc_image . '&description=' . $enc_title;
+		case 'whatsapp':
+			return 'https://wa.me/?text=' . $enc_title . '%20' . $enc_url;
+		case 'telegram':
+			return 'https://t.me/share/url?url=' . $enc_url . '&text=' . $enc_title;
 		default:
 			return '';
 	}

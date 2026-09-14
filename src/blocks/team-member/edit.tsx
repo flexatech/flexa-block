@@ -29,6 +29,7 @@ import {
 } from '@components';
 import {
 	cn,
+	hoverEffectClasses,
 	visibilityClasses,
 	effective,
 	rawDevice,
@@ -176,7 +177,7 @@ const renderSocialIcon = ( item: TeamSocialItem ): JSX.Element | null => {
  */
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< TeamMemberAttributes > ): JSX.Element {
 	const {
-		imagePosition, imageShape, stackOn, image, name, nameTag,
+		imagePosition, imageShape, stackOn, image, name, nameTag, hoverEffect,
 		role, bio, showSocial, items, className, responsiveVisibility,
 	} = attributes;
 	const blockId = attributes.blockId;
@@ -214,7 +215,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const hoverCss = buildHoverCss( attributes, blockId );
 
 	const photoEl = image?.url && (
-		<div className="flexa-team-member__photo">
+		<div className={ cn( 'flexa-team-member__photo', ...hoverEffectClasses( hoverEffect ) ) }>
 			<img className="flexa-team-member__image" src={ image.url } alt={ image.alt || '' } style={ imageStyle } />
 		</div>
 	);

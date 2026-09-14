@@ -54,6 +54,7 @@ export const RssSourcePanel = ( { attributes, setAttributes, maxItems }: RssPane
 		<PanelBody title={ __( 'Feed', 'flexa-block' ) } initialOpen={ true }>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				type="url"
 				label={ __( 'Feed URL', 'flexa-block' ) }
 				help={ __( 'A link to an RSS or Atom feed (e.g. https://example.com/feed).', 'flexa-block' ) }
@@ -63,6 +64,7 @@ export const RssSourcePanel = ( { attributes, setAttributes, maxItems }: RssPane
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Items to show', 'flexa-block' ) }
 				help={ maxItems && maxItems > 0
 					? /* translators: %d: number of entries the feed offers. */ sprintf( __( 'This feed offers %d entries.', 'flexa-block' ), maxItems )
@@ -74,6 +76,7 @@ export const RssSourcePanel = ( { attributes, setAttributes, maxItems }: RssPane
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Cache time (minutes)', 'flexa-block' ) }
 				help={ __( 'How long the fetched feed is cached before refreshing.', 'flexa-block' ) }
 				value={ typeof cacheTime === 'number' ? cacheTime : 60 }
@@ -96,6 +99,7 @@ export const RssSourcePanel = ( { attributes, setAttributes, maxItems }: RssPane
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'section' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -227,6 +231,7 @@ export const RssElementsPanel = ( { attributes, setAttributes }: RssPanelProps )
 			{ showImage !== false && (
 				<SelectControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Image ratio', 'flexa-block' ) }
 					value={ imageRatio || '16/9' }
 					options={ [ { value: '', label: __( 'Original', 'flexa-block' ) }, ...ASPECT_RATIO_OPTIONS ] }
@@ -243,6 +248,7 @@ export const RssElementsPanel = ( { attributes, setAttributes }: RssPanelProps )
 			{ showTitle !== false && (
 				<SelectControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Title tag', 'flexa-block' ) }
 					value={ titleTag || 'h3' }
 					options={ TEXT_TAG_OPTIONS }
@@ -273,6 +279,7 @@ export const RssElementsPanel = ( { attributes, setAttributes }: RssPanelProps )
 			{ showExcerpt !== false && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Excerpt length (words)', 'flexa-block' ) }
 					value={ typeof excerptLength === 'number' ? excerptLength : 20 }
 					min={ 0 }
@@ -290,6 +297,7 @@ export const RssElementsPanel = ( { attributes, setAttributes }: RssPanelProps )
 			{ showReadMore !== false && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Read more text', 'flexa-block' ) }
 					value={ readMoreText ?? '' }
 					onChange={ ( v: string ) => setAttributes( { readMoreText: v } ) }

@@ -60,12 +60,27 @@ import {
 } from './panels';
 import type { BorderDevice, DeviceKey, EditProps, PricingPlan, PricingTableAttributes } from '../../types';
 
-/** Split a plan's `features` (string, one per line, or string[]) into lines. */
-const featureLines = ( features: PricingPlan[ 'features' ] ): string[] => {
+/** Normalise a plan's `features` into { text, included } rows. Accepts the new
+ *  object array, or legacy forms (newline string / array of lines → all included). */
+const featureRows = ( features: PricingPlan[ 'features' ] ): { text: string; included: boolean }[] => {
+	const rows: { text: string; included: boolean }[] = [];
 	if ( Array.isArray( features ) ) {
-		return features.map( ( f ) => String( f ) ).filter( ( f ) => f.trim() !== '' );
+		features.forEach( ( f ) => {
+			if ( f && typeof f === 'object' ) {
+				const text = String( ( f as { text?: string } ).text ?? '' ).trim();
+				if ( text ) rows.push( { text, included: ( f as { included?: boolean } ).included !== false } );
+			} else {
+				const text = String( f ?? '' ).trim();
+				if ( text ) rows.push( { text, included: true } );
+			}
+		} );
+		return rows;
 	}
-	return String( features ?? '' ).split( /\r?\n/ ).map( ( f ) => f.trim() ).filter( ( f ) => f !== '' );
+	String( features ?? '' ).split( /\r?\n/ ).forEach( ( line ) => {
+		const text = line.trim();
+		if ( text ) rows.push( { text, included: true } );
+	} );
+	return rows;
 };
 
 /** Wrapper preview: width, spacing, background, border, shadow. */
@@ -365,7 +380,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 				) }
 				<div className="flexa-pricing-table__grid" style={ gridStyle }>
 					{ plans.map( ( plan, i ) => {
-						const lines = featureLines( plan.features );
+						const rows = featureRows( plan.features );
 						const amount = isYearly ? plan.priceYearly : plan.priceMonthly;
 						const period = isYearly ? plan.periodYearly : plan.periodMonthly;
 						return (
@@ -380,10 +395,15 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 									<span className="flexa-pricing-table__amount" style={ priceStyle }>{ amount || '' }</span>
 									{ period ? <span className="flexa-pricing-table__period" style={ periodStyle }>{ period }</span> : null }
 								</div>
-								{ lines.length > 0 && (
+								{ rows.length > 0 && (
 									<ul className="flexa-pricing-table__features">
-										{ lines.map( ( line, li ) => (
-											<li key={ li } className="flexa-pricing-table__feature" style={ featureStyle }>{ line }</li>
+										{ rows.map( ( row, li ) => (
+											<li key={ li } className={ cn( 'flexa-pricing-table__feature', ! row.included && 'is-excluded' ) } style={ featureStyle }>
+												<svg className="flexa-pricing-table__feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={ 2.4 } strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+													{ row.included ? <path d="m20 6-11 11-5-5" /> : <><path d="M18 6 6 18" /><path d="M6 6l12 12" /></> }
+												</svg>
+												<span>{ row.text }</span>
+											</li>
 										) ) }
 									</ul>
 								) }

@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.9
+Stable tag: 1.0.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -143,6 +143,10 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 
 == Changelog ==
 
+= 1.0.10 =
+* Banner: the "Any blocks" content option now works again. The inner-blocks area added in 1.0.7 was missing from the released source, so a banner set to "Any blocks" rendered the built-in placeholder text instead of the blocks inside it. Existing banners are unaffected and need no changes.
+* Tabs: restored the Tab child block introduced in 1.0.7, which the released source was also missing.
+
 = 1.0.9 =
 * Added an optional, admin-only deactivation feedback survey so we can learn why the plugin is being removed. It runs only on the Plugins screen, never blocks deactivation, and can be disabled with a filter. See the "External services" section for exactly what is sent.
 
@@ -210,6 +214,9 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 * Initial release with the Container block.
 
 == Upgrade Notice ==
+
+= 1.0.10 =
+Fixes banners set to "Any blocks" rendering placeholder text instead of their inner blocks, and restores the Tab child block.
 
 = 1.0.9 =
 Adds an optional, admin-only deactivation feedback survey. It never blocks deactivation and can be turned off with a filter.

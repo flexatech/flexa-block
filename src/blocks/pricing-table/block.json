@@ -27,9 +27,9 @@
 		"items": {
 			"type": "array",
 			"default": [
-				{ "name": "Starter", "priceMonthly": "$9", "priceYearly": "$90", "periodMonthly": "/month", "periodYearly": "/year", "features": "1 project\nCommunity support\n1 GB storage", "ctaText": "Choose plan", "ctaUrl": "#", "highlighted": false, "badge": "" },
-				{ "name": "Pro", "priceMonthly": "$29", "priceYearly": "$290", "periodMonthly": "/month", "periodYearly": "/year", "features": "Unlimited projects\nPriority support\n50 GB storage\nAdvanced analytics", "ctaText": "Choose plan", "ctaUrl": "#", "highlighted": true, "badge": "Most popular" },
-				{ "name": "Business", "priceMonthly": "$79", "priceYearly": "$790", "periodMonthly": "/month", "periodYearly": "/year", "features": "Everything in Pro\nDedicated manager\n500 GB storage\nSLA guarantee", "ctaText": "Contact us", "ctaUrl": "#", "highlighted": false, "badge": "" }
+				{ "name": "Starter", "priceMonthly": "$9", "priceYearly": "$90", "periodMonthly": "/month", "periodYearly": "/year", "features": [ { "text": "1 project", "included": true }, { "text": "Community support", "included": true }, { "text": "1 GB storage", "included": true }, { "text": "Advanced analytics", "included": false } ], "ctaText": "Choose plan", "ctaUrl": "#", "highlighted": false, "badge": "" },
+				{ "name": "Pro", "priceMonthly": "$29", "priceYearly": "$290", "periodMonthly": "/month", "periodYearly": "/year", "features": [ { "text": "Unlimited projects", "included": true }, { "text": "Priority support", "included": true }, { "text": "50 GB storage", "included": true }, { "text": "Advanced analytics", "included": true } ], "ctaText": "Choose plan", "ctaUrl": "#", "highlighted": true, "badge": "Most popular" },
+				{ "name": "Business", "priceMonthly": "$79", "priceYearly": "$790", "periodMonthly": "/month", "periodYearly": "/year", "features": [ { "text": "Everything in Pro", "included": true }, { "text": "Dedicated manager", "included": true }, { "text": "500 GB storage", "included": true }, { "text": "SLA guarantee", "included": true } ], "ctaText": "Contact us", "ctaUrl": "#", "highlighted": false, "badge": "" }
 			]
 		},
 		"billingToggle": {

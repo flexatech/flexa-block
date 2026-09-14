@@ -25,6 +25,7 @@ import {
 	CONTENT_ALIGN_OPTIONS,
 	OBJECT_FIT_OPTIONS,
 	ASPECT_RATIO_OPTIONS,
+	HoverEffectControl,
 } from '@components';
 import {
 	rawDevice,
@@ -44,17 +45,6 @@ const IMAGE_SIZE_OPTIONS = [
 	{ value: 'medium', label: __( 'Medium', 'flexa-block' ) },
 	{ value: 'large', label: __( 'Large', 'flexa-block' ) },
 	{ value: 'full', label: __( 'Full', 'flexa-block' ) },
-];
-
-const HOVER_EFFECT_OPTIONS = [
-	{ value: 'none', label: __( 'None', 'flexa-block' ) },
-	{ value: 'zoom-in', label: __( 'Zoom in', 'flexa-block' ) },
-	{ value: 'zoom-out', label: __( 'Zoom out', 'flexa-block' ) },
-	{ value: 'grayscale', label: __( 'Grayscale', 'flexa-block' ) },
-	{ value: 'blur', label: __( 'Blur', 'flexa-block' ) },
-	{ value: 'rotate', label: __( 'Rotate', 'flexa-block' ) },
-	{ value: 'shine', label: __( 'Shine', 'flexa-block' ) },
-	{ value: 'slide', label: __( 'Slide', 'flexa-block' ) },
 ];
 
 const MASK_SHAPE_OPTIONS = [
@@ -146,6 +136,7 @@ export const ImagePanel = ( { attributes, setAttributes }: ImagePanelProps ): JS
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Image Size', 'flexa-block' ) }
 				value={ imageSize || 'large' }
 				options={ IMAGE_SIZE_OPTIONS }
@@ -154,6 +145,7 @@ export const ImagePanel = ( { attributes, setAttributes }: ImagePanelProps ): JS
 
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Alt Text', 'flexa-block' ) }
 				help={ __( 'Leave empty to use the media library alt text.', 'flexa-block' ) }
 				value={ altText || '' }
@@ -162,6 +154,7 @@ export const ImagePanel = ( { attributes, setAttributes }: ImagePanelProps ): JS
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Object Fit', 'flexa-block' ) }
 				value={ objectFit || 'cover' }
 				options={ OBJECT_FIT_OPTIONS }
@@ -196,6 +189,7 @@ export const ImagePanel = ( { attributes, setAttributes }: ImagePanelProps ): JS
 			{ ratio.enabled && (
 				<SelectControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Aspect Ratio', 'flexa-block' ) }
 					value={ ratio.ratio || '16/9' }
 					options={ ASPECT_RATIO_OPTIONS }
@@ -226,13 +220,7 @@ export const ImageEffectsPanel = ( { attributes, setAttributes }: ImagePanelProp
 
 	return (
 		<PanelBody title={ __( 'Effects', 'flexa-block' ) } initialOpen={ false }>
-			<SelectControl
-				__nextHasNoMarginBottom
-				label={ __( 'Hover Effect', 'flexa-block' ) }
-				value={ hoverEffect || 'none' }
-				options={ HOVER_EFFECT_OPTIONS }
-				onChange={ ( v: string ) => setAttributes( { hoverEffect: v } ) }
-			/>
+			<HoverEffectControl value={ hoverEffect } onChange={ ( v: string ) => setAttributes( { hoverEffect: v } ) } />
 
 			<Segmented
 				label={ __( 'Overlay', 'flexa-block' ) }
@@ -254,6 +242,7 @@ export const ImageEffectsPanel = ( { attributes, setAttributes }: ImagePanelProp
 				<>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Opacity', 'flexa-block' ) }
 						value={ Math.round( ( ov.opacity ?? 0.5 ) * 100 ) }
 						min={ 0 }
@@ -262,6 +251,7 @@ export const ImageEffectsPanel = ( { attributes, setAttributes }: ImagePanelProp
 					/>
 					<SelectControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Blend Mode', 'flexa-block' ) }
 						value={ ov.blendMode || '' }
 						options={ BLEND_MODE_OPTIONS }
@@ -272,6 +262,7 @@ export const ImageEffectsPanel = ( { attributes, setAttributes }: ImagePanelProp
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Mask Shape', 'flexa-block' ) }
 				value={ mk.shape || 'none' }
 				options={ MASK_SHAPE_OPTIONS }
@@ -302,9 +293,9 @@ export const ImageEffectsPanel = ( { attributes, setAttributes }: ImagePanelProp
 			) }
 			{ mk.shape === 'custom' && (
 				<>
-					<SelectControl __nextHasNoMarginBottom label={ __( 'Mask Size', 'flexa-block' ) } value={ mk.size || 'contain' } options={ MASK_SIZE_OPTIONS } onChange={ ( v: string ) => setMask( { size: v } ) } />
-					<SelectControl __nextHasNoMarginBottom label={ __( 'Mask Repeat', 'flexa-block' ) } value={ mk.repeat || 'no-repeat' } options={ MASK_REPEAT_OPTIONS } onChange={ ( v: string ) => setMask( { repeat: v } ) } />
-					<TextControl __nextHasNoMarginBottom label={ __( 'Mask Position', 'flexa-block' ) } value={ mk.position || 'center center' } onChange={ ( v: string ) => setMask( { position: v } ) } />
+					<SelectControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Mask Size', 'flexa-block' ) } value={ mk.size || 'contain' } options={ MASK_SIZE_OPTIONS } onChange={ ( v: string ) => setMask( { size: v } ) } />
+					<SelectControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Mask Repeat', 'flexa-block' ) } value={ mk.repeat || 'no-repeat' } options={ MASK_REPEAT_OPTIONS } onChange={ ( v: string ) => setMask( { repeat: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Mask Position', 'flexa-block' ) } value={ mk.position || 'center center' } onChange={ ( v: string ) => setMask( { position: v } ) } />
 				</>
 			) }
 		</PanelBody>
@@ -342,7 +333,7 @@ export const ImageCaptionPanel = ( { attributes, setAttributes }: ImagePanelProp
 						] }
 					/>
 					{ cap.source !== 'attachment' && (
-						<TextControl __nextHasNoMarginBottom label={ __( 'Caption Text', 'flexa-block' ) } value={ cap.text || '' } onChange={ ( v: string ) => setCaption( { text: v } ) } />
+						<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Caption Text', 'flexa-block' ) } value={ cap.text || '' } onChange={ ( v: string ) => setCaption( { text: v } ) } />
 					) }
 					<Segmented
 						label={ __( 'Display', 'flexa-block' ) }
@@ -408,7 +399,7 @@ export const ImageLinkPanel = ( { attributes, setAttributes }: ImagePanelProps )
 
 			{ clickAction === 'link' && (
 				<>
-					<TextControl __nextHasNoMarginBottom label={ __( 'Link URL', 'flexa-block' ) } type="url" value={ lk.url || '' } placeholder="https://" onChange={ ( v: string ) => setLink( { url: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Link URL', 'flexa-block' ) } type="url" value={ lk.url || '' } placeholder="https://" onChange={ ( v: string ) => setLink( { url: v } ) } />
 					<ToggleControl
 						__nextHasNoMarginBottom
 						label={ __( 'Open in new tab', 'flexa-block' ) }

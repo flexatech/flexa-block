@@ -102,8 +102,17 @@ foreach ( $rows as $index => $item ) {
 	$image_cfg  = is_array( $item['image'] ?? null ) ? $item['image'] : [];
 	$image_url  = (string) ( $image_cfg['url'] ?? '' );
 	if ( '' !== $image_url ) {
-		$image_alt  = esc_attr( (string) ( $image_cfg['alt'] ?? '' ) );
-		$image_html = '<img class="flexa-timeline__image flexa-timeline__image--' . esc_attr( $image_position ) . '" src="' . esc_url( $image_url ) . '" alt="' . $image_alt . '" loading="lazy" />';
+		$image_alt = esc_attr( (string) ( $image_cfg['alt'] ?? '' ) );
+		$pos_class = 'flexa-timeline__image--' . $image_position; // $image_position is whitelisted above.
+		// With a hover effect the image sits in a `--wrap` frame (which carries the
+		// top/bottom spacing so the motion stays clipped); otherwise the bare <img>.
+		$image_hover = HTML_Helpers::hover_effect_classes( (string) ( $attributes['hoverEffect'] ?? 'none' ) );
+		if ( $image_hover ) {
+			$wrap_class = implode( ' ', array_merge( [ 'flexa-timeline__image-wrap', $pos_class ], $image_hover ) );
+			$image_html = '<span class="' . esc_attr( $wrap_class ) . '"><img class="flexa-timeline__image" src="' . esc_url( $image_url ) . '" alt="' . $image_alt . '" loading="lazy" /></span>';
+		} else {
+			$image_html = '<img class="' . esc_attr( 'flexa-timeline__image ' . $pos_class ) . '" src="' . esc_url( $image_url ) . '" alt="' . $image_alt . '" loading="lazy" />';
+		}
 	}
 
 	$content_html = 'top' === $image_position

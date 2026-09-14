@@ -29,6 +29,7 @@ import {
 import {
 	cn,
 	visibilityClasses,
+	hoverEffectClasses,
 	effective,
 	rawDevice,
 	withUnit,
@@ -177,7 +178,7 @@ const renderIconPreview = ( icon?: ButtonIconAttr ): JSX.Element | null => {
  */
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< InfoBoxAttributes > ): JSX.Element {
 	const {
-		iconPosition, stackOn, showMedia, mediaType, icon, image,
+		iconPosition, stackOn, showMedia, mediaType, icon, image, hoverEffect,
 		showPrefix, prefix, title, titleTag, showSeparator, description,
 		showButton, buttonText, buttonIcon, className, responsiveVisibility,
 	} = attributes;
@@ -226,7 +227,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		: '';
 
 	const mediaEl = showMedia !== false && (
-		<div className="flexa-info-box__media" style={ mediaStyle }>
+		<div className={ cn( 'flexa-info-box__media', ...( type === 'icon' ? [] : hoverEffectClasses( hoverEffect ) ) ) } style={ mediaStyle }>
 			{ type === 'icon'
 				? icon?.markup && <span className="flexa-info-box__icon" style={ iconStyle } dangerouslySetInnerHTML={ { __html: icon.markup } } />
 				: image?.url && <img className="flexa-info-box__image" src={ image.url } alt={ image.alt || '' } style={ imageStyle } /> }

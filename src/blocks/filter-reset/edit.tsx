@@ -8,7 +8,7 @@ import { __ } from '@wordpress/i18n';
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
 import { Notice, PanelBody, TextControl } from '@wordpress/components';
 
-import { Segmented, VisibilityPanel, useBlockId, useDevice } from '@components';
+import { Segmented, VisibilityPanel, useBlockId, useDevice, ExamplePreviewSkeleton } from '@components';
 import { cn } from '@utils';
 import { FIELD_WIDTH_OPTIONS } from '@shared/filter-widths';
 import { FilterFieldStylePanels, filterFieldCss } from '@shared/filter-field-style';
@@ -34,6 +34,15 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 		),
 	} );
 
+	// Inserter hover-preview → faint skeleton mock-up instead of the live control.
+	if ( ( attributes as { isExamplePreview?: boolean } ).isExamplePreview ) {
+		return (
+			<div { ...blockProps }>
+				<ExamplePreviewSkeleton kind="filter-reset" />
+			</div>
+		);
+	}
+
 	return (
 		<>
 			<InspectorControls>
@@ -44,6 +53,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 						</Notice>
 						<TextControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Text', 'flexa-block' ) }
 							value={ text ?? '' }
 							onChange={ ( v: string ) => setAttributes( { text: v } ) }

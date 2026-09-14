@@ -57,7 +57,11 @@ $photo_html = '';
 $image      = $attributes['image'] ?? [];
 $image_url  = (string) ( $image['url'] ?? '' );
 if ( '' !== $image_url ) {
-	$photo_html = '<div class="flexa-team-member__photo"><img class="flexa-team-member__image" src="' . esc_url( $image_url ) . '" alt="' . esc_attr( (string) ( $image['alt'] ?? '' ) ) . '" loading="lazy" decoding="async" /></div>';
+	$photo_class = implode(
+		' ',
+		array_merge( [ 'flexa-team-member__photo' ], HTML_Helpers::hover_effect_classes( (string) ( $attributes['hoverEffect'] ?? 'none' ) ) )
+	);
+	$photo_html  = '<div class="' . esc_attr( $photo_class ) . '"><img class="flexa-team-member__image" src="' . esc_url( $image_url ) . '" alt="' . esc_attr( (string) ( $image['alt'] ?? '' ) ) . '" loading="lazy" decoding="async" /></div>';
 }
 
 // --- Text pieces -----------------------------------------------------------

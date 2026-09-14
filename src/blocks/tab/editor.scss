@@ -1,0 +1,9 @@
+/**
+ * Tab block — editor-only styles (child of flexa/tabs).
+ */
+
+.flexa-tab {
+	.flexa-tab__text[data-empty='true'] {
+		opacity: 0.6;
+	}
+}

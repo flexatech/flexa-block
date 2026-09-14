@@ -81,6 +81,12 @@
 		&:hover {
 			text-decoration: underline;
 		}
+
+		// Scroll-spy: the in-view section's link. Structural cue (weight) so it is
+		// visible even before the author picks an active colour (from the generator).
+		&.is-active {
+			font-weight: 600;
+		}
 	}
 
 	&__empty {
@@ -143,8 +149,23 @@
 		list-style: disc;
 	}
 
+	// Number marker → hierarchical counters, so depth is legible: the top level
+	// reads 1, 2, 3 and the level nested under item 3 reads 3.1, 3.2 rather than
+	// restarting at a flat 1, 2, 3 (what plain `list-style: decimal` gives).
 	&--marker-number &__list {
-		list-style: decimal;
+		list-style: none;
+		counter-reset: flexa-toc-item;
+	}
+
+	&--marker-number &__item {
+		counter-increment: flexa-toc-item;
+	}
+
+	&--marker-number &__link::before {
+		// `counters()` (plural) joins every ancestor counter with a dot — one level
+		// deep is "3", two is "3.1", and it keeps going for any nesting depth.
+		content: counters(flexa-toc-item, ".");
+		margin-right: 0.5em;
 	}
 
 	// Collapsed state (view.js toggles the attribute).

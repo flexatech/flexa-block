@@ -203,6 +203,7 @@ export const IconPicker = ( { label, value = {}, onChange }: IconPickerProps ): 
 										<>
 											<SearchControl
 												__nextHasNoMarginBottom
+												__next40pxDefaultSize
 												className="flexa-iconpicker__search"
 												value={ query }
 												onChange={ setQuery }

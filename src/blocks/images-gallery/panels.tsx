@@ -27,6 +27,7 @@ import {
 	useDevice,
 	CONTENT_ALIGN_OPTIONS,
 	ASPECT_RATIO_OPTIONS,
+	HoverEffectControl,
 } from '@components';
 import { rawDevice, patchDevice, LENGTH_UNITS, SPACING_UNITS } from '@utils';
 import type { GalleryImage, GalleryCaptionAttr, GalleryOverlayAttr, ImagesGalleryAttributes, LengthValue, PanelProps, TypographyDevice } from '../../types';
@@ -48,17 +49,6 @@ const IMAGE_SIZE_OPTIONS = [
 	{ value: 'medium', label: __( 'Medium', 'flexa-block' ) },
 	{ value: 'large', label: __( 'Large', 'flexa-block' ) },
 	{ value: 'full', label: __( 'Full', 'flexa-block' ) },
-];
-
-const HOVER_EFFECT_OPTIONS = [
-	{ value: 'none', label: __( 'None', 'flexa-block' ) },
-	{ value: 'zoom-in', label: __( 'Zoom in', 'flexa-block' ) },
-	{ value: 'zoom-out', label: __( 'Zoom out', 'flexa-block' ) },
-	{ value: 'grayscale', label: __( 'Grayscale', 'flexa-block' ) },
-	{ value: 'blur', label: __( 'Blur', 'flexa-block' ) },
-	{ value: 'rotate', label: __( 'Rotate', 'flexa-block' ) },
-	{ value: 'shine', label: __( 'Shine', 'flexa-block' ) },
-	{ value: 'slide', label: __( 'Slide', 'flexa-block' ) },
 ];
 
 /** Box-shadow numeric offset fields (mirrors the shared ShadowPanel). */
@@ -276,6 +266,7 @@ export const GalleryPanel = ( { attributes, setAttributes }: GPanelProps ): JSX.
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Image Size', 'flexa-block' ) }
 				value={ imageSize || 'large' }
 				options={ IMAGE_SIZE_OPTIONS }
@@ -293,6 +284,7 @@ export const GalleryPanel = ( { attributes, setAttributes }: GPanelProps ): JSX.
 					{ ratio.enabled && (
 						<SelectControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Aspect Ratio', 'flexa-block' ) }
 							value={ ratio.ratio || '1/1' }
 							options={ ASPECT_RATIO_OPTIONS }
@@ -335,13 +327,7 @@ export const GalleryEffectsPanel = ( { attributes, setAttributes }: GPanelProps 
 
 	return (
 		<PanelBody title={ __( 'Image Effects', 'flexa-block' ) } initialOpen={ false }>
-			<SelectControl
-				__nextHasNoMarginBottom
-				label={ __( 'Hover Effect', 'flexa-block' ) }
-				value={ hoverEffect || 'none' }
-				options={ HOVER_EFFECT_OPTIONS }
-				onChange={ ( v: string ) => setAttributes( { hoverEffect: v } ) }
-			/>
+			<HoverEffectControl value={ hoverEffect } onChange={ ( v: string ) => setAttributes( { hoverEffect: v } ) } />
 
 			<Segmented
 				label={ __( 'Overlay', 'flexa-block' ) }
@@ -359,6 +345,7 @@ export const GalleryEffectsPanel = ( { attributes, setAttributes }: GPanelProps 
 				<>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Opacity', 'flexa-block' ) }
 						value={ Math.round( ( ov.opacity ?? 0.3 ) * 100 ) }
 						min={ 0 }
@@ -367,6 +354,7 @@ export const GalleryEffectsPanel = ( { attributes, setAttributes }: GPanelProps 
 					/>
 					<RangeControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Opacity on hover', 'flexa-block' ) }
 						value={ Math.round( ( ov.hoverOpacity ?? 0.5 ) * 100 ) }
 						min={ 0 }
@@ -381,7 +369,7 @@ export const GalleryEffectsPanel = ( { attributes, setAttributes }: GPanelProps 
 			{ shadow.enabled && (
 				<>
 					{ SHADOW_FIELDS.map( ( f ) => (
-						<RangeControl key={ f.k } __nextHasNoMarginBottom label={ f.l } value={ parseInt( String( shadow[ f.k ] ?? '' ), 10 ) || 0 } min={ -100 } max={ 100 } onChange={ ( v: number ) => setShadow( { [ f.k ]: String( v ) } ) } />
+						<RangeControl key={ f.k } __nextHasNoMarginBottom __next40pxDefaultSize label={ f.l } value={ parseInt( String( shadow[ f.k ] ?? '' ), 10 ) || 0 } min={ -100 } max={ 100 } onChange={ ( v: number ) => setShadow( { [ f.k ]: String( v ) } ) } />
 					) ) }
 					<DualColor label={ __( 'Color', 'flexa-block' ) } value={ shadow.color || {} } onChange={ ( v ) => setShadow( { color: v } ) } />
 				</>

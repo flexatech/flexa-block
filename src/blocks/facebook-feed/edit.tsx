@@ -26,6 +26,8 @@ import {
 	BackgroundPanel,
 	BorderPanel,
 	ShadowPanel,
+	ItemBorderPanel,
+	ItemShadowPanel,
 	PositionPanel,
 	VisibilityPanel,
 	AnimationPanel,
@@ -34,6 +36,7 @@ import {
 	ImagePlaceholder,
 	MediaBadge,
 	useBlockId,
+	useMigrateItemStyle,
 	useDevice,
 	ExamplePreviewSkeleton,
 } from '@components';
@@ -102,7 +105,11 @@ const trimWords = ( text: string, words: number ): string => {
 	return parts.length > words ? parts.slice( 0, words ).join( ' ' ) + '…' : text;
 };
 
-/** Styled-wrapper preview (width, padding, background). Border + shadow live on each card. */
+/**
+ * Styled-wrapper preview (width, padding, background). Once migrated, the wrapper
+ * also carries the Style-tab border/shadow; before migration those live on each
+ * card (see buildCardStyle) so legacy content is unchanged.
+ */
 const buildWrapperStyle = ( attributes: FacebookFeedAttributes, device: DeviceKey, isBoxed: boolean ): CssProps => {
 	const { widthBoxed, widthFullWidth, spacing, background } = attributes;
 	const s: CssProps = {};
@@ -121,6 +128,14 @@ const buildWrapperStyle = ( attributes: FacebookFeedAttributes, device: DeviceKe
 	if ( padding ) s.padding = padding;
 
 	applyBackgroundPreview( s, background );
+
+	// Wrapper border/shadow apply only after migration; legacy content keeps them
+	// on the card. Mirrors Facebook_Feed_CSS. TODO(remove in vNEXT): the gate.
+	if ( attributes.itemStyleMigrated ) {
+		applyBorderPreview( s, effective( attributes.border, device ) );
+		const shadow = boxShadowPreview( attributes.boxShadow );
+		if ( shadow ) s.boxShadow = shadow;
+	}
 	return s;
 };
 
@@ -155,8 +170,13 @@ const buildGridStyle = ( attributes: FacebookFeedAttributes, device: DeviceKey, 
 const buildCardStyle = ( attributes: FacebookFeedAttributes, device: DeviceKey, layout: string ): CssProps => {
 	const s: CssProps = {};
 	if ( attributes.cardBackground?.light ) s.background = attributes.cardBackground.light;
-	applyBorderPreview( s, effective( attributes.border, device ) );
-	const shadow = boxShadowPreview( attributes.boxShadow );
+	// Border + box-shadow apply to each card (matching the front-end generator).
+	// Post-migration this comes from the dedicated itemBorder/itemBoxShadow;
+	// legacy content falls back to the old wrapper border/boxShadow.
+	// TODO(remove in vNEXT): drop the legacy fallback, always use itemBorder/itemBoxShadow.
+	const migrated = !! attributes.itemStyleMigrated;
+	applyBorderPreview( s, effective( migrated ? attributes.itemBorder : attributes.border, device ) );
+	const shadow = boxShadowPreview( ( migrated ? attributes.itemBoxShadow : attributes.boxShadow ) || {} );
 	if ( shadow ) s.boxShadow = shadow;
 	const contentPad = spacingShorthand( effective( attributes.contentPadding, device ) );
 	if ( contentPad ) s.padding = contentPad;
@@ -185,6 +205,9 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const isGrid = layout === 'grid' || layout === 'masonry';
 
 	useBlockId( clientId, blockId, setAttributes );
+	// One-time move of legacy wrapper border/shadow onto the per-item attributes.
+	// TODO(remove in vNEXT): item-style migration.
+	useMigrateItemStyle( attributes, setAttributes );
 
 	// Live preview: the real feed is fetched through the editor-only REST proxy,
 	// which reads the token from the admin-only server store (the token never
@@ -416,6 +439,8 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 								<BackgroundPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<BorderPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<ShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemBorderPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
 						}
 						advanced={

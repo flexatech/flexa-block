@@ -10,6 +10,7 @@
 
 import { BLOCK_ICONS } from '@shared/block-icons';
 import { groupMeta, groupOf } from './block-groups';
+import { CrownIcon } from './icons';
 
 /**
  * A decorative, non-interactive preview banner for one block.
@@ -22,7 +23,13 @@ export function BlockThumb( {
 	block: FlexaBlockAdminBlock;
 } ): JSX.Element {
 	const meta = groupMeta( groupOf( block ) );
-	const icon = BLOCK_ICONS[ block.slug ];
+	// An add-on's glyphs live in its own bundle and cannot travel through PHP as
+	// JSX, so it fills `window.flexaBlockAddonIcons` from a script that runs
+	// before this app mounts. Without the fallback an add-on card shows the
+	// generic dashicon while its inserter entry shows the real glyph.
+	const icon =
+		BLOCK_ICONS[ block.slug ] ||
+		window.flexaBlockAddonIcons?.[ block.slug ];
 
 	return (
 		<div
@@ -37,11 +44,20 @@ export function BlockThumb( {
 			<span className="flexa-thumb__bar flexa-thumb__bar--a" />
 			<span className="flexa-thumb__bar flexa-thumb__bar--b" />
 			<span className="flexa-thumb__chip" style={ { color: meta.accent } }>
-				{ icon ? (
-					icon.src
-				) : (
-					<span className="dashicons dashicons-screenoptions" />
-				) }
+				{ /*
+				 * A locked block lives in an add-on that is not installed, so its
+				 * real glyph is not on this site at all. It gets the add-on crown
+				 * rather than the generic "unknown block" dashicon, which would
+				 * read as something having gone wrong rather than as a block you
+				 * do not have yet.
+				 */ }
+				{ block.locked && <CrownIcon /> }
+				{ ! block.locked &&
+					( icon ? (
+						icon.src
+					) : (
+						<span className="dashicons dashicons-screenoptions" />
+					) ) }
 			</span>
 		</div>
 	);

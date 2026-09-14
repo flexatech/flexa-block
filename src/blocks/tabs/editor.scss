@@ -14,6 +14,34 @@
 		display: none;
 	}
 
+	// "Add tab" button in the nav bar (editor only).
+	.flexa-tabs__add {
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2em;
+		height: 2em;
+		padding: 0;
+		border: 1px dashed rgba( 127, 127, 127, 0.5 );
+		border-radius: 4px;
+		background: transparent;
+		color: inherit;
+		font-size: 1.1em;
+		line-height: 1;
+		cursor: pointer;
+		opacity: 0.75;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
+
+	// Each child tab fills the panel area; the parent hides all but the active one.
+	.flexa-tabs__editor > * {
+		width: 100%;
+	}
+
 	// Inline content editor — bare, inherits the panel's look.
 	.flexa-tabs__content-input {
 		display: block;

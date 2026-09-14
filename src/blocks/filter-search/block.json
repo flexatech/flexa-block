@@ -10,7 +10,12 @@
 	"textdomain": "flexa-block",
 	"parent": [ "flexa/post-filter" ],
 	"usesContext": [ "flexa/filterTarget" ],
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 320
+	},
 	"attributes": {
+		"isExamplePreview": { "type": "boolean", "default": false },
 		"blockId": { "type": "string" },
 		"label": { "type": "string", "default": "Search" },
 		"showLabel": { "type": "boolean", "default": true },

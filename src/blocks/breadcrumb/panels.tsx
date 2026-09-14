@@ -65,6 +65,7 @@ export const BreadcrumbSourcePanel = ( { attributes, setAttributes }: BcPanelPro
 			/>
 			<TextControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Home label', 'flexa-block' ) }
 				value={ homeText ?? '' }
 				onChange={ ( v: string ) => setAttributes( { homeText: v } ) }
@@ -84,6 +85,7 @@ export const BreadcrumbSourcePanel = ( { attributes, setAttributes }: BcPanelPro
 			) }
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Separator', 'flexa-block' ) }
 				value={ sep.type || 'slash' }
 				options={ SEPARATOR_OPTIONS }
@@ -92,6 +94,7 @@ export const BreadcrumbSourcePanel = ( { attributes, setAttributes }: BcPanelPro
 			{ 'custom' === ( sep.type || 'slash' ) && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Custom separator', 'flexa-block' ) }
 					value={ sep.custom ?? '' }
 					onChange={ ( v: string ) => setAttributes( { separator: { ...sep, custom: v } } ) }
@@ -111,6 +114,7 @@ export const BreadcrumbSourcePanel = ( { attributes, setAttributes }: BcPanelPro
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'nav' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -123,8 +127,8 @@ export const BreadcrumbSourcePanel = ( { attributes, setAttributes }: BcPanelPro
 /** Body controls for one manual crumb: its label and link URL. */
 const ItemBody = ( { item, update }: { item: BreadcrumbItem; update: ( patch: Partial< BreadcrumbItem > ) => void } ): JSX.Element => (
 	<>
-		<TextControl __nextHasNoMarginBottom label={ __( 'Label', 'flexa-block' ) } value={ item.label ?? '' } onChange={ ( v: string ) => update( { label: v } ) } />
-		<TextControl __nextHasNoMarginBottom label={ __( 'Link', 'flexa-block' ) } help={ __( 'Leave empty for the current (last) crumb.', 'flexa-block' ) } value={ item.url ?? '' } onChange={ ( v: string ) => update( { url: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Label', 'flexa-block' ) } value={ item.label ?? '' } onChange={ ( v: string ) => update( { label: v } ) } />
+		<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Link', 'flexa-block' ) } help={ __( 'Leave empty for the current (last) crumb.', 'flexa-block' ) } value={ item.url ?? '' } onChange={ ( v: string ) => update( { url: v } ) } />
 	</>
 );
 

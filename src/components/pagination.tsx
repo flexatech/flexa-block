@@ -60,6 +60,7 @@ export const PaginationPanel = ( {
 		<PanelBody title={ __( 'Pagination', 'flexa-block' ) } initialOpen={ initialOpen }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Pagination', 'flexa-block' ) }
 				help={ typeHelp }
 				value={ type }
@@ -69,6 +70,7 @@ export const PaginationPanel = ( {
 			{ 'numbered' === type && undefined !== perPage && onPerPage && (
 				<RangeControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Items per page', 'flexa-block' ) }
 					value={ typeof perPage === 'number' ? perPage : 6 }
 					min={ 1 }
@@ -98,6 +100,7 @@ export const PaginationPanel = ( {
 				<>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Previous label', 'flexa-block' ) }
 						help={ __( 'Leave empty for the default arrow.', 'flexa-block' ) }
 						value={ attributes.prevLabel ?? '' }
@@ -105,6 +108,7 @@ export const PaginationPanel = ( {
 					/>
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Next label', 'flexa-block' ) }
 						value={ attributes.nextLabel ?? '' }
 						onChange={ ( v: string ) => setAttributes( { nextLabel: v } ) }
@@ -128,6 +132,7 @@ export const PaginationPanel = ( {
 					{ undefined !== perLoad && onPerLoad && (
 						<RangeControl
 							__nextHasNoMarginBottom
+							__next40pxDefaultSize
 							label={ __( 'Items per load', 'flexa-block' ) }
 							help={ __( 'How many more items each “Load more” click reveals.', 'flexa-block' ) }
 							value={ typeof perLoad === 'number' ? perLoad : 6 }
@@ -138,6 +143,7 @@ export const PaginationPanel = ( {
 					) }
 					<TextControl
 						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 						label={ __( 'Load more text', 'flexa-block' ) }
 						value={ attributes.loadMoreText ?? '' }
 						onChange={ ( v: string ) => setAttributes( { loadMoreText: v } ) }

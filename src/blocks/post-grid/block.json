@@ -109,6 +109,15 @@
 			"type": "boolean",
 			"default": true
 		},
+		"cardStyle": {
+			"type": "string",
+			"default": "stacked",
+			"enum": ["stacked", "overlay"]
+		},
+		"featureFirst": {
+			"type": "boolean",
+			"default": false
+		},
 		"contentAlign": {
 			"type": "object",
 			"default": {"desktop": "", "tablet": "", "mobile": ""}
@@ -165,6 +174,14 @@
 			"type": "boolean",
 			"default": false
 		},
+		"showReadingTime": {
+			"type": "boolean",
+			"default": false
+		},
+		"wordsPerMinute": {
+			"type": "number",
+			"default": 200
+		},
 		"showExcerpt": {
 			"type": "boolean",
 			"default": true
@@ -188,6 +205,10 @@
 		"imageRatio": {
 			"type": "string",
 			"default": "16/9"
+		},
+		"hoverEffect": {
+			"type": "string",
+			"default": "none"
 		},
 		"paginationType": {
 			"type": "string",
@@ -362,6 +383,35 @@
 				"inset": false,
 				"enabled": false
 			}
+		},
+		"itemBorder": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"itemBoxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"itemStyleMigrated": {
+			"type": "boolean",
+			"default": false
 		},
 		"advancedLayout": {
 			"type": "object",

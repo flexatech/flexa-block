@@ -141,6 +141,7 @@ export const CountdownPanel = ( { attributes, setAttributes }: CountdownPanelPro
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Timezone', 'flexa-block' ) }
 				value={ timezone || '' }
 				options={ tzOptions }
@@ -154,6 +155,7 @@ export const CountdownPanel = ( { attributes, setAttributes }: CountdownPanelPro
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Separator', 'flexa-block' ) }
 				value={ sep.type || 'none' }
 				options={ SEPARATOR_OPTIONS }
@@ -162,6 +164,7 @@ export const CountdownPanel = ( { attributes, setAttributes }: CountdownPanelPro
 			{ sep.type === 'custom' && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Custom separator', 'flexa-block' ) }
 					value={ sep.custom || '' }
 					onChange={ ( v: string ) => setSep( { custom: v } ) }
@@ -211,10 +214,10 @@ export const LabelsPanel = ( { attributes, setAttributes }: CountdownPanelProps 
 							{ value: 'below', label: __( 'Below', 'flexa-block' ) },
 						] }
 					/>
-					<TextControl __nextHasNoMarginBottom label={ __( 'Days label', 'flexa-block' ) } value={ labels.days ?? '' } onChange={ ( v: string ) => setLabels( { days: v } ) } />
-					<TextControl __nextHasNoMarginBottom label={ __( 'Hours label', 'flexa-block' ) } value={ labels.hours ?? '' } onChange={ ( v: string ) => setLabels( { hours: v } ) } />
-					<TextControl __nextHasNoMarginBottom label={ __( 'Minutes label', 'flexa-block' ) } value={ labels.minutes ?? '' } onChange={ ( v: string ) => setLabels( { minutes: v } ) } />
-					<TextControl __nextHasNoMarginBottom label={ __( 'Seconds label', 'flexa-block' ) } value={ labels.seconds ?? '' } onChange={ ( v: string ) => setLabels( { seconds: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Days label', 'flexa-block' ) } value={ labels.days ?? '' } onChange={ ( v: string ) => setLabels( { days: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Hours label', 'flexa-block' ) } value={ labels.hours ?? '' } onChange={ ( v: string ) => setLabels( { hours: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Minutes label', 'flexa-block' ) } value={ labels.minutes ?? '' } onChange={ ( v: string ) => setLabels( { minutes: v } ) } />
+					<TextControl __nextHasNoMarginBottom __next40pxDefaultSize label={ __( 'Seconds label', 'flexa-block' ) } value={ labels.seconds ?? '' } onChange={ ( v: string ) => setLabels( { seconds: v } ) } />
 				</>
 			) }
 		</PanelBody>
@@ -236,6 +239,7 @@ export const CountdownSettingsPanel = ( { attributes, setAttributes }: Countdown
 		<PanelBody title={ __( 'Settings', 'flexa-block' ) } initialOpen={ false }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'When it ends', 'flexa-block' ) }
 				value={ expired.type || 'hide' }
 				options={ EXPIRED_OPTIONS }
@@ -253,6 +257,7 @@ export const CountdownSettingsPanel = ( { attributes, setAttributes }: Countdown
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Screen reader announcements', 'flexa-block' ) }
 				value={ ariaLive || 'off' }
 				options={ ARIA_LIVE_OPTIONS }
@@ -278,6 +283,7 @@ export const CountdownSettingsPanel = ( { attributes, setAttributes }: Countdown
 
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }

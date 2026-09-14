@@ -30,6 +30,7 @@ import {
 import {
 	cn,
 	visibilityClasses,
+	hoverEffectClasses,
 	effective,
 	rawDevice,
 	withUnit,
@@ -155,7 +156,7 @@ const Star = ( { filled, style }: { filled: boolean; style: CssProps } ): JSX.El
  */
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< TestimonialAttributes > ): JSX.Element {
 	const {
-		title, quote, authorName, authorJob, rating, showRating, showAvatar, authorImage,
+		title, quote, authorName, authorJob, rating, showRating, showAvatar, authorImage, hoverEffect,
 		authorLayout, className, responsiveVisibility, htmlTag,
 	} = attributes;
 	const blockId = attributes.blockId;
@@ -191,6 +192,17 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const quoteStyle = buildTextStyle( rawDevice( attributes.quoteTypography, device ), attributes.quoteColor, effective( attributes.quoteSpacing, device ) );
 	const nameStyle = buildTextStyle( rawDevice( attributes.nameTypography, device ), attributes.nameColor, {} );
 	const jobStyle = buildTextStyle( rawDevice( attributes.jobTypography, device ), attributes.jobColor, {} );
+
+	// The avatar, wrapped in a hover frame only when an effect is picked.
+	const avatarEl = showAvatar !== false ? ( () => {
+		const avatar = authorImage?.url
+			? <img className="flexa-testimonial__avatar" src={ authorImage.url } alt={ authorImage.alt || '' } style={ buildAvatarStyle( attributes, device ) } />
+			: <span className="flexa-testimonial__avatar flexa-testimonial__avatar--placeholder" style={ buildAvatarStyle( attributes, device ) } aria-hidden="true" />;
+		const hover = hoverEffectClasses( hoverEffect );
+		return hover.length
+			? <span className={ cn( 'flexa-testimonial__avatar-wrap', ...hover ) }>{ avatar }</span>
+			: avatar;
+	} )() : null;
 
 	return (
 		<>
@@ -257,13 +269,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 				/>
 
 				<div className="flexa-testimonial__author" style={ buildAuthorStyle( attributes, device ) }>
-					{ showAvatar !== false && (
-						authorImage?.url ? (
-							<img className="flexa-testimonial__avatar" src={ authorImage.url } alt={ authorImage.alt || '' } style={ buildAvatarStyle( attributes, device ) } />
-						) : (
-							<span className="flexa-testimonial__avatar flexa-testimonial__avatar--placeholder" style={ buildAvatarStyle( attributes, device ) } aria-hidden="true" />
-						)
-					) }
+					{ avatarEl }
 					<div className="flexa-testimonial__author-text">
 						<RichText
 							tagName="span"

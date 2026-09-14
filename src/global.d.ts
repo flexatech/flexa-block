@@ -34,6 +34,28 @@ interface FlexaBlockAdminBlock {
 	category?: string;
 	is_core?: boolean;
 	is_child?: boolean;
+	/** Filter-pill override, for blocks the slug→group table cannot know (add-ons). */
+	group?: string;
+	/** Origin label shown beside the card title, e.g. "Pro". Set by add-ons. */
+	badge?: string;
+	/**
+	 * The block belongs to an add-on this site does not have. The card is shown
+	 * so the blocks are discoverable, but it is not registered, cannot be
+	 * switched, and must not count towards the enabled/total tally.
+	 */
+	locked?: boolean;
+}
+
+/**
+ * Glyphs contributed by add-on plugins, keyed by block slug.
+ *
+ * An add-on's block icons live in its own bundle, so they cannot be reached
+ * from BLOCK_ICONS here and cannot travel through PHP as JSX. Instead the
+ * add-on enqueues a small script that fills this global before the dashboard
+ * mounts, and BlockThumb falls back to it.
+ */
+interface FlexaBlockAddonIcons {
+	[ slug: string ]: { src: any; foreground?: string } | undefined;
 }
 
 interface FlexaBlockAdminRole {
@@ -54,6 +76,7 @@ interface FlexaBlockAdminData {
 interface Window {
 	flexaBlockEditor?: FlexaBlockEditorData;
 	flexaBlockAdmin?: FlexaBlockAdminData;
+	flexaBlockAddonIcons?: FlexaBlockAddonIcons;
 }
 
 /*

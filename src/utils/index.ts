@@ -319,6 +319,15 @@ export const visibilityClasses = ( visibility: ResponsiveVisibilityAttr = {} ): 
 		visibility.hideOnMobile ? 'flexa-hide-mobile' : '',
 	].filter( Boolean );
 
+/**
+ * Image hover-effect helper classes for a media frame — mirrors
+ * `HTML_Helpers::hover_effect_classes()` on the server. Returns `flexa-hover`
+ * plus `flexa-hover--<effect>`, or `[]` for `none`/empty (the CSS lives in
+ * `src/styles/_hover-effect.scss`, so the default stays no-op).
+ */
+export const hoverEffectClasses = ( effect?: string ): string[] =>
+	effect && effect !== 'none' ? [ 'flexa-hover', `flexa-hover--${ effect }` ] : [];
+
 /** Apply one device's typography onto a preview style object. */
 export const applyTypography = ( s: CssProps, typo: Partial< TypographyDevice > = {} ): void => {
 	if ( typo.fontSize?.value ) s.fontSize = withUnit( typo.fontSize.value, typo.fontSize.unit || 'px' );
@@ -373,6 +382,7 @@ export const applyBackgroundPreview = ( s: CssProps, background: BackgroundAttr 
 		s.backgroundSize = background.image.size || 'cover';
 		s.backgroundPosition = background.image.position || 'center center';
 		s.backgroundRepeat = background.image.repeat || 'no-repeat';
+		s.backgroundAttachment = background.image.attachment || 'scroll';
 	}
 };
 

@@ -90,16 +90,31 @@ foreach ( $plans as $i => $plan ) {
 	$period_yearly  = (string) ( $plan['periodYearly'] ?? '' );
 	$is_hi          = ! empty( $plan['highlighted'] );
 
-	// Features: a newline-separated string, or an array of lines.
-	$raw_features = $plan['features'] ?? '';
+	// Features: an array of { text, included }, or (legacy) a newline string / array
+	// of lines — both read as all-included.
+	$raw_features  = $plan['features'] ?? '';
+	$feature_items = [];
 	if ( is_array( $raw_features ) ) {
-		$feature_lines = $raw_features;
+		foreach ( $raw_features as $feat ) {
+			if ( is_array( $feat ) ) {
+				$text     = trim( (string) ( $feat['text'] ?? '' ) );
+				$included = ! array_key_exists( 'included', $feat ) || false !== $feat['included'];
+			} else {
+				$text     = trim( (string) $feat );
+				$included = true;
+			}
+			if ( '' !== $text ) {
+				$feature_items[] = [ 'text' => $text, 'included' => $included ];
+			}
+		}
 	} else {
-		$feature_lines = preg_split( '/\r\n|\r|\n/', (string) $raw_features );
+		foreach ( preg_split( '/\r\n|\r|\n/', (string) $raw_features ) as $line ) {
+			$line = trim( (string) $line );
+			if ( '' !== $line ) {
+				$feature_items[] = [ 'text' => $line, 'included' => true ];
+			}
+		}
 	}
-	$feature_lines = array_values( array_filter( array_map( 'trim', array_map( 'strval', (array) $feature_lines ) ), static function ( $l ) {
-		return '' !== $l;
-	} ) );
 
 	$card = '';
 	if ( '' !== $badge ) {
@@ -114,10 +129,15 @@ foreach ( $plans as $i => $plan ) {
 	}
 	$card .= '</div>';
 
-	if ( ! empty( $feature_lines ) ) {
+	if ( ! empty( $feature_items ) ) {
+		$check = '<svg class="flexa-pricing-table__feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m20 6-11 11-5-5"/></svg>';
+		$cross = '<svg class="flexa-pricing-table__feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
 		$card .= '<ul class="flexa-pricing-table__features">';
-		foreach ( $feature_lines as $line ) {
-			$card .= '<li class="flexa-pricing-table__feature">' . esc_html( $line ) . '</li>';
+		foreach ( $feature_items as $feat ) {
+			$cls = 'flexa-pricing-table__feature' . ( $feat['included'] ? '' : ' is-excluded' );
+			$card .= '<li class="' . esc_attr( $cls ) . '">'
+				. ( $feat['included'] ? $check : $cross )
+				. '<span>' . esc_html( $feat['text'] ) . '</span></li>';
 		}
 		$card .= '</ul>';
 	}

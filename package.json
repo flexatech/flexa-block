@@ -3,8 +3,13 @@
 	"version": "1.0.0",
 	"description": "Gutenberg Container block with per-device flex layout, light/dark colors and save-time CSS generation.",
 	"author": "Flexa",
-	"license": "GPL-3.0-or-later",
+	"license": "GPL-2.0-or-later",
 	"main": "build/index.js",
+	"sideEffects": [
+		"**/*.scss",
+		"**/*.css",
+		"src/components/index.ts"
+	],
 	"scripts": {
 		"prepare": "git config core.hooksPath .githooks || true",
 		"build": "wp-scripts build",

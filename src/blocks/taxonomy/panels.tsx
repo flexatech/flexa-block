@@ -90,6 +90,7 @@ export const TaxonomyGeneralPanel = ( { attributes, setAttributes }: TaxPanelPro
 		<PanelBody title={ __( 'General', 'flexa-block' ) } initialOpen={ true }>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Taxonomy', 'flexa-block' ) }
 				value={ taxonomy || 'category' }
 				options={ taxonomyOptions }
@@ -114,6 +115,7 @@ export const TaxonomyGeneralPanel = ( { attributes, setAttributes }: TaxPanelPro
 			) }
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Order by', 'flexa-block' ) }
 				value={ orderBy || 'name' }
 				options={ ORDER_BY_OPTIONS }
@@ -146,6 +148,7 @@ export const TaxonomyGeneralPanel = ( { attributes, setAttributes }: TaxPanelPro
 			/>
 			<RangeControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'Limit', 'flexa-block' ) }
 				help={ __( '0 shows every term.', 'flexa-block' ) }
 				value={ typeof limit === 'number' ? limit : 0 }
@@ -155,6 +158,7 @@ export const TaxonomyGeneralPanel = ( { attributes, setAttributes }: TaxPanelPro
 			/>
 			<SelectControl
 				__nextHasNoMarginBottom
+				__next40pxDefaultSize
 				label={ __( 'HTML Tag', 'flexa-block' ) }
 				value={ htmlTag || 'div' }
 				options={ HTML_TAGS.map( ( t ) => ( { label: t, value: t } ) ) }
@@ -189,6 +193,7 @@ export const TaxonomyAffixesPanel = ( { attributes, setAttributes }: TaxPanelPro
 			{ 'text' === prefixType && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Prefix text', 'flexa-block' ) }
 					value={ prefixText ?? '' }
 					onChange={ ( v: string ) => setAttributes( { prefixText: v } ) }
@@ -210,6 +215,7 @@ export const TaxonomyAffixesPanel = ( { attributes, setAttributes }: TaxPanelPro
 			{ 'text' === suffixType && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Suffix text', 'flexa-block' ) }
 					value={ suffixText ?? '' }
 					onChange={ ( v: string ) => setAttributes( { suffixText: v } ) }
@@ -225,6 +231,7 @@ export const TaxonomyAffixesPanel = ( { attributes, setAttributes }: TaxPanelPro
 			{ !! showSeparator && (
 				<TextControl
 					__nextHasNoMarginBottom
+					__next40pxDefaultSize
 					label={ __( 'Separator', 'flexa-block' ) }
 					value={ separator ?? '' }
 					onChange={ ( v: string ) => setAttributes( { separator: v } ) }

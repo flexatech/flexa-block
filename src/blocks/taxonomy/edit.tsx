@@ -22,10 +22,13 @@ import {
 	BackgroundPanel,
 	BorderPanel,
 	ShadowPanel,
+	ItemBorderPanel,
+	ItemShadowPanel,
 	PositionPanel,
 	VisibilityPanel,
 	AnimationPanel,
 	useBlockId,
+	useMigrateItemStyle,
 	useDevice,
 	ExamplePreviewSkeleton,
 } from '@components';
@@ -68,7 +71,11 @@ const SAMPLE_TERMS: PreviewTerm[] = [
 	{ id: 3, name: __( 'Marketing', 'flexa-block' ), count: 5, link: '#', parent: 0 },
 ];
 
-/** Wrapper preview: spacing + background (border/shadow live on each chip). */
+/**
+ * Wrapper preview: spacing + background. Once migrated, the wrapper also carries
+ * the Style-tab border/shadow; before migration those live on each chip (see
+ * buildItemStyle) so legacy content is unchanged. Mirrors Taxonomy_CSS.
+ */
 const buildWrapperStyle = ( attributes: TaxonomyAttributes, device: DeviceKey ): CssProps => {
 	const s: CssProps = {};
 	const sp = effective( attributes.spacing, device );
@@ -77,6 +84,14 @@ const buildWrapperStyle = ( attributes: TaxonomyAttributes, device: DeviceKey ):
 	const margin = spacingShorthand( sp.margin );
 	if ( margin ) s.margin = margin;
 	applyBackgroundPreview( s, attributes.background );
+
+	// Wrapper border/shadow apply only after migration; legacy content keeps
+	// them on the chip. Mirrors Taxonomy_CSS. TODO(remove in vNEXT): the gate.
+	if ( attributes.itemStyleMigrated ) {
+		applyBorderPreview( s, effective( attributes.border, device ) );
+		const shadow = boxShadowPreview( attributes.boxShadow );
+		if ( shadow ) s.boxShadow = shadow;
+	}
 	return s;
 };
 
@@ -114,8 +129,13 @@ const buildItemStyle = ( attributes: TaxonomyAttributes, device: DeviceKey ): Cs
 	if ( attributes.itemBackground?.light ) s.background = attributes.itemBackground.light;
 	const r = attributes.itemBorderRadius;
 	if ( r?.value ) s.borderRadius = withUnit( r.value, r.unit || 'px' );
-	applyBorderPreview( s, effective( attributes.border, device ) );
-	const shadow = boxShadowPreview( attributes.boxShadow );
+	// Border + box-shadow apply to each chip (matching the front-end generator).
+	// Post-migration this comes from the dedicated itemBorder/itemBoxShadow;
+	// legacy content falls back to the old wrapper border/boxShadow.
+	// TODO(remove in vNEXT): drop the legacy fallback, always use itemBorder/itemBoxShadow.
+	const migrated = !! attributes.itemStyleMigrated;
+	applyBorderPreview( s, effective( migrated ? attributes.itemBorder : attributes.border, device ) );
+	const shadow = boxShadowPreview( ( migrated ? attributes.itemBoxShadow : attributes.boxShadow ) || {} );
 	if ( shadow ) s.boxShadow = shadow;
 	return s;
 };
@@ -164,6 +184,9 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 	const [ device ] = useDevice();
 
 	useBlockId( clientId, blockId, setAttributes );
+	// One-time move of legacy wrapper border/shadow onto the per-item attributes.
+	// TODO(remove in vNEXT): item-style migration.
+	useMigrateItemStyle( attributes, setAttributes );
 
 	// The chosen taxonomy's terms, read live so the preview matches the site.
 	const records = useSelect(
@@ -286,6 +309,8 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 								<BackgroundPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<BorderPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<ShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemBorderPanel attributes={ attributes } setAttributes={ setAttributes } />
+								<ItemShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
 						}
 						advanced={
