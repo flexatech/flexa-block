@@ -54,6 +54,7 @@ if ( '' !== $button_text ) {
 // would print as literal text — the cart icon is a ::before/::after pseudo-element
 // in style.scss instead, switched on by the wrapper modifier class below.
 ob_start();
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Firing WooCommerce core's own add-to-cart action for the product type, not defining a plugin hook.
 do_action( 'woocommerce_' . $product->get_type() . '_add_to_cart' );
 $form = ob_get_clean();
 
@@ -61,6 +62,7 @@ $form = ob_get_clean();
 // still deserve a working form.
 if ( '' === trim( (string) $form ) ) {
 	ob_start();
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Firing WooCommerce core's own simple-product add-to-cart action as a fallback, not defining a plugin hook.
 	do_action( 'woocommerce_simple_add_to_cart' );
 	$form = ob_get_clean();
 }
