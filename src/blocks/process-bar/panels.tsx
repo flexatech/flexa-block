@@ -305,7 +305,7 @@ export const ProcessBarColorsPanel = ( { attributes, setAttributes }: PPanelProp
 	const { fillColor, trackColor } = attributes;
 
 	return (
-		<PanelBody title={ __( 'Colours', 'flexa-block' ) } initialOpen={ true }>
+		<PanelBody title={ __( 'Colors', 'flexa-block' ) } initialOpen={ true }>
 			<DualColor label={ __( 'Fill', 'flexa-block' ) } value={ fillColor || {} } onChange={ ( v ) => setAttributes( { fillColor: v } ) } />
 			<DualColor label={ __( 'Track', 'flexa-block' ) } value={ trackColor || {} } onChange={ ( v ) => setAttributes( { trackColor: v } ) } />
 		</PanelBody>
@@ -326,10 +326,10 @@ export const ProcessBarTextPanel = ( { attributes, setAttributes }: PPanelProps 
 		<PanelBody title={ __( 'Text', 'flexa-block' ) } initialOpen={ false }>
 			<FieldHead label={ __( 'Title typography', 'flexa-block' ) } />
 			<TypographyControls value={ titleTypo } onChange={ setTitleTypo } />
-			<DualColor label={ __( 'Title colour', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
+			<DualColor label={ __( 'Title color', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
 			<FieldHead label={ __( 'Counter typography', 'flexa-block' ) } />
 			<TypographyControls value={ counterTypo } onChange={ setCounterTypo } />
-			<DualColor label={ __( 'Counter colour', 'flexa-block' ) } value={ attributes.counterColor || {} } onChange={ ( v ) => setAttributes( { counterColor: v } ) } />
+			<DualColor label={ __( 'Counter color', 'flexa-block' ) } value={ attributes.counterColor || {} } onChange={ ( v ) => setAttributes( { counterColor: v } ) } />
 		</PanelBody>
 	);
 };

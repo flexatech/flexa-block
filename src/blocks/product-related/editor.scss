@@ -1,0 +1,18 @@
+/**
+ * Related Products block — editor-only styles.
+ *
+ * The sample cards are inert in the canvas: links must not navigate away while
+ * editing, and the grid should fill the block width so the column count and card
+ * alignment read correctly. Front-end appearance lives in style.scss.
+ */
+
+.wp-block-flexa-product-related {
+	.flexa-product-related__list {
+		width: 100%;
+	}
+
+	// Placeholder artwork stands in for a real product image.
+	.flexa-product-related__image img {
+		pointer-events: none;
+	}
+}

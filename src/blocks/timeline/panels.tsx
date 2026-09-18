@@ -323,7 +323,7 @@ export const TimelineMarkerPanel = ( { attributes, setAttributes }: TPanelProps 
 				onChange={ ( v: LengthValue ) => setAttributes( { markerSize: { ...markerSize, [ device ]: v } } ) }
 			/>
 			<DualColor label={ __( 'Background', 'flexa-block' ) } value={ markerColor || {} } onChange={ ( v ) => setAttributes( { markerColor: v } ) } />
-			<DualColor label={ __( 'Icon colour', 'flexa-block' ) } value={ markerIconColor || {} } onChange={ ( v ) => setAttributes( { markerIconColor: v } ) } />
+			<DualColor label={ __( 'Icon color', 'flexa-block' ) } value={ markerIconColor || {} } onChange={ ( v ) => setAttributes( { markerIconColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -362,7 +362,7 @@ export const TimelineConnectorPanel = ( { attributes, setAttributes }: TPanelPro
 						max={ { px: 16 } }
 						onChange={ ( v: LengthValue ) => setAttributes( { connectorWidth: { ...connectorWidth, [ device ]: v } } ) }
 					/>
-					<DualColor label={ __( 'Colour', 'flexa-block' ) } value={ connectorColor || {} } onChange={ ( v ) => setAttributes( { connectorColor: v } ) } />
+					<DualColor label={ __( 'Color', 'flexa-block' ) } value={ connectorColor || {} } onChange={ ( v ) => setAttributes( { connectorColor: v } ) } />
 				</>
 			) }
 		</PanelBody>
@@ -386,7 +386,7 @@ export const TimelineDatePanel = ( { attributes, setAttributes }: TPanelProps ):
 				options={ DATE_POSITION_OPTIONS }
 			/>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Date colour', 'flexa-block' ) } value={ attributes.dateColor || {} } onChange={ ( v ) => setAttributes( { dateColor: v } ) } />
+			<DualColor label={ __( 'Date color', 'flexa-block' ) } value={ attributes.dateColor || {} } onChange={ ( v ) => setAttributes( { dateColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -402,7 +402,7 @@ export const TimelineTitlePanel = ( { attributes, setAttributes }: TPanelProps )
 	return (
 		<PanelBody title={ __( 'Title', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Title colour', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
+			<DualColor label={ __( 'Title color', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -418,7 +418,7 @@ export const TimelineDescriptionPanel = ( { attributes, setAttributes }: TPanelP
 	return (
 		<PanelBody title={ __( 'Description', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Description colour', 'flexa-block' ) } value={ attributes.descriptionColor || {} } onChange={ ( v ) => setAttributes( { descriptionColor: v } ) } />
+			<DualColor label={ __( 'Description color', 'flexa-block' ) } value={ attributes.descriptionColor || {} } onChange={ ( v ) => setAttributes( { descriptionColor: v } ) } />
 		</PanelBody>
 	);
 };

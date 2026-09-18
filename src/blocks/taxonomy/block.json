@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Taxonomy",
 	"category": "flexa",
-	"description": "List the terms of any taxonomy (categories, tags or custom) as a list, inline row, dropdown or grid — show the post count, include empty terms or the full hierarchy, limit and order them, add an icon or text prefix/suffix and a separator, and style each term chip with light/dark colours, hover, gap and padding.",
+	"description": "List the terms of any taxonomy (categories, tags or custom) as a list, inline row, dropdown or grid — show the post count, include empty terms or the full hierarchy, limit and order them, add an icon or text prefix/suffix and a separator, and style each term chip with light/dark colors, hover, gap and padding.",
 	"keywords": [ "flexa", "taxonomy", "categories", "tags", "terms", "list" ],
 	"textdomain": "flexa-block",
 	"example": {

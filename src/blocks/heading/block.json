@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Heading",
 	"category": "flexa",
-	"description": "Rich heading with an optional subheading and separator, per-device typography and alignment, light/dark colours, gradient text and text effects.",
+	"description": "Rich heading with an optional subheading and separator, per-device typography and alignment, light/dark colors, gradient text and text effects.",
 	"keywords": [ "flexa", "heading", "title", "headline", "subheading" ],
 	"textdomain": "flexa-block",
 	"example": {

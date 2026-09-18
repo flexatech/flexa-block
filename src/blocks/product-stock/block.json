@@ -1,0 +1,195 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/product-stock",
+	"version": "1.0.0",
+	"title": "Product Stock",
+	"category": "woocommerce",
+	"description": "Show the current WooCommerce product’s stock status on a single-product page — as plain text or a badge, with your own wording for in stock, out of stock and on backorder, an optional status icon, the remaining quantity, a low-stock threshold with its own colors, and per-status text and background colors plus badge padding and radius.",
+	"keywords": [ "flexa", "woocommerce", "product", "stock", "availability", "badge", "inventory" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 500
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"alignment": {
+			"type": "object",
+			"default": { "desktop": "", "tablet": "", "mobile": "" }
+		},
+		"displayType": {
+			"type": "string",
+			"default": "text",
+			"enum": [ "text", "badge" ]
+		},
+		"showIcon": {
+			"type": "boolean",
+			"default": false
+		},
+		"showQuantity": {
+			"type": "boolean",
+			"default": false
+		},
+		"lowStockThreshold": {
+			"type": "number",
+			"default": 0
+		},
+		"inStockText": {
+			"type": "string",
+			"default": "In stock"
+		},
+		"outOfStockText": {
+			"type": "string",
+			"default": "Out of stock"
+		},
+		"backorderText": {
+			"type": "string",
+			"default": "On backorder"
+		},
+		"typography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"inStockColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"inStockBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"outOfStockColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"outOfStockBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"backorderColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"backorderBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"lowStockColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"lowStockBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"badgePadding": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"badgeRadius": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"iconSize": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"gap": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

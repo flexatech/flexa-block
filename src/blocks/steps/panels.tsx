@@ -219,7 +219,7 @@ export const StepsMarkerPanel = ( { attributes, setAttributes }: SPanelProps ): 
 				onChange={ ( v: LengthValue ) => setAttributes( { markerSize: { ...markerSize, [ device ]: v } } ) }
 			/>
 			<DualColor label={ __( 'Background', 'flexa-block' ) } value={ markerColor || {} } onChange={ ( v ) => setAttributes( { markerColor: v } ) } />
-			<DualColor label={ __( 'Number / icon colour', 'flexa-block' ) } value={ markerTextColor || {} } onChange={ ( v ) => setAttributes( { markerTextColor: v } ) } />
+			<DualColor label={ __( 'Number / icon color', 'flexa-block' ) } value={ markerTextColor || {} } onChange={ ( v ) => setAttributes( { markerTextColor: v } ) } />
 			<FieldHead label={ __( 'Status accents', 'flexa-block' ) } />
 			<DualColor label={ __( 'Done', 'flexa-block' ) } value={ doneColor || {} } onChange={ ( v ) => setAttributes( { doneColor: v } ) } />
 			<DualColor label={ __( 'Active', 'flexa-block' ) } value={ activeColor || {} } onChange={ ( v ) => setAttributes( { activeColor: v } ) } />
@@ -262,7 +262,7 @@ export const StepsConnectorPanel = ( { attributes, setAttributes }: SPanelProps 
 						max={ { px: 16 } }
 						onChange={ ( v: LengthValue ) => setAttributes( { connectorWidth: { ...connectorWidth, [ device ]: v } } ) }
 					/>
-					<DualColor label={ __( 'Colour', 'flexa-block' ) } value={ connectorColor || {} } onChange={ ( v ) => setAttributes( { connectorColor: v } ) } />
+					<DualColor label={ __( 'Color', 'flexa-block' ) } value={ connectorColor || {} } onChange={ ( v ) => setAttributes( { connectorColor: v } ) } />
 				</>
 			) }
 		</PanelBody>
@@ -325,7 +325,7 @@ export const StepsTitlePanel = ( { attributes, setAttributes }: SPanelProps ): J
 	return (
 		<PanelBody title={ __( 'Title', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Title colour', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
+			<DualColor label={ __( 'Title color', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -341,7 +341,7 @@ export const StepsDescriptionPanel = ( { attributes, setAttributes }: SPanelProp
 	return (
 		<PanelBody title={ __( 'Description', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Description colour', 'flexa-block' ) } value={ attributes.descriptionColor || {} } onChange={ ( v ) => setAttributes( { descriptionColor: v } ) } />
+			<DualColor label={ __( 'Description color', 'flexa-block' ) } value={ attributes.descriptionColor || {} } onChange={ ( v ) => setAttributes( { descriptionColor: v } ) } />
 		</PanelBody>
 	);
 };

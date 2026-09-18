@@ -293,6 +293,37 @@
             <key name="nextLabel" />
         </gutenberg-block>
 
+        <gutenberg-block type="flexa/product-description" translate="1">
+            <key name="titleText" />
+            <key name="readMoreText" />
+            <key name="readLessText" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/product-stock" translate="1">
+            <key name="inStockText" />
+            <key name="outOfStockText" />
+            <key name="backorderText" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/product-add-to-cart" translate="1">
+            <key name="buttonText" />
+        </gutenberg-block>
+
+        <!-- One row of a Product Meta list, or a standalone SKU / Categories /
+             Tags block: same block, different `field`. -->
+        <gutenberg-block type="flexa/product-field" translate="1">
+            <key name="label" />
+            <key name="separator" />
+            <key name="skuPrefix" />
+            <key name="skuSuffix" />
+            <key name="skuFallback" />
+            <key name="copiedText" />
+        </gutenberg-block>
+
+        <gutenberg-block type="flexa/product-related" translate="1">
+            <key name="headingText" />
+        </gutenberg-block>
+
         <!-- Subscribe form + fields -->
         <gutenberg-block type="flexa/subscribe-form" translate="1">
             <key name="submitText" />

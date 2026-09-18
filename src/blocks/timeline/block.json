@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Timeline",
 	"category": "flexa",
-	"description": "Chronological timeline of events — each entry with a title, description, date, an optional image and a marker icon, arranged down a connector line alternating left/right or on a single side, with per-element typography, marker and line styling and light/dark colours.",
+	"description": "Chronological timeline of events — each entry with a title, description, date, an optional image and a marker icon, arranged down a connector line alternating left/right or on a single side, with per-element typography, marker and line styling and light/dark colors.",
 	"keywords": [ "flexa", "timeline", "history", "roadmap", "milestones", "events" ],
 	"textdomain": "flexa-block",
 	"example": {

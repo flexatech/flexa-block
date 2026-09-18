@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Testimonial",
 	"category": "flexa",
-	"description": "Single testimonial card - star rating, headline, quote and an author block (avatar, name, role) with per-device typography, spacing, alignment and light/dark colours.",
+	"description": "Single testimonial card - star rating, headline, quote and an author block (avatar, name, role) with per-device typography, spacing, alignment and light/dark colors.",
 	"keywords": [ "flexa", "testimonial", "review", "quote", "rating" ],
 	"textdomain": "flexa-block",
 	"example": {

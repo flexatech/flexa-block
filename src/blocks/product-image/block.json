@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Product Image",
 	"category": "woocommerce",
-	"description": "Show the current WooCommerce product’s images on a single-product page — the featured image with a thumbnail carousel (bottom, left or right) showing a set number of thumbnails per view, a per-device gap, image scale, height or adaptive height, zoom-on-hover, optional autoplay, radius and alignment.",
+	"description": "Show the current WooCommerce product’s images on a single-product page — the featured image with a thumbnail carousel (bottom, left or right) showing a set number of thumbnails per view, a per-device gap, image scale, height or adaptive height, zoom-on-hover, optional autoplay, radius and alignment. On a variable product the featured image follows the shopper’s chosen options, and clicking it can open the gallery full screen.",
 	"keywords": [ "flexa", "woocommerce", "product", "image", "gallery" ],
 	"textdomain": "flexa-block",
 	"example": {
@@ -65,6 +65,10 @@
 		"adaptiveHeight": {
 			"type": "boolean",
 			"default": true
+		},
+		"enableLightbox": {
+			"type": "boolean",
+			"default": false
 		},
 		"zoomOnHover": {
 			"type": "boolean",

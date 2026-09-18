@@ -261,7 +261,7 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 						icon="format-image"
 						labels={ {
 							title: __( 'Banner', 'flexa-block' ),
-							instructions: __( 'Upload or pick an image for the banner background — your heading, text and buttons sit on top of it. Or set a colour/gradient in the Background panel.', 'flexa-block' ),
+							instructions: __( 'Upload or pick an image for the banner background — your heading, text and buttons sit on top of it. Or set a color/gradient in the Background panel.', 'flexa-block' ),
 						} }
 						allowedTypes={ [ 'image' ] }
 						accept="image/*"

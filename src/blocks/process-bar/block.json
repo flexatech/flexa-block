@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Progress Bar",
 	"category": "flexa",
-	"description": "Animated progress indicator in a line, circle or semi-circle layout — set the value as a percentage or absolute count, show a title and counter, choose fill and track colours (light/dark), a solid or striped fill and an on-scroll fill animation.",
+	"description": "Animated progress indicator in a line, circle or semi-circle layout — set the value as a percentage or absolute count, show a title and counter, choose fill and track colors (light/dark), a solid or striped fill and an on-scroll fill animation.",
 	"keywords": [ "flexa", "progress", "progress bar", "percent", "skill", "meter", "gauge", "loader" ],
 	"textdomain": "flexa-block",
 	"attributes": {

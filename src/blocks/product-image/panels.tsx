@@ -42,7 +42,7 @@ const SCALE_OPTIONS = [
  */
 export const ProductImageGalleryPanel = ( { attributes, setAttributes }: PImgPanelProps ): JSX.Element => {
 	const [ device ] = useDevice();
-	const { galleryPosition, showThumbnails, thumbnailsPerView, thumbnailGap, autoplay, autoplaySpeed, alignment } = attributes;
+	const { galleryPosition, showThumbnails, thumbnailsPerView, thumbnailGap, autoplay, autoplaySpeed, alignment, enableLightbox } = attributes;
 
 	const align = alignment?.[ device ] || '';
 
@@ -62,6 +62,14 @@ export const ProductImageGalleryPanel = ( { attributes, setAttributes }: PImgPan
 				label={ __( 'Show thumbnails', 'flexa-block' ) }
 				checked={ showThumbnails !== false }
 				onChange={ ( v: boolean ) => setAttributes( { showThumbnails: v } ) }
+			/>
+
+			<ToggleControl
+				__nextHasNoMarginBottom
+				label={ __( 'Open full screen on click', 'flexa-block' ) }
+				help={ __( 'Clicking the featured image opens it full screen, with the rest of the gallery behind the arrows.', 'flexa-block' ) }
+				checked={ !! enableLightbox }
+				onChange={ ( v: boolean ) => setAttributes( { enableLightbox: v } ) }
 			/>
 
 			{ showThumbnails !== false && (

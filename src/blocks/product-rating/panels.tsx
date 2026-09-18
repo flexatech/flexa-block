@@ -79,8 +79,8 @@ export const ProductRatingStarsPanel = ( { attributes, setAttributes }: PRPanelP
 
 	return (
 		<PanelBody title={ __( 'Stars', 'flexa-block' ) } initialOpen={ true }>
-			<DualColor label={ __( 'Star colour', 'flexa-block' ) } value={ starColor || {} } onChange={ ( v ) => setAttributes( { starColor: v } ) } />
-			<DualColor label={ __( 'Empty star colour', 'flexa-block' ) } value={ starEmptyColor || {} } onChange={ ( v ) => setAttributes( { starEmptyColor: v } ) } />
+			<DualColor label={ __( 'Star color', 'flexa-block' ) } value={ starColor || {} } onChange={ ( v ) => setAttributes( { starColor: v } ) } />
+			<DualColor label={ __( 'Empty star color', 'flexa-block' ) } value={ starEmptyColor || {} } onChange={ ( v ) => setAttributes( { starEmptyColor: v } ) } />
 			<SliderUnit
 				label={ __( 'Star size', 'flexa-block' ) }
 				value={ starSize?.[ device ] || {} }
@@ -118,7 +118,7 @@ export const ProductRatingNumberPanel = ( { attributes, setAttributes }: PRPanel
 
 	return (
 		<PanelBody title={ __( 'Number', 'flexa-block' ) } initialOpen={ false }>
-			<DualColor label={ __( 'Number colour', 'flexa-block' ) } value={ numberColor || {} } onChange={ ( v ) => setAttributes( { numberColor: v } ) } />
+			<DualColor label={ __( 'Number color', 'flexa-block' ) } value={ numberColor || {} } onChange={ ( v ) => setAttributes( { numberColor: v } ) } />
 			<TypographyControls value={ typo } onChange={ setTypo } />
 		</PanelBody>
 	);
@@ -141,7 +141,7 @@ export const ProductRatingCountPanel = ( { attributes, setAttributes }: PRPanelP
 
 	return (
 		<PanelBody title={ __( 'Review Count', 'flexa-block' ) } initialOpen={ false }>
-			<DualColor label={ __( 'Count colour', 'flexa-block' ) } value={ countColor || {} } onChange={ ( v ) => setAttributes( { countColor: v } ) } />
+			<DualColor label={ __( 'Count color', 'flexa-block' ) } value={ countColor || {} } onChange={ ( v ) => setAttributes( { countColor: v } ) } />
 			<TypographyControls value={ typo } onChange={ setTypo } />
 		</PanelBody>
 	);

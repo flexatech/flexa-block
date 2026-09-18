@@ -32,6 +32,7 @@
 
 	&__icon {
 		display: inline-flex;
+		flex: none;
 		width: 24px;
 		height: 24px;
 
@@ -60,6 +61,24 @@
 
 	&__item--shape-circle {
 		border-radius: 50%;
+	}
+
+	// Network names sit beside the icon. The icon-only row zeroes line-height to
+	// kill the inline-box gap; text needs it back.
+	&--labels &__item {
+		gap: 0.5em;
+		line-height: normal;
+	}
+
+	// A label turns the chip into a pill, so a circle would clip the name.
+	&--labels &__item--shape-circle {
+		border-radius: 999px;
+	}
+
+	&--labels &__item--shape-rounded,
+	&--labels &__item--shape-circle,
+	&--labels &__item--shape-square {
+		padding: 0.5em 0.9em;
 	}
 
 	// Hover motions (keyed by the wrapper modifier set in render.php / edit.tsx).

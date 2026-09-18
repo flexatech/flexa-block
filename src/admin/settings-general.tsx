@@ -41,7 +41,7 @@ export function GeneralSettings( {
 					tint="#6366f1"
 					title={ __( 'Dark Mode', 'flexa-block' ) }
 					subtitle={ __(
-						'Choose how dark colours are emitted and triggered.',
+						'Choose how dark colors are emitted and triggered.',
 						'flexa-block'
 					) }
 				/>

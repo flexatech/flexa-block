@@ -19,6 +19,7 @@ import {
 	HAroundIcon,
 } from './icons';
 import type {
+	AdvancedLayoutDevice,
 	BackgroundAttr,
 	BorderDevice,
 	BoxShadowAttr,
@@ -26,9 +27,11 @@ import type {
 	ColorPair,
 	ControlOption,
 	DeviceKey,
+	LengthValue,
 	RadiusValue,
 	ResponsiveValue,
 	ResponsiveVisibilityAttr,
+	SpacingDevice,
 	TextShadowAttr,
 	TextStrokeAttr,
 	TypographyDevice,
@@ -476,3 +479,98 @@ export const editorCss = ( rules: EditorCssRule[] ): string =>
 		.filter( ( r ) => r.value && '' !== r.value )
 		.map( ( r ) => `${ r.selector }{${ r.prop }:${ r.value } !important}` )
 		.join( '' );
+
+/** Attribute shape the shared wrapper preview reads. */
+export interface WrapperPreviewAttrs {
+	alignment?: ResponsiveValue< string >;
+	spacing?: ResponsiveValue< SpacingDevice >;
+	background?: BackgroundAttr;
+	border?: ResponsiveValue< BorderDevice >;
+	boxShadow?: BoxShadowAttr;
+	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
+}
+
+/**
+ * Editor preview for the foundation attributes every simple block wraps itself
+ * in: alignment, padding / margin, background, border, shadow and overflow.
+ *
+ * Mirror of `CSS_Helpers::add_wrapper_device()` + `add_wrapper_base()` on the PHP
+ * side, so the canvas and the front end agree by construction.
+ *
+ * @param attrs  Block attributes.
+ * @param device Active device key.
+ * @return Inline style object for the wrapper.
+ */
+export const wrapperPreviewStyle = ( attrs: WrapperPreviewAttrs, device: DeviceKey ): CssProps => {
+	const { alignment, spacing, background, border, boxShadow, advancedLayout } = attrs;
+	const sp = effective( spacing, device );
+	const adv = effective( advancedLayout, device );
+	const s: CssProps = {};
+
+	const align = alignment?.[ device ] || '';
+	if ( align ) s.textAlign = align;
+
+	const padding = spacingShorthand( sp.padding );
+	if ( padding ) s.padding = padding;
+	const margin = spacingShorthand( sp.margin );
+	if ( margin ) s.margin = margin;
+
+	applyBackgroundPreview( s, background );
+	applyBorderPreview( s, effective( border, device ) );
+
+	const shadow = boxShadowPreview( boxShadow );
+	if ( shadow ) s.boxShadow = shadow;
+
+	if ( adv.overflow ) s.overflow = adv.overflow;
+	if ( adv.position ) s.position = adv.position;
+	if ( adv.zIndex ) s.zIndex = adv.zIndex;
+
+	return s;
+};
+
+/** Attribute shape the shared button preview reads (values are non-responsive). */
+export interface ButtonPreviewAttrs {
+	buttonTextColor?: ColorPair;
+	buttonBackground?: ColorPair;
+	buttonRadius?: LengthValue;
+	buttonPadding?: BoxValue;
+	buttonAlign?: string;
+	buttonWidth?: string;
+}
+
+/**
+ * Editor preview for a call-to-action button: colours, radius, padding,
+ * alignment and the full-width stretch.
+ *
+ * Mirror of `CSS_Helpers::add_button()`. Hover has to be mirrored separately
+ * with `editorCss` — inline styles cannot express a pseudo-class.
+ *
+ * @param attrs Block attributes carrying the `button*` keys.
+ * @return Inline style object for the button element.
+ */
+export const buttonPreviewStyle = ( attrs: ButtonPreviewAttrs = {} ): CssProps => {
+	const s: CssProps = {};
+
+	const color = attrs.buttonTextColor?.light;
+	if ( color ) s.color = color;
+	const background = attrs.buttonBackground?.light;
+	if ( background ) s.background = background;
+
+	const radius = withUnit( attrs.buttonRadius?.value, attrs.buttonRadius?.unit || 'px' );
+	if ( radius ) s.borderRadius = radius;
+
+	const padding = spacingShorthand( attrs.buttonPadding );
+	if ( padding ) s.padding = padding;
+
+	const alignMap: Record< string, string > = { left: 'flex-start', center: 'center', right: 'flex-end' };
+	const align = alignMap[ attrs.buttonAlign || '' ];
+	if ( align ) s.alignSelf = align;
+
+	if ( 'full' === attrs.buttonWidth ) {
+		s.display = 'flex';
+		s.width = '100%';
+		s.justifyContent = 'center';
+	}
+
+	return s;
+};

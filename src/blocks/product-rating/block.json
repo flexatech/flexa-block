@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Product Rating",
 	"category": "woocommerce",
-	"description": "Show the current WooCommerce product’s average star rating on a single-product page — display stars, a numeric score or both, an optional review count, and style the star size, gap, filled and empty star colours, the numeric-score colour and typography, and the review-count typography and colours.",
+	"description": "Show the current WooCommerce product’s average star rating on a single-product page — display stars, a numeric score or both, an optional review count, and style the star size, gap, filled and empty star colors, the numeric-score color and typography, and the review-count typography and colors.",
 	"keywords": [ "flexa", "woocommerce", "product", "rating", "stars", "reviews" ],
 	"textdomain": "flexa-block",
 	"example": {

@@ -73,7 +73,7 @@ export const ProductPriceSettingsPanel = ( { attributes, setAttributes }: PPPane
 			{ strikethrough !== false && (
 				<>
 					<DualColor
-						label={ __( 'Line colour', 'flexa-block' ) }
+						label={ __( 'Line color', 'flexa-block' ) }
 						value={ strikeColor || {} }
 						onChange={ ( v ) => setAttributes( { strikeColor: v } ) }
 					/>
@@ -104,7 +104,7 @@ export const ProductPriceRegularPanel = ( { attributes, setAttributes }: PPPanel
 
 	return (
 		<PanelBody title={ __( 'Regular Price', 'flexa-block' ) } initialOpen={ true }>
-			<DualColor label={ __( 'Colour', 'flexa-block' ) } value={ attributes.regularColor || {} } onChange={ ( v ) => setAttributes( { regularColor: v } ) } />
+			<DualColor label={ __( 'Color', 'flexa-block' ) } value={ attributes.regularColor || {} } onChange={ ( v ) => setAttributes( { regularColor: v } ) } />
 			<TypographyControls value={ typo } onChange={ setTypo } />
 		</PanelBody>
 	);
@@ -121,7 +121,7 @@ export const ProductPriceSalePanel = ( { attributes, setAttributes }: PPPanelPro
 
 	return (
 		<PanelBody title={ __( 'Sale Price', 'flexa-block' ) } initialOpen={ false }>
-			<DualColor label={ __( 'Colour', 'flexa-block' ) } value={ attributes.saleColor || {} } onChange={ ( v ) => setAttributes( { saleColor: v } ) } />
+			<DualColor label={ __( 'Color', 'flexa-block' ) } value={ attributes.saleColor || {} } onChange={ ( v ) => setAttributes( { saleColor: v } ) } />
 			<TypographyControls value={ typo } onChange={ setTypo } />
 		</PanelBody>
 	);

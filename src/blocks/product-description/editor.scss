@@ -1,0 +1,15 @@
+/**
+ * Product Description block — editor-only styles.
+ *
+ * The placeholder copy should fill the block width so alignment reads correctly
+ * while editing, and the toggle is inert here so it must not look clickable.
+ * Front-end appearance lives in style.scss.
+ */
+
+.wp-block-flexa-product-description .flexa-product-description__content {
+	width: 100%;
+}
+
+.wp-block-flexa-product-description .flexa-product-description__toggle {
+	cursor: default;
+}

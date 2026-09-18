@@ -201,7 +201,7 @@ export const CounterIconPanel = ( { attributes, setAttributes }: CPanelProps ): 
 						max={ { px: 160, em: 12, rem: 12, '%': 100 } }
 						onChange={ ( v: LengthValue ) => setAttributes( { iconSize: { ...iconSize, [ device ]: v } } ) }
 					/>
-					<DualColor label={ __( 'Icon colour', 'flexa-block' ) } value={ iconColor || {} } onChange={ ( v ) => setAttributes( { iconColor: v } ) } />
+					<DualColor label={ __( 'Icon color', 'flexa-block' ) } value={ iconColor || {} } onChange={ ( v ) => setAttributes( { iconColor: v } ) } />
 				</>
 			) }
 		</PanelBody>
@@ -237,7 +237,7 @@ export const CounterNumberPanel = ( { attributes, setAttributes }: CPanelProps )
 				/>
 			) }
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Number colour', 'flexa-block' ) } value={ attributes.numberColor || {} } onChange={ ( v ) => setAttributes( { numberColor: v } ) } />
+			<DualColor label={ __( 'Number color', 'flexa-block' ) } value={ attributes.numberColor || {} } onChange={ ( v ) => setAttributes( { numberColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -253,7 +253,7 @@ export const CounterLabelPanel = ( { attributes, setAttributes }: CPanelProps ):
 	return (
 		<PanelBody title={ __( 'Label', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Label colour', 'flexa-block' ) } value={ attributes.labelColor || {} } onChange={ ( v ) => setAttributes( { labelColor: v } ) } />
+			<DualColor label={ __( 'Label color', 'flexa-block' ) } value={ attributes.labelColor || {} } onChange={ ( v ) => setAttributes( { labelColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -297,7 +297,7 @@ export const CounterSeparatorPanel = ( { attributes, setAttributes }: CPanelProp
 						max={ { px: 20 } }
 						onChange={ ( v: LengthValue ) => setAttributes( { separatorWeight: { ...separatorWeight, [ device ]: v } } ) }
 					/>
-					<DualColor label={ __( 'Divider colour', 'flexa-block' ) } value={ separatorColor || {} } onChange={ ( v ) => setAttributes( { separatorColor: v } ) } />
+					<DualColor label={ __( 'Divider color', 'flexa-block' ) } value={ separatorColor || {} } onChange={ ( v ) => setAttributes( { separatorColor: v } ) } />
 				</>
 			) }
 		</PanelBody>

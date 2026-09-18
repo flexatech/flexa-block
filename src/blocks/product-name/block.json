@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Product Name",
 	"category": "woocommerce",
-	"description": "Show the current WooCommerce product’s title on a single-product page — pick the heading tag, optionally link it to the product, and style typography, colour or gradient, hover colour, stroke, shadow, spacing, background, border, shadow and light/dark colours.",
+	"description": "Show the current WooCommerce product’s title on a single-product page — pick the heading tag, optionally link it to the product, and style typography, color or gradient, hover color, stroke, shadow, spacing, background, border, shadow and light/dark colors.",
 	"keywords": [ "flexa", "woocommerce", "product", "product name", "title" ],
 	"textdomain": "flexa-block",
 	"example": {

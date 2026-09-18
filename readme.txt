@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.10
+Stable tag: 1.0.11
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -115,7 +115,7 @@ No. Everything is controlled through the WordPress Block Editor. Just insert a b
 Flexa Block works with any theme that supports the Block Editor, including classic themes and Full Site Editing (FSE) themes.
 
 = What blocks are included? =
-Version 1.0.4 ships with a growing library of blocks, including: Container, Button, Heading, Image, Countdown, FAQ (with optional FAQPage schema), Social Icons, Grid, Testimonial, Separator, Text, Counter, Info Box, Slides, Social Share, Table of Contents, Before / After, Breadcrumb, Steps, Tabs, Video Popup, Comparison Table, Google Map, Images Gallery, Banner, CTA, a Subscribe Form, Pricing Table, Team Member, Post Grid, Post Filter, Progress Bar, Timeline, Icon, Icon List, Lottie Animation, Modal, Star Rating, Notice, Data Table, Taxonomy, RSS Feed, Facebook Feed, Instagram Feed and five WooCommerce single-product blocks. All blocks include skeleton inserter previews and JavaScript translations. More blocks will be added in future releases.
+Version 1.0.4 ships with a growing library of blocks, including: Container, Button, Heading, Image, Countdown, FAQ (with optional FAQPage schema), Social Icons, Grid, Testimonial, Separator, Text, Counter, Info Box, Slides, Social Share, Table of Contents, Before / After, Breadcrumb, Steps, Tabs, Video Popup, Comparison Table, Google Map, Images Gallery, Banner, CTA, a Subscribe Form, Pricing Table, Team Member, Post Grid, Post Filter, Progress Bar, Timeline, Icon, Icon List, Lottie Animation, Modal, Star Rating, Notice, Data Table, Taxonomy, RSS Feed, Facebook Feed, Instagram Feed and twelve WooCommerce single-product blocks. All blocks include skeleton inserter previews and JavaScript translations. More blocks will be added in future releases.
 
 = Can I edit content directly on the live page? =
 Yes. When you are logged in and allowed to edit the post, Flexa's editable blocks become click-to-edit on the front end: click a heading, paragraph, button label, list item or table cell, type your change, and press Save in the toolbar that appears. The edit is saved into the block itself — markup, block settings and generated CSS are preserved — and logged as a note on the post.
@@ -142,6 +142,10 @@ In the WordPress admin sidebar, click **Flexa Block** (located below Settings). 
 Yes. Flexa Block Pro adds additional blocks and advanced features. It works alongside this free plugin.
 
 == Changelog ==
+
+= 1.0.11 =
+* Added seven more WooCommerce single-product blocks (shown only when WooCommerce is active): Add to Cart (quantity field and button with your own label and cart icon, full normal/hover styling, and matching styling for variable-product attribute dropdowns), Product Description (the long description with an optional heading, styled body, links, nested headings/lists/tables, and an optional line clamp behind a Read more toggle), Product Excerpt (the short description, falling back to a trimmed long description, capped by word count or number of lines), Product Field (a single line of product data: SKU, categories or tags, with a label, inline/badge/list terms and a copy-to-clipboard SKU), Product Meta (stacks Product Field rows into one list with a shared label column, row gap and divider), Related Products (a grid or list of related products with per-device columns and gaps, card styling, image ratio and hover, and toggles for image, title, price, rating and add-to-cart) and Product Stock (stock status as text or a badge, with your own wording for in stock / out of stock / on backorder, an optional icon, the remaining quantity and a low-stock threshold with its own colors).
+* Social Share: added a Product Share variation that shares the current WooCommerce product, carrying its title and featured image with the link.
 
 = 1.0.10 =
 * Banner: the "Any blocks" content option now works again. The inner-blocks area added in 1.0.7 was missing from the released source, so a banner set to "Any blocks" rendered the built-in placeholder text instead of the blocks inside it. Existing banners are unaffected and need no changes.
@@ -214,6 +218,9 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 * Initial release with the Container block.
 
 == Upgrade Notice ==
+
+= 1.0.11 =
+Adds seven more WooCommerce single-product blocks (Add to Cart, Product Description, Product Excerpt, Product Field, Product Meta, Related Products and Product Stock) and a Product Share variation of the Social Share block.
 
 = 1.0.10 =
 Fixes banners set to "Any blocks" rendering placeholder text instead of their inner blocks, and restores the Tab child block.

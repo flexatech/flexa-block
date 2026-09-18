@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Info Box",
 	"category": "flexa",
-	"description": "Icon or image paired with a prefix, title and description, an optional divider and a call-to-action button. Media sits above or beside the text, with per-device typography, spacing and light/dark colours.",
+	"description": "Icon or image paired with a prefix, title and description, an optional divider and a call-to-action button. Media sits above or beside the text, with per-device typography, spacing and light/dark colors.",
 	"keywords": [ "flexa", "info box", "icon box", "feature", "service" ],
 	"textdomain": "flexa-block",
 	"example": {

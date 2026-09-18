@@ -5,7 +5,10 @@
  * One assertion per generator output: each add_property() the generator can
  * emit has a matching assertCssHas() on the right selector, plus on/off gating
  * for the conditional bits (colour mode tint, button background, direction,
- * background type, border style) and light/dark parity.
+ * background type, border style, network labels) and light/dark parity. Both
+ * inserter variations (page share and product share) share this generator —
+ * they differ only in what the links point at — so there is nothing
+ * variation-specific to assert here.
  *
  * @package Flexa\Block
  */
@@ -231,6 +234,55 @@ class SocialShareCssTest extends CssTestCase {
 			'spacing' => [ 'mobile' => [ 'padding' => [ 'top' => '8', 'right' => '8', 'bottom' => '8', 'left' => '8', 'unit' => 'px' ] ] ],
 		] );
 		$this->assertCssHasInMedia( $css, '@media (max-width: 767px)', '.flexa-social-share-a', 'padding:8px 8px 8px 8px' );
+	}
+
+	public function test_alignment_also_sets_wrapper_text_align(): void {
+		// The row is a flex list, so alignment drives justify-content; text-align
+		// on the wrapper carries the same intent to the network labels.
+		$css = $this->gen( [
+			'blockId'   => 'a',
+			'alignment' => [ 'desktop' => 'center' ],
+		] );
+		$this->assertCssHas( $css, '.flexa-social-share-a', 'text-align:center' );
+	}
+
+	public function test_label_typography_when_labels_shown(): void {
+		$css = $this->gen( [
+			'blockId'         => 'a',
+			'showLabels'      => true,
+			'labelTypography' => [ 'desktop' => [ 'fontSize' => [ 'value' => '13', 'unit' => 'px' ], 'textTransform' => 'uppercase' ] ],
+		] );
+		$this->assertCssHas( $css, '.flexa-social-share-a .flexa-social-share__label', 'font-size:13px' );
+		$this->assertCssHas( $css, '.flexa-social-share-a .flexa-social-share__label', 'text-transform:uppercase' );
+	}
+
+	public function test_label_typography_tablet_in_media_query(): void {
+		$css = $this->gen( [
+			'blockId'         => 'a',
+			'showLabels'      => true,
+			'labelTypography' => [ 'tablet' => [ 'fontSize' => [ 'value' => '11', 'unit' => 'px' ] ] ],
+		] );
+		$this->assertCssHasInMedia( $css, '@media (max-width: 1024px)', '.flexa-social-share-a .flexa-social-share__label', 'font-size:11px' );
+	}
+
+	public function test_label_rules_gated_off_when_labels_hidden(): void {
+		// The label element is not rendered, so its rules would be dead weight.
+		$css = $this->gen( [
+			'blockId'         => 'a',
+			'showLabels'      => false,
+			'labelTypography' => [ 'desktop' => [ 'fontSize' => [ 'value' => '13', 'unit' => 'px' ] ] ],
+		] );
+		$this->assertStringNotContainsString( 'flexa-social-share__label', $css );
+	}
+
+	public function test_advanced_layout_on_wrapper(): void {
+		$css = $this->gen( [
+			'blockId'        => 'a',
+			'advancedLayout' => [ 'desktop' => [ 'zIndex' => '5', 'overflow' => 'hidden', 'position' => 'relative' ] ],
+		] );
+		$this->assertCssHas( $css, '.flexa-social-share-a', 'z-index:5' );
+		$this->assertCssHas( $css, '.flexa-social-share-a', 'overflow:hidden' );
+		$this->assertCssHas( $css, '.flexa-social-share-a', 'position:relative' );
 	}
 
 	public function test_data_theme_dark_mode_branch(): void {

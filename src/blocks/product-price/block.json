@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Product Price",
 	"category": "woocommerce",
-	"description": "Show the current WooCommerce product’s price on a single-product page — regular price, sale price and currency are pulled straight from WooCommerce (no manual input); you only style it, with a configurable sale position, alignment and separate colour and typography for the regular and sale amounts.",
+	"description": "Show the current WooCommerce product’s price on a single-product page — regular price, sale price and currency are pulled straight from WooCommerce (no manual input); you only style it, with a configurable sale position, alignment and separate color and typography for the regular and sale amounts.",
 	"keywords": [ "flexa", "woocommerce", "product", "price", "sale" ],
 	"textdomain": "flexa-block",
 	"example": {

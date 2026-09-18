@@ -1,0 +1,237 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/product-add-to-cart",
+	"version": "1.0.0",
+	"title": "Add to Cart",
+	"category": "woocommerce",
+	"description": "Put the current WooCommerce product’s add-to-cart form on a single-product page — quantity field and button side by side, stacked, or the button on its own, with your own button label and cart icon, quantity-field sizing, colors, border and radius, full button styling for the normal and hover states, and matching styling for the attribute dropdowns of variable products.",
+	"keywords": [ "flexa", "woocommerce", "product", "add to cart", "cart", "buy" ],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": { "isExamplePreview": true },
+		"viewportWidth": 500
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"alignment": {
+			"type": "object",
+			"default": { "desktop": "", "tablet": "", "mobile": "" }
+		},
+		"cartLayout": {
+			"type": "string",
+			"default": "inline",
+			"enum": [ "inline", "stacked", "button-only" ]
+		},
+		"showQuantity": {
+			"type": "boolean",
+			"default": true
+		},
+		"gap": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"quantityWidth": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"quantityHeight": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"quantityBorderWidth": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"quantityRadius": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"quantityTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"quantityColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"quantityBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"quantityBorderColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonText": {
+			"type": "string",
+			"default": ""
+		},
+		"showIcon": {
+			"type": "boolean",
+			"default": false
+		},
+		"iconPosition": {
+			"type": "string",
+			"default": "before",
+			"enum": [ "before", "after" ]
+		},
+		"iconSize": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"iconGap": {
+			"type": "object",
+			"default": { "desktop": { "value": "", "unit": "px" }, "tablet": {}, "mobile": {} }
+		},
+		"buttonTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"buttonTextColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonTextColorHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonBackgroundHover": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"buttonRadius": {
+			"type": "object",
+			"default": { "value": "", "unit": "px" }
+		},
+		"buttonPadding": {
+			"type": "object",
+			"default": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" }
+		},
+		"buttonAlign": {
+			"type": "string",
+			"default": ""
+		},
+		"buttonWidth": {
+			"type": "string",
+			"default": "auto"
+		},
+		"variationLabelColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"variationLabelTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"variationSelectColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"variationSelectBackground": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"variationSelectBorderColor": {
+			"type": "object",
+			"default": { "light": "", "dark": "" }
+		},
+		"spacing": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": { "light": "", "dark": "" },
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": { "top": "", "right": "", "bottom": "", "left": "", "unit": "px" },
+					"color": { "light": "", "dark": "" },
+					"radius": { "topLeft": "", "topRight": "", "bottomRight": "", "bottomLeft": "", "unit": "px" }
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

@@ -9,6 +9,7 @@
  */
 
 @use '../../styles/hover-effect' as *;
+@use '../../styles/lightbox' as *;
 
 @include flexa-hover-effect();
 
@@ -159,81 +160,5 @@
 	}
 }
 
-/* Lightbox overlay (created by view.js). */
-.flexa-images-gallery-lightbox {
-	position: fixed;
-	inset: 0;
-	z-index: 100000;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 24px;
-	background: var(--flexa-lightbox-bg, rgba(17, 17, 17, 0.9));
-	cursor: zoom-out;
-
-	&__figure {
-		margin: 0;
-		max-width: 92vw;
-		max-height: 92vh;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 12px;
-		cursor: default;
-	}
-
-	&__img {
-		max-width: 92vw;
-		max-height: 82vh;
-		width: auto;
-		height: auto;
-		object-fit: contain;
-		border-radius: 4px;
-	}
-
-	&__caption {
-		color: #fff;
-		font-size: 0.9rem;
-		text-align: center;
-		margin: 0;
-	}
-
-	&__close {
-		position: absolute;
-		top: 16px;
-		right: 20px;
-		width: 40px;
-		height: 40px;
-		border: 0;
-		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.15);
-		color: #fff;
-		font-size: 22px;
-		line-height: 1;
-		cursor: pointer;
-	}
-
-	&__nav {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 44px;
-		height: 44px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: 0;
-		border-radius: 50%;
-		background: rgba(255, 255, 255, 0.15);
-		color: #fff;
-		cursor: pointer;
-
-		&--prev {
-			left: 20px;
-		}
-
-		&--next {
-			right: 20px;
-		}
-	}
-}
+/* Lightbox overlay (built by @shared/lightbox). */
+@include flexa-lightbox( 'flexa-images-gallery-lightbox' );

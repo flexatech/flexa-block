@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Breadcrumb",
 	"category": "flexa",
-	"description": "Hierarchical breadcrumb trail — auto-built from the current page's ancestors or listed by hand, with a home icon, a chosen separator, link / current / separator colours, per-device typography and optional BreadcrumbList schema.",
+	"description": "Hierarchical breadcrumb trail — auto-built from the current page's ancestors or listed by hand, with a home icon, a chosen separator, link / current / separator colors, per-device typography and optional BreadcrumbList schema.",
 	"keywords": [ "flexa", "breadcrumb", "breadcrumbs", "navigation", "trail", "path" ],
 	"textdomain": "flexa-block",
 	"example": {

@@ -98,4 +98,39 @@ class Social_Catalog {
 	public static function has( string $key ): bool {
 		return isset( self::platforms()[ $key ] );
 	}
+
+	/**
+	 * Build the web share-intent URL for one network.
+	 *
+	 * Shared by the share blocks so the endpoints live in exactly one place —
+	 * networks with brand artwork but no URL-share intent (Instagram, Messenger,
+	 * Zalo, TikTok) return an empty string and are skipped by the caller.
+	 * `email` opens the visitor's mail client rather than a web endpoint.
+	 *
+	 * @param string $network   Network key.
+	 * @param string $enc_url   URL-encoded page URL.
+	 * @param string $enc_title URL-encoded title.
+	 * @param string $enc_image URL-encoded image URL.
+	 * @return string The share URL, or an empty string when the network cannot share.
+	 */
+	public static function share_url( string $network, string $enc_url, string $enc_title, string $enc_image ): string {
+		switch ( $network ) {
+			case 'facebook':
+				return 'https://www.facebook.com/sharer/sharer.php?u=' . $enc_url;
+			case 'x':
+				return 'https://twitter.com/intent/tweet?url=' . $enc_url . '&text=' . $enc_title;
+			case 'linkedin':
+				return 'https://www.linkedin.com/sharing/share-offsite/?url=' . $enc_url;
+			case 'pinterest':
+				return 'https://www.pinterest.com/pin/create/button/?url=' . $enc_url . '&media=' . $enc_image . '&description=' . $enc_title;
+			case 'whatsapp':
+				return 'https://wa.me/?text=' . $enc_title . '%20' . $enc_url;
+			case 'telegram':
+				return 'https://t.me/share/url?url=' . $enc_url . '&text=' . $enc_title;
+			case 'email':
+				return 'mailto:?subject=' . $enc_title . '&body=' . $enc_url;
+			default:
+				return '';
+		}
+	}
 }

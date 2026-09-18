@@ -144,8 +144,8 @@ export const FaqIconPanel = ( { attributes, setAttributes }: FaqPanelProps ): JS
 						max={ { px: 80, em: 8, rem: 8, '%': 100 } }
 						onChange={ ( v: LengthValue ) => setAttributes( { iconGap: { ...iconGap, [ device ]: v } } ) }
 					/>
-					<DualColor label={ __( 'Icon colour', 'flexa-block' ) } value={ iconColor || {} } onChange={ ( v ) => setAttributes( { iconColor: v } ) } />
-					<DualColor label={ __( 'Icon colour (open)', 'flexa-block' ) } value={ iconActiveColor || {} } onChange={ ( v ) => setAttributes( { iconActiveColor: v } ) } />
+					<DualColor label={ __( 'Icon color', 'flexa-block' ) } value={ iconColor || {} } onChange={ ( v ) => setAttributes( { iconColor: v } ) } />
+					<DualColor label={ __( 'Icon color (open)', 'flexa-block' ) } value={ iconActiveColor || {} } onChange={ ( v ) => setAttributes( { iconActiveColor: v } ) } />
 				</>
 			) }
 		</PanelBody>
@@ -164,7 +164,7 @@ export const FaqQuestionPanel = ( { attributes, setAttributes }: FaqPanelProps )
 		<PanelBody title={ __( 'Question', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
 			<ColorGradientControl
-				label={ __( 'Text colour', 'flexa-block' ) }
+				label={ __( 'Text color', 'flexa-block' ) }
 				type={ attributes.questionColorType || 'color' }
 				color={ attributes.questionColor || {} }
 				gradient={ attributes.questionColorGradient || {} }
@@ -173,7 +173,7 @@ export const FaqQuestionPanel = ( { attributes, setAttributes }: FaqPanelProps )
 				onGradientChange={ ( v ) => setAttributes( { questionColorGradient: v } ) }
 			/>
 			<ColorGradientControl
-				label={ __( 'Text colour (open)', 'flexa-block' ) }
+				label={ __( 'Text color (open)', 'flexa-block' ) }
 				type={ attributes.questionActiveColorType || 'color' }
 				color={ attributes.questionActiveColor || {} }
 				gradient={ attributes.questionActiveColorGradient || {} }
@@ -222,7 +222,7 @@ export const FaqAnswerPanel = ( { attributes, setAttributes }: FaqPanelProps ): 
 		<PanelBody title={ __( 'Answer', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
 			<ColorGradientControl
-				label={ __( 'Text colour', 'flexa-block' ) }
+				label={ __( 'Text color', 'flexa-block' ) }
 				type={ attributes.answerColorType || 'color' }
 				color={ attributes.answerColor || {} }
 				gradient={ attributes.answerColorGradient || {} }

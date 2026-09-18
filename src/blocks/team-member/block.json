@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Team Member",
 	"category": "flexa",
-	"description": "Profile card for one team member — a photo, name, role and bio with linked social icons, the photo placed above, left or right of the text, per-element typography, light/dark colours and hover accents.",
+	"description": "Profile card for one team member — a photo, name, role and bio with linked social icons, the photo placed above, left or right of the text, per-element typography, light/dark colors and hover accents.",
 	"keywords": [ "flexa", "team", "member", "profile", "staff", "author", "person" ],
 	"textdomain": "flexa-block",
 	"example": {

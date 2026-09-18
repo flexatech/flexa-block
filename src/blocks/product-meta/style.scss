@@ -1,0 +1,41 @@
+/**
+ * Product Meta block — frontend + editor base styles.
+ *
+ * A container for flexa/product-field rows. Layout only: no colours, widths or
+ * spacing defaults live here on purpose — the rows inherit the theme until the
+ * PHP CSS generator emits declarations for the values the user picked. That is
+ * also why the divider only declares a style; without a generated width and
+ * colour an untouched list draws no line.
+ *
+ * The rules reach the rows through `.flexa-product-field`, the class every row
+ * carries whatever field it prints. That shared class is the whole contract
+ * between the two blocks.
+ */
+
+.flexa-product-meta {
+	display: flex;
+	flex-direction: column;
+}
+
+.flexa-product-meta--divided > .flexa-product-field + .flexa-product-field {
+	border-top-style: solid;
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-product-meta.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-product-meta.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-product-meta.flexa-hide-mobile {
+		display: none !important;
+	}
+}

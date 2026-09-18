@@ -113,9 +113,9 @@ export const PaginationPanel = ( {
 						value={ attributes.nextLabel ?? '' }
 						onChange={ ( v: string ) => setAttributes( { nextLabel: v } ) }
 					/>
-					<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.paginationColor || {} } onChange={ ( v ) => setAttributes( { paginationColor: v } ) } />
+					<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.paginationColor || {} } onChange={ ( v ) => setAttributes( { paginationColor: v } ) } />
 					<DualColor label={ __( 'Background', 'flexa-block' ) } value={ attributes.paginationBackground || {} } onChange={ ( v ) => setAttributes( { paginationBackground: v } ) } />
-					<DualColor label={ __( 'Active text colour', 'flexa-block' ) } value={ attributes.paginationActiveColor || {} } onChange={ ( v ) => setAttributes( { paginationActiveColor: v } ) } />
+					<DualColor label={ __( 'Active text color', 'flexa-block' ) } value={ attributes.paginationActiveColor || {} } onChange={ ( v ) => setAttributes( { paginationActiveColor: v } ) } />
 					<DualColor label={ __( 'Active background', 'flexa-block' ) } value={ attributes.paginationActiveBackground || {} } onChange={ ( v ) => setAttributes( { paginationActiveBackground: v } ) } />
 					<SliderUnit
 						label={ __( 'Corner radius', 'flexa-block' ) }
@@ -148,7 +148,7 @@ export const PaginationPanel = ( {
 						value={ attributes.loadMoreText ?? '' }
 						onChange={ ( v: string ) => setAttributes( { loadMoreText: v } ) }
 					/>
-					<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.loadMoreColor || {} } onChange={ ( v ) => setAttributes( { loadMoreColor: v } ) } />
+					<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.loadMoreColor || {} } onChange={ ( v ) => setAttributes( { loadMoreColor: v } ) } />
 					<DualColor label={ __( 'Background', 'flexa-block' ) } value={ attributes.loadMoreBackground || {} } onChange={ ( v ) => setAttributes( { loadMoreBackground: v } ) } />
 				</>
 			) }

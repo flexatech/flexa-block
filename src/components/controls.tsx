@@ -246,7 +246,7 @@ const ModeTag = ( { mode, onChange }: { mode: ColorMode; onChange: ( m: ColorMod
 			contentClassName="flexa-device-menu__popover"
 			popoverProps={ { placement: 'bottom-end' } }
 			renderToggle={ ( { isOpen, onToggle }: { isOpen: boolean; onToggle: () => void } ) => (
-				<Tooltip text={ __( 'Light / Dark colour', 'flexa-block' ) }>
+				<Tooltip text={ __( 'Light / Dark color', 'flexa-block' ) }>
 					<button
 						type="button"
 						className={ 'flexa-device-tag' + ( mode === 'dark' ? ' is-active' : '' ) }

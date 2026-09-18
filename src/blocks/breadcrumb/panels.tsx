@@ -196,7 +196,7 @@ export const BreadcrumbLayoutPanel = ( { attributes, setAttributes }: BcPanelPro
  * colour. These are plain light/dark colour pairs (no gradient).
  */
 export const BreadcrumbColorsPanel = ( { attributes, setAttributes }: BcPanelProps ): JSX.Element => (
-	<PanelBody title={ __( 'Colours', 'flexa-block' ) } initialOpen={ true }>
+	<PanelBody title={ __( 'Colors', 'flexa-block' ) } initialOpen={ true }>
 		<DualColor label={ __( 'Link', 'flexa-block' ) } value={ attributes.linkColor || {} } onChange={ ( v ) => setAttributes( { linkColor: v } ) } />
 		<DualColor label={ __( 'Link (hover)', 'flexa-block' ) } value={ attributes.linkColorHover || {} } onChange={ ( v ) => setAttributes( { linkColorHover: v } ) } />
 		<DualColor label={ __( 'Current page', 'flexa-block' ) } value={ attributes.currentColor || {} } onChange={ ( v ) => setAttributes( { currentColor: v } ) } />

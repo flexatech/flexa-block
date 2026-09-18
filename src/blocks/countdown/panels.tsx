@@ -304,7 +304,7 @@ export const DigitStylePanel = ( { attributes, setAttributes }: CountdownPanelPr
 	return (
 		<PanelBody title={ __( 'Digits', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Digit colour', 'flexa-block' ) } value={ attributes.digitColor || {} } onChange={ ( v ) => setAttributes( { digitColor: v } ) } />
+			<DualColor label={ __( 'Digit color', 'flexa-block' ) } value={ attributes.digitColor || {} } onChange={ ( v ) => setAttributes( { digitColor: v } ) } />
 
 			<SliderUnit
 				label={ __( 'Separator size', 'flexa-block' ) }
@@ -314,7 +314,7 @@ export const DigitStylePanel = ( { attributes, setAttributes }: CountdownPanelPr
 				max={ { px: 200, rem: 12, em: 12, '%': 300 } }
 				onChange={ ( v: LengthValue ) => setAttributes( { separatorFontSize: { ...attributes.separatorFontSize, [ device ]: v } } ) }
 			/>
-			<DualColor label={ __( 'Separator colour', 'flexa-block' ) } value={ attributes.separatorColor || {} } onChange={ ( v ) => setAttributes( { separatorColor: v } ) } />
+			<DualColor label={ __( 'Separator color', 'flexa-block' ) } value={ attributes.separatorColor || {} } onChange={ ( v ) => setAttributes( { separatorColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -330,7 +330,7 @@ export const LabelStylePanel = ( { attributes, setAttributes }: CountdownPanelPr
 	return (
 		<PanelBody title={ __( 'Label Style', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Label colour', 'flexa-block' ) } value={ attributes.labelColor || {} } onChange={ ( v ) => setAttributes( { labelColor: v } ) } />
+			<DualColor label={ __( 'Label color', 'flexa-block' ) } value={ attributes.labelColor || {} } onChange={ ( v ) => setAttributes( { labelColor: v } ) } />
 		</PanelBody>
 	);
 };

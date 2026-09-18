@@ -250,11 +250,11 @@ export const IconListIconPanel = ( { attributes, setAttributes }: IconListPanelP
 					options={ ICON_SHAPE_OPTIONS }
 				/>
 			) }
-			<DualColor label={ __( 'Icon colour', 'flexa-block' ) } value={ iconColor || {} } onChange={ ( v ) => setAttributes( { iconColor: v } ) } />
-			<DualColor label={ __( 'Icon colour (hover)', 'flexa-block' ) } value={ iconColorHover || {} } onChange={ ( v ) => setAttributes( { iconColorHover: v } ) } />
+			<DualColor label={ __( 'Icon color', 'flexa-block' ) } value={ iconColor || {} } onChange={ ( v ) => setAttributes( { iconColor: v } ) } />
+			<DualColor label={ __( 'Icon color (hover)', 'flexa-block' ) } value={ iconColorHover || {} } onChange={ ( v ) => setAttributes( { iconColorHover: v } ) } />
 			<DualColor label={ __( 'Icon background', 'flexa-block' ) } value={ iconBackground || {} } onChange={ ( v ) => setAttributes( { iconBackground: v } ) } />
 			<DualColor label={ __( 'Icon background (hover)', 'flexa-block' ) } value={ iconBackgroundHover || {} } onChange={ ( v ) => setAttributes( { iconBackgroundHover: v } ) } />
-			<DualColor label={ __( 'Icon border colour', 'flexa-block' ) } value={ iconBorderColor || {} } onChange={ ( v ) => setAttributes( { iconBorderColor: v } ) } />
+			<DualColor label={ __( 'Icon border color', 'flexa-block' ) } value={ iconBorderColor || {} } onChange={ ( v ) => setAttributes( { iconBorderColor: v } ) } />
 			<SliderUnit
 				label={ __( 'Icon padding', 'flexa-block' ) }
 				value={ iconPadding?.[ device ] || {} }
@@ -273,7 +273,7 @@ export const IconListIconPanel = ( { attributes, setAttributes }: IconListPanelP
  */
 export const IconListTextPanel = ( { attributes, setAttributes }: IconListPanelProps ): JSX.Element => (
 	<PanelBody title={ __( 'Text', 'flexa-block' ) } initialOpen={ false }>
-		<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.textColor || {} } onChange={ ( v ) => setAttributes( { textColor: v } ) } />
-		<DualColor label={ __( 'Text colour (hover)', 'flexa-block' ) } value={ attributes.textColorHover || {} } onChange={ ( v ) => setAttributes( { textColorHover: v } ) } />
+		<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.textColor || {} } onChange={ ( v ) => setAttributes( { textColor: v } ) } />
+		<DualColor label={ __( 'Text color (hover)', 'flexa-block' ) } value={ attributes.textColorHover || {} } onChange={ ( v ) => setAttributes( { textColorHover: v } ) } />
 	</PanelBody>
 );

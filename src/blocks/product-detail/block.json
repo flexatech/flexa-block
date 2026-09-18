@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Product Details",
 	"category": "woocommerce",
-	"description": "Show the current WooCommerce product’s details on a single-product page as tabs — toggle the Description, Additional information and Reviews tabs, and style the tab titles (normal and active colours, typography, padding, gap) and the content area (typography, colour, padding), with a paginated Reviews list (numbered or load-more), per-element Reviews styling (title, author, date, stars, text) and Additional-information table styling (label/value colours + typography, cell borders and padding).",
+	"description": "Show the current WooCommerce product’s details on a single-product page as tabs — toggle the Description, Additional information and Reviews tabs, and style the tab titles (normal and active colors, typography, padding, gap) and the content area (typography, color, padding), with a paginated Reviews list (numbered or load-more), per-element Reviews styling (title, author, date, stars, text) and Additional-information table styling (label/value colors + typography, cell borders and padding).",
 	"keywords": [ "flexa", "woocommerce", "product", "details", "tabs", "description" ],
 	"textdomain": "flexa-block",
 	"example": {

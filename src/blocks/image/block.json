@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Image",
 	"category": "flexa",
-	"description": "Media image with per-device width and alignment, aspect-ratio lock, object-fit, shape masks, colour/gradient overlay, hover motion, caption and link or lightbox.",
+	"description": "Media image with per-device width and alignment, aspect-ratio lock, object-fit, shape masks, color/gradient overlay, hover motion, caption and link or lightbox.",
 	"keywords": [ "flexa", "image", "picture", "photo", "media", "lightbox" ],
 	"textdomain": "flexa-block",
 	"example": {

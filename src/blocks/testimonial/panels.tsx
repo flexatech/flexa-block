@@ -94,7 +94,7 @@ export const TestimonialRatingPanel = ( { attributes, setAttributes }: TPanelPro
 						step={ 1 }
 						onChange={ ( v: number | undefined ) => setAttributes( { rating: v ?? 0 } ) }
 					/>
-					<DualColor label={ __( 'Star colour', 'flexa-block' ) } value={ ratingColor || {} } onChange={ ( v ) => setAttributes( { ratingColor: v } ) } />
+					<DualColor label={ __( 'Star color', 'flexa-block' ) } value={ ratingColor || {} } onChange={ ( v ) => setAttributes( { ratingColor: v } ) } />
 					<SliderUnit
 						label={ __( 'Star size', 'flexa-block' ) }
 						value={ ratingSize?.[ device ] || {} }
@@ -197,7 +197,7 @@ export const TestimonialTitlePanel = ( { attributes, setAttributes }: TPanelProp
 	return (
 		<PanelBody title={ __( 'Title', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
 			<SliderUnit
 				label={ __( 'Spacing below', 'flexa-block' ) }
 				value={ attributes.titleSpacing?.[ device ] || {} }
@@ -221,7 +221,7 @@ export const TestimonialQuotePanel = ( { attributes, setAttributes }: TPanelProp
 	return (
 		<PanelBody title={ __( 'Quote', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.quoteColor || {} } onChange={ ( v ) => setAttributes( { quoteColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.quoteColor || {} } onChange={ ( v ) => setAttributes( { quoteColor: v } ) } />
 			<SliderUnit
 				label={ __( 'Spacing below', 'flexa-block' ) }
 				value={ attributes.quoteSpacing?.[ device ] || {} }
@@ -245,7 +245,7 @@ export const TestimonialNamePanel = ( { attributes, setAttributes }: TPanelProps
 	return (
 		<PanelBody title={ __( 'Author name', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.nameColor || {} } onChange={ ( v ) => setAttributes( { nameColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.nameColor || {} } onChange={ ( v ) => setAttributes( { nameColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -261,7 +261,7 @@ export const TestimonialJobPanel = ( { attributes, setAttributes }: TPanelProps 
 	return (
 		<PanelBody title={ __( 'Author role', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.jobColor || {} } onChange={ ( v ) => setAttributes( { jobColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.jobColor || {} } onChange={ ( v ) => setAttributes( { jobColor: v } ) } />
 		</PanelBody>
 	);
 };

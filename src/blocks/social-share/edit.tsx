@@ -5,7 +5,9 @@
  * panels (@components). Inline styles mirror the PHP CSS generator, and nothing
  * is styled by default so the buttons keep the official brand artwork and the
  * theme's spacing until the user picks a value. The canvas previews the row of
- * icon buttons; the real share links are built on the front end (render.php).
+ * icon buttons; the real share links are built on the front end (render.php) —
+ * including the "Product Share" variation, whose URL, title and image come from
+ * the product WooCommerce resolves for the request and so cannot be previewed.
  *
  * @package Flexa\Block
  */
@@ -18,6 +20,7 @@ import {
 	BackgroundPanel,
 	BorderPanel,
 	ShadowPanel,
+	PositionPanel,
 	VisibilityPanel,
 	AnimationPanel,
 	useBlockId,
@@ -28,33 +31,17 @@ import {
 	cn,
 	visibilityClasses,
 	effective,
+	rawDevice,
 	withUnit,
-	spacingShorthand,
-	applyBackgroundPreview,
-	applyBorderPreview,
-	boxShadowPreview,
+	applyTypography,
+	wrapperPreviewStyle,
 	CONTENT_ALIGN_TO_FLEX,
 	MonoIcon,
 	getPlatform,
 } from '@utils';
 import type { CssProps } from '@utils';
-import { ShareItemsPanel, ShareSourcePanel, ShareLayoutPanel, ShareButtonsPanel } from './panels';
+import { ShareItemsPanel, ShareSourcePanel, ShareLayoutPanel, ShareButtonsPanel, ShareLabelPanel } from './panels';
 import type { DeviceKey, EditProps, SocialShareAttributes, SocialShareItem } from '../../types';
-
-/** Wrapper preview: spacing, background, border, shadow. */
-const buildWrapperStyle = ( attributes: SocialShareAttributes, device: DeviceKey ): CssProps => {
-	const s: CssProps = {};
-	const sp = effective( attributes.spacing, device );
-	const padding = spacingShorthand( sp.padding );
-	if ( padding ) s.padding = padding;
-	const margin = spacingShorthand( sp.margin );
-	if ( margin ) s.margin = margin;
-	applyBackgroundPreview( s, attributes.background );
-	applyBorderPreview( s, effective( attributes.border, device ) );
-	const shadow = boxShadowPreview( attributes.boxShadow );
-	if ( shadow ) s.boxShadow = shadow;
-	return s;
-};
 
 /** List preview: direction + gap + alignment. */
 const buildListStyle = ( attributes: SocialShareAttributes, device: DeviceKey ): CssProps => {
@@ -90,6 +77,13 @@ const buildIconStyle = ( attributes: SocialShareAttributes, device: DeviceKey ):
 	return s;
 };
 
+/** Label preview: typography only — the colour comes from the button. */
+const buildLabelStyle = ( attributes: SocialShareAttributes, device: DeviceKey ): CssProps => {
+	const s: CssProps = {};
+	applyTypography( s, rawDevice( attributes.labelTypography, device ) );
+	return s;
+};
+
 /** Item-box preview: tint (custom mode) + button background. */
 const buildItemStyle = ( attributes: SocialShareAttributes ): CssProps => {
 	const s: CssProps = {};
@@ -106,32 +100,34 @@ const buildItemStyle = ( attributes: SocialShareAttributes ): CssProps => {
  * Social Share edit component.
  */
 export default function Edit( { attributes, setAttributes, clientId }: EditProps< SocialShareAttributes > ): JSX.Element {
-	const { blockId, items, className, responsiveVisibility, htmlTag, hoverEffect, colorMode, shape } = attributes;
+	const { blockId, items, className, responsiveVisibility, htmlTag, hoverEffect, colorMode, shape, showLabels } =
+		attributes;
 	const [ device ] = useDevice();
 
 	useBlockId( clientId, blockId, setAttributes );
 
 	const list: SocialShareItem[] = Array.isArray( items ) ? items : [];
 
-	const wrapperStyle = buildWrapperStyle( attributes, device );
 	const listStyle = buildListStyle( attributes, device );
 	const iconStyle = buildIconStyle( attributes, device );
 	const itemStyle = buildItemStyle( attributes );
+	const labelStyle = buildLabelStyle( attributes, device );
 
 	const Tag: any = htmlTag || 'div';
 	const blockProps = useBlockProps( {
 		className: cn(
 			'flexa-social-share',
 			blockId && `flexa-social-share-${ blockId }`,
+			showLabels && 'flexa-social-share--labels',
 			hoverEffect && `flexa-social-share--hover-${ hoverEffect }`,
 			className,
 			...visibilityClasses( responsiveVisibility )
 		),
-		style: wrapperStyle,
+		style: wrapperPreviewStyle( attributes, device ),
 	} );
 
 	// Inserter hover-preview → faint skeleton mock-up instead of the real icons.
-	if ( ( attributes as any ).isExamplePreview ) {
+	if ( attributes.isExamplePreview ) {
 		return (
 			<div { ...blockProps }>
 				<ExamplePreviewSkeleton kind="social-icon" />
@@ -157,13 +153,15 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 						style={
 							<>
 								<ShareButtonsPanel attributes={ attributes } setAttributes={ setAttributes } />
-								<BackgroundPanel attributes={ attributes } setAttributes={ setAttributes } allowImage={ false } />
+								{ !! showLabels && <ShareLabelPanel attributes={ attributes } setAttributes={ setAttributes } /> }
+								<BackgroundPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<BorderPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<ShadowPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
 						}
 						advanced={
 							<>
+								<PositionPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<VisibilityPanel attributes={ attributes } setAttributes={ setAttributes } />
 								<AnimationPanel attributes={ attributes } setAttributes={ setAttributes } />
 							</>
@@ -190,6 +188,11 @@ export default function Edit( { attributes, setAttributes, clientId }: EditProps
 								<span className="flexa-social-share__icon" style={ iconStyle }>
 									{ iconEl }
 								</span>
+								{ !! showLabels && (
+									<span className="flexa-social-share__label" style={ labelStyle }>
+										{ platform.label }
+									</span>
+								) }
 							</span>
 						);
 					} ) }

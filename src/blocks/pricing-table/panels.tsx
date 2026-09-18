@@ -75,7 +75,7 @@ const BorderFields = ( { value, onChange }: { value: BorderDevice; onChange: ( p
 			max={ { px: 20, em: 2, rem: 2, '%': 100 } }
 			onChange={ ( v: LengthValue ) => onChange( { width: { top: v.value ?? '', right: v.value ?? '', bottom: v.value ?? '', left: v.value ?? '', unit: v.unit || 'px' } } ) }
 		/>
-		<DualColor label={ __( 'Colour', 'flexa-block' ) } value={ value.color || {} } onChange={ ( v ) => onChange( { color: v } ) } />
+		<DualColor label={ __( 'Color', 'flexa-block' ) } value={ value.color || {} } onChange={ ( v ) => onChange( { color: v } ) } />
 		<SliderUnit
 			label={ __( 'Corner radius', 'flexa-block' ) }
 			value={ { value: value.radius?.topLeft, unit: value.radius?.unit || 'px' } }
@@ -116,7 +116,7 @@ const ShadowFields = ( { value, onChange }: { value: BoxShadowAttr; onChange: ( 
 						onChange={ ( v?: number ) => onChange( { [ f.k ]: String( v ?? 0 ) } ) }
 					/>
 				) ) }
-				<DualColor label={ __( 'Colour', 'flexa-block' ) } value={ value.color || {} } onChange={ ( v ) => onChange( { color: v } ) } />
+				<DualColor label={ __( 'Color', 'flexa-block' ) } value={ value.color || {} } onChange={ ( v ) => onChange( { color: v } ) } />
 				<ToggleControl __nextHasNoMarginBottom label={ __( 'Inset', 'flexa-block' ) } checked={ !! value.inset } onChange={ ( v: boolean ) => onChange( { inset: v } ) } />
 			</>
 		) }
@@ -375,8 +375,8 @@ export const PricingBillingStylePanel = ( { attributes, setAttributes }: PtPanel
 	return (
 		<PanelBody title={ __( 'Billing switch', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.billingColor || {} } onChange={ ( v ) => setAttributes( { billingColor: v } ) } />
-			<DualColor label={ __( 'Text colour (selected)', 'flexa-block' ) } value={ attributes.billingActiveColor || {} } onChange={ ( v ) => setAttributes( { billingActiveColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.billingColor || {} } onChange={ ( v ) => setAttributes( { billingColor: v } ) } />
+			<DualColor label={ __( 'Text color (selected)', 'flexa-block' ) } value={ attributes.billingActiveColor || {} } onChange={ ( v ) => setAttributes( { billingActiveColor: v } ) } />
 			<DualColor label={ __( 'Track background', 'flexa-block' ) } value={ attributes.billingBackground || {} } onChange={ ( v ) => setAttributes( { billingBackground: v } ) } />
 			<DualColor label={ __( 'Selected background', 'flexa-block' ) } value={ attributes.billingActiveBackground || {} } onChange={ ( v ) => setAttributes( { billingActiveBackground: v } ) } />
 			<SliderUnit
@@ -402,7 +402,7 @@ export const PricingNamePanel = ( { attributes, setAttributes }: PtPanelProps ):
 	return (
 		<PanelBody title={ __( 'Plan name', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.nameColor || {} } onChange={ ( v ) => setAttributes( { nameColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.nameColor || {} } onChange={ ( v ) => setAttributes( { nameColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -418,8 +418,8 @@ export const PricingPricePanel = ( { attributes, setAttributes }: PtPanelProps )
 	return (
 		<PanelBody title={ __( 'Price', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Price colour', 'flexa-block' ) } value={ attributes.priceColor || {} } onChange={ ( v ) => setAttributes( { priceColor: v } ) } />
-			<DualColor label={ __( 'Period colour', 'flexa-block' ) } value={ attributes.periodColor || {} } onChange={ ( v ) => setAttributes( { periodColor: v } ) } />
+			<DualColor label={ __( 'Price color', 'flexa-block' ) } value={ attributes.priceColor || {} } onChange={ ( v ) => setAttributes( { priceColor: v } ) } />
+			<DualColor label={ __( 'Period color', 'flexa-block' ) } value={ attributes.periodColor || {} } onChange={ ( v ) => setAttributes( { periodColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -435,7 +435,7 @@ export const PricingFeaturePanel = ( { attributes, setAttributes }: PtPanelProps
 	return (
 		<PanelBody title={ __( 'Features', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.featureColor || {} } onChange={ ( v ) => setAttributes( { featureColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.featureColor || {} } onChange={ ( v ) => setAttributes( { featureColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -471,7 +471,7 @@ export const PricingHighlightPanel = ( { attributes, setAttributes }: PtPanelPro
 
 	return (
 		<PanelBody title={ __( 'Highlighted plan', 'flexa-block' ) } initialOpen={ false }>
-			<DualColor label={ __( 'Accent colour', 'flexa-block' ) } value={ attributes.highlightColor || {} } onChange={ ( v ) => setAttributes( { highlightColor: v } ) } />
+			<DualColor label={ __( 'Accent color', 'flexa-block' ) } value={ attributes.highlightColor || {} } onChange={ ( v ) => setAttributes( { highlightColor: v } ) } />
 			<FieldHead label={ __( 'Border', 'flexa-block' ) } />
 			<BorderFields value={ border } onChange={ ( patch ) => setAttributes( { highlightBorder: { ...border, ...patch } } ) } />
 			<FieldHead label={ __( 'Box shadow', 'flexa-block' ) } />
@@ -492,7 +492,7 @@ export const PricingBadgePanel = ( { attributes, setAttributes }: PtPanelProps )
 	return (
 		<PanelBody title={ __( 'Badge', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.badgeColor || {} } onChange={ ( v ) => setAttributes( { badgeColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.badgeColor || {} } onChange={ ( v ) => setAttributes( { badgeColor: v } ) } />
 			{ /* Background left empty inherits the highlight accent (see CSS generator). */ }
 			<DualColor label={ __( 'Background', 'flexa-block' ) } value={ attributes.badgeBackground || {} } onChange={ ( v ) => setAttributes( { badgeBackground: v } ) } />
 		</PanelBody>
@@ -518,8 +518,8 @@ export const PricingButtonPanel = ( { attributes, setAttributes }: PtPanelProps 
 			onChange={ ( v ) => setAttributes( { buttonWidth: v as PricingTableAttributes[ 'buttonWidth' ] } ) }
 			options={ BUTTON_WIDTH_OPTIONS }
 		/>
-		<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.buttonTextColor || {} } onChange={ ( v ) => setAttributes( { buttonTextColor: v } ) } />
-		<DualColor label={ __( 'Text colour (hover)', 'flexa-block' ) } value={ attributes.buttonTextColorHover || {} } onChange={ ( v ) => setAttributes( { buttonTextColorHover: v } ) } />
+		<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.buttonTextColor || {} } onChange={ ( v ) => setAttributes( { buttonTextColor: v } ) } />
+		<DualColor label={ __( 'Text color (hover)', 'flexa-block' ) } value={ attributes.buttonTextColorHover || {} } onChange={ ( v ) => setAttributes( { buttonTextColorHover: v } ) } />
 		<ColorGradientControl
 			label={ __( 'Background', 'flexa-block' ) }
 			type={ attributes.buttonBackgroundType || 'color' }

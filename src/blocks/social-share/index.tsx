@@ -9,6 +9,7 @@ import { registerBlockType } from '@wordpress/blocks';
 import metadata from './block.json';
 import { BLOCK_ICONS } from '@shared/block-icons';
 import Edit from './edit';
+import variations from './variations';
 import './style.scss';
 import './editor.scss';
 
@@ -19,4 +20,5 @@ registerBlockType( metadata.name, {
 	edit: Edit,
 	// Dynamic block — markup is produced by render.php; nothing is saved.
 	save: () => null,
+	variations,
 } );
