@@ -331,6 +331,14 @@ require_once $flexa_inc . 'css-generators/class-product-price-css.php';
 require_once $flexa_inc . 'css-generators/class-product-rating-css.php';
 require_once $flexa_inc . 'css-generators/class-product-detail-css.php';
 require_once $flexa_inc . 'css-generators/class-product-image-css.php';
+require_once $flexa_inc . 'css-generators/class-product-description-css.php';
+require_once $flexa_inc . 'css-generators/class-product-stock-css.php';
+require_once $flexa_inc . 'css-generators/class-product-excerpt-css.php';
+require_once $flexa_inc . 'css-generators/class-product-add-to-cart-css.php';
+require_once $flexa_inc . 'class-woo-helpers.php';
+require_once $flexa_inc . 'css-generators/class-product-field-css.php';
+require_once $flexa_inc . 'css-generators/class-product-meta-css.php';
+require_once $flexa_inc . 'css-generators/class-product-related-css.php';
 
 // Shared base class for block CSS tests (kept outside the scanned suite dir).
 require_once __DIR__ . '/CssTestCase.php';

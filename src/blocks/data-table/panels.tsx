@@ -88,8 +88,8 @@ export const DataTableHeaderPanel = ( { attributes, setAttributes }: DtPanelProp
 	return (
 		<PanelBody title={ __( 'Header', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.headerColor || {} } onChange={ ( v ) => setAttributes( { headerColor: v } ) } />
-			<DualColor label={ __( 'Text colour (hover)', 'flexa-block' ) } value={ attributes.headerColorHover || {} } onChange={ ( v ) => setAttributes( { headerColorHover: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.headerColor || {} } onChange={ ( v ) => setAttributes( { headerColor: v } ) } />
+			<DualColor label={ __( 'Text color (hover)', 'flexa-block' ) } value={ attributes.headerColorHover || {} } onChange={ ( v ) => setAttributes( { headerColorHover: v } ) } />
 			<DualColor label={ __( 'Background', 'flexa-block' ) } value={ attributes.headerBackground || {} } onChange={ ( v ) => setAttributes( { headerBackground: v } ) } />
 		</PanelBody>
 	);
@@ -108,7 +108,7 @@ export const DataTableCellPanel = ( { attributes, setAttributes }: DtPanelProps 
 	return (
 		<PanelBody title={ __( 'Cells', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.cellColor || {} } onChange={ ( v ) => setAttributes( { cellColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.cellColor || {} } onChange={ ( v ) => setAttributes( { cellColor: v } ) } />
 			<Dimensions
 				label={ __( 'Cell padding', 'flexa-block' ) }
 				responsive
@@ -117,17 +117,17 @@ export const DataTableCellPanel = ( { attributes, setAttributes }: DtPanelProps 
 				onChange={ ( v: BoxValue ) => setAttributes( { cellPadding: { ...attributes.cellPadding, [ device ]: v } } ) }
 			/>
 			{ attributes.striped !== false && (
-				<DualColor label={ __( 'Striped-row colour', 'flexa-block' ) } value={ attributes.stripedColor || {} } onChange={ ( v ) => setAttributes( { stripedColor: v } ) } />
+				<DualColor label={ __( 'Striped-row color', 'flexa-block' ) } value={ attributes.stripedColor || {} } onChange={ ( v ) => setAttributes( { stripedColor: v } ) } />
 			) }
 			{ attributes.hoverHighlight !== false && (
 				<>
-					<DualColor label={ __( 'Row hover colour', 'flexa-block' ) } value={ attributes.hoverColor || {} } onChange={ ( v ) => setAttributes( { hoverColor: v } ) } />
-					<DualColor label={ __( 'Row hover text colour', 'flexa-block' ) } value={ attributes.cellColorHover || {} } onChange={ ( v ) => setAttributes( { cellColorHover: v } ) } />
+					<DualColor label={ __( 'Row hover color', 'flexa-block' ) } value={ attributes.hoverColor || {} } onChange={ ( v ) => setAttributes( { hoverColor: v } ) } />
+					<DualColor label={ __( 'Row hover text color', 'flexa-block' ) } value={ attributes.cellColorHover || {} } onChange={ ( v ) => setAttributes( { cellColorHover: v } ) } />
 				</>
 			) }
 			{ attributes.showCellBorders !== false && (
 				<>
-					<DualColor label={ __( 'Cell border colour', 'flexa-block' ) } value={ attributes.cellBorderColor || {} } onChange={ ( v ) => setAttributes( { cellBorderColor: v } ) } />
+					<DualColor label={ __( 'Cell border color', 'flexa-block' ) } value={ attributes.cellBorderColor || {} } onChange={ ( v ) => setAttributes( { cellBorderColor: v } ) } />
 					<SliderUnit
 						label={ __( 'Cell border width', 'flexa-block' ) }
 						value={ attributes.cellBorderWidth || {} }
@@ -141,7 +141,7 @@ export const DataTableCellPanel = ( { attributes, setAttributes }: DtPanelProps 
 			{ !! attributes.firstColumnHighlight && (
 				<>
 					<DualColor label={ __( 'First-column background', 'flexa-block' ) } value={ attributes.firstColumnBackground || {} } onChange={ ( v ) => setAttributes( { firstColumnBackground: v } ) } />
-					<DualColor label={ __( 'First-column text colour', 'flexa-block' ) } value={ attributes.firstColumnColor || {} } onChange={ ( v ) => setAttributes( { firstColumnColor: v } ) } />
+					<DualColor label={ __( 'First-column text color', 'flexa-block' ) } value={ attributes.firstColumnColor || {} } onChange={ ( v ) => setAttributes( { firstColumnColor: v } ) } />
 				</>
 			) }
 		</PanelBody>

@@ -703,4 +703,250 @@ class CSS_Helpers {
 			$css->set_selector( $btn )->add_property( 'font-size', self::with_unit( $font['value'], $font['unit'] ?? 'px' ) );
 		}
 	}
+
+	/**
+	 * Map a content-alignment keyword onto its flexbox equivalent.
+	 *
+	 * `text-align` moves nothing inside a flex container, so any block whose
+	 * content sits in a flex row has to translate the author's left / center /
+	 * right into `justify-content` (or `align-items`, in a column). Returns ''
+	 * for an unset or unknown value, which callers treat as "emit nothing".
+	 *
+	 * @param string $align Alignment keyword.
+	 * @return string Flexbox value, or ''.
+	 */
+	public static function flex_align( $align ) {
+		$map = [
+			'left'   => 'flex-start',
+			'center' => 'center',
+			'right'  => 'flex-end',
+		];
+
+		return $map[ (string) $align ] ?? '';
+	}
+
+	/**
+	 * Emit the wrapper declarations every simple product-* block repeats inside
+	 * its device loop: text alignment, padding / margin, border and advanced
+	 * layout (overflow / position / z-index).
+	 *
+	 * Call it between `open_device()` and `close_device()`. Nothing is emitted
+	 * for a value the user never set, so an untouched block keeps theme styling.
+	 *
+	 * @param CSS_Builder $css      Builder.
+	 * @param string      $selector Wrapper selector (`.flexa-<block>-<id>`).
+	 * @param array       $attrs    Merged attributes.
+	 * @param string      $device   Current device key.
+	 */
+	public static function add_wrapper_device( $css, $selector, $attrs, $device ) {
+		$align = (string) ( $attrs['alignment'][ $device ] ?? '' );
+		if ( '' !== $align ) {
+			$css->set_selector( $selector )->add_property( 'text-align', $align );
+		}
+
+		$spacing = $attrs['spacing'][ $device ] ?? [];
+		if ( ! empty( $spacing['padding'] ) ) {
+			$padding = self::spacing_shorthand( $spacing['padding'] );
+			if ( '' !== $padding ) {
+				$css->set_selector( $selector )->add_property( 'padding', $padding );
+			}
+		}
+		if ( ! empty( $spacing['margin'] ) ) {
+			$margin = self::spacing_shorthand( $spacing['margin'] );
+			if ( '' !== $margin ) {
+				$css->set_selector( $selector )->add_property( 'margin', $margin );
+			}
+		}
+
+		$border = $attrs['border'][ $device ] ?? [];
+		if ( ! empty( $border ) ) {
+			$css->set_selector( $selector );
+			self::add_border( $css, $border );
+		}
+
+		$advanced = $attrs['advancedLayout'][ $device ] ?? [];
+		if ( ! empty( $advanced ) ) {
+			$css->set_selector( $selector );
+			self::add_advanced_layout( $css, $advanced );
+		}
+	}
+
+	/**
+	 * Emit the device-independent wrapper declarations every simple product-*
+	 * block repeats: background (with the lazy-image handshake), box shadow, and
+	 * the dark-mode branch for background / border colour / shadow.
+	 *
+	 * Call it once, after the device loop has closed.
+	 *
+	 * @param CSS_Builder $css      Builder.
+	 * @param string      $selector Wrapper selector (`.flexa-<block>-<id>`).
+	 * @param array       $attrs    Merged attributes.
+	 */
+	public static function add_wrapper_base( $css, $selector, $attrs ) {
+		$background = $attrs['background'] ?? [];
+		$lazy_bg    = ! empty( $background['lazyLoad'] ) && 'image' === ( $background['type'] ?? 'none' ) && '' !== ( $background['image']['url'] ?? '' );
+
+		if ( ! empty( $background ) ) {
+			$css->set_selector( $selector );
+			self::add_background( $css, $background, $lazy_bg );
+			if ( $lazy_bg ) {
+				$css->set_selector( $selector . '.flexa-bg-loaded' )
+					->add_property( 'background-image', 'url(' . esc_url_raw( $background['image']['url'] ) . ')' );
+			}
+		}
+
+		$shadow = self::box_shadow( $attrs['boxShadow'] ?? [] );
+		if ( '' !== $shadow ) {
+			$css->set_selector( $selector )->add_property( 'box-shadow', $shadow );
+		}
+
+		self::add_dark_mode(
+			$css,
+			$selector,
+			function ( $css ) use ( $attrs, $background ) {
+				$type = $background['type'] ?? 'none';
+				if ( 'classic' === $type || 'color' === $type ) {
+					$dark = self::dark( $background['color'] ?? '' );
+					if ( '' !== $dark ) {
+						$css->add_property( 'background-color', $dark );
+					}
+				} elseif ( 'gradient' === $type ) {
+					$dark = self::dark( $background['gradient'] ?? '' );
+					if ( '' !== $dark ) {
+						$css->add_property( 'background-image', $dark );
+					}
+				}
+
+				$border_dark = self::dark( $attrs['border']['desktop']['color'] ?? '' );
+				if ( '' !== $border_dark ) {
+					$css->add_property( 'border-color', $border_dark );
+				}
+
+				$box_shadow = $attrs['boxShadow'] ?? [];
+				if ( ! empty( $box_shadow['enabled'] ) ) {
+					$shadow_dark = self::dark( $box_shadow['color'] ?? '' );
+					if ( '' !== $shadow_dark ) {
+						$value = self::box_shadow( $box_shadow, $shadow_dark );
+						if ( '' !== $value ) {
+							$css->add_property( 'box-shadow', $value );
+						}
+					}
+				}
+			}
+		);
+	}
+
+	/**
+	 * Emit button styling shared by the blocks that render a call-to-action:
+	 * text and background colour (base + hover), corner radius, padding,
+	 * alignment inside a flex parent, and the full-width stretch.
+	 *
+	 * Attribute names are `<prefix>TextColor` / `<prefix>Background` /
+	 * `<prefix>TextColorHover` / `<prefix>BackgroundHover` / `<prefix>Radius` /
+	 * `<prefix>Padding` / `<prefix>Align` / `<prefix>Width`. Nothing is emitted
+	 * for a value the user never set, so an untouched button keeps the theme's
+	 * own `wp-element-button` look.
+	 *
+	 * @param CSS_Builder $css      Builder.
+	 * @param string      $selector Button selector.
+	 * @param array       $attrs    Merged attributes.
+	 * @param string      $prefix   Attribute-name prefix (default `button`).
+	 */
+	public static function add_button( $css, $selector, $attrs, $prefix = 'button' ) {
+		$hover = $selector . ':hover';
+
+		self::color_pair( $css, $selector, 'color', $attrs[ $prefix . 'TextColor' ] ?? '' );
+		self::color_pair( $css, $hover, 'color', $attrs[ $prefix . 'TextColorHover' ] ?? '' );
+		self::color_pair( $css, $selector, 'background', $attrs[ $prefix . 'Background' ] ?? '' );
+		self::color_pair( $css, $hover, 'background', $attrs[ $prefix . 'BackgroundHover' ] ?? '' );
+
+		$radius = $attrs[ $prefix . 'Radius' ] ?? [];
+		if ( ! empty( $radius['value'] ) ) {
+			$css->set_selector( $selector )->add_property( 'border-radius', self::with_unit( $radius['value'], $radius['unit'] ?? 'px' ) );
+		}
+
+		$padding = self::spacing_shorthand( $attrs[ $prefix . 'Padding' ] ?? [] );
+		if ( '' !== $padding ) {
+			$css->set_selector( $selector )->add_property( 'padding', $padding );
+		}
+
+		$align_map = [
+			'left'   => 'flex-start',
+			'center' => 'center',
+			'right'  => 'flex-end',
+		];
+		$align = (string) ( $attrs[ $prefix . 'Align' ] ?? '' );
+		if ( isset( $align_map[ $align ] ) ) {
+			$css->set_selector( $selector )->add_property( 'align-self', $align_map[ $align ] );
+		}
+
+		if ( 'full' === ( $attrs[ $prefix . 'Width' ] ?? 'auto' ) ) {
+			$css->set_selector( $selector )
+				->add_property( 'display', 'flex' )
+				->add_property( 'width', '100%' )
+				->add_property( 'justify-content', 'center' );
+		}
+	}
+
+	/**
+	 * Emit the per-device row geometry shared by the social button blocks: the
+	 * gap between buttons, the row's alignment and the square icon size.
+	 *
+	 * Call it between `open_device()` and `close_device()`.
+	 *
+	 * @param CSS_Builder $css    Builder.
+	 * @param string      $list   Button-row selector.
+	 * @param string      $icon   Icon selector.
+	 * @param array       $attrs  Merged attributes.
+	 * @param string      $device Current device key.
+	 */
+	public static function add_social_row( $css, $list, $icon, $attrs, $device ) {
+		$justify_map = [
+			'left'   => 'flex-start',
+			'center' => 'center',
+			'right'  => 'flex-end',
+		];
+
+		$gap = $attrs['gap'][ $device ] ?? [];
+		if ( ! empty( $gap['value'] ) ) {
+			$css->set_selector( $list )->add_property( 'gap', self::with_unit( $gap['value'], $gap['unit'] ?? 'px' ) );
+		}
+
+		$align = (string) ( $attrs['alignment'][ $device ] ?? '' );
+		if ( isset( $justify_map[ $align ] ) ) {
+			$css->set_selector( $list )->add_property( 'justify-content', $justify_map[ $align ] );
+		}
+
+		$size = $attrs['iconSize'][ $device ] ?? [];
+		if ( ! empty( $size['value'] ) ) {
+			$value = self::with_unit( $size['value'], $size['unit'] ?? 'px' );
+			$css->set_selector( $icon )->add_property( 'width', $value )->add_property( 'height', $value );
+		}
+	}
+
+	/**
+	 * Emit the colours shared by the social button blocks: the icon tint (custom
+	 * colour mode only — the mono glyph paints with `currentColor`) and the chip
+	 * background sitting behind it. Light at the base, dark under the dark-mode
+	 * branch.
+	 *
+	 * @param CSS_Builder $css   Builder.
+	 * @param string      $item  Button selector.
+	 * @param array       $attrs Merged attributes.
+	 */
+	public static function add_social_colors( $css, $item, $attrs ) {
+		if ( 'custom' === ( $attrs['colorMode'] ?? 'official' ) ) {
+			$tint_light = self::light( $attrs['tint'] ?? '' );
+			if ( '' !== $tint_light ) {
+				$css->set_selector( $item )->add_property( 'color', $tint_light );
+			}
+			self::dark_color( $css, $item, 'color', self::dark( $attrs['tint'] ?? '' ) );
+		}
+
+		$btn_light = self::light( $attrs['buttonBackground'] ?? '' );
+		if ( '' !== $btn_light ) {
+			$css->set_selector( $item )->add_property( 'background-color', $btn_light );
+		}
+		self::dark_color( $css, $item, 'background-color', self::dark( $attrs['buttonBackground'] ?? '' ) );
+	}
 }

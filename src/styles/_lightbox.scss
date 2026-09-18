@@ -1,0 +1,94 @@
+/**
+ * The full-screen image overlay shared by Image, Images Gallery and Product
+ * Image — the markup `@shared/lightbox` builds.
+ *
+ * Every block passes its own class prefix to the script, so this mixin takes
+ * the same prefix and each block keeps the class names its stylesheet already
+ * shipped. That is what let the two blocks that carried a copy of these rules
+ * adopt the shared version without a single visible change.
+ *
+ * Usage from a block stylesheet:
+ *   @use '../../styles/lightbox' as *;
+ *   @include flexa-lightbox( 'flexa-image-lightbox' );
+ */
+
+@mixin flexa-lightbox( $block ) {
+	.#{ $block } {
+		position: fixed;
+		inset: 0;
+		z-index: 100000;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 24px;
+		background: var(--flexa-lightbox-bg, rgba(17, 17, 17, 0.9));
+		cursor: zoom-out;
+
+		&__figure {
+			margin: 0;
+			max-width: 92vw;
+			max-height: 92vh;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 12px;
+			cursor: default;
+		}
+
+		&__img {
+			max-width: 92vw;
+			max-height: 82vh;
+			width: auto;
+			height: auto;
+			object-fit: contain;
+			border-radius: 4px;
+		}
+
+		&__caption {
+			color: #fff;
+			font-size: 0.9rem;
+			text-align: center;
+			margin: 0;
+		}
+
+		&__close {
+			position: absolute;
+			top: 16px;
+			right: 20px;
+			width: 40px;
+			height: 40px;
+			border: 0;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.15);
+			color: #fff;
+			font-size: 22px;
+			line-height: 1;
+			cursor: pointer;
+		}
+
+		// Only rendered when there is more than one slide.
+		&__nav {
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 44px;
+			height: 44px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: 0;
+			border-radius: 50%;
+			background: rgba(255, 255, 255, 0.15);
+			color: #fff;
+			cursor: pointer;
+
+			&--prev {
+				left: 20px;
+			}
+
+			&--next {
+				right: 20px;
+			}
+		}
+	}
+}

@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Counter",
 	"category": "flexa",
-	"description": "Grid of stat counters that count up when scrolled into view — each with an icon, a prefixed/suffixed number and a label, plus per-device columns, typography, light/dark colours and a per-item box.",
+	"description": "Grid of stat counters that count up when scrolled into view — each with an icon, a prefixed/suffixed number and a label, plus per-device columns, typography, light/dark colors and a per-item box.",
 	"keywords": [ "flexa", "counter", "stats", "number", "milestone" ],
 	"textdomain": "flexa-block",
 	"example": {

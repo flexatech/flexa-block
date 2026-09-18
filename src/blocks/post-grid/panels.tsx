@@ -547,7 +547,7 @@ export const PostGridResultCountPanel = ( { attributes, setAttributes }: PgPanel
 	<PanelBody title={ __( 'Result count', 'flexa-block' ) } initialOpen={ false }>
 		<TypoGroup attr="resultCountTypography" attributes={ attributes } setAttributes={ setAttributes } />
 		<DualColor
-			label={ __( 'Colour', 'flexa-block' ) }
+			label={ __( 'Color', 'flexa-block' ) }
 			value={ attributes.resultCountColor || {} }
 			onChange={ ( v ) => setAttributes( { resultCountColor: v } ) }
 		/>
@@ -571,7 +571,7 @@ export const PostGridResultCountPanel = ( { attributes, setAttributes }: PgPanel
  * theme until the user picks a value. (The read-more button has its own panel.)
  */
 export const PostGridColorsPanel = ( { attributes, setAttributes }: PgPanelProps ): JSX.Element => (
-	<PanelBody title={ __( 'Colours', 'flexa-block' ) } initialOpen={ true }>
+	<PanelBody title={ __( 'Colors', 'flexa-block' ) } initialOpen={ true }>
 		<DualColor label={ __( 'Title', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
 		<DualColor label={ __( 'Meta', 'flexa-block' ) } value={ attributes.metaColor || {} } onChange={ ( v ) => setAttributes( { metaColor: v } ) } />
 		<DualColor label={ __( 'Excerpt', 'flexa-block' ) } value={ attributes.excerptColor || {} } onChange={ ( v ) => setAttributes( { excerptColor: v } ) } />
@@ -605,8 +605,8 @@ export const PostGridButtonPanel = ( { attributes, setAttributes }: PgPanelProps
 				options={ CONTENT_ALIGN_OPTIONS }
 			/>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.buttonTextColor || {} } onChange={ ( v ) => setAttributes( { buttonTextColor: v } ) } />
-			<DualColor label={ __( 'Text colour (hover)', 'flexa-block' ) } value={ attributes.buttonTextColorHover || {} } onChange={ ( v ) => setAttributes( { buttonTextColorHover: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.buttonTextColor || {} } onChange={ ( v ) => setAttributes( { buttonTextColor: v } ) } />
+			<DualColor label={ __( 'Text color (hover)', 'flexa-block' ) } value={ attributes.buttonTextColorHover || {} } onChange={ ( v ) => setAttributes( { buttonTextColorHover: v } ) } />
 			<DualColor label={ __( 'Background', 'flexa-block' ) } value={ attributes.buttonBackground || {} } onChange={ ( v ) => setAttributes( { buttonBackground: v } ) } />
 			<DualColor label={ __( 'Background (hover)', 'flexa-block' ) } value={ attributes.buttonBackgroundHover || {} } onChange={ ( v ) => setAttributes( { buttonBackgroundHover: v } ) } />
 			<SliderUnit

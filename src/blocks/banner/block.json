@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Banner",
 	"category": "flexa",
-	"description": "Promotional banner / hero section — a heading, description and call-to-action buttons laid over a colour, gradient or image background with an overlay, a banner min-height and boxed or full width.",
+	"description": "Promotional banner / hero section — a heading, description and call-to-action buttons laid over a color, gradient or image background with an overlay, a banner min-height and boxed or full width.",
 	"keywords": [ "flexa", "banner", "hero", "cta", "promo", "cover" ],
 	"textdomain": "flexa-block",
 	"attributes": {

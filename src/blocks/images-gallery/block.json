@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Images Gallery",
 	"category": "flexa",
-	"description": "Multi-image gallery in a grid, masonry or justified-tiled layout with per-device columns and gap, hover motion, colour or gradient overlay, captions and a prev/next lightbox.",
+	"description": "Multi-image gallery in a grid, masonry or justified-tiled layout with per-device columns and gap, hover motion, color or gradient overlay, captions and a prev/next lightbox.",
 	"keywords": [ "flexa", "gallery", "images", "masonry", "lightbox", "photos" ],
 	"textdomain": "flexa-block",
 	"example": {

@@ -310,7 +310,7 @@ export const TaxonomyColorsPanel = ( { attributes, setAttributes }: TaxPanelProp
 	const { prefixIconSize, suffixIconSize } = attributes;
 
 	return (
-		<PanelBody title={ __( 'Colours', 'flexa-block' ) } initialOpen={ true }>
+		<PanelBody title={ __( 'Colors', 'flexa-block' ) } initialOpen={ true }>
 			<DualColor label={ __( 'Term', 'flexa-block' ) } value={ attributes.itemColor || {} } onChange={ ( v ) => setAttributes( { itemColor: v } ) } />
 			<DualColor label={ __( 'Background', 'flexa-block' ) } value={ attributes.itemBackground || {} } onChange={ ( v ) => setAttributes( { itemBackground: v } ) } />
 			<DualColor label={ __( 'Term (hover)', 'flexa-block' ) } value={ attributes.itemHoverColor || {} } onChange={ ( v ) => setAttributes( { itemHoverColor: v } ) } />

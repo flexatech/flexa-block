@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Facebook Feed",
 	"category": "flexa",
-	"description": "Show the latest posts from a Facebook Page via the Graph API (token kept server-side, cached) — in a grid, list, masonry or carousel, toggle the profile picture, page name, timestamp, post image, message, reactions, comments and shares, link posts back to Facebook, page through the results, and style the card typography and colours.",
+	"description": "Show the latest posts from a Facebook Page via the Graph API (token kept server-side, cached) — in a grid, list, masonry or carousel, toggle the profile picture, page name, timestamp, post image, message, reactions, comments and shares, link posts back to Facebook, page through the results, and style the card typography and colors.",
 	"keywords": [ "flexa", "facebook", "feed", "social", "posts", "page" ],
 	"textdomain": "flexa-block",
 	"example": {

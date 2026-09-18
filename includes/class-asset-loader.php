@@ -46,12 +46,16 @@ class Asset_Loader {
 	 * Expose runtime settings to the editor as `window.flexaBlockEditor`.
 	 *
 	 * Lets controls (e.g. the light/dark color picker) react to the dark-mode
-	 * setting — when dark mode is off, the dark swatch is hidden.
+	 * setting — when dark mode is off, the dark swatch is hidden. `wooActive`
+	 * gates the product-only options on blocks that serve both a generic and a
+	 * WooCommerce variation (Social Share), which — unlike the product-* blocks —
+	 * stay registered whether or not WooCommerce is running.
 	 */
 	public static function editor_settings() {
 		$data = wp_json_encode(
 			[
 				'darkModeEnabled' => Dark_Mode_Settings::is_enabled(),
+				'wooActive'       => Woo_Helpers::is_active(),
 			]
 		);
 		wp_add_inline_script( 'wp-blocks', 'window.flexaBlockEditor = ' . $data . ';', 'before' );

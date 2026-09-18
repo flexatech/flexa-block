@@ -1,0 +1,33 @@
+/**
+ * Product Excerpt block — frontend + editor base styles.
+ *
+ * Layout only. Typography and colours stay with the theme until the PHP CSS
+ * generator emits declarations for values the user actually picked; the only
+ * rule here is the scaffolding `-webkit-line-clamp` needs to take effect.
+ */
+
+/* Clamp: the line count itself comes from the generator (-webkit-line-clamp). */
+.flexa-product-excerpt--clamped .flexa-product-excerpt__content {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-product-excerpt.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-product-excerpt.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-product-excerpt.flexa-hide-mobile {
+		display: none !important;
+	}
+}

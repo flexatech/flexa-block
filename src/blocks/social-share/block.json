@@ -5,8 +5,8 @@
 	"version": "1.0.0",
 	"title": "Social Share",
 	"category": "flexa",
-	"description": "Row of share buttons that post the current page to Facebook, X, LinkedIn or Pinterest — with per-device size, gap, alignment, a button shape, official brand or custom-tinted icons and a hover motion.",
-	"keywords": [ "flexa", "share", "social", "sharing", "facebook", "twitter" ],
+	"description": "Row of share buttons that post the current page — or the current WooCommerce product — to Facebook, X, LinkedIn or Pinterest, with per-device size, gap, alignment, a button shape, official brand or custom-tinted icons, optional network names and a hover motion.",
+	"keywords": [ "flexa", "share", "social", "sharing", "facebook", "twitter", "product", "woocommerce" ],
 	"textdomain": "flexa-block",
 	"example": {
 		"attributes": { "isExamplePreview": true },
@@ -36,7 +36,7 @@
 		"shareSource": {
 			"type": "string",
 			"default": "current",
-			"enum": [ "current", "custom" ]
+			"enum": [ "current", "custom", "product" ]
 		},
 		"shareUrl": {
 			"type": "string",
@@ -49,6 +49,10 @@
 		"shareImage": {
 			"type": "string",
 			"default": ""
+		},
+		"includeImage": {
+			"type": "boolean",
+			"default": true
 		},
 		"newTab": {
 			"type": "boolean",
@@ -94,6 +98,14 @@
 			"type": "object",
 			"default": { "light": "", "dark": "" }
 		},
+		"showLabels": {
+			"type": "boolean",
+			"default": false
+		},
+		"labelTypography": {
+			"type": "object",
+			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
+		},
 		"spacing": {
 			"type": "object",
 			"default": { "desktop": {}, "tablet": {}, "mobile": {} }
@@ -103,7 +115,16 @@
 			"default": {
 				"type": "none",
 				"color": { "light": "", "dark": "" },
-				"gradient": { "light": "", "dark": "" }
+				"gradient": { "light": "", "dark": "" },
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
 			}
 		},
 		"border": {
@@ -129,6 +150,14 @@
 				"color": { "light": "rgba(0,0,0,0.1)", "dark": "" },
 				"inset": false,
 				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": { "zIndex": "", "overflow": "", "position": "" },
+				"tablet": {},
+				"mobile": {}
 			}
 		},
 		"responsiveVisibility": {

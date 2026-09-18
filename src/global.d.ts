@@ -24,6 +24,9 @@ declare module 'swiper/css/*';
 /* Globals injected from PHP (Asset_Loader::editor_settings / Admin::enqueue). */
 interface FlexaBlockEditorData {
 	darkModeEnabled?: boolean;
+	/** Whether WooCommerce is active — gates the product-only inspector options
+	 *  on blocks that serve both a generic and a WooCommerce variation. */
+	wooActive?: boolean;
 }
 
 interface FlexaBlockAdminBlock {

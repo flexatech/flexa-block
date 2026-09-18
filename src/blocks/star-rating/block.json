@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Star Rating",
 	"category": "flexa",
-	"description": "A star rating shown out of a chosen maximum — set the value and range, the star size, gap and marked/unmarked colours, lay it out inline or stacked with an optional title, and expose an aggregateRating schema.",
+	"description": "A star rating shown out of a chosen maximum — set the value and range, the star size, gap and marked/unmarked colors, lay it out inline or stacked with an optional title, and expose an aggregateRating schema.",
 	"keywords": [ "flexa", "star", "rating", "review", "stars", "score" ],
 	"textdomain": "flexa-block",
 	"attributes": {

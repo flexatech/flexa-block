@@ -1,0 +1,173 @@
+/**
+ * Add to Cart block — frontend + editor base styles.
+ *
+ * Layout only. The inner markup belongs to WooCommerce's own template, so most
+ * of these rules do no more than make core's form respond to the block's gap /
+ * direction controls. No colours, padding or radius here: those come from the
+ * CSS generator, and only for values the user actually picked.
+ *
+ * Two things ARE drawn here because core leaves them bare: the quantity stepper
+ * (view.js wraps core's number input with a minus / plus pair, since the native
+ * spinners are tiny and look different in every browser) and the "choose an
+ * option first" notice that replaces WooCommerce's `window.alert`.
+ */
+
+.flexa-product-add-to-cart {
+	// The form is the flex parent the `gap` control targets. Wrapping keeps the
+	// button from being squeezed off a narrow screen.
+	form.cart {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	// A set quantity width must include the theme's own padding + border,
+	// otherwise the field overflows the box the user asked for.
+	.quantity input.qty {
+		box-sizing: border-box;
+	}
+
+	button.single_add_to_cart_button {
+		align-items: center;
+	}
+}
+
+/**
+ * Stacked layout — the quantity field above the button.
+ *
+ * Keyed off the wrapper modifier rather than generated CSS so it holds at every
+ * width and even on a block that has no blockId yet. A variable product also
+ * prints its attribute table inside `form.cart`, so the whole form stacks.
+ */
+.flexa-product-add-to-cart--stacked form.cart {
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+/**
+ * Quantity stepper. view.js adds `.flexa-qty` to core's `.quantity` wrapper and
+ * inserts the two buttons, so the group only appears once the script has run —
+ * the bare input stays perfectly usable until then.
+ */
+.flexa-product-add-to-cart .quantity.flexa-qty {
+	display: inline-flex;
+	align-items: stretch;
+	overflow: hidden;
+	border: 1px solid currentColor;
+	border-radius: 6px;
+	// The border is drawn on the group, so the input must not draw its own.
+	color: inherit;
+}
+
+.flexa-product-add-to-cart .flexa-qty__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2em;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	line-height: 1;
+	cursor: pointer;
+	user-select: none;
+	transition: background-color 0.15s ease, opacity 0.15s ease;
+
+	&:hover {
+		background-color: rgba(128, 128, 128, 0.16);
+	}
+
+	&:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+
+	svg {
+		width: 0.8em;
+		height: 0.8em;
+	}
+}
+
+.flexa-product-add-to-cart .flexa-qty input.qty {
+	border: 0;
+	border-radius: 0;
+	background: none;
+	text-align: center;
+	// A stepper makes the browser's own spinners redundant and ugly.
+	appearance: textfield;
+	-moz-appearance: textfield;
+
+	&::-webkit-outer-spin-button,
+	&::-webkit-inner-spin-button {
+		appearance: none;
+		-webkit-appearance: none;
+		margin: 0;
+	}
+}
+
+/**
+ * "Select an option first". WooCommerce marks the button `.disabled
+ * .wc-variation-selection-needed` until every attribute is chosen; core then
+ * answers a click with `window.alert`. view.js swallows that and shows this
+ * instead, so the message stays inside the page.
+ */
+.flexa-product-add-to-cart button.single_add_to_cart_button.disabled,
+.flexa-product-add-to-cart button.single_add_to_cart_button[disabled] {
+	opacity: 0.55;
+	cursor: not-allowed;
+}
+
+.flexa-product-add-to-cart__notice {
+	flex-basis: 100%;
+	margin-top: 0.5em;
+	font-size: 0.9em;
+	line-height: 1.4;
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-product-add-to-cart.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-product-add-to-cart.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-product-add-to-cart.flexa-hide-mobile {
+		display: none !important;
+	}
+}
+
+/**
+ * Cart icon. Core escapes the button label, so an SVG cannot be pushed through
+ * the `woocommerce_product_single_add_to_cart_text` filter — it is a masked
+ * pseudo-element instead, and the mask (rather than a plain background-image)
+ * lets the glyph take the button's own text colour. The editor mock relies on
+ * exactly these rules too, which is why it renders no icon element of its own.
+ */
+.flexa-product-add-to-cart--icon-before button.single_add_to_cart_button::before,
+.flexa-product-add-to-cart--icon-after button.single_add_to_cart_button::after {
+	content: "";
+	display: inline-block;
+	flex: none;
+	width: 1em;
+	height: 1em;
+	vertical-align: middle;
+	background-color: currentColor;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='20' r='1.4'/%3E%3Ccircle cx='18' cy='20' r='1.4'/%3E%3Cpath d='M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L21 7H6'/%3E%3C/svg%3E") no-repeat center / contain;
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='20' r='1.4'/%3E%3Ccircle cx='18' cy='20' r='1.4'/%3E%3Cpath d='M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L21 7H6'/%3E%3C/svg%3E") no-repeat center / contain;
+}
+
+.flexa-product-add-to-cart--icon-before button.single_add_to_cart_button::before {
+	margin-right: 0.5em;
+}
+
+.flexa-product-add-to-cart--icon-after button.single_add_to_cart_button::after {
+	margin-left: 0.5em;
+}

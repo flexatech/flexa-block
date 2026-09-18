@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Icon",
 	"category": "flexa",
-	"description": "A single SVG glyph — chosen from the icon library or uploaded — with per-device size and alignment, a square, rounded or circle shape, icon and frame colours with hover, and an optional link.",
+	"description": "A single SVG glyph — chosen from the icon library or uploaded — with per-device size and alignment, a square, rounded or circle shape, icon and frame colors with hover, and an optional link.",
 	"keywords": [ "flexa", "icon", "svg", "glyph", "symbol" ],
 	"textdomain": "flexa-block",
 	"attributes": {

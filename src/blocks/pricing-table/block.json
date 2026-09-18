@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Pricing Table",
 	"category": "flexa",
-	"description": "Side-by-side pricing plans — each column carries a name, price, billing period, feature list, a highlighted \"most popular\" flag and a call-to-action, with an optional monthly/yearly toggle, per-device typography and light/dark colours.",
+	"description": "Side-by-side pricing plans — each column carries a name, price, billing period, feature list, a highlighted \"most popular\" flag and a call-to-action, with an optional monthly/yearly toggle, per-device typography and light/dark colors.",
 	"keywords": [ "flexa", "pricing", "plans", "price", "subscription", "table" ],
 	"textdomain": "flexa-block",
 	"example": {

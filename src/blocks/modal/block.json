@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Modal",
 	"category": "flexa",
-	"description": "A pop-up dialog opened by a button, text, image or icon trigger and filled with any inner blocks — set the modal width, max-height, padding, background and radius, the overlay colour, the close button, and show-once, click-overlay and press-escape behaviour.",
+	"description": "A pop-up dialog opened by a button, text, image or icon trigger and filled with any inner blocks — set the modal width, max-height, padding, background and radius, the overlay color, the close button, and show-once, click-overlay and press-escape behaviour.",
 	"keywords": [ "flexa", "modal", "popup", "dialog", "lightbox", "overlay" ],
 	"textdomain": "flexa-block",
 	"attributes": {

@@ -1,0 +1,346 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "flexa/product-field",
+	"version": "1.0.0",
+	"title": "Product Field",
+	"category": "woocommerce",
+	"description": "One line of WooCommerce product data on a single-product page — the SKU, the categories or the tags — with an optional label beside or above it. Terms read inline with a separator, as badges or as a list, each linking to its archive; the SKU can carry a prefix, a suffix, fallback wording and a copy-to-clipboard button. Use it on its own, or stack several inside Product Meta.",
+	"keywords": [
+		"flexa",
+		"woocommerce",
+		"product",
+		"sku",
+		"categories",
+		"tags",
+		"taxonomy",
+		"terms",
+		"meta"
+	],
+	"textdomain": "flexa-block",
+	"example": {
+		"attributes": {
+			"isExamplePreview": true
+		},
+		"viewportWidth": 500
+	},
+	"attributes": {
+		"isExamplePreview": {
+			"type": "boolean",
+			"default": false
+		},
+		"blockId": {
+			"type": "string"
+		},
+		"alignment": {
+			"type": "object",
+			"default": {
+				"desktop": "",
+				"tablet": "",
+				"mobile": ""
+			}
+		},
+		"field": {
+			"type": "string",
+			"default": "sku",
+			"enum": [
+				"sku",
+				"categories",
+				"tags"
+			]
+		},
+		"label": {
+			"type": "string",
+			"default": "SKU:"
+		},
+		"fieldLayout": {
+			"type": "string",
+			"default": "inline",
+			"enum": [
+				"inline",
+				"stacked"
+			]
+		},
+		"labelGap": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"value": "",
+					"unit": "px"
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"labelTypography": {
+			"type": "object",
+			"default": {
+				"desktop": {},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"labelColor": {
+			"type": "object",
+			"default": {
+				"light": "",
+				"dark": ""
+			}
+		},
+		"valueTypography": {
+			"type": "object",
+			"default": {
+				"desktop": {},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"valueColor": {
+			"type": "object",
+			"default": {
+				"light": "",
+				"dark": ""
+			}
+		},
+		"termLayout": {
+			"type": "string",
+			"default": "inline",
+			"enum": [
+				"inline",
+				"badge",
+				"list"
+			]
+		},
+		"separator": {
+			"type": "string",
+			"default": ", "
+		},
+		"linkTerms": {
+			"type": "boolean",
+			"default": true
+		},
+		"linkTarget": {
+			"type": "boolean",
+			"default": false
+		},
+		"maxTerms": {
+			"type": "number",
+			"default": 0
+		},
+		"termGap": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"value": "",
+					"unit": "px"
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"itemColor": {
+			"type": "object",
+			"default": {
+				"light": "",
+				"dark": ""
+			}
+		},
+		"itemColorHover": {
+			"type": "object",
+			"default": {
+				"light": "",
+				"dark": ""
+			}
+		},
+		"itemBackground": {
+			"type": "object",
+			"default": {
+				"light": "",
+				"dark": ""
+			}
+		},
+		"itemBackgroundHover": {
+			"type": "object",
+			"default": {
+				"light": "",
+				"dark": ""
+			}
+		},
+		"itemPadding": {
+			"type": "object",
+			"default": {
+				"desktop": {},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"itemRadius": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"value": "",
+					"unit": "px"
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"itemBorderWidth": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"value": "",
+					"unit": "px"
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"itemBorderColor": {
+			"type": "object",
+			"default": {
+				"light": "",
+				"dark": ""
+			}
+		},
+		"skuPrefix": {
+			"type": "string",
+			"default": ""
+		},
+		"skuSuffix": {
+			"type": "string",
+			"default": ""
+		},
+		"skuFallback": {
+			"type": "string",
+			"default": ""
+		},
+		"showCopy": {
+			"type": "boolean",
+			"default": false
+		},
+		"copiedText": {
+			"type": "string",
+			"default": ""
+		},
+		"spacing": {
+			"type": "object",
+			"default": {
+				"desktop": {},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"background": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"color": {
+					"light": "",
+					"dark": ""
+				},
+				"gradient": {
+					"light": "",
+					"dark": ""
+				},
+				"image": {
+					"url": "",
+					"id": null,
+					"position": "center center",
+					"repeat": "no-repeat",
+					"size": "cover",
+					"attachment": "scroll"
+				},
+				"lazyLoad": false
+			}
+		},
+		"border": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"style": "",
+					"width": {
+						"top": "",
+						"right": "",
+						"bottom": "",
+						"left": "",
+						"unit": "px"
+					},
+					"color": {
+						"light": "",
+						"dark": ""
+					},
+					"radius": {
+						"topLeft": "",
+						"topRight": "",
+						"bottomRight": "",
+						"bottomLeft": "",
+						"unit": "px"
+					}
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"boxShadow": {
+			"type": "object",
+			"default": {
+				"horizontal": "0",
+				"vertical": "4",
+				"blur": "12",
+				"spread": "0",
+				"color": {
+					"light": "rgba(0,0,0,0.1)",
+					"dark": ""
+				},
+				"inset": false,
+				"enabled": false
+			}
+		},
+		"advancedLayout": {
+			"type": "object",
+			"default": {
+				"desktop": {
+					"zIndex": "",
+					"overflow": "",
+					"position": ""
+				},
+				"tablet": {},
+				"mobile": {}
+			}
+		},
+		"responsiveVisibility": {
+			"type": "object",
+			"default": {
+				"hideOnDesktop": false,
+				"hideOnTablet": false,
+				"hideOnMobile": false
+			}
+		},
+		"animation": {
+			"type": "object",
+			"default": {
+				"type": "none",
+				"duration": "normal",
+				"delay": ""
+			}
+		},
+		"htmlAttributes": {
+			"type": "object",
+			"default": {
+				"customAttributes": []
+			}
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"className": true,
+		"html": false,
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

@@ -3,11 +3,20 @@
  *
  * Two responsibilities:
  *   1. Lazy-load background images (shared `data-flexa-lazy-bg` convention).
- *   2. Handle the click action: open a self-contained lightbox, or navigate to
- *      the media file. Link clicks are plain <a> elements and need no script.
+ *   2. Handle the click action: open the shared lightbox, or navigate to the
+ *      media file. Link clicks are plain <a> elements and need no script.
+ *
+ * The overlay lives in `@shared/lightbox`, which this block and the Images
+ * Gallery and Product Image blocks all drive; the class prefix passed below is
+ * the one this block's stylesheet already targeted, so nothing here changed
+ * visually.
  */
 
 export {}; // Treat as a module so top-level names don't collide with other view scripts.
+
+import { openLightbox, isDarkMode } from '@shared/lightbox';
+
+const PREFIX = 'flexa-image-lightbox';
 
 /* -------------------------------------------------------------------------
  * Lazy background images (same pattern as Container / Heading).
@@ -44,85 +53,6 @@ function initLazyBackgrounds(): void {
 	targets.forEach( ( el ) => observer.observe( el ) );
 }
 
-/* -------------------------------------------------------------------------
- * Lightbox.
- * ---------------------------------------------------------------------- */
-
-let activeLightbox: HTMLElement | null = null;
-
-/**
- * Whether the page is currently in dark mode, covering both strategies the
- * plugin supports: an explicit `[data-theme="dark"]` on <html>/<body>, or the
- * OS `prefers-color-scheme: dark`. The lightbox lives on <body>, outside the
- * block, so its dark colour can't come from the per-instance CSS — resolve here.
- */
-function isDarkMode(): boolean {
-	if ( document.documentElement.getAttribute( 'data-theme' ) === 'dark' || document.body.getAttribute( 'data-theme' ) === 'dark' ) {
-		return true;
-	}
-	return !! ( window.matchMedia && window.matchMedia( '(prefers-color-scheme: dark)' ).matches );
-}
-
-function closeLightbox(): void {
-	if ( activeLightbox ) {
-		activeLightbox.remove();
-		activeLightbox = null;
-		document.removeEventListener( 'keydown', onKeydown );
-	}
-}
-
-function onKeydown( e: KeyboardEvent ): void {
-	if ( e.key === 'Escape' ) {
-		closeLightbox();
-	}
-}
-
-function openLightbox( src: string, caption: string, bg: string ): void {
-	closeLightbox();
-
-	const overlay = document.createElement( 'div' );
-	overlay.className = 'flexa-image-lightbox';
-	if ( bg ) {
-		overlay.style.setProperty( '--flexa-lightbox-bg', bg );
-	}
-
-	const close = document.createElement( 'button' );
-	close.type = 'button';
-	close.className = 'flexa-image-lightbox__close';
-	close.setAttribute( 'aria-label', 'Close' );
-	close.textContent = '×';
-
-	const figure = document.createElement( 'figure' );
-	figure.className = 'flexa-image-lightbox__figure';
-
-	const img = document.createElement( 'img' );
-	img.className = 'flexa-image-lightbox__img';
-	img.src = src;
-	img.alt = caption || '';
-	figure.appendChild( img );
-
-	if ( caption ) {
-		const cap = document.createElement( 'figcaption' );
-		cap.className = 'flexa-image-lightbox__caption';
-		cap.textContent = caption;
-		figure.appendChild( cap );
-	}
-
-	overlay.appendChild( close );
-	overlay.appendChild( figure );
-
-	// Click on the backdrop (not the figure) closes.
-	overlay.addEventListener( 'click', ( e ) => {
-		if ( e.target === overlay || e.target === close ) {
-			closeLightbox();
-		}
-	} );
-
-	document.body.appendChild( overlay );
-	activeLightbox = overlay;
-	document.addEventListener( 'keydown', onKeydown );
-}
-
 function initClicks(): void {
 	const blocks = document.querySelectorAll< HTMLElement >( '.flexa-image[data-click]' );
 	blocks.forEach( ( block ) => {
@@ -140,9 +70,12 @@ function initClicks(): void {
 				if ( ! src ) {
 					return;
 				}
-				const caption = block.dataset.lightboxCaption || '';
 				const bg = isDarkMode() && block.dataset.lightboxBgDark ? block.dataset.lightboxBgDark : block.dataset.lightboxBg || '';
-				openLightbox( src, caption, bg );
+				openLightbox( {
+					prefix: PREFIX,
+					slides: [ { src, caption: block.dataset.lightboxCaption || '' } ],
+					background: bg,
+				} );
 			} );
 		} else if ( action === 'media' ) {
 			frame.style.cursor = 'pointer';

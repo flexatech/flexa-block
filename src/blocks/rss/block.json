@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "RSS Feed",
 	"category": "flexa",
-	"description": "Show the newest entries from any RSS or Atom feed URL as a list or grid — set how many items, cache time and sort order, toggle the thumbnail, title, date, author, source and excerpt, add a read-more link that can open in a new tab, and style the card typography, colours and button.",
+	"description": "Show the newest entries from any RSS or Atom feed URL as a list or grid — set how many items, cache time and sort order, toggle the thumbnail, title, date, author, source and excerpt, add a read-more link that can open in a new tab, and style the card typography, colors and button.",
 	"keywords": [ "flexa", "rss", "atom", "feed", "syndication", "news" ],
 	"textdomain": "flexa-block",
 	"example": {

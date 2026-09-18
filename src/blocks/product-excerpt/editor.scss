@@ -1,0 +1,10 @@
+/**
+ * Product Excerpt block — editor-only styles.
+ *
+ * The placeholder copy should fill the block width so alignment reads correctly
+ * while editing. Front-end appearance lives in style.scss.
+ */
+
+.wp-block-flexa-product-excerpt .flexa-product-excerpt__content {
+	width: 100%;
+}

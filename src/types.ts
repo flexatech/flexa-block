@@ -795,11 +795,14 @@ export interface SocialShareAttributes {
 	htmlTag?: string;
 	// Content — which networks to share to.
 	items?: SocialShareItem[];
-	// What is shared: the current page, or a fixed URL/title/image.
-	shareSource?: 'current' | 'custom';
+	// What is shared: the current page, a fixed URL/title/image, or the
+	// WooCommerce product resolved for the request (the "Product Share" variation).
+	shareSource?: 'current' | 'custom' | 'product';
 	shareUrl?: string;
 	shareTitle?: string;
 	shareImage?: string;
+	/** Product source only — hand the featured image to networks that accept one. */
+	includeImage?: boolean;
 	newTab?: boolean;
 	// Layout.
 	direction?: 'row' | 'column';
@@ -812,13 +815,19 @@ export interface SocialShareAttributes {
 	tint?: ColorPair;
 	shape?: 'bare' | 'rounded' | 'circle' | 'square';
 	buttonBackground?: ColorPair;
+	// Network names beside the icons (off by default — icon-only rows).
+	showLabels?: boolean;
+	labelTypography?: ResponsiveValue< TypographyDevice >;
 	// Foundational (shared inspector panels read these).
 	spacing?: ResponsiveValue< SpacingDevice >;
 	background?: BackgroundAttr;
 	border?: ResponsiveValue< BorderDevice >;
 	boxShadow?: BoxShadowAttr;
+	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
 	responsiveVisibility?: ResponsiveVisibilityAttr;
+	animation?: AnimationAttr;
 	htmlAttributes?: HtmlAttributesAttr;
+	isExamplePreview?: boolean;
 }
 
 /**
@@ -1223,6 +1232,8 @@ export interface ProductImageAttributes {
 	imageScale?: 'none' | 'cover' | 'contain' | 'fill' | 'scale-down';
 	imageHeight?: ResponsiveValue< LengthValue >;
 	adaptiveHeight?: boolean;
+	/** Click the featured image to open the shared full-screen overlay. */
+	enableLightbox?: boolean;
 	zoomOnHover?: boolean;
 	hoverEffect?: string;
 	imageRadius?: ResponsiveValue< LengthValue >;
@@ -3335,6 +3346,227 @@ export interface DataTableAttributes {
 	responsiveVisibility?: ResponsiveVisibilityAttr;
 	animation?: AnimationAttr;
 	htmlAttributes?: HtmlAttributesAttr;
+}
+
+/**
+ * Foundation attributes shared by the simple product-* blocks — the wrapper
+ * options every one of them inherits from the Container template.
+ */
+/**
+ * Attributes of a call-to-action button, shared by every block that renders one
+ * so `CSS_Helpers::add_button()` and `buttonPreviewStyle()` read the same keys.
+ */
+export interface ButtonStyleAttributes {
+	buttonTypography?: ResponsiveValue< TypographyDevice >;
+	buttonTextColor?: ColorPair;
+	buttonTextColorHover?: ColorPair;
+	buttonBackground?: ColorPair;
+	buttonBackgroundHover?: ColorPair;
+	buttonRadius?: LengthValue;
+	buttonPadding?: BoxValue;
+	buttonAlign?: string;
+	buttonWidth?: string;
+}
+
+export interface ProductBlockBase {
+	blockId?: string;
+	isExamplePreview?: boolean;
+	className?: string;
+	alignment?: ResponsiveValue< string >;
+	spacing?: ResponsiveValue< SpacingDevice >;
+	background?: BackgroundAttr;
+	border?: ResponsiveValue< BorderDevice >;
+	boxShadow?: BoxShadowAttr;
+	advancedLayout?: ResponsiveValue< AdvancedLayoutDevice >;
+	animation?: AnimationAttr;
+	responsiveVisibility?: ResponsiveVisibilityAttr;
+	htmlAttributes?: HtmlAttributesAttr;
+}
+
+/** Product Description — the product's long or short description. */
+export interface ProductDescriptionAttributes extends ProductBlockBase {
+	// Optional heading above the description.
+	showTitle?: boolean;
+	titleText?: string;
+	titleTag?: string;
+	titleColor?: ColorPair;
+	titleTypography?: ResponsiveValue< TypographyDevice >;
+	// Body text.
+	typography?: ResponsiveValue< TypographyDevice >;
+	textColor?: ColorPair;
+	linkColor?: ColorPair;
+	linkColorHover?: ColorPair;
+	// Elements nested in the description markup.
+	innerHeadingColor?: ColorPair;
+	innerHeadingTypography?: ResponsiveValue< TypographyDevice >;
+	listStyle?: string;
+	listIndent?: ResponsiveValue< LengthValue >;
+	tableBorderColor?: ColorPair;
+	tableCellPadding?: ResponsiveValue< BoxValue >;
+	// Clamp + read more.
+	enableClamp?: boolean;
+	clampLines?: number;
+	readMoreText?: string;
+	readLessText?: string;
+	readMoreColor?: ColorPair;
+}
+
+/** Product Stock — the product's stock status. */
+export interface ProductStockAttributes extends ProductBlockBase {
+	displayType?: 'text' | 'badge';
+	showIcon?: boolean;
+	showQuantity?: boolean;
+	lowStockThreshold?: number;
+	inStockText?: string;
+	outOfStockText?: string;
+	backorderText?: string;
+	typography?: ResponsiveValue< TypographyDevice >;
+	inStockColor?: ColorPair;
+	inStockBackground?: ColorPair;
+	outOfStockColor?: ColorPair;
+	outOfStockBackground?: ColorPair;
+	backorderColor?: ColorPair;
+	backorderBackground?: ColorPair;
+	lowStockColor?: ColorPair;
+	lowStockBackground?: ColorPair;
+	badgePadding?: ResponsiveValue< BoxValue >;
+	badgeRadius?: ResponsiveValue< LengthValue >;
+	iconSize?: ResponsiveValue< LengthValue >;
+	gap?: ResponsiveValue< LengthValue >;
+}
+
+/** Product SKU — the product's stock-keeping unit. */
+/** Product Excerpt — the product's short description. */
+export interface ProductExcerptAttributes extends ProductBlockBase {
+	source?: 'short' | 'auto';
+	wordLimit?: number;
+	typography?: ResponsiveValue< TypographyDevice >;
+	textColor?: ColorPair;
+	linkColor?: ColorPair;
+	linkColorHover?: ColorPair;
+	enableClamp?: boolean;
+	clampLines?: number;
+}
+
+/** Product Add to Cart — the quantity field plus the add-to-cart button. */
+export interface ProductAddToCartAttributes extends ProductBlockBase, ButtonStyleAttributes {
+	cartLayout?: 'inline' | 'stacked' | 'button-only';
+	showQuantity?: boolean;
+	gap?: ResponsiveValue< LengthValue >;
+	// Quantity field.
+	quantityWidth?: ResponsiveValue< LengthValue >;
+	quantityHeight?: ResponsiveValue< LengthValue >;
+	quantityColor?: ColorPair;
+	quantityBackground?: ColorPair;
+	quantityBorderWidth?: ResponsiveValue< LengthValue >;
+	quantityBorderColor?: ColorPair;
+	quantityRadius?: ResponsiveValue< LengthValue >;
+	quantityTypography?: ResponsiveValue< TypographyDevice >;
+	// Button label + icon (the button's own style comes from ButtonStyleAttributes).
+	buttonText?: string;
+	showIcon?: boolean;
+	iconPosition?: 'before' | 'after';
+	iconSize?: ResponsiveValue< LengthValue >;
+	iconGap?: ResponsiveValue< LengthValue >;
+	// Variable-product form (WooCommerce renders the markup; we only style it).
+	variationLabelColor?: ColorPair;
+	variationLabelTypography?: ResponsiveValue< TypographyDevice >;
+	variationSelectColor?: ColorPair;
+	variationSelectBackground?: ColorPair;
+	variationSelectBorderColor?: ColorPair;
+}
+
+/** Product Meta — the SKU / categories / tags summary block. */
+/** Product Field — one line of product data: the SKU, the categories or the tags. */
+export interface ProductFieldAttributes extends ProductBlockBase {
+	field?: 'sku' | 'categories' | 'tags';
+	label?: string;
+	/** Where the label sits against the value. */
+	fieldLayout?: 'inline' | 'stacked';
+	labelGap?: ResponsiveValue< LengthValue >;
+	labelTypography?: ResponsiveValue< TypographyDevice >;
+	labelColor?: ColorPair;
+	valueTypography?: ResponsiveValue< TypographyDevice >;
+	valueColor?: ColorPair;
+	// Taxonomy fields.
+	termLayout?: 'inline' | 'badge' | 'list';
+	separator?: string;
+	linkTerms?: boolean;
+	linkTarget?: boolean;
+	maxTerms?: number;
+	termGap?: ResponsiveValue< LengthValue >;
+	itemColor?: ColorPair;
+	itemColorHover?: ColorPair;
+	itemBackground?: ColorPair;
+	itemBackgroundHover?: ColorPair;
+	itemPadding?: ResponsiveValue< BoxValue >;
+	itemRadius?: ResponsiveValue< LengthValue >;
+	itemBorderWidth?: ResponsiveValue< LengthValue >;
+	itemBorderColor?: ColorPair;
+	// SKU field.
+	skuPrefix?: string;
+	skuSuffix?: string;
+	skuFallback?: string;
+	showCopy?: boolean;
+	copiedText?: string;
+}
+
+/**
+ * Product Meta — a container of Product Field rows.
+ *
+ * It owns what only a list can own (the label column, the gaps, the divider)
+ * plus the label / value styling every row inside starts from; a row overrides
+ * any of it from its own attributes.
+ */
+export interface ProductMetaAttributes extends ProductBlockBase {
+	rowGap?: ResponsiveValue< LengthValue >;
+	labelGap?: ResponsiveValue< LengthValue >;
+	labelWidth?: ResponsiveValue< LengthValue >;
+	showDivider?: boolean;
+	dividerColor?: ColorPair;
+	dividerWidth?: ResponsiveValue< LengthValue >;
+	labelTypography?: ResponsiveValue< TypographyDevice >;
+	labelColor?: ColorPair;
+	valueTypography?: ResponsiveValue< TypographyDevice >;
+	valueColor?: ColorPair;
+}
+
+/** Product Related — a grid or list of products related to the current one. */
+export interface ProductRelatedAttributes extends ProductBlockBase, ButtonStyleAttributes {
+	relatedLayout?: 'grid' | 'list';
+	postsPerPage?: number;
+	columns?: ResponsiveValue< string >;
+	orderBy?: 'rand' | 'date' | 'price' | 'popularity' | 'rating';
+	rowGap?: ResponsiveValue< LengthValue >;
+	columnGap?: ResponsiveValue< LengthValue >;
+	// Which parts of a card to show.
+	showImage?: boolean;
+	showTitle?: boolean;
+	showPrice?: boolean;
+	showRating?: boolean;
+	showButton?: boolean;
+	imageRatio?: string;
+	hoverEffect?: string;
+	// Card box.
+	contentAlign?: string;
+	cardBackground?: ColorPair;
+	cardPadding?: ResponsiveValue< BoxValue >;
+	cardRadius?: ResponsiveValue< LengthValue >;
+	cardBorderWidth?: ResponsiveValue< LengthValue >;
+	cardBorderColor?: ColorPair;
+	cardShadow?: BoxShadowAttr;
+	// Card text.
+	titleTypography?: ResponsiveValue< TypographyDevice >;
+	titleColor?: ColorPair;
+	priceTypography?: ResponsiveValue< TypographyDevice >;
+	priceColor?: ColorPair;
+	starColor?: ColorPair;
+	// Section heading above the list.
+	showHeading?: boolean;
+	headingText?: string;
+	headingTag?: string;
+	headingTypography?: ResponsiveValue< TypographyDevice >;
+	headingColor?: ColorPair;
 }
 
 /** Props for a panel/control that edits block attributes. */

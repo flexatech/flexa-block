@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Icon List",
 	"category": "flexa",
-	"description": "A list or grid of icon-and-text rows — each with its own glyph, label and link — with the icon before or after the text, per-device columns and gaps, block-level icon styling (size, view, shape, colours with hover, frame) and text typography and colours.",
+	"description": "A list or grid of icon-and-text rows — each with its own glyph, label and link — with the icon before or after the text, per-device columns and gaps, block-level icon styling (size, view, shape, colors with hover, frame) and text typography and colors.",
 	"keywords": [ "flexa", "icon list", "list", "features", "checklist", "icon", "bullet" ],
 	"textdomain": "flexa-block",
 	"example": {

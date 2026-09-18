@@ -15,6 +15,7 @@ export * from './pagination';
 export * from './panels';
 export * from './promo';
 export * from './tabs';
+export * from './button-panels';
 export * from './IconPicker';
 export * from './ItemListPanel';
 export * from './Skeleton';

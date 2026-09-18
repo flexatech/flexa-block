@@ -87,8 +87,8 @@ export const StarRatingRatingPanel = ( { attributes, setAttributes }: SPanelProp
 				onChange={ ( v ) => setAttributes( { alignment: { ...alignment, [ device ]: v } } ) }
 				options={ CONTENT_ALIGN_OPTIONS }
 			/>
-			<DualColor label={ __( 'Star colour', 'flexa-block' ) } value={ color || {} } onChange={ ( v ) => setAttributes( { color: v } ) } />
-			<DualColor label={ __( 'Empty star colour', 'flexa-block' ) } value={ unmarkedColor || {} } onChange={ ( v ) => setAttributes( { unmarkedColor: v } ) } />
+			<DualColor label={ __( 'Star color', 'flexa-block' ) } value={ color || {} } onChange={ ( v ) => setAttributes( { color: v } ) } />
+			<DualColor label={ __( 'Empty star color', 'flexa-block' ) } value={ unmarkedColor || {} } onChange={ ( v ) => setAttributes( { unmarkedColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -141,7 +141,7 @@ export const StarRatingLayoutPanel = ( { attributes, setAttributes }: SPanelProp
 						onChange={ ( v: LengthValue ) => setAttributes( { titleGap: { ...titleGap, [ device ]: v } } ) }
 					/>
 					<TypographyControls value={ typo } onChange={ setTypo } />
-					<DualColor label={ __( 'Title colour', 'flexa-block' ) } value={ titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
+					<DualColor label={ __( 'Title color', 'flexa-block' ) } value={ titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
 				</>
 			) }
 		</PanelBody>

@@ -1,0 +1,19 @@
+/**
+ * Add to Cart block — editor-only styles.
+ *
+ * WooCommerce's template cannot run in the editor, so the canvas shows an inert
+ * mock built from the same class names the front end uses. Keep it from reading
+ * as an interactive form. Front-end appearance lives in style.scss.
+ */
+
+.wp-block-flexa-product-add-to-cart {
+	.cart {
+		user-select: none;
+	}
+
+	// The mock must not steal clicks from the block's own selection handling.
+	input.qty,
+	button.single_add_to_cart_button {
+		pointer-events: none;
+	}
+}

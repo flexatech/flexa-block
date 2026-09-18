@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Separator",
 	"category": "flexa",
-	"description": "Horizontal divider line with per-device width, thickness and alignment, a solid/dashed/dotted/double style and light/dark colour.",
+	"description": "Horizontal divider line with per-device width, thickness and alignment, a solid/dashed/dotted/double style and light/dark color.",
 	"keywords": [ "flexa", "separator", "divider", "line", "rule" ],
 	"textdomain": "flexa-block",
 	"example": {

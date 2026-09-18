@@ -269,7 +269,7 @@ export const FbTypographyPanel = ( { attributes, setAttributes }: FbPanelProps )
  * theme until the user picks a value.
  */
 export const FbColorsPanel = ( { attributes, setAttributes }: FbPanelProps ): JSX.Element => (
-	<PanelBody title={ __( 'Colours', 'flexa-block' ) } initialOpen={ true }>
+	<PanelBody title={ __( 'Colors', 'flexa-block' ) } initialOpen={ true }>
 		<DualColor label={ __( 'Header', 'flexa-block' ) } value={ attributes.headerColor || {} } onChange={ ( v ) => setAttributes( { headerColor: v } ) } />
 		<DualColor label={ __( 'Message', 'flexa-block' ) } value={ attributes.messageColor || {} } onChange={ ( v ) => setAttributes( { messageColor: v } ) } />
 		<DualColor label={ __( 'Meta', 'flexa-block' ) } value={ attributes.metaColor || {} } onChange={ ( v ) => setAttributes( { metaColor: v } ) } />

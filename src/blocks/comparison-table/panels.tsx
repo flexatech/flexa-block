@@ -288,10 +288,10 @@ export const ComparisonHeaderPanel = ( { attributes, setAttributes }: CtPanelPro
 	return (
 		<PanelBody title={ __( 'Header', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.headerColor || {} } onChange={ ( v ) => setAttributes( { headerColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.headerColor || {} } onChange={ ( v ) => setAttributes( { headerColor: v } ) } />
 			<DualColor label={ __( 'Background', 'flexa-block' ) } value={ attributes.headerBackground || {} } onChange={ ( v ) => setAttributes( { headerBackground: v } ) } />
 			<DualColor label={ __( 'Spotlight accent', 'flexa-block' ) } value={ attributes.highlightColor || {} } onChange={ ( v ) => setAttributes( { highlightColor: v } ) } />
-			<DualColor label={ __( 'Accent bar colour', 'flexa-block' ) } value={ attributes.spotlightBarColor || {} } onChange={ ( v ) => setAttributes( { spotlightBarColor: v } ) } />
+			<DualColor label={ __( 'Accent bar color', 'flexa-block' ) } value={ attributes.spotlightBarColor || {} } onChange={ ( v ) => setAttributes( { spotlightBarColor: v } ) } />
 			<SliderUnit
 				label={ __( 'Accent bar thickness', 'flexa-block' ) }
 				value={ attributes.spotlightBarWidth || {} }
@@ -317,7 +317,7 @@ export const ComparisonBadgePanel = ( { attributes, setAttributes }: CtPanelProp
 	return (
 		<PanelBody title={ __( 'Badge', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.badgeColor || {} } onChange={ ( v ) => setAttributes( { badgeColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.badgeColor || {} } onChange={ ( v ) => setAttributes( { badgeColor: v } ) } />
 			{ /* Background left empty inherits the Spotlight accent (see CSS generator). */ }
 			<DualColor label={ __( 'Background', 'flexa-block' ) } value={ attributes.badgeBackground || {} } onChange={ ( v ) => setAttributes( { badgeBackground: v } ) } />
 			<SliderUnit
@@ -349,7 +349,7 @@ export const ComparisonCellPanel = ( { attributes, setAttributes }: CtPanelProps
 	return (
 		<PanelBody title={ __( 'Cells', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.cellColor || {} } onChange={ ( v ) => setAttributes( { cellColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.cellColor || {} } onChange={ ( v ) => setAttributes( { cellColor: v } ) } />
 			<Dimensions
 				label={ __( 'Cell padding', 'flexa-block' ) }
 				responsive
@@ -374,7 +374,7 @@ export const ComparisonMarksPanel = ( { attributes, setAttributes }: CtPanelProp
 			options={ CHECK_ICON_OPTIONS }
 			onChange={ ( v: string ) => setAttributes( { checkIcon: v as ComparisonTableAttributes[ 'checkIcon' ] } ) }
 		/>
-		<DualColor label={ __( 'Check colour', 'flexa-block' ) } value={ attributes.checkColor || {} } onChange={ ( v ) => setAttributes( { checkColor: v } ) } />
+		<DualColor label={ __( 'Check color', 'flexa-block' ) } value={ attributes.checkColor || {} } onChange={ ( v ) => setAttributes( { checkColor: v } ) } />
 		<SelectControl
 			__nextHasNoMarginBottom
 			__next40pxDefaultSize
@@ -383,7 +383,7 @@ export const ComparisonMarksPanel = ( { attributes, setAttributes }: CtPanelProp
 			options={ CROSS_ICON_OPTIONS }
 			onChange={ ( v: string ) => setAttributes( { crossIcon: v as ComparisonTableAttributes[ 'crossIcon' ] } ) }
 		/>
-		<DualColor label={ __( 'Cross colour', 'flexa-block' ) } value={ attributes.crossColor || {} } onChange={ ( v ) => setAttributes( { crossColor: v } ) } />
+		<DualColor label={ __( 'Cross color', 'flexa-block' ) } value={ attributes.crossColor || {} } onChange={ ( v ) => setAttributes( { crossColor: v } ) } />
 	</PanelBody>
 );
 
@@ -398,7 +398,7 @@ export const ComparisonDividersPanel = ( { attributes, setAttributes }: CtPanelP
 		<PanelBody title={ __( 'Dividers', 'flexa-block' ) } initialOpen={ false }>
 			<ToggleControl __nextHasNoMarginBottom label={ __( 'Row dividers', 'flexa-block' ) } checked={ showRowDivider !== false } onChange={ ( v: boolean ) => setAttributes( { showRowDivider: v } ) } />
 			<ToggleControl __nextHasNoMarginBottom label={ __( 'Column dividers', 'flexa-block' ) } checked={ !! showColumnDivider } onChange={ ( v: boolean ) => setAttributes( { showColumnDivider: v } ) } />
-			<DualColor label={ __( 'Divider colour', 'flexa-block' ) } value={ dividerColor || {} } onChange={ ( v ) => setAttributes( { dividerColor: v } ) } />
+			<DualColor label={ __( 'Divider color', 'flexa-block' ) } value={ dividerColor || {} } onChange={ ( v ) => setAttributes( { dividerColor: v } ) } />
 			<SliderUnit
 				label={ __( 'Divider thickness', 'flexa-block' ) }
 				value={ dividerWidth || {} }
@@ -407,7 +407,7 @@ export const ComparisonDividersPanel = ( { attributes, setAttributes }: CtPanelP
 				max={ { px: 12 } }
 				onChange={ ( v: LengthValue ) => setAttributes( { dividerWidth: v } ) }
 			/>
-			<DualColor label={ __( 'Striped-row colour', 'flexa-block' ) } value={ zebraColor || {} } onChange={ ( v ) => setAttributes( { zebraColor: v } ) } />
+			<DualColor label={ __( 'Striped-row color', 'flexa-block' ) } value={ zebraColor || {} } onChange={ ( v ) => setAttributes( { zebraColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -431,8 +431,8 @@ export const ComparisonButtonPanel = ( { attributes, setAttributes }: CtPanelPro
 			onChange={ ( v ) => setAttributes( { buttonWidth: v as ComparisonTableAttributes[ 'buttonWidth' ] } ) }
 			options={ BUTTON_WIDTH_OPTIONS }
 		/>
-		<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.buttonTextColor || {} } onChange={ ( v ) => setAttributes( { buttonTextColor: v } ) } />
-		<DualColor label={ __( 'Text colour (hover)', 'flexa-block' ) } value={ attributes.buttonTextColorHover || {} } onChange={ ( v ) => setAttributes( { buttonTextColorHover: v } ) } />
+		<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.buttonTextColor || {} } onChange={ ( v ) => setAttributes( { buttonTextColor: v } ) } />
+		<DualColor label={ __( 'Text color (hover)', 'flexa-block' ) } value={ attributes.buttonTextColorHover || {} } onChange={ ( v ) => setAttributes( { buttonTextColorHover: v } ) } />
 		<ColorGradientControl
 			label={ __( 'Background', 'flexa-block' ) }
 			type={ attributes.buttonBackgroundType || 'color' }

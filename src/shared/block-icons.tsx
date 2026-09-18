@@ -1178,4 +1178,114 @@ export const BLOCK_ICONS: Record< string, BlockIcon > = {
 			),
 			foreground: FG,
 		},
+		'product-description': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<rect x="3.5" y="3.5" width="17" height="17" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+					<line x1="7" y1="8.5" x2="17" y2="8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+					<line x1="7" y1="12" x2="17" y2="12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+					<line x1="7" y1="15.5" x2="12.5" y2="15.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-stock': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path d="M4 8.2l8-4 8 4v7.6l-8 4-8-4z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+					<path d="M4 8.2l8 4 8-4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+					<line x1="12" y1="12.2" x2="12" y2="19.8" stroke="currentColor" strokeWidth="1.4" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-sku': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<line x1="4" y1="5" x2="4" y2="19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+					<line x1="7.5" y1="5" x2="7.5" y2="19" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+					<line x1="11" y1="5" x2="11" y2="19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+					<line x1="14.5" y1="5" x2="14.5" y2="19" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+					<line x1="18" y1="5" x2="18" y2="19" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+					<line x1="20.5" y1="5" x2="20.5" y2="19" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-categories': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path d="M3.5 6.5A2 2 0 015.5 4.5h4.2l2 2.4h6.8a2 2 0 012 2v8.6a2 2 0 01-2 2h-13a2 2 0 01-2-2z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+					<line x1="7" y1="13.5" x2="17" y2="13.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-tags': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path d="M11.4 3.5H20.5v9.1l-8.6 8.6a1.6 1.6 0 01-2.3 0l-6.8-6.8a1.6 1.6 0 010-2.3z" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+					<circle cx="16.6" cy="7.4" r="1.5" fill="currentColor" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-excerpt': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<line x1="4" y1="7" x2="20" y2="7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+					<line x1="4" y1="11.5" x2="20" y2="11.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+					<line x1="4" y1="16" x2="12" y2="16" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+					<circle cx="16" cy="16" r="0.9" fill="currentColor" />
+					<circle cx="18.6" cy="16" r="0.9" fill="currentColor" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-add-to-cart': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path d="M3 4.5h2.2l2.1 10.2h9.9l1.9-7.2H6.4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+					<circle cx="9" cy="18.6" r="1.5" fill="currentColor" />
+					<circle cx="16.5" cy="18.6" r="1.5" fill="currentColor" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-meta': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<rect x="3.5" y="5" width="17" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+					<line x1="10" y1="5" x2="10" y2="19" stroke="currentColor" strokeWidth="1.3" />
+					<line x1="3.5" y1="9.7" x2="20.5" y2="9.7" stroke="currentColor" strokeWidth="1.3" />
+					<line x1="3.5" y1="14.3" x2="20.5" y2="14.3" stroke="currentColor" strokeWidth="1.3" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-related': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<rect x="3" y="4" width="8" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+					<rect x="13" y="4" width="8" height="7" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+					<rect x="3" y="13.5" width="8" height="2.2" rx="1" fill="currentColor" opacity="0.45" stroke="none" />
+					<rect x="13" y="13.5" width="8" height="2.2" rx="1" fill="currentColor" opacity="0.45" stroke="none" />
+					<rect x="3" y="17.6" width="5" height="2.2" rx="1" fill="currentColor" opacity="0.25" stroke="none" />
+					<rect x="13" y="17.6" width="5" height="2.2" rx="1" fill="currentColor" opacity="0.25" stroke="none" />
+				</svg>
+			),
+			foreground: FG,
+		},
+		'product-share': {
+			src: (
+				<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<circle cx="18" cy="5.5" r="2.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+					<circle cx="6" cy="12" r="2.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+					<circle cx="18" cy="18.5" r="2.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
+					<line x1="8.1" y1="10.8" x2="15.9" y2="6.7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+					<line x1="8.1" y1="13.2" x2="15.9" y2="17.3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+				</svg>
+			),
+			foreground: FG,
+		},
 };

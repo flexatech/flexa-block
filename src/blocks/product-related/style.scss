@@ -1,0 +1,148 @@
+/**
+ * Related Products block — frontend + editor base styles.
+ *
+ * Structure only. No colours, typography or card padding defaults live here on
+ * purpose: cards inherit the theme until the PHP CSS generator emits declarations
+ * for the values the user picks (mirrored as inline styles in the editor). The
+ * grid gets a fallback column count so the block is usable before the generator's
+ * per-device rules load; the list layout stacks in a single flex column.
+ */
+
+@use '../../styles/hover-effect' as *;
+
+@include flexa-hover-effect();
+
+.flexa-product-related {
+	box-sizing: border-box;
+
+	&__heading {
+		margin: 0 0 16px;
+	}
+
+	&__list {
+		display: grid;
+		// Fallback columns; the generator overrides these per device.
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 24px;
+	}
+
+	// Card padding plus a full-width button must not spill out of the box
+	// (guide §6.6), so the item measures its border and padding inward.
+	&__item {
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 8px;
+		margin: 0;
+		min-width: 0;
+	}
+
+	&__image {
+		display: block;
+		width: 100%;
+
+		img {
+			display: block;
+			width: 100%;
+			height: auto;
+			object-fit: cover;
+		}
+	}
+
+	&__title {
+		margin: 0;
+
+		a {
+			color: inherit;
+			text-decoration: none;
+		}
+	}
+
+	// Star row — an empty base with a width-clipped filled overlay, matching the
+	// Product Rating block so fractional ratings fill smoothly. The outer element
+	// is block-level so the card's text alignment moves the star row; the inner
+	// `__stars` box is content-sized, which is what the overlay is clipped to.
+	&__rating {
+		line-height: 1;
+	}
+
+	&__stars {
+		position: relative;
+		display: inline-flex;
+		vertical-align: middle;
+		column-gap: 2px;
+		line-height: 1;
+	}
+
+	&__stars-base,
+	&__stars-fill {
+		display: inline-flex;
+		column-gap: inherit;
+		line-height: 1;
+	}
+
+	&__stars-base .flexa-product-related__star {
+		opacity: 0.28;
+	}
+
+	&__stars-fill {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 0;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+
+	&__star {
+		display: inline-block;
+		width: 1.15em;
+		height: 1.15em;
+		flex: 0 0 auto;
+		line-height: 1;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	&__price {
+		margin: 0;
+	}
+
+	// The button hugs its label by default; `align-self` and the full-width
+	// stretch come from the generator when the user sets them.
+	&__button {
+		align-self: flex-start;
+		box-sizing: border-box;
+		text-decoration: none;
+	}
+
+	// List layout — one card per row, stacked vertically.
+	&--list &__list {
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+/* Responsive visibility helpers (shared class names with other Flexa blocks). */
+@media (min-width: 1025px) {
+	.flexa-product-related.flexa-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+	.flexa-product-related.flexa-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 767px) {
+	.flexa-product-related.flexa-hide-mobile {
+		display: none !important;
+	}
+}

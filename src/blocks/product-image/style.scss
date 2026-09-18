@@ -10,6 +10,7 @@
  */
 
 @use '../../styles/hover-effect' as *;
+@use '../../styles/lightbox' as *;
 
 @include flexa-hover-effect();
 
@@ -204,4 +205,12 @@
 	.flexa-product-image.flexa-hide-mobile {
 		display: none !important;
 	}
+}
+
+/* Full-screen overlay (built by @shared/lightbox, shared with Image and Images
+   Gallery). Only reachable when the block has the lightbox switched on. */
+@include flexa-lightbox( 'flexa-product-image-lightbox' );
+
+.flexa-product-image--lightbox .flexa-product-image__main {
+	cursor: zoom-in;
 }

@@ -34,6 +34,7 @@ $position    = $attributes['galleryPosition'] ?? 'bottom';
 $position    = in_array( $position, [ 'bottom', 'left', 'right' ], true ) ? $position : 'bottom';
 $show_thumbs = ! isset( $attributes['showThumbnails'] ) || ! empty( $attributes['showThumbnails'] );
 $zoom        = ! empty( $attributes['zoomOnHover'] );
+$lightbox    = ! empty( $attributes['enableLightbox'] );
 $autoplay    = ! empty( $attributes['autoplay'] );
 $autoplay_ms = max( 1, (int) ( $attributes['autoplaySpeed'] ?? 4 ) ) * 1000;
 
@@ -50,7 +51,17 @@ $main_class = implode(
 	' ',
 	array_merge( [ 'flexa-product-image__main' ], HTML_Helpers::hover_effect_classes( $hover_effect ) )
 );
-$main       = '<div class="' . esc_attr( $main_class ) . '">' . $main_html . '</div>';
+
+// The overlay wants the full-size file, not the `woocommerce_single` crop the
+// page shows — `data-large` carries it so view.js never has to guess.
+$featured_large = '';
+if ( $lightbox ) {
+	$featured_id_for_large = $product->get_image_id();
+	$featured_large        = $featured_id_for_large ? (string) wp_get_attachment_image_url( (int) $featured_id_for_large, 'full' ) : '';
+}
+$main = '<div class="' . esc_attr( $main_class ) . '"'
+	. ( '' !== $featured_large ? ' data-large="' . esc_url( $featured_large ) . '"' : '' )
+	. '>' . $main_html . '</div>';
 
 // Thumbnail ids: the featured image first, then the product gallery images.
 $ids         = (array) $product->get_gallery_image_ids();
@@ -74,7 +85,12 @@ if ( $show_thumbs && count( $ids ) > 1 ) {
 			continue;
 		}
 		$cls   = 'flexa-product-image__thumb' . ( $first ? ' is-active' : '' );
-		$list .= '<li class="' . esc_attr( $cls ) . '" data-full="' . esc_url( (string) $full ) . '">' . $thumb_img . '</li>';
+		// `data-full` is what the featured image swaps to on click; `data-large`
+		// is the bigger file the lightbox opens.
+		$large = $lightbox ? (string) wp_get_attachment_image_url( $id, 'full' ) : '';
+		$list .= '<li class="' . esc_attr( $cls ) . '" data-full="' . esc_url( (string) $full ) . '"'
+			. ( '' !== $large ? ' data-large="' . esc_url( $large ) . '"' : '' )
+			. '>' . $thumb_img . '</li>';
 		$first = false;
 	}
 	if ( '' !== $list ) {
@@ -94,6 +110,9 @@ $classes = [
 	'flexa-product-image',
 	'flexa-product-image--pos-' . sanitize_html_class( $position ),
 ];
+if ( $lightbox ) {
+	$classes[] = 'flexa-product-image--lightbox';
+}
 if ( '' !== $block_id ) {
 	$classes[] = 'flexa-product-image-' . sanitize_html_class( $block_id );
 }
@@ -116,12 +135,22 @@ $autoplay_marker = ( $autoplay && '' !== $thumbs )
 	? ' data-flexa-autoplay="1" data-flexa-autoplay-speed="' . esc_attr( (string) $autoplay_ms ) . '"'
 	: '';
 
+// Strings the overlay needs. A view script cannot reach the block's text
+// domain, so they travel on the wrapper.
+$lightbox_marker = $lightbox
+	? ' data-flexa-lightbox="1"'
+		. ' data-flexa-label-close="' . esc_attr__( 'Close', 'flexa-block' ) . '"'
+		. ' data-flexa-label-prev="' . esc_attr__( 'Previous', 'flexa-block' ) . '"'
+		. ' data-flexa-label-next="' . esc_attr__( 'Next', 'flexa-block' ) . '"'
+	: '';
+
 printf(
-	'<div %1$s%2$s%3$s%4$s>%5$s%6$s</div>',
+	'<div %1$s%2$s%3$s%4$s%5$s>%6$s%7$s</div>',
 	$wrapper_attributes, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built via get_block_wrapper_attributes.
 	$data_attrs,         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- keys sanitized, values escaped in helper.
 	$lazy_marker,        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static literal.
 	$autoplay_marker,    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- integer speed esc_attr'd above.
+	$lightbox_marker,    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- each label esc_attr__'d above.
 	$main,               // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- WooCommerce get_image() returns escaped markup.
 	$thumbs              // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- wp_get_attachment_image() escaped; class esc_attr'd, url esc_url'd above.
 );

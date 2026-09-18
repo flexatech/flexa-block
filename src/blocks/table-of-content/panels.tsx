@@ -211,7 +211,7 @@ export const TocTitlePanel = ( { attributes, setAttributes }: TocPanelProps ): J
 	return (
 		<PanelBody title={ __( 'Title', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Title colour', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
+			<DualColor label={ __( 'Title color', 'flexa-block' ) } value={ attributes.titleColor || {} } onChange={ ( v ) => setAttributes( { titleColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -227,10 +227,10 @@ export const TocLinksPanel = ( { attributes, setAttributes }: TocPanelProps ): J
 	return (
 		<PanelBody title={ __( 'Links', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Link colour', 'flexa-block' ) } value={ attributes.linkColor || {} } onChange={ ( v ) => setAttributes( { linkColor: v } ) } />
-			<DualColor label={ __( 'Link colour (hover)', 'flexa-block' ) } value={ attributes.linkHoverColor || {} } onChange={ ( v ) => setAttributes( { linkHoverColor: v } ) } />
-			<DualColor label={ __( 'Link colour (active)', 'flexa-block' ) } value={ attributes.activeColor || {} } onChange={ ( v ) => setAttributes( { activeColor: v } ) } />
-			<DualColor label={ __( 'Marker colour', 'flexa-block' ) } value={ attributes.markerColor || {} } onChange={ ( v ) => setAttributes( { markerColor: v } ) } />
+			<DualColor label={ __( 'Link color', 'flexa-block' ) } value={ attributes.linkColor || {} } onChange={ ( v ) => setAttributes( { linkColor: v } ) } />
+			<DualColor label={ __( 'Link color (hover)', 'flexa-block' ) } value={ attributes.linkHoverColor || {} } onChange={ ( v ) => setAttributes( { linkHoverColor: v } ) } />
+			<DualColor label={ __( 'Link color (active)', 'flexa-block' ) } value={ attributes.activeColor || {} } onChange={ ( v ) => setAttributes( { activeColor: v } ) } />
+			<DualColor label={ __( 'Marker color', 'flexa-block' ) } value={ attributes.markerColor || {} } onChange={ ( v ) => setAttributes( { markerColor: v } ) } />
 		</PanelBody>
 	);
 };

@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Instagram Feed",
 	"category": "flexa",
-	"description": "Display recent Instagram media from an access token (fetched server-side and cached) — in a grid, hover-overlay, card or carousel layout with per-device columns, square or original thumbnails, an optional caption, date and profile name, links that open the post, and caption typography and colours.",
+	"description": "Display recent Instagram media from an access token (fetched server-side and cached) — in a grid, hover-overlay, card or carousel layout with per-device columns, square or original thumbnails, an optional caption, date and profile name, links that open the post, and caption typography and colors.",
 	"keywords": [ "flexa", "instagram", "feed", "gallery", "social", "media" ],
 	"textdomain": "flexa-block",
 	"example": {

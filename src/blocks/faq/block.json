@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "FAQ",
 	"category": "flexa",
-	"description": "Expandable question-and-answer accordion with open-state icons, per-question and answer styling, dividers, light/dark colours and optional FAQ rich-result schema.",
+	"description": "Expandable question-and-answer accordion with open-state icons, per-question and answer styling, dividers, light/dark colors and optional FAQ rich-result schema.",
 	"keywords": [ "flexa", "faq", "accordion", "questions", "toggle" ],
 	"textdomain": "flexa-block",
 	"example": {

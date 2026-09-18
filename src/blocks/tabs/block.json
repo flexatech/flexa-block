@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Tabs",
 	"category": "flexa",
-	"description": "Organise content into a horizontal tab bar with optional icons, an underline, pill or boxed tab style, per-tab and content typography, light/dark colours, and a bar that collapses to an accordion on mobile.",
+	"description": "Organise content into a horizontal tab bar with optional icons, an underline, pill or boxed tab style, per-tab and content typography, light/dark colors, and a bar that collapses to an accordion on mobile.",
 	"keywords": [ "flexa", "tabs", "tabbed", "accordion", "panels" ],
 	"textdomain": "flexa-block",
 	"example": {

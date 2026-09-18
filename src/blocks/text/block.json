@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Text",
 	"category": "flexa",
-	"description": "Rich paragraph with per-device alignment, typography, solid or gradient text colour, hover colour, stroke and shadow effects, blend mode and a drop cap.",
+	"description": "Rich paragraph with per-device alignment, typography, solid or gradient text color, hover color, stroke and shadow effects, blend mode and a drop cap.",
 	"keywords": [ "flexa", "text", "paragraph", "content", "prose" ],
 	"textdomain": "flexa-block",
 	"example": {

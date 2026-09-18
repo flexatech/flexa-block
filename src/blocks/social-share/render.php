@@ -5,10 +5,13 @@
  * CSS is generated at save time by Social_Share_CSS and printed inline on the
  * front end. This file outputs one share link per network: the destination is
  * built from a share endpoint (Facebook sharer, X intent, LinkedIn share,
- * Pinterest pin, WhatsApp, Telegram) pointed at the current page — or a fixed
- * URL/title/image when the "Custom" source is chosen. Brand artwork comes from
- * the shared
- * Flexa\Block\Social_Catalog (static, code-owned literals — safe to echo).
+ * Pinterest pin, WhatsApp, Telegram) pointed at the current page — at a fixed
+ * URL/title/image when the "Custom" source is chosen, or at the current
+ * WooCommerce product for the "Product Share" variation. That variation falls
+ * back to the current page when no product is in context, so a block placed
+ * outside a product template still shares something rather than vanishing.
+ * Brand artwork comes from the shared Flexa\Block\Social_Catalog (static,
+ * code-owned literals — safe to echo).
  *
  * @package Flexa\Block
  *
@@ -25,6 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 use Flexa\Block\HTML_Helpers;
 use Flexa\Block\Social_Catalog;
+use Flexa\Block\Woo_Helpers;
 
 $block_id = $attributes['blockId'] ?? '';
 $anchor   = $attributes['anchor'] ?? '';
@@ -35,13 +39,35 @@ if ( ! is_array( $items ) || empty( $items ) ) {
 	return;
 }
 
-// Resolve what is shared: the current page, or the custom overrides.
-$is_custom = 'custom' === ( $attributes['shareSource'] ?? 'current' );
-if ( $is_custom ) {
+// Resolve what is shared: the current page, the custom overrides, or the
+// WooCommerce product in context.
+$share_source = (string) ( $attributes['shareSource'] ?? 'current' );
+$share_url    = '';
+$share_title  = '';
+$share_image  = '';
+$allow_image  = true;
+
+if ( 'custom' === $share_source ) {
 	$share_url   = (string) ( $attributes['shareUrl'] ?? '' );
 	$share_title = (string) ( $attributes['shareTitle'] ?? '' );
 	$share_image = (string) ( $attributes['shareImage'] ?? '' );
+} elseif ( 'product' === $share_source ) {
+	$product = Woo_Helpers::current_product();
+	if ( $product ) {
+		$permalink   = get_permalink( $product->get_id() );
+		$share_url   = $permalink ? $permalink : '';
+		$share_title = $product->get_name();
+
+		// The image only travels when the author asked for it — Pinterest is the
+		// network that uses one.
+		$allow_image = false !== ( $attributes['includeImage'] ?? true );
+		if ( $allow_image ) {
+			$image_id    = $product->get_image_id();
+			$share_image = $image_id ? (string) wp_get_attachment_url( (int) $image_id ) : '';
+		}
+	}
 }
+
 if ( empty( $share_url ) ) {
 	$permalink   = get_permalink();
 	$share_url   = $permalink ? $permalink : home_url( '/' );
@@ -49,7 +75,7 @@ if ( empty( $share_url ) ) {
 if ( empty( $share_title ) ) {
 	$share_title = get_the_title();
 }
-if ( empty( $share_image ) ) {
+if ( $allow_image && empty( $share_image ) ) {
 	$thumb       = get_the_post_thumbnail_url( null, 'full' );
 	$share_image = $thumb ? $thumb : '';
 }
@@ -66,6 +92,9 @@ $shape_ok   = in_array( $shape, [ 'rounded', 'circle', 'square' ], true );
 // New-tab behaviour (default on — share dialogs open in a popup/tab).
 $new_tab = false !== ( $attributes['newTab'] ?? true );
 
+// Network names beside the icons (off by default — icon-only rows).
+$show_labels = ! empty( $attributes['showLabels'] );
+
 $catalog = Social_Catalog::platforms();
 
 /**
@@ -78,22 +107,7 @@ $catalog = Social_Catalog::platforms();
  * @return string
  */
 $build_share = static function ( $network, $enc_url, $enc_title, $enc_image ) {
-	switch ( $network ) {
-		case 'facebook':
-			return 'https://www.facebook.com/sharer/sharer.php?u=' . $enc_url;
-		case 'x':
-			return 'https://twitter.com/intent/tweet?url=' . $enc_url . '&text=' . $enc_title;
-		case 'linkedin':
-			return 'https://www.linkedin.com/sharing/share-offsite/?url=' . $enc_url;
-		case 'pinterest':
-			return 'https://www.pinterest.com/pin/create/button/?url=' . $enc_url . '&media=' . $enc_image . '&description=' . $enc_title;
-		case 'whatsapp':
-			return 'https://wa.me/?text=' . $enc_title . '%20' . $enc_url;
-		case 'telegram':
-			return 'https://t.me/share/url?url=' . $enc_url . '&text=' . $enc_title;
-		default:
-			return '';
-	}
+	return \Flexa\Block\Social_Catalog::share_url( (string) $network, (string) $enc_url, (string) $enc_title, (string) $enc_image );
 };
 
 // Build the button list.
@@ -129,7 +143,12 @@ foreach ( $items as $item ) {
 		$item_attrs .= ' target="_blank" rel="noopener noreferrer"';
 	}
 
-	$items_html .= '<a ' . $item_attrs . '><span class="flexa-social-share__icon">' . $icon_svg . '</span></a>';
+	$label_html = $show_labels
+		? '<span class="flexa-social-share__label">' . esc_html( $entry['label'] ) . '</span>'
+		: '';
+
+	$items_html .= '<a ' . $item_attrs . '><span class="flexa-social-share__icon">' . $icon_svg . '</span>'
+		. $label_html . '</a>';
 }
 
 if ( '' === $items_html ) {
@@ -140,6 +159,9 @@ if ( '' === $items_html ) {
 $classes = [ 'flexa-social-share' ];
 if ( '' !== $block_id ) {
 	$classes[] = 'flexa-social-share-' . sanitize_html_class( $block_id );
+}
+if ( $show_labels ) {
+	$classes[] = 'flexa-social-share--labels';
 }
 $hover_effect = (string) ( $attributes['hoverEffect'] ?? '' );
 if ( in_array( $hover_effect, [ 'grow', 'shrink', 'lift', 'rotate' ], true ) ) {
@@ -154,10 +176,16 @@ if ( $anchor ) {
 $wrapper_attributes = get_block_wrapper_attributes( $wrapper_args );
 $data_attrs         = HTML_Helpers::build_data_attrs( $attributes );
 
+// Lazy background: mark the wrapper so view.js reveals the image near the viewport.
+$background  = $attributes['background'] ?? [];
+$is_lazy_bg  = ! empty( $background['lazyLoad'] ) && 'image' === ( $background['type'] ?? 'none' ) && '' !== ( $background['image']['url'] ?? '' );
+$lazy_marker = $is_lazy_bg ? ' data-flexa-lazy-bg' : '';
+
 printf(
-	'<%1$s %2$s%3$s><div class="flexa-social-share__list">%4$s</div></%1$s>',
+	'<%1$s %2$s%3$s%4$s><div class="flexa-social-share__list">%5$s</div></%1$s>',
 	esc_html( $html_tag ),
 	$wrapper_attributes, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built via get_block_wrapper_attributes.
 	$data_attrs,         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- keys sanitized, values escaped in helper.
+	$lazy_marker,        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static literal.
 	$items_html          // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG literals; urls/labels/classes escaped above.
 );

@@ -194,9 +194,9 @@ export const TabsBarPanel = ( { attributes, setAttributes }: TabsPanelProps ): J
 	return (
 		<PanelBody title={ __( 'Tabs', 'flexa-block' ) } initialOpen={ true }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.tabColor || {} } onChange={ ( v ) => setAttributes( { tabColor: v } ) } />
-			<DualColor label={ __( 'Text colour (hover)', 'flexa-block' ) } value={ attributes.tabHoverColor || {} } onChange={ ( v ) => setAttributes( { tabHoverColor: v } ) } />
-			<DualColor label={ __( 'Text colour (active)', 'flexa-block' ) } value={ attributes.tabActiveColor || {} } onChange={ ( v ) => setAttributes( { tabActiveColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.tabColor || {} } onChange={ ( v ) => setAttributes( { tabColor: v } ) } />
+			<DualColor label={ __( 'Text color (hover)', 'flexa-block' ) } value={ attributes.tabHoverColor || {} } onChange={ ( v ) => setAttributes( { tabHoverColor: v } ) } />
+			<DualColor label={ __( 'Text color (active)', 'flexa-block' ) } value={ attributes.tabActiveColor || {} } onChange={ ( v ) => setAttributes( { tabActiveColor: v } ) } />
 			<ColorGradientControl
 				label={ __( 'Active indicator', 'flexa-block' ) }
 				type={ attributes.tabActiveIndicatorType || 'color' }
@@ -229,7 +229,7 @@ export const TabsContentPanel = ( { attributes, setAttributes }: TabsPanelProps 
 	return (
 		<PanelBody title={ __( 'Content', 'flexa-block' ) } initialOpen={ false }>
 			<TypographyControls value={ typo } onChange={ setTypo } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.contentColor || {} } onChange={ ( v ) => setAttributes( { contentColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.contentColor || {} } onChange={ ( v ) => setAttributes( { contentColor: v } ) } />
 			<ColorGradientControl
 				label={ __( 'Background', 'flexa-block' ) }
 				type={ attributes.contentBackgroundType || 'color' }

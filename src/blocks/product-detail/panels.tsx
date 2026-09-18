@@ -133,15 +133,15 @@ export const ProductDetailReviewsPanel = ( { attributes, setAttributes }: Produc
 	return (
 		<PanelBody title={ __( 'Reviews', 'flexa-block' ) } initialOpen={ false }>
 			<FieldHead label={ __( 'Title', 'flexa-block' ) } />
-			<DualColor label={ __( 'Title colour', 'flexa-block' ) } value={ attributes.reviewsTitleColor || {} } onChange={ ( v ) => setAttributes( { reviewsTitleColor: v } ) } />
+			<DualColor label={ __( 'Title color', 'flexa-block' ) } value={ attributes.reviewsTitleColor || {} } onChange={ ( v ) => setAttributes( { reviewsTitleColor: v } ) } />
 			<TypographyControls value={ titleTypo } onChange={ setTitleTypo } />
 
 			<FieldHead label={ __( 'Meta', 'flexa-block' ) } />
-			<DualColor label={ __( 'Author colour', 'flexa-block' ) } value={ attributes.reviewAuthorColor || {} } onChange={ ( v ) => setAttributes( { reviewAuthorColor: v } ) } />
-			<DualColor label={ __( 'Date colour', 'flexa-block' ) } value={ attributes.reviewDateColor || {} } onChange={ ( v ) => setAttributes( { reviewDateColor: v } ) } />
+			<DualColor label={ __( 'Author color', 'flexa-block' ) } value={ attributes.reviewAuthorColor || {} } onChange={ ( v ) => setAttributes( { reviewAuthorColor: v } ) } />
+			<DualColor label={ __( 'Date color', 'flexa-block' ) } value={ attributes.reviewDateColor || {} } onChange={ ( v ) => setAttributes( { reviewDateColor: v } ) } />
 
 			<FieldHead label={ __( 'Stars', 'flexa-block' ) } />
-			<DualColor label={ __( 'Stars colour', 'flexa-block' ) } value={ attributes.reviewStarsColor || {} } onChange={ ( v ) => setAttributes( { reviewStarsColor: v } ) } />
+			<DualColor label={ __( 'Stars color', 'flexa-block' ) } value={ attributes.reviewStarsColor || {} } onChange={ ( v ) => setAttributes( { reviewStarsColor: v } ) } />
 			<SliderUnit
 				label={ __( 'Stars size', 'flexa-block' ) }
 				value={ attributes.reviewStarsSize || {} }
@@ -152,7 +152,7 @@ export const ProductDetailReviewsPanel = ( { attributes, setAttributes }: Produc
 			/>
 
 			<FieldHead label={ __( 'Text', 'flexa-block' ) } />
-			<DualColor label={ __( 'Text colour', 'flexa-block' ) } value={ attributes.reviewTextColor || {} } onChange={ ( v ) => setAttributes( { reviewTextColor: v } ) } />
+			<DualColor label={ __( 'Text color', 'flexa-block' ) } value={ attributes.reviewTextColor || {} } onChange={ ( v ) => setAttributes( { reviewTextColor: v } ) } />
 		</PanelBody>
 	);
 };
@@ -174,15 +174,15 @@ export const ProductDetailAdditionalPanel = ( { attributes, setAttributes }: Pro
 	return (
 		<PanelBody title={ __( 'Additional information', 'flexa-block' ) } initialOpen={ false }>
 			<FieldHead label={ __( 'Label', 'flexa-block' ) } />
-			<DualColor label={ __( 'Label colour', 'flexa-block' ) } value={ attributes.additionalLabelColor || {} } onChange={ ( v ) => setAttributes( { additionalLabelColor: v } ) } />
+			<DualColor label={ __( 'Label color', 'flexa-block' ) } value={ attributes.additionalLabelColor || {} } onChange={ ( v ) => setAttributes( { additionalLabelColor: v } ) } />
 			<TypographyControls value={ labelTypo } onChange={ setLabelTypo } />
 
 			<FieldHead label={ __( 'Value', 'flexa-block' ) } />
-			<DualColor label={ __( 'Value colour', 'flexa-block' ) } value={ attributes.additionalValueColor || {} } onChange={ ( v ) => setAttributes( { additionalValueColor: v } ) } />
+			<DualColor label={ __( 'Value color', 'flexa-block' ) } value={ attributes.additionalValueColor || {} } onChange={ ( v ) => setAttributes( { additionalValueColor: v } ) } />
 			<TypographyControls value={ valueTypo } onChange={ setValueTypo } />
 
 			<FieldHead label={ __( 'Cells', 'flexa-block' ) } />
-			<DualColor label={ __( 'Border colour', 'flexa-block' ) } value={ attributes.additionalBorderColor || {} } onChange={ ( v ) => setAttributes( { additionalBorderColor: v } ) } />
+			<DualColor label={ __( 'Border color', 'flexa-block' ) } value={ attributes.additionalBorderColor || {} } onChange={ ( v ) => setAttributes( { additionalBorderColor: v } ) } />
 			<Dimensions
 				label={ __( 'Cell padding', 'flexa-block' ) }
 				value={ rawDevice( attributes.additionalCellPadding, device ) }

@@ -5,7 +5,7 @@
 	"version": "1.0.0",
 	"title": "Countdown",
 	"category": "flexa",
-	"description": "Live countdown to a target date with selectable day/hour/minute/second units, separators, unit labels, per-device typography, light/dark colours and a completion action.",
+	"description": "Live countdown to a target date with selectable day/hour/minute/second units, separators, unit labels, per-device typography, light/dark colors and a completion action.",
 	"keywords": [ "flexa", "countdown", "timer", "deadline", "evergreen" ],
 	"textdomain": "flexa-block",
 	"example": {

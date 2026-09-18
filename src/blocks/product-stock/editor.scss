@@ -1,0 +1,11 @@
+/**
+ * Product Stock block — editor-only styles.
+ *
+ * The editor has no product, so the canvas shows the in-stock preview; keep it
+ * from being dragged by the block toolbar's text cursor. Front-end appearance
+ * lives in style.scss.
+ */
+
+.wp-block-flexa-product-stock .flexa-product-stock__status {
+	user-select: none;
+}
