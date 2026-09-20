@@ -166,7 +166,7 @@ class TextCssTest extends CssTestCase {
 			'blockId'    => 'a',
 			'background' => [ 'type' => 'image', 'image' => [ 'url' => 'https://x/y.jpg', 'position' => 'top left', 'size' => 'contain', 'repeat' => 'repeat-x', 'attachment' => 'fixed' ] ],
 		] );
-		$this->assertCssHas( $css, self::WRAP, 'background-image:url(https://x/y.jpg)' );
+		$this->assertCssHas( $css, self::WRAP, 'background-image:url("https://x/y.jpg")' );
 		$this->assertCssHas( $css, self::WRAP, 'background-position:top left' );
 		$this->assertCssHas( $css, self::WRAP, 'background-size:contain' );
 		$this->assertCssHas( $css, self::WRAP, 'background-repeat:repeat-x' );

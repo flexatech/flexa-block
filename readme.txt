@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.11
+Stable tag: 1.0.12
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -143,6 +143,9 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 
 == Changelog ==
 
+= 1.0.12 =
+* Hardened how block background images are written into generated CSS. Image URLs are now quoted and stripped of any characters that could break out of the CSS `url()` value, closing a potential CSS-injection path. Background and mask images render exactly as before.
+
 = 1.0.11 =
 * Added seven more WooCommerce single-product blocks (shown only when WooCommerce is active): Add to Cart (quantity field and button with your own label and cart icon, full normal/hover styling, and matching styling for variable-product attribute dropdowns), Product Description (the long description with an optional heading, styled body, links, nested headings/lists/tables, and an optional line clamp behind a Read more toggle), Product Excerpt (the short description, falling back to a trimmed long description, capped by word count or number of lines), Product Field (a single line of product data: SKU, categories or tags, with a label, inline/badge/list terms and a copy-to-clipboard SKU), Product Meta (stacks Product Field rows into one list with a shared label column, row gap and divider), Related Products (a grid or list of related products with per-device columns and gaps, card styling, image ratio and hover, and toggles for image, title, price, rating and add-to-cart) and Product Stock (stock status as text or a badge, with your own wording for in stock / out of stock / on backorder, an optional icon, the remaining quantity and a low-stock threshold with its own colors).
 * Social Share: added a Product Share variation that shares the current WooCommerce product, carrying its title and featured image with the link.
@@ -218,6 +221,9 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 * Initial release with the Container block.
 
 == Upgrade Notice ==
+
+= 1.0.12 =
+Security hardening for background-image CSS output. Recommended for all users; no changes to how your content looks.
 
 = 1.0.11 =
 Adds seven more WooCommerce single-product blocks (Add to Cart, Product Description, Product Excerpt, Product Field, Product Meta, Related Products and Product Stock) and a Product Share variation of the Social Share block.

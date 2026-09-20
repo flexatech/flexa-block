@@ -245,7 +245,7 @@ class CounterCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertCssHas( $css, '.flexa-counter-a', 'background-size:cover' );
-		$this->assertCssHas( $css, '.flexa-counter-a.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-counter-a.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 }

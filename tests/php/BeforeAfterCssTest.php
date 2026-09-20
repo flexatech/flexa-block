@@ -189,7 +189,7 @@ class BeforeAfterCssTest extends CssTestCase {
 			],
 		] );
 		$wrap = '.flexa-before-after-a';
-		$this->assertCssHas( $css, $wrap, 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, $wrap, 'background-image:url("https://example.com/bg.jpg")' );
 		$this->assertCssHas( $css, $wrap, 'background-position:top left' );
 		$this->assertCssHas( $css, $wrap, 'background-size:contain' );
 		$this->assertCssHas( $css, $wrap, 'background-repeat:repeat-x' );
@@ -205,7 +205,7 @@ class BeforeAfterCssTest extends CssTestCase {
 				'image'    => [ 'url' => 'https://example.com/a.jpg', 'size' => 'cover' ],
 			],
 		] );
-		$this->assertCssHas( $css, '.flexa-before-after-a.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-before-after-a.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 

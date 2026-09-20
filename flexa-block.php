@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Flexa Block – Blocks & Page Builder
  * Description:       A collection of lightweight, customizable blocks for building modern WordPress websites with the block editor.
- * Version:           1.0.11
+ * Version:           1.0.12
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Flexa Tech
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FLEXA_BLOCK_VER', '1.0.11' );
+define( 'FLEXA_BLOCK_VER', '1.0.12' );
 define( 'FLEXA_BLOCK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FLEXA_BLOCK_URL', plugin_dir_url( __FILE__ ) );
 define( 'FLEXA_BLOCK_BASENAME', plugin_basename( __FILE__ ) );
@@ -66,6 +66,7 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-feed-tokens.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-facebook-feed.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-instagram-feed.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/import/class-import-manager.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-admin.php';
 
 	Flexa\Block\Block_Manager::init();
@@ -81,6 +82,7 @@ function flexa_block_init() {
 	Flexa\Block\Feed_Tokens::init();
 	Flexa\Block\Facebook_Feed::init();
 	Flexa\Block\Instagram_Feed::init();
+	Flexa\Block\Import\Import_Manager::init();
 	Flexa\Block\Admin\Admin::init();
 }
 add_action( 'plugins_loaded', 'flexa_block_init' );

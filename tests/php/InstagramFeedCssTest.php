@@ -276,7 +276,7 @@ class InstagramFeedCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
-		$this->assertCssHas( $css, self::INNER, 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, self::INNER, 'background-image:url("https://example.com/bg.jpg")' );
 		$this->assertCssHas( $css, self::INNER, 'background-position:top left' );
 		$this->assertCssHas( $css, self::INNER, 'background-size:contain' );
 		$this->assertCssHas( $css, self::INNER, 'background-repeat:repeat-x' );

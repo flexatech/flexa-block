@@ -237,7 +237,7 @@ class StarRatingCssTest extends CssTestCase {
 				'image' => [ 'url' => 'https://example.com/a.jpg', 'position' => 'center center', 'size' => 'cover', 'repeat' => 'no-repeat', 'attachment' => 'scroll' ],
 			],
 		] );
-		$this->assertCssHas( $css, self::WRAP, 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, self::WRAP, 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertCssHas( $css, self::WRAP, 'background-position:center center' );
 		$this->assertCssHas( $css, self::WRAP, 'background-size:cover' );
 		$this->assertCssHas( $css, self::WRAP, 'background-repeat:no-repeat' );
@@ -257,7 +257,7 @@ class StarRatingCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertCssHas( $css, self::WRAP, 'background-size:cover' );
-		$this->assertCssHas( $css, self::WRAP . '.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, self::WRAP . '.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 

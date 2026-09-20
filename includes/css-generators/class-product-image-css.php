@@ -150,7 +150,7 @@ class Product_Image_CSS {
 			CSS_Helpers::add_background( $css, $background, $lazy_bg );
 			if ( $lazy_bg ) {
 				$css->set_selector( $wrap . '.flexa-bg-loaded' )
-					->add_property( 'background-image', 'url(' . esc_url_raw( $background['image']['url'] ) . ')' );
+					->add_property( 'background-image', CSS_Helpers::css_url( $background['image']['url'] ) );
 			}
 		}
 

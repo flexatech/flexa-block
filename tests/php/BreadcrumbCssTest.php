@@ -219,7 +219,7 @@ class BreadcrumbCssTest extends CssTestCase {
 				'image' => [ 'url' => 'https://example.com/bg.jpg', 'position' => 'top left', 'size' => 'contain', 'repeat' => 'repeat-x', 'attachment' => 'fixed' ],
 			],
 		] );
-		$this->assertCssHas( $css, self::WRAP, 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, self::WRAP, 'background-image:url("https://example.com/bg.jpg")' );
 		$this->assertCssHas( $css, self::WRAP, 'background-position:top left' );
 		$this->assertCssHas( $css, self::WRAP, 'background-size:contain' );
 		$this->assertCssHas( $css, self::WRAP, 'background-repeat:repeat-x' );
@@ -236,7 +236,7 @@ class BreadcrumbCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
-		$this->assertCssHas( $css, self::WRAP . '.flexa-bg-loaded', 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, self::WRAP . '.flexa-bg-loaded', 'background-image:url("https://example.com/bg.jpg")' );
 	}
 
 	public function test_data_theme_dark_mode_branch(): void {

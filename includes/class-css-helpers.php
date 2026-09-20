@@ -41,6 +41,27 @@ class CSS_Helpers {
 	}
 
 	/**
+	 * Build a safe CSS `url("…")` token from a user-supplied URL.
+	 *
+	 * `esc_url_raw()` is an HTML/URL escaper: it leaves `(`, `)` and quotes
+	 * intact because they are legal URL characters. Dropped straight into a CSS
+	 * `url(...)`, a crafted value could close the parenthesis early and inject
+	 * extra declarations. So URL-sanitize first, then strip the characters that
+	 * are significant in CSS, and wrap the result in double quotes.
+	 *
+	 * @param mixed $url Raw URL (typically a block attribute).
+	 * @return string `url("…")`, or '' when the URL sanitizes to nothing.
+	 */
+	public static function css_url( $url ) {
+		$safe = str_replace(
+			[ '(', ')', '"', "'", ' ', "\t", "\r", "\n" ],
+			'',
+			esc_url_raw( (string) $url )
+		);
+		return '' === $safe ? '' : 'url("' . $safe . '")';
+	}
+
+	/**
 	 * Validate a CSS color-like value: hex, `rgb()/rgba()/hsl()/hsla()/var()`,
 	 * or a bare keyword (`transparent`, `currentColor`, a named color, …).
 	 *
@@ -292,7 +313,10 @@ class CSS_Helpers {
 			$url   = $image['url'] ?? '';
 			if ( '' !== $url ) {
 				if ( ! $skip_image_url ) {
-					$css->add_property( 'background-image', 'url(' . esc_url_raw( $url ) . ')' );
+					$image_url = self::css_url( $url );
+					if ( '' !== $image_url ) {
+						$css->add_property( 'background-image', $image_url );
+					}
 				}
 				$css->add_property( 'background-position', self::sanitize_position_pair( $image['position'] ?? '', 'center center' ) );
 				$css->add_property( 'background-size', self::sanitize_enum( $image['size'] ?? '', [ 'cover', 'contain', 'auto' ], 'cover' ) );
@@ -790,8 +814,11 @@ class CSS_Helpers {
 			$css->set_selector( $selector );
 			self::add_background( $css, $background, $lazy_bg );
 			if ( $lazy_bg ) {
-				$css->set_selector( $selector . '.flexa-bg-loaded' )
-					->add_property( 'background-image', 'url(' . esc_url_raw( $background['image']['url'] ) . ')' );
+				$loaded_url = self::css_url( $background['image']['url'] );
+				if ( '' !== $loaded_url ) {
+					$css->set_selector( $selector . '.flexa-bg-loaded' )
+						->add_property( 'background-image', $loaded_url );
+				}
 			}
 		}
 

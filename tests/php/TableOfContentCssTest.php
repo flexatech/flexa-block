@@ -209,7 +209,7 @@ class TableOfContentCssTest extends CssTestCase {
 		] );
 		// The URL prints exactly once, gated behind the loaded class.
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
-		$this->assertCssHas( $css, '.flexa-table-of-content-a.flexa-bg-loaded', 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, '.flexa-table-of-content-a.flexa-bg-loaded', 'background-image:url("https://example.com/bg.jpg")' );
 		// The image sub-properties are all emitted on the wrapper.
 		$this->assertCssHas( $css, '.flexa-table-of-content-a', 'background-position:center center' );
 		$this->assertCssHas( $css, '.flexa-table-of-content-a', 'background-size:cover' );

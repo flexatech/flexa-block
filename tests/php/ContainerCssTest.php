@@ -205,7 +205,7 @@ class ContainerCssTest extends CssTestCase {
 				'image' => [ 'url' => 'https://example.com/a.jpg', 'size' => 'cover' ],
 			],
 		] );
-		$this->assertCssHas( $css, '.flexa-container-a', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-container-a', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertStringNotContainsString( 'flexa-bg-loaded', $css );
 	}
 
@@ -222,7 +222,7 @@ class ContainerCssTest extends CssTestCase {
 		// Positioning stays on the base selector, but the url is deferred.
 		$this->assertCssHas( $css, '.flexa-container-a', 'background-size:cover' );
 		// The image url only applies once .flexa-bg-loaded is added by view.js.
-		$this->assertCssHas( $css, '.flexa-container-a.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-container-a.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		// The url must appear exactly once — only behind the loaded class.
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}

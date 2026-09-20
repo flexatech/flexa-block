@@ -124,7 +124,7 @@ class Image_CSS {
 		$mask = $attrs['mask'] ?? [];
 		if ( 'custom' === ( $mask['shape'] ?? 'none' ) && ! empty( $mask['customImage']['url'] ) ) {
 			$css->set_selector( $frame )
-				->add_property( '--flexa-img-mask', 'url(' . esc_url_raw( $mask['customImage']['url'] ) . ')' )
+				->add_property( '--flexa-img-mask', CSS_Helpers::css_url( $mask['customImage']['url'] ) )
 				->add_property( '--flexa-img-mask-size', CSS_Helpers::sanitize_enum( $mask['size'] ?? '', [ 'cover', 'contain', 'auto' ], 'contain' ) )
 				->add_property( '--flexa-img-mask-position', CSS_Helpers::sanitize_position_pair( $mask['position'] ?? '', 'center center' ) )
 				->add_property( '--flexa-img-mask-repeat', CSS_Helpers::sanitize_enum( $mask['repeat'] ?? '', [ 'repeat', 'repeat-x', 'repeat-y', 'no-repeat' ], 'no-repeat' ) );
@@ -160,7 +160,7 @@ class Image_CSS {
 			CSS_Helpers::add_background( $css, $background, $lazy_bg );
 			if ( $lazy_bg ) {
 				$css->set_selector( $wrap . '.flexa-bg-loaded' )
-					->add_property( 'background-image', 'url(' . esc_url_raw( $background['image']['url'] ) . ')' );
+					->add_property( 'background-image', CSS_Helpers::css_url( $background['image']['url'] ) );
 			}
 		}
 

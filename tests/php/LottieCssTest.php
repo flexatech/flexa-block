@@ -130,7 +130,7 @@ class LottieCssTest extends CssTestCase {
 				],
 			],
 		] );
-		$this->assertCssHas( $css, self::WRAP, 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, self::WRAP, 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertCssHas( $css, self::WRAP, 'background-position:center center' );
 		$this->assertCssHas( $css, self::WRAP, 'background-size:contain' );
 		$this->assertCssHas( $css, self::WRAP, 'background-repeat:repeat-x' );
