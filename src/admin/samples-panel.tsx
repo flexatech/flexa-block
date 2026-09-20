@@ -20,6 +20,9 @@ interface ImportItem {
 	category?: string;
 	blocks?: string[];
 	version?: string;
+	tags?: string[];
+	featured?: boolean;
+	preview?: string;
 	imported?: boolean;
 	imported_post_id?: number;
 	edit_link?: string;
@@ -297,6 +300,11 @@ function SampleCard( {
 				item.imported ? ' is-imported' : ''
 			}` }
 		>
+			{ item.preview && (
+				<div className="flexa-sample-card__preview">
+					<img src={ item.preview } alt="" loading="lazy" />
+				</div>
+			) }
 			<div className="flexa-sample-card__body">
 				<div className="flexa-sample-card__head">
 					<h4 className="flexa-sample-card__title">{ item.title }</h4>
