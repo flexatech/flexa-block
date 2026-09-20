@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.12
+Stable tag: 1.0.13
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -143,6 +143,9 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 
 == Changelog ==
 
+= 1.0.13 =
+* Fix: the deactivation feedback survey no longer opens more than one "Before you go" dialog. With several Flexa plugins active at once, each bundled its own copy of the survey script and every copy added a handler to the Deactivate link, so the dialog stacked and needed one click to dismiss each copy. Each Deactivate link now opens a single dialog.
+
 = 1.0.12 =
 * Hardened how block background images are written into generated CSS. Image URLs are now quoted and stripped of any characters that could break out of the CSS `url()` value, closing a potential CSS-injection path. Background and mask images render exactly as before.
 
@@ -221,6 +224,9 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 * Initial release with the Container block.
 
 == Upgrade Notice ==
+
+= 1.0.13 =
+Fixes the deactivation survey stacking multiple "Before you go" dialogs when several Flexa plugins are active.
 
 = 1.0.12 =
 Security hardening for background-image CSS output. Recommended for all users; no changes to how your content looks.

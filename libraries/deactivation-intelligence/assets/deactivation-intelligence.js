@@ -33,6 +33,14 @@
         : document.querySelector('a[id^="deactivate-"]');
       if (!link) return;
 
+      // Several Flexa plugins can each bundle and load their own copy of this
+      // script. Every copy iterates all configs on the page, so a single
+      // Deactivate link would otherwise receive one click handler per loaded
+      // copy and open that many stacked modals (needing one Cancel each). Bind
+      // each link exactly once, whichever copy reaches it first.
+      if (link.getAttribute("data-di-bound")) return;
+      link.setAttribute("data-di-bound", "1");
+
       link.addEventListener("click", function (e) {
         // Enhancement only: intercept, show modal, then continue to this href.
         e.preventDefault();
@@ -48,6 +56,9 @@
   /* ----------------------------------------------------------------------- */
 
   function openModal(cfg, deactivateUrl) {
+    // Never stack modals: if one is already open, do nothing.
+    if (document.querySelector(".di-overlay")) return;
+
     var i18n = cfg.i18n;
     var lastFocused = document.activeElement;
 
