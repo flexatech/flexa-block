@@ -76,9 +76,17 @@ interface FlexaBlockAdminData {
 	roles?: FlexaBlockAdminRole[];
 }
 
+/** REST endpoints for the import engine (Sample Data), from Import_Manager. */
+interface FlexaBlockImportsData {
+	listUrl?: string;
+	importUrl?: string;
+	cleanupUrl?: string;
+}
+
 interface Window {
 	flexaBlockEditor?: FlexaBlockEditorData;
 	flexaBlockAdmin?: FlexaBlockAdminData;
+	flexaBlockImports?: FlexaBlockImportsData;
 	flexaBlockAddonIcons?: FlexaBlockAddonIcons;
 }
 

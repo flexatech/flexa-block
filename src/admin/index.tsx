@@ -14,11 +14,12 @@ import { Spinner } from '@wordpress/components';
 import { BlocksPanel } from './blocks-panel';
 import { GeneralSettings } from './settings-general';
 import { EditingSettings } from './settings-editing';
+import { SamplesPanel } from './samples-panel';
 import './admin.scss';
 
 type Settings = Record< string, any >;
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
-type View = 'general' | 'blocks' | 'editing';
+type View = 'general' | 'blocks' | 'samples' | 'editing';
 
 const SAVE_DEBOUNCE_MS = 700;
 
@@ -203,6 +204,13 @@ function App(): JSX.Element {
 						onClick={ () => setView( 'blocks' ) }
 					/>
 					<NavItem
+						icon="download"
+						label={ __( 'Sample Data', 'flexa-block' ) }
+						desc={ __( 'Import block examples', 'flexa-block' ) }
+						active={ view === 'samples' }
+						onClick={ () => setView( 'samples' ) }
+					/>
+					<NavItem
 						icon="edit-page"
 						label={ __( 'Editing', 'flexa-block' ) }
 						desc={ __( 'Front-end inline editing', 'flexa-block' ) }
@@ -228,6 +236,7 @@ function App(): JSX.Element {
 						onToggleMany={ toggleMany }
 					/>
 				) }
+				{ view === 'samples' && <SamplesPanel /> }
 				{ view === 'editing' && (
 					<EditingSettings
 						settings={ settings }

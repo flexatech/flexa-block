@@ -66,6 +66,7 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-feed-tokens.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-facebook-feed.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-instagram-feed.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/import/class-import-manager.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-admin.php';
 
 	Flexa\Block\Block_Manager::init();
@@ -81,6 +82,7 @@ function flexa_block_init() {
 	Flexa\Block\Feed_Tokens::init();
 	Flexa\Block\Facebook_Feed::init();
 	Flexa\Block\Instagram_Feed::init();
+	Flexa\Block\Import\Import_Manager::init();
 	Flexa\Block\Admin\Admin::init();
 }
 add_action( 'plugins_loaded', 'flexa_block_init' );
