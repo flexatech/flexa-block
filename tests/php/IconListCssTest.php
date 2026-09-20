@@ -281,7 +281,7 @@ class IconListCssTest extends CssTestCase {
 			'blockId'    => 'a',
 			'background' => [ 'type' => 'image', 'image' => [ 'url' => 'https://example.com/a.jpg', 'size' => 'cover' ] ],
 		] );
-		$this->assertCssHas( $css, '.flexa-icon-list-a', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-icon-list-a', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertCssHas( $css, '.flexa-icon-list-a', 'background-size:cover' );
 		$this->assertStringNotContainsString( 'flexa-bg-loaded', $css );
 	}
@@ -292,7 +292,7 @@ class IconListCssTest extends CssTestCase {
 			'background' => [ 'type' => 'image', 'lazyLoad' => true, 'image' => [ 'url' => 'https://example.com/a.jpg', 'size' => 'cover' ] ],
 		] );
 		$this->assertCssHas( $css, '.flexa-icon-list-a', 'background-size:cover' );
-		$this->assertCssHas( $css, '.flexa-icon-list-a.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-icon-list-a.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 

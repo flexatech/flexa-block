@@ -237,7 +237,7 @@ class GridCssTest extends CssTestCase {
 				'image' => [ 'url' => 'https://example.com/a.jpg', 'position' => 'center center', 'size' => 'cover', 'repeat' => 'no-repeat', 'attachment' => 'scroll' ],
 			],
 		] );
-		$this->assertCssHas( $css, '.flexa-grid-a', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-grid-a', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertCssHas( $css, '.flexa-grid-a', 'background-position:center center' );
 		$this->assertCssHas( $css, '.flexa-grid-a', 'background-size:cover' );
 		$this->assertCssHas( $css, '.flexa-grid-a', 'background-repeat:no-repeat' );
@@ -256,7 +256,7 @@ class GridCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertCssHas( $css, '.flexa-grid-a', 'background-size:cover' );
-		$this->assertCssHas( $css, '.flexa-grid-a.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-grid-a.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 }

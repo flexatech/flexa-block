@@ -274,7 +274,7 @@ class InfoBoxCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertCssHas( $css, self::WRAP, 'background-size:cover' );
-		$this->assertCssHas( $css, self::WRAP . '.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, self::WRAP . '.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 

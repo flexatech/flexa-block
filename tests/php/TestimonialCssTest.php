@@ -229,7 +229,7 @@ class TestimonialCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
-		$this->assertCssHas( $css, '.flexa-testimonial-a.flexa-bg-loaded', 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, '.flexa-testimonial-a.flexa-bg-loaded', 'background-image:url("https://example.com/bg.jpg")' );
 	}
 
 	public function test_tablet_values_go_into_media_query(): void {

@@ -249,7 +249,7 @@ class IconCssTest extends CssTestCase {
 			'blockId'    => 'a',
 			'background' => [ 'type' => 'image', 'image' => [ 'url' => 'https://example.com/a.jpg', 'size' => 'cover' ] ],
 		] );
-		$this->assertCssHas( $css, '.flexa-icon-a', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-icon-a', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertStringNotContainsString( 'flexa-bg-loaded', $css );
 	}
 
@@ -265,7 +265,7 @@ class IconCssTest extends CssTestCase {
 				'image'    => [ 'url' => 'https://example.com/a.jpg', 'size' => 'cover' ],
 			],
 		] );
-		$this->assertCssHas( $css, '.flexa-icon-a', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-icon-a', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertStringNotContainsString( 'flexa-bg-loaded', $css );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}

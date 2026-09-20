@@ -401,7 +401,7 @@ class RssCssTest extends CssTestCase {
 			'blockId'    => 'a',
 			'background' => [ 'type' => 'image', 'image' => [ 'url' => 'https://example.com/a.jpg', 'size' => 'cover' ] ],
 		] );
-		$this->assertCssHas( $css, self::INNER, 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, self::INNER, 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertStringNotContainsString( 'flexa-bg-loaded', $css );
 	}
 

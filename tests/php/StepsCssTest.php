@@ -225,7 +225,7 @@ class StepsCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertCssHas( $css, '.flexa-steps-a', 'background-size:cover' );
-		$this->assertCssHas( $css, '.flexa-steps-a.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-steps-a.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 

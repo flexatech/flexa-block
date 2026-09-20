@@ -293,7 +293,7 @@ class FaqCssTest extends CssTestCase {
 		// The URL must be printed exactly once, gated behind the loaded class, so
 		// the browser only fetches it after view.js reveals the block.
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
-		$this->assertCssHas( $css, '.flexa-faq-a.flexa-bg-loaded', 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, '.flexa-faq-a.flexa-bg-loaded', 'background-image:url("https://example.com/bg.jpg")' );
 	}
 
 	// --- item-style migration ---------------------------------------------

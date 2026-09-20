@@ -264,7 +264,7 @@ class ImagesGalleryCssTest extends CssTestCase {
 				'image'    => [ 'url' => 'https://example.com/bg.jpg', 'size' => 'cover' ],
 			],
 		] );
-		$this->assertCssHas( $css, '.flexa-images-gallery-a.flexa-bg-loaded', 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, '.flexa-images-gallery-a.flexa-bg-loaded', 'background-image:url("https://example.com/bg.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 

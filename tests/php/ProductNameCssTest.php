@@ -167,7 +167,7 @@ class ProductNameCssTest extends CssTestCase {
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 		$loaded_pos = strpos( $css, '.flexa-bg-loaded' );
 		$this->assertNotFalse( $loaded_pos );
-		$this->assertCssHas( $css, self::WRAP . '.flexa-bg-loaded', 'background-image:url(https://x/y.jpg)' );
+		$this->assertCssHas( $css, self::WRAP . '.flexa-bg-loaded', 'background-image:url("https://x/y.jpg")' );
 	}
 
 	public function test_border_on_wrapper_light_and_dark(): void {

@@ -79,7 +79,7 @@ class ImageCssTest extends CssTestCase {
 			'blockId' => 'a',
 			'mask'    => [ 'shape' => 'custom', 'customImage' => [ 'url' => 'https://example.com/m.svg' ], 'size' => 'cover' ],
 		] );
-		$this->assertCssHas( $css, '.flexa-image-a .flexa-image__frame', '--flexa-img-mask:url(https://example.com/m.svg)' );
+		$this->assertCssHas( $css, '.flexa-image-a .flexa-image__frame', '--flexa-img-mask:url("https://example.com/m.svg")' );
 		$this->assertCssHas( $css, '.flexa-image-a .flexa-image__frame', '--flexa-img-mask-size:cover' );
 	}
 
@@ -127,7 +127,7 @@ class ImageCssTest extends CssTestCase {
 				'image'    => [ 'url' => 'https://example.com/a.jpg', 'size' => 'cover' ],
 			],
 		] );
-		$this->assertCssHas( $css, '.flexa-image-a.flexa-bg-loaded', 'background-image:url(https://example.com/a.jpg)' );
+		$this->assertCssHas( $css, '.flexa-image-a.flexa-bg-loaded', 'background-image:url("https://example.com/a.jpg")' );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
 	}
 

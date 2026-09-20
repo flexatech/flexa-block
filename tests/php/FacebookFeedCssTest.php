@@ -193,7 +193,7 @@ class FacebookFeedCssTest extends CssTestCase {
 				'image' => [ 'url' => 'https://example.com/bg.jpg', 'position' => 'top left', 'size' => 'contain', 'repeat' => 'repeat-x', 'attachment' => 'fixed' ],
 			],
 		] );
-		$this->assertCssHas( $css, self::INNER, 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, self::INNER, 'background-image:url("https://example.com/bg.jpg")' );
 		$this->assertCssHas( $css, self::INNER, 'background-position:top left' );
 		$this->assertCssHas( $css, self::INNER, 'background-size:contain' );
 		$this->assertCssHas( $css, self::INNER, 'background-repeat:repeat-x' );

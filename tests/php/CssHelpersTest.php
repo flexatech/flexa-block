@@ -48,6 +48,29 @@ class CssHelpersTest extends TestCase {
 		$this->assertSame( '', CSS_Helpers::radius_shorthand( [] ) );
 	}
 
+	public function test_css_url_quotes_and_neutralizes_breakout_chars(): void {
+		// A plain URL is wrapped in double quotes.
+		$this->assertSame(
+			'url("https://example.com/a.jpg")',
+			CSS_Helpers::css_url( 'https://example.com/a.jpg' )
+		);
+		// A crafted URL cannot close the url() early or add declarations: the
+		// parens, quotes and whitespace that esc_url_raw() leaves behind are
+		// stripped before the value is quoted.
+		$out = CSS_Helpers::css_url( 'https://e.com/a.jpg);color:red;background:url(x' );
+		$this->assertStringStartsWith( 'url("', $out );
+		$this->assertStringEndsWith( '")', $out );
+		// The value between the url("…") wrapper carries none of the characters
+		// that could break out of the parenthesis or the quoted string.
+		$inner = substr( $out, 5, -2 );
+		$this->assertStringNotContainsString( '(', $inner );
+		$this->assertStringNotContainsString( ')', $inner );
+		$this->assertStringNotContainsString( '"', $inner );
+		$this->assertStringNotContainsString( "'", $inner );
+		// Empty / unusable input yields no property at all.
+		$this->assertSame( '', CSS_Helpers::css_url( '' ) );
+	}
+
 	public function test_light_and_dark_pickers(): void {
 		$pair = [ 'light' => '#fff', 'dark' => '#000' ];
 		$this->assertSame( '#fff', CSS_Helpers::light( $pair ) );
@@ -103,7 +126,7 @@ class CssHelpersTest extends TestCase {
 				],
 			] );
 		} );
-		$this->assertStringContainsString( 'background-image:url(https://example.com/a.jpg)', $css );
+		$this->assertStringContainsString( 'background-image:url("https://example.com/a.jpg")', $css );
 		$this->assertStringContainsString( 'background-position:top left', $css );
 		$this->assertStringContainsString( 'background-size:contain', $css );
 		$this->assertStringContainsString( 'background-repeat:repeat-x', $css );

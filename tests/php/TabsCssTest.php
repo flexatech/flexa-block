@@ -258,7 +258,7 @@ class TabsCssTest extends CssTestCase {
 			],
 		] );
 		$this->assertSame( 1, substr_count( $css, 'background-image:url(' ) );
-		$this->assertCssHas( $css, '.flexa-tabs-a.flexa-bg-loaded', 'background-image:url(https://example.com/bg.jpg)' );
+		$this->assertCssHas( $css, '.flexa-tabs-a.flexa-bg-loaded', 'background-image:url("https://example.com/bg.jpg")' );
 	}
 
 	public function test_data_theme_dark_mode_branch(): void {

@@ -160,7 +160,7 @@ class Container_CSS {
 			// `.flexa-bg-loaded` (see view.js). Until then no image is fetched.
 			if ( $lazy_bg ) {
 				$css->set_selector( $styled . '.flexa-bg-loaded' )
-					->add_property( 'background-image', 'url(' . esc_url_raw( $background['image']['url'] ) . ')' );
+					->add_property( 'background-image', CSS_Helpers::css_url( $background['image']['url'] ) );
 			}
 		}
 
