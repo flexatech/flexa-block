@@ -37,6 +37,7 @@ class Import_Cleanup {
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'no_found_rows'  => true,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Admin-only cleanup lookup by provenance meta; the only way to find every post imported from this source item, and it runs once per cleanup, not on the front end.
 				'meta_query'     => [
 					'relation' => 'AND',
 					[

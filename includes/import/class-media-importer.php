@@ -157,8 +157,10 @@ class Media_Importer {
 				'fields'                 => 'ids',
 				'no_found_rows'          => true,
 				'update_post_term_cache' => false,
+				// phpcs:disable WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Admin-only import dedupe: finds an already-imported attachment by its content hash; there is no non-meta way to match by file contents, and it runs once per imported file, not on the front end.
 				'meta_key'               => self::HASH_META,
 				'meta_value'             => $hash,
+				// phpcs:enable WordPress.DB.SlowDBQuery.slow_db_query_meta_key, WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 			]
 		);
 		return $found ? (int) $found[0] : 0;

@@ -116,6 +116,7 @@ class Content_Importer {
 				'posts_per_page' => 1,
 				'fields'         => 'ids',
 				'no_found_rows'  => true,
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Admin-only import lookup by provenance meta; there is no non-meta way to find the post previously imported from this source item, and it runs once per import, not on the front end.
 				'meta_query'     => [
 					'relation' => 'AND',
 					[
