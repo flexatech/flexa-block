@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.13
+Stable tag: 1.0.14
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -142,6 +142,10 @@ In the WordPress admin sidebar, click **Flexa Block** (located below Settings). 
 Yes. Flexa Block Pro adds additional blocks and advanced features. It works alongside this free plugin.
 
 == Changelog ==
+
+= 1.0.14 =
+* Sample Data: the bundled starter pages (Contact and SaaS Landing) now ship with a finished visual design instead of a plain layout. Each sample card has a single Preview action that opens the page on the front end, and removing an imported sample now asks you to confirm first.
+* Admin: refreshed the dashboard with a cyan accent and rounded buttons, and added a Settings link next to the plugin on the Plugins screen.
 
 = 1.0.13 =
 * Fix: the deactivation feedback survey no longer opens more than one "Before you go" dialog. With several Flexa plugins active at once, each bundled its own copy of the survey script and every copy added a handler to the Deactivate link, so the dialog stacked and needed one click to dismiss each copy. Each Deactivate link now opens a single dialog.
