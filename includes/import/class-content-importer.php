@@ -92,9 +92,33 @@ class Content_Importer {
 		return [
 			'post_id'   => $post_id,
 			'edit_link' => (string) get_edit_post_link( $post_id, 'raw' ),
-			'view_link' => (string) get_permalink( $post_id ),
+			'view_link' => self::view_link( $post_id ),
 			'warnings'  => $warnings,
 		];
+	}
+
+	/**
+	 * Where to send a user who wants to see an imported post on the front end.
+	 *
+	 * Imports land as drafts, and a draft has no public URL: its permalink 404s
+	 * for everyone, including its author. Only the preview URL renders it, and
+	 * only for a user who can edit it — so hand back the preview link until the
+	 * post is actually public, and its real permalink once it is.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return string The link, or '' when the post is gone.
+	 */
+	public static function view_link( int $post_id ): string {
+		$post = get_post( $post_id );
+		if ( ! $post instanceof \WP_Post ) {
+			return '';
+		}
+
+		if ( in_array( $post->post_status, [ 'publish', 'private' ], true ) ) {
+			return (string) get_permalink( $post );
+		}
+
+		return (string) get_preview_post_link( $post );
 	}
 
 	/**

@@ -93,6 +93,7 @@ class Import_REST {
 				$item['imported']         = $existing > 0;
 				$item['imported_post_id'] = $existing;
 				$item['edit_link']        = $existing > 0 ? (string) get_edit_post_link( $existing, 'raw' ) : '';
+				$item['view_link']        = $existing > 0 ? Content_Importer::view_link( $existing ) : '';
 				$items[]                  = $item;
 			}
 			$out[] = [
