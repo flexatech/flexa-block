@@ -11,7 +11,7 @@
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Spinner } from '@wordpress/components';
+import { Modal, Spinner } from '@wordpress/components';
 
 interface ImportItem {
 	id: string;
@@ -27,7 +27,6 @@ interface ImportItem {
 	imported_post_id?: number;
 	edit_link?: string;
 	view_link?: string;
-	view_is_preview?: boolean;
 }
 
 interface ImportSource {
@@ -49,6 +48,13 @@ export function SamplesPanel(): JSX.Element {
 	const [ loadError, setLoadError ] = useState( false );
 	const [ busy, setBusy ] = useState( '' );
 	const [ feedback, setFeedback ] = useState< Feedback >( null );
+	// The item awaiting a remove confirmation. Held here rather than in the card
+	// so the dialog is a single centred modal owned by the panel, and so the
+	// in-flight label lives in the dialog instead of resizing the card's button.
+	const [ confirming, setConfirming ] = useState< {
+		source: ImportSource;
+		item: ImportItem;
+	} | null >( null );
 
 	const load = () => {
 		if ( ! cfg.listUrl ) {
@@ -111,7 +117,6 @@ export function SamplesPanel(): JSX.Element {
 					imported_post_id: res?.post_id,
 					edit_link: res?.edit_link || '',
 					view_link: res?.view_link || '',
-					view_is_preview: !! res?.view_is_preview,
 				} );
 				setFeedback( {
 					type: 'success',
@@ -137,21 +142,6 @@ export function SamplesPanel(): JSX.Element {
 		if ( ! cfg.cleanupUrl ) {
 			return;
 		}
-		// eslint-disable-next-line no-alert
-		if (
-			! window.confirm(
-				sprintf(
-					/* translators: %s: sample title */
-					__(
-						'Move the imported “%s” content to Trash?',
-						'flexa-block'
-					),
-					item.title
-				)
-			)
-		) {
-			return;
-		}
 		setBusy( key( source.key, item.id ) );
 		setFeedback( null );
 		apiFetch( {
@@ -165,7 +155,6 @@ export function SamplesPanel(): JSX.Element {
 					imported_post_id: 0,
 					edit_link: '',
 					view_link: '',
-					view_is_preview: false,
 				} );
 				setFeedback( {
 					type: 'success',
@@ -184,7 +173,10 @@ export function SamplesPanel(): JSX.Element {
 						__( 'Could not remove that item.', 'flexa-block' ),
 				} )
 			)
-			.finally( () => setBusy( '' ) );
+			.finally( () => {
+				setBusy( '' );
+				setConfirming( null );
+			} );
 	};
 
 	if ( loading ) {
@@ -263,13 +255,92 @@ export function SamplesPanel(): JSX.Element {
 								item={ item }
 								busy={ busy === key( source.key, item.id ) }
 								onImport={ () => doImport( source, item ) }
-								onRemove={ () => doRemove( source, item ) }
+								onRemove={ () =>
+									setConfirming( { source, item } )
+								}
 							/>
 						) ) }
 					</div>
 				</section>
 			) ) }
+
+			{ confirming && (
+				<ConfirmRemoveModal
+					title={ confirming.item.title }
+					busy={
+						busy ===
+						key( confirming.source.key, confirming.item.id )
+					}
+					onCancel={ () => setConfirming( null ) }
+					onConfirm={ () =>
+						doRemove( confirming.source, confirming.item )
+					}
+				/>
+			) }
 		</div>
+	);
+}
+
+/**
+ * Centred confirmation for a remove, in place of window.confirm.
+ *
+ * The in-flight label sits on this dialog's own button, not on the card's, so
+ * the card's action row never reflows mid-request.
+ * @param root0
+ * @param root0.title     Sample title, named in the prompt.
+ * @param root0.busy      Whether the cleanup request is in flight.
+ * @param root0.onCancel  Dismiss handler.
+ * @param root0.onConfirm Confirm handler.
+ */
+function ConfirmRemoveModal( {
+	title,
+	busy,
+	onCancel,
+	onConfirm,
+}: {
+	title: string;
+	busy: boolean;
+	onCancel: () => void;
+	onConfirm: () => void;
+} ): JSX.Element {
+	return (
+		<Modal
+			title={ __( 'Move to Trash?', 'flexa-block' ) }
+			onRequestClose={ busy ? () => undefined : onCancel }
+			size="small"
+			className="flexa-samples__confirm"
+		>
+			<p className="flexa-samples__confirm-text">
+				{ sprintf(
+					/* translators: %s: sample title */
+					__(
+						'The imported “%s” content will be moved to Trash. You can import it again afterwards.',
+						'flexa-block'
+					),
+					title
+				) }
+			</p>
+			<div className="flexa-samples__confirm-actions">
+				<button
+					type="button"
+					className="components-button is-tertiary"
+					onClick={ onCancel }
+					disabled={ busy }
+				>
+					{ __( 'Cancel', 'flexa-block' ) }
+				</button>
+				<button
+					type="button"
+					className="components-button is-primary is-destructive"
+					onClick={ onConfirm }
+					disabled={ busy }
+				>
+					{ busy
+						? __( 'Removing…', 'flexa-block' )
+						: __( 'Move to Trash', 'flexa-block' ) }
+				</button>
+			</div>
+		</Modal>
 	);
 }
 
@@ -352,9 +423,7 @@ function SampleCard( {
 								target="_blank"
 								rel="noreferrer"
 							>
-								{ item.view_is_preview
-									? __( 'Preview', 'flexa-block' )
-									: __( 'View page', 'flexa-block' ) }
+								{ __( 'Preview', 'flexa-block' ) }
 								<span
 									className="flexa-sample-card__ext dashicons dashicons-external"
 									aria-hidden="true"
@@ -367,9 +436,7 @@ function SampleCard( {
 							onClick={ onRemove }
 							disabled={ busy }
 						>
-							{ busy
-								? __( 'Removing…', 'flexa-block' )
-								: __( 'Remove', 'flexa-block' ) }
+							{ __( 'Remove', 'flexa-block' ) }
 						</button>
 					</>
 				) : (

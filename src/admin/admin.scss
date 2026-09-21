@@ -718,6 +718,20 @@ $addon: #4f46e5;
 		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 		gap: 16px;
 	}
+
+	// Remove confirmation (a WP Modal, so it is centred and focus-trapped for us).
+	&__confirm-text {
+		margin: 0 0 20px;
+		font-size: 13px;
+		line-height: 1.6;
+		color: $ink;
+	}
+
+	&__confirm-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
 }
 
 .flexa-sample-card {
@@ -797,7 +811,11 @@ $addon: #4f46e5;
 	&__actions {
 		display: flex;
 		align-items: center;
-		flex-wrap: wrap;
+		// Deliberately no wrap: a dropped button reads as a layout glitch. The
+		// labels are fixed-length (the in-flight text lives in the confirm
+		// dialog), so the row only has to survive a narrow card, which it does by
+		// letting the buttons shrink.
+		flex-wrap: nowrap;
 		gap: 8px;
 		padding: 12px 18px;
 		border-top: 1px solid $line;

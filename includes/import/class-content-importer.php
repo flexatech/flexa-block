@@ -42,7 +42,7 @@ class Content_Importer {
 	 *
 	 * @param string               $source_key Owning source key.
 	 * @param array<string, mixed> $definition Full item definition.
-	 * @return array{post_id:int, edit_link:string, view_link:string, view_is_preview:bool, warnings:list<string>}|\WP_Error
+	 * @return array{post_id:int, edit_link:string, view_link:string, warnings:list<string>}|\WP_Error
 	 */
 	public static function import( string $source_key, array $definition ) {
 		$id = sanitize_key( (string) ( $definition['id'] ?? '' ) );
@@ -89,14 +89,12 @@ class Content_Importer {
 		update_post_meta( $post_id, self::ID_META, $id );
 		update_post_meta( $post_id, self::VERSION_META, sanitize_text_field( (string) ( $definition['version'] ?? '1.0.0' ) ) );
 
-		return array_merge(
-			[
-				'post_id'   => $post_id,
-				'edit_link' => (string) get_edit_post_link( $post_id, 'raw' ),
-			],
-			self::view_target( $post_id ),
-			[ 'warnings' => $warnings ]
-		);
+		return [
+			'post_id'   => $post_id,
+			'edit_link' => (string) get_edit_post_link( $post_id, 'raw' ),
+			'view_link' => self::view_link( $post_id ),
+			'warnings'  => $warnings,
+		];
 	}
 
 	/**
@@ -105,32 +103,22 @@ class Content_Importer {
 	 * Imports land as drafts, and a draft has no public URL: its permalink 404s
 	 * for everyone, including its author. Only the preview URL renders it, and
 	 * only for a user who can edit it — so hand back the preview link until the
-	 * post is actually public, and flag which of the two it is so the UI can
-	 * label the button honestly ("Preview" vs "View page").
+	 * post is actually public, and its real permalink once it is.
 	 *
 	 * @param int $post_id Post ID.
-	 * @return array{view_link:string, view_is_preview:bool}
+	 * @return string The link, or '' when the post is gone.
 	 */
-	public static function view_target( int $post_id ): array {
+	public static function view_link( int $post_id ): string {
 		$post = get_post( $post_id );
 		if ( ! $post instanceof \WP_Post ) {
-			return [
-				'view_link'       => '',
-				'view_is_preview' => false,
-			];
+			return '';
 		}
 
 		if ( in_array( $post->post_status, [ 'publish', 'private' ], true ) ) {
-			return [
-				'view_link'       => (string) get_permalink( $post ),
-				'view_is_preview' => false,
-			];
+			return (string) get_permalink( $post );
 		}
 
-		return [
-			'view_link'       => (string) get_preview_post_link( $post ),
-			'view_is_preview' => true,
-		];
+		return (string) get_preview_post_link( $post );
 	}
 
 	/**
