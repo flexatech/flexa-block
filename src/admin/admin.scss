@@ -52,6 +52,9 @@ $addon: #4f46e5;
 
 	* { box-sizing: border-box; }
 
+	/* Dashboard buttons share the panel corner radius. */
+	.components-button { border-radius: 20px; }
+
 	@media (max-width: 960px) {
 		flex-direction: column;
 		gap: 16px;
