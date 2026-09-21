@@ -8,8 +8,8 @@
  * lives in a single file.
  */
 
-$accent: #2271b1;
-$accent-dark: #135e96;
+$accent: #0891b2;
+$accent-dark: #0e7490;
 $ink: #1e1e1e;
 $muted: #646970;
 $line: #e0e0e0;
@@ -38,6 +38,17 @@ $addon: #4f46e5;
 	gap: 20px;
 	margin: 16px 20px 40px 0;
 	color: $ink;
+
+	/*
+	 * Retint the WordPress primary buttons (the `is-primary` Import / Open in
+	 * editor actions) to the plugin accent. They read `--wp-admin-theme-color`,
+	 * so overriding it here — scoped to the dashboard — keeps them in step with
+	 * the custom `.flexa-switch` toggles instead of tracking the site's admin
+	 * colour scheme. The two darker steps drive the hover/active states.
+	 */
+	--wp-admin-theme-color: #{$accent};
+	--wp-admin-theme-color-darker-10: #0b7f9b;
+	--wp-admin-theme-color-darker-20: #{$accent-dark};
 
 	* { box-sizing: border-box; }
 
@@ -94,7 +105,7 @@ $addon: #4f46e5;
 		margin-top: 3px;
 		padding: 1px 8px;
 		border-radius: 999px;
-		background: rgba(34, 113, 177, 0.1);
+		background: rgba(8, 145, 178, 0.1);
 		color: $accent-dark;
 		font-size: 11px;
 		font-weight: 600;
@@ -117,7 +128,7 @@ $addon: #4f46e5;
 	cursor: pointer;
 	transition: background 0.15s ease, border-color 0.15s ease;
 
-	&:hover { background: rgba(34, 113, 177, 0.06); }
+	&:hover { background: rgba(8, 145, 178, 0.06); }
 
 	&.is-active {
 		background: #fff;
@@ -282,8 +293,8 @@ $addon: #4f46e5;
 	transition: border-color 0.15s ease, background 0.15s ease;
 
 	&.is-on {
-		border-color: rgba(34, 113, 177, 0.4);
-		background: rgba(34, 113, 177, 0.03);
+		border-color: rgba(8, 145, 178, 0.4);
+		background: rgba(8, 145, 178, 0.03);
 	}
 
 	&__text { flex: 1 1 auto; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -309,7 +320,7 @@ $addon: #4f46e5;
 		border: 1px solid $line;
 		border-left: 3px solid $accent;
 		border-radius: 8px;
-		background: rgba(34, 113, 177, 0.05);
+		background: rgba(8, 145, 178, 0.05);
 		color: $muted;
 		font-size: 12.5px;
 		line-height: 1.5;
@@ -334,8 +345,8 @@ $addon: #4f46e5;
 	transition: border-color 0.15s ease, background 0.15s ease;
 
 	&.is-on {
-		border-color: rgba(34, 113, 177, 0.45);
-		background: rgba(34, 113, 177, 0.04);
+		border-color: rgba(8, 145, 178, 0.45);
+		background: rgba(8, 145, 178, 0.04);
 	}
 
 	&.is-locked { background: #f6f7f7; }
@@ -351,7 +362,7 @@ $addon: #4f46e5;
 		color: $muted;
 		font-size: 19px;
 	}
-	&.is-on &__icon { background: rgba(34, 113, 177, 0.12); color: $accent; }
+	&.is-on &__icon { background: rgba(8, 145, 178, 0.12); color: $accent; }
 
 	&__name { flex: 1 1 auto; font-size: 13.5px; font-weight: 500; color: $ink; }
 
