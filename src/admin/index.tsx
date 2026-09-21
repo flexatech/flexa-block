@@ -23,6 +23,18 @@ type View = 'general' | 'blocks' | 'samples' | 'editing';
 
 const SAVE_DEBOUNCE_MS = 700;
 
+const VIEWS: View[] = [ 'general', 'blocks', 'samples', 'editing' ];
+
+/**
+ * Read the active view from the URL's `tab` query parameter, so a reload (or a
+ * shared link) lands on the same tab. Falls back to General for a missing or
+ * unknown value.
+ */
+function viewFromUrl(): View {
+	const tab = new URLSearchParams( window.location.search ).get( 'tab' );
+	return VIEWS.includes( tab as View ) ? ( tab as View ) : 'general';
+}
+
 const boot: FlexaBlockAdminData = window.flexaBlockAdmin || {};
 
 if ( boot.nonce ) {
@@ -41,7 +53,7 @@ function App(): JSX.Element {
 		SaveStatus,
 		( s: SaveStatus ) => void,
 	];
-	const [ view, setView ] = useState( 'general' ) as [
+	const [ view, setView ] = useState( viewFromUrl() ) as [
 		View,
 		( v: View ) => void,
 	];
@@ -79,6 +91,27 @@ function App(): JSX.Element {
 		);
 		return () => window.clearTimeout( timer.current );
 	}, [ settings ] );
+
+	// Keep `view` in step with the browser's back/forward buttons.
+	useEffect( () => {
+		const onPop = () => setView( viewFromUrl() );
+		window.addEventListener( 'popstate', onPop );
+		return () => window.removeEventListener( 'popstate', onPop );
+	}, [] );
+
+	// Switch tabs: reflect the choice in the URL (so a reload restores it) and
+	// jump back to the top, so a short panel like General doesn't open already
+	// scrolled past its content after arriving from a long one like Editing.
+	const selectView = ( next: View ) => {
+		if ( next === view ) {
+			return;
+		}
+		setView( next );
+		const url = new URL( window.location.href );
+		url.searchParams.set( 'tab', next );
+		window.history.pushState( {}, '', url );
+		window.scrollTo( { top: 0 } );
+	};
 
 	const blocks = boot.blocks || [];
 	const disabled: string[] = settings.disabled_blocks || [];
@@ -194,28 +227,28 @@ function App(): JSX.Element {
 						label={ __( 'General', 'flexa-block' ) }
 						desc={ __( 'Dark mode & performance', 'flexa-block' ) }
 						active={ view === 'general' }
-						onClick={ () => setView( 'general' ) }
+						onClick={ () => selectView( 'general' ) }
 					/>
 					<NavItem
 						icon="screenoptions"
 						label={ __( 'Blocks', 'flexa-block' ) }
 						desc={ __( 'Enable or disable blocks', 'flexa-block' ) }
 						active={ view === 'blocks' }
-						onClick={ () => setView( 'blocks' ) }
+						onClick={ () => selectView( 'blocks' ) }
 					/>
 					<NavItem
 						icon="download"
 						label={ __( 'Sample Data', 'flexa-block' ) }
 						desc={ __( 'Import block examples', 'flexa-block' ) }
 						active={ view === 'samples' }
-						onClick={ () => setView( 'samples' ) }
+						onClick={ () => selectView( 'samples' ) }
 					/>
 					<NavItem
 						icon="edit-page"
 						label={ __( 'Editing', 'flexa-block' ) }
 						desc={ __( 'Front-end inline editing', 'flexa-block' ) }
 						active={ view === 'editing' }
-						onClick={ () => setView( 'editing' ) }
+						onClick={ () => selectView( 'editing' ) }
 					/>
 				</nav>
 			</aside>
