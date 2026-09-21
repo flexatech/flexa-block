@@ -797,6 +797,7 @@ $addon: #4f46e5;
 	&__actions {
 		display: flex;
 		align-items: center;
+		flex-wrap: wrap;
 		gap: 8px;
 		padding: 12px 18px;
 		border-top: 1px solid $line;
@@ -804,5 +805,16 @@ $addon: #4f46e5;
 
 		.components-button { text-decoration: none; }
 		.is-destructive { margin-left: auto; color: #b32d2e; }
+
+		// The view/preview link carries an external-link glyph. Dashicons ship at
+		// 20px, which overflows a 30px-tall button, so scale it to the label; the
+		// own class (rather than `.dashicons`) keeps this out of the global
+		// dashicon cascade.
+		.flexa-sample-card__ext {
+			font-size: 14px;
+			width: 14px;
+			height: 14px;
+			margin-left: 4px;
+		}
 	}
 }

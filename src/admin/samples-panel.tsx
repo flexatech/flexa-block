@@ -26,6 +26,8 @@ interface ImportItem {
 	imported?: boolean;
 	imported_post_id?: number;
 	edit_link?: string;
+	view_link?: string;
+	view_is_preview?: boolean;
 }
 
 interface ImportSource {
@@ -108,6 +110,8 @@ export function SamplesPanel(): JSX.Element {
 					imported: true,
 					imported_post_id: res?.post_id,
 					edit_link: res?.edit_link || '',
+					view_link: res?.view_link || '',
+					view_is_preview: !! res?.view_is_preview,
 				} );
 				setFeedback( {
 					type: 'success',
@@ -160,6 +164,8 @@ export function SamplesPanel(): JSX.Element {
 					imported: false,
 					imported_post_id: 0,
 					edit_link: '',
+					view_link: '',
+					view_is_preview: false,
 				} );
 				setFeedback( {
 					type: 'success',
@@ -228,7 +234,7 @@ export function SamplesPanel(): JSX.Element {
 				</h2>
 				<p className="flexa-setting-card__sub">
 					{ __(
-						'Import a ready-made example of a block as a draft page, then open it in the editor to explore and customize.',
+						'Import a ready-made example of a block as a draft page, then open it in the editor to explore and customize, or preview it on the front end.',
 						'flexa-block'
 					) }
 				</p>
@@ -337,6 +343,22 @@ function SampleCard( {
 								href={ item.edit_link }
 							>
 								{ __( 'Open in editor', 'flexa-block' ) }
+							</a>
+						) }
+						{ item.view_link && (
+							<a
+								className="components-button is-secondary"
+								href={ item.view_link }
+								target="_blank"
+								rel="noreferrer"
+							>
+								{ item.view_is_preview
+									? __( 'Preview', 'flexa-block' )
+									: __( 'View page', 'flexa-block' ) }
+								<span
+									className="flexa-sample-card__ext dashicons dashicons-external"
+									aria-hidden="true"
+								/>
 							</a>
 						) }
 						<button
