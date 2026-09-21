@@ -70,6 +70,28 @@ class Admin {
 		// Narrows what gets registered, NOT the catalog itself — see the filter's
 		// documentation in Block_Manager::register_blocks().
 		add_filter( 'flexa_block_registerable_blocks', [ __CLASS__, 'filter_disabled_blocks' ] );
+
+		// A "Settings" shortcut on this plugin's Plugins-list row, opening the
+		// dashboard registered in register_menu().
+		add_filter( 'plugin_action_links_' . FLEXA_BLOCK_BASENAME, [ __CLASS__, 'add_settings_link' ] );
+	}
+
+	/**
+	 * Prepend a "Settings" link to this plugin's action links on the Plugins
+	 * screen.
+	 *
+	 * @param array<int|string,string> $links Existing action links.
+	 * @return array<int|string,string>
+	 */
+	public static function add_settings_link( array $links ): array {
+		$settings = sprintf(
+			'<a href="%s">%s</a>',
+			esc_url( admin_url( 'admin.php?page=' . self::PAGE_SLUG ) ),
+			esc_html__( 'Settings', 'flexa-block' )
+		);
+		array_unshift( $links, $settings );
+
+		return $links;
 	}
 
 	/* ---------------------------------------------------------------------
