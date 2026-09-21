@@ -11,7 +11,7 @@
 import { useEffect, useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
-import { Modal, Spinner } from '@wordpress/components';
+import { Modal, Spinner, Tooltip } from '@wordpress/components';
 
 interface ImportItem {
 	id: string;
@@ -430,14 +430,20 @@ function SampleCard( {
 								/>
 							</a>
 						) }
-						<button
-							type="button"
-							className="components-button is-tertiary is-destructive"
-							onClick={ onRemove }
-							disabled={ busy }
-						>
-							{ __( 'Remove', 'flexa-block' ) }
-						</button>
+						<Tooltip text={ __( 'Remove', 'flexa-block' ) }>
+							<button
+								type="button"
+								className="components-button is-tertiary is-destructive flexa-sample-card__remove"
+								onClick={ onRemove }
+								disabled={ busy }
+								aria-label={ __( 'Remove', 'flexa-block' ) }
+							>
+								<span
+									className="dashicons dashicons-trash"
+									aria-hidden="true"
+								/>
+							</button>
+						</Tooltip>
 					</>
 				) : (
 					<button

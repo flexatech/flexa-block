@@ -834,5 +834,22 @@ $addon: #4f46e5;
 			height: 14px;
 			margin-left: 4px;
 		}
+
+		// Remove is icon-only (a trash glyph): with three actions the text label
+		// was clipping at the card edge. Kept destructive-red via .is-destructive
+		// above; a square, centred hit area with an accessible label on the button.
+		.flexa-sample-card__remove {
+			display: inline-grid;
+			place-items: center;
+			padding: 6px;
+
+			.dashicons { width: 20px; height: 20px; font-size: 20px; }
+
+			&:hover:not( :disabled ),
+			&:focus:not( :disabled ) {
+				color: #8a1f24;
+				background: rgba( 179, 45, 46, 0.08 );
+			}
+		}
 	}
 }
