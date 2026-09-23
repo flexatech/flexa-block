@@ -141,6 +141,17 @@ In the WordPress admin sidebar, click **Flexa Block** (located below Settings). 
 = Is there a Pro version? =
 Yes. Flexa Block Pro adds additional blocks and advanced features. It works alongside this free plugin.
 
+== Screenshots ==
+
+1. Full pages built entirely with Flexa Block: a florist landing page, a shoe store home page, and the built-in starter-template browser.
+2. A WooCommerce single-product page assembled from Flexa's product blocks: name, price, rating, image gallery, variation options, add to cart and the details tabs.
+3. A contact page: a hero Banner block above the AJAX Subscribe Form, with contact details in Info Box cards.
+4. A shoe store built with Flexa Block: the single-product page, a shop grid driven by the Post Filter, and a size guide using the Data Table block.
+5. General settings: dark mode output options and the performance controls for the generated CSS.
+6. The Blocks tab: enable or disable any of the bundled blocks, grouped by category and searchable.
+7. Sample Data: import a ready-made example as a draft page, then open it in the editor or preview it on the front end.
+8. Editing settings: turn front-end inline editing on or off, choose which roles may edit, and pick which blocks are editable.
+
 == Changelog ==
 
 = 1.0.14 =
