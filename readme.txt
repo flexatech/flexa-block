@@ -152,6 +152,15 @@ Yes. Flexa Block Pro adds additional blocks and advanced features. It works alon
 7. Sample Data: import a ready-made example as a draft page, then open it in the editor or preview it on the front end.
 8. Editing settings: turn front-end inline editing on or off, choose which roles may edit, and pick which blocks are editable.
 
+== Credits ==
+
+The photographs and illustrations shown in the plugin screenshots are for demonstration only and are not bundled with the plugin. They come from the following free sources, all of which permit commercial use:
+
+* Photos from Pixabay, used under the Pixabay Content License: https://pixabay.com/service/license-summary/
+* Photos from Unsplash, used under the Unsplash License: https://unsplash.com/license
+* Photos from Pexels, used under the Pexels License: https://www.pexels.com/license/
+* Some images were generated with ChatGPT (OpenAI); under OpenAI's Terms of Use, ownership of the generated images is assigned to the user.
+
 == Changelog ==
 
 = 1.0.14 =
