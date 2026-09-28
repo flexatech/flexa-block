@@ -640,7 +640,7 @@ final class Post_Query {
 					. self::card_meta( $post_id, $cfg )
 					. self::card_title( $post_id, $permalink, $cfg )
 					. self::card_excerpt( $post_id, $cfg )
-					. self::card_read_more( $permalink, $cfg )
+					. self::card_read_more( $post_id, $permalink, $cfg )
 				. '</div>'
 				. '</article>';
 		}
@@ -820,16 +820,35 @@ final class Post_Query {
 	/**
 	 * The read-more button.
 	 *
+	 * Every card repeats the same visible label, which leaves screen-reader and
+	 * search-engine users with a list of identical links, so the accessible name
+	 * carries the post title too. It opens with the visible label so anyone
+	 * driving the page by voice can still say what they see (WCAG 2.5.3).
+	 *
+	 * @param int    $post_id   Post ID.
 	 * @param string $permalink Post URL.
 	 * @param array  $cfg       Config.
 	 * @return string
 	 */
-	private static function card_read_more( string $permalink, array $cfg ): string {
+	private static function card_read_more( int $post_id, string $permalink, array $cfg ): string {
 		if ( empty( $cfg['showReadMore'] ) ) {
 			return '';
 		}
-		return '<a class="flexa-post-grid__readmore wp-element-button" href="' . esc_url( $permalink ) . '">'
-			. esc_html( (string) $cfg['readMoreText'] ) . '</a>';
+
+		$text  = (string) $cfg['readMoreText'];
+		$title = get_the_title( $post_id );
+		$label = '' !== trim( $title )
+			? sprintf(
+				/* translators: 1: read-more button label, 2: post title. */
+				__( '%1$s: %2$s', 'flexa-block' ),
+				$text,
+				$title
+			)
+			: $text;
+
+		return '<a class="flexa-post-grid__readmore wp-element-button" href="' . esc_url( $permalink )
+			. '" aria-label="' . esc_attr( $label ) . '">'
+			. esc_html( $text ) . '</a>';
 	}
 
 	/**

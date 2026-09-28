@@ -629,6 +629,14 @@ msgid_plural "%d comments"
 msgstr[0] ""
 msgstr[1] ""
 
+#. translators: 1: read-more button label, 2: post title.
+#: includes/class-post-query.php:843
+#: build/blocks/rss/render.php:160
+#: src/blocks/rss/render.php:160
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
 #: includes/class-post-query.php:852
 msgid "No posts found."
 msgstr ""

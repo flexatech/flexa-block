@@ -148,10 +148,22 @@ foreach ( $items as $item ) {
 		}
 	}
 
-	// Read-more link.
+	// Read-more link. Every card repeats the same visible label, so the
+	// accessible name carries the item title as well, opening with the visible
+	// label so voice input still matches what is on screen (WCAG 2.5.3).
 	$read_more_html = '';
 	if ( $show_read_more ) {
-		$read_more_html = '<a class="flexa-rss__readmore wp-element-button" href="' . $permalink . '"' . $link_target . '>' . esc_html( $read_more_text ) . '</a>';
+		$item_title      = trim( (string) $item['title'] );
+		$read_more_label = '' !== $item_title
+			? sprintf(
+				/* translators: 1: read-more button label, 2: feed item title. */
+				__( '%1$s: %2$s', 'flexa-block' ),
+				$read_more_text,
+				$item_title
+			)
+			: $read_more_text;
+
+		$read_more_html = '<a class="flexa-rss__readmore wp-element-button" href="' . $permalink . '"' . $link_target . ' aria-label="' . esc_attr( $read_more_label ) . '">' . esc_html( $read_more_text ) . '</a>';
 	}
 
 	$body_html   = '<div class="flexa-rss__body">' . $meta_html . $title_html . $excerpt_html . $read_more_html . '</div>';

@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.14
+Stable tag: 1.0.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -163,6 +163,9 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 
 == Changelog ==
 
+= 1.0.15 =
+* Accessibility and SEO: every "Read more" button in Post Grid and RSS now carries the post or feed item title in its accessible name, so screen readers, voice control and site audits see which card each button belongs to. Previously a page of cards handed them a list of identical "Read more" links. The visible button text is unchanged.
+
 = 1.0.14 =
 * Sample Data: the bundled starter pages (Contact and SaaS Landing) now ship with a finished visual design instead of a plain layout. Each sample card has a single Preview action that opens the page on the front end, and removing an imported sample now asks you to confirm first.
 * Admin: refreshed the dashboard with a cyan accent and rounded buttons, and added a Settings link next to the plugin on the Plugins screen.
@@ -248,6 +251,9 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 * Initial release with the Container block.
 
 == Upgrade Notice ==
+
+= 1.0.15 =
+Gives each "Read more" button an accessible name that includes the post title. No visual or content changes.
 
 = 1.0.13 =
 Fixes the deactivation survey stacking multiple "Before you go" dialogs when several Flexa plugins are active.
