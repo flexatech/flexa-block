@@ -66,6 +66,17 @@ interface FlexaBlockAdminRole {
 	name: string;
 }
 
+/** FormFlow cross-promotion state, from Admin::formflow_promo(). */
+interface FlexaBlockFormFlowPromo {
+	/** Already accounts for the capability, the dismissal, and FormFlow being installed. */
+	show: boolean;
+	/** One-click install link, or '' when the user may not install plugins. */
+	installUrl: string;
+	learnMoreUrl: string;
+	iconUrl: string;
+	dismissUrl: string;
+}
+
 interface FlexaBlockAdminData {
 	nonce?: string;
 	restUrl?: string;
@@ -74,6 +85,8 @@ interface FlexaBlockAdminData {
 	blocks?: FlexaBlockAdminBlock[];
 	editableBlocks?: string[];
 	roles?: FlexaBlockAdminRole[];
+	/** Cross-promotion banner state; absent on older bundles. */
+	formFlow?: FlexaBlockFormFlowPromo;
 }
 
 /** REST endpoints for the import engine (Sample Data), from Import_Manager. */

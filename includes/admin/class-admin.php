@@ -395,9 +395,13 @@ class Admin {
 
 	/**
 	 * Render the React mount point.
+	 *
+	 * The empty `.wp-header-end` anchor tells core's common.js where to move
+	 * admin notices. Without it core falls back to "after the first heading",
+	 * which once the app has mounted means somewhere inside our own markup.
 	 */
 	public static function render_page(): void {
-		echo '<div class="wrap"><div id="flexa-block-admin"></div></div>';
+		echo '<div class="wrap"><h1 class="screen-reader-text">' . esc_html__( 'Flexa Block', 'flexa-block' ) . '</h1><hr class="wp-header-end" /><div id="flexa-block-admin"></div></div>';
 	}
 
 	/**
@@ -454,8 +458,29 @@ class Admin {
 					\Flexa\Block\Inline_Editor::editable_block_names()
 				),
 				'roles'          => self::roles_for_admin(),
+				'formFlow'       => self::formflow_promo(),
 			]
 		);
+	}
+
+	/**
+	 * State for the FormFlow cross-promotion banner.
+	 *
+	 * `show` already folds in the capability, the stored dismissal and whether
+	 * FormFlow is installed, so the app only has to honour it.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function formflow_promo(): array {
+		$show = FormFlow_Promo::should_show();
+
+		return [
+			'show'         => $show,
+			'installUrl'   => $show ? FormFlow_Promo::install_url() : '',
+			'learnMoreUrl' => FormFlow_Promo::WPORG_URL,
+			'iconUrl'      => esc_url_raw( FormFlow_Promo::icon_url() ),
+			'dismissUrl'   => esc_url_raw( rest_url( self::REST_NS . '/promo/dismiss' ) ),
+		];
 	}
 
 	/* ---------------------------------------------------------------------
@@ -480,6 +505,16 @@ class Admin {
 					'callback'            => [ __CLASS__, 'rest_save_settings' ],
 					'permission_callback' => [ __CLASS__, 'rest_permission' ],
 				],
+			]
+		);
+
+		register_rest_route(
+			self::REST_NS,
+			'/promo/dismiss',
+			[
+				'methods'             => 'POST',
+				'callback'            => [ __CLASS__, 'rest_dismiss_promo' ],
+				'permission_callback' => [ __CLASS__, 'rest_permission' ],
 			]
 		);
 	}
@@ -522,5 +557,17 @@ class Admin {
 				'settings' => $settings,
 			]
 		);
+	}
+
+	/**
+	 * Retire the FormFlow suggestion for good. Shared with the Dashboard
+	 * notice, so turning it down here hides it there too.
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public static function rest_dismiss_promo(): \WP_REST_Response {
+		FormFlow_Promo::dismiss();
+
+		return rest_ensure_response( [ 'ok' => true ] );
 	}
 }

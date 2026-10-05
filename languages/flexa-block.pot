@@ -2,16 +2,16 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Flexa Block – Blocks & Page Builder 1.0.8\n"
+"Project-Id-Version: Flexa Block – Blocks & Page Builder 1.0.15\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/flexa-block\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-17T14:59:03+00:00\n"
+"POT-Creation-Date: 2026-10-05T03:17:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: flexa-block\n"
 
 #. Plugin Name of the plugin
@@ -92,9 +92,9 @@ msgid "Load more"
 msgstr ""
 
 #: build/blocks/facebook-feed/render.php:183
-#: build/blocks/rss/render.php:164
+#: build/blocks/rss/render.php:176
 #: src/blocks/facebook-feed/render.php:183
-#: src/blocks/rss/render.php:164
+#: src/blocks/rss/render.php:176
 msgid "Feed navigation"
 msgstr ""
 
@@ -259,23 +259,23 @@ msgstr ""
 msgid "Billing period"
 msgstr ""
 
-#: build/blocks/product-add-to-cart/render.php:99
-#: src/blocks/product-add-to-cart/render.php:99
-msgid "Decrease quantity"
-msgstr ""
-
-#: build/blocks/product-add-to-cart/render.php:100
-#: src/blocks/product-add-to-cart/render.php:100
-msgid "Increase quantity"
-msgstr ""
-
 #: build/blocks/product-add-to-cart/render.php:101
 #: src/blocks/product-add-to-cart/render.php:101
-msgid "Please select some product options before adding this product to your cart."
+msgid "Decrease quantity"
 msgstr ""
 
 #: build/blocks/product-add-to-cart/render.php:102
 #: src/blocks/product-add-to-cart/render.php:102
+msgid "Increase quantity"
+msgstr ""
+
+#: build/blocks/product-add-to-cart/render.php:103
+#: src/blocks/product-add-to-cart/render.php:103
+msgid "Please select some product options before adding this product to your cart."
+msgstr ""
+
+#: build/blocks/product-add-to-cart/render.php:104
+#: src/blocks/product-add-to-cart/render.php:104
 msgid "Sorry, this product is unavailable. Please choose a different combination."
 msgstr ""
 
@@ -394,13 +394,22 @@ msgstr[1] ""
 msgid "(untitled)"
 msgstr ""
 
-#: build/blocks/rss/render.php:173
-#: src/blocks/rss/render.php:173
+#. translators: 1: read-more button label, 2: feed item title.
+#. translators: 1: read-more button label, 2: post title.
+#: build/blocks/rss/render.php:160
+#: includes/class-post-query.php:843
+#: src/blocks/rss/render.php:160
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
+#: build/blocks/rss/render.php:185
+#: src/blocks/rss/render.php:185
 msgid "Add a feed URL to show entries."
 msgstr ""
 
-#: build/blocks/rss/render.php:175
-#: src/blocks/rss/render.php:175
+#: build/blocks/rss/render.php:187
+#: src/blocks/rss/render.php:187
 msgid "No feed entries could be loaded."
 msgstr ""
 
@@ -488,15 +497,51 @@ msgid "Video"
 msgstr ""
 
 #. translators: %s: minimum WordPress version
-#: flexa-block.php:94
+#: flexa-block.php:106
 #, php-format
 msgid "Flexa Block requires WordPress %s or higher."
 msgstr ""
 
-#: includes/admin/class-admin.php:363
-#: includes/admin/class-admin.php:364
-#: build/admin/index.js:6
+#: includes/admin/class-admin.php:90
+#: build/blocks/countdown/index.js:1
+#: build/blocks/product-add-to-cart/index.js:1
+#: build/blocks/product-description/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-excerpt/index.js:1
+#: build/blocks/product-field/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/product-related/index.js:1
+#: build/blocks/product-stock/index.js:1
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-admin.php:385
+#: includes/admin/class-admin.php:386
+#: build/admin/index.js:9
 msgid "Flexa Block"
+msgstr ""
+
+#: includes/admin/class-formflow-notice.php:72
+msgid "Need a form on the pages you build with Flexa Block?"
+msgstr ""
+
+#: includes/admin/class-formflow-notice.php:75
+msgid "Flexa FormFlow is our free form builder, with a visual email designer and a workflow engine built in. Drag fields onto the canvas, design the emails each submission sends, then add conditional steps that run after it. Drop the finished form into any Flexa Block layout."
+msgstr ""
+
+#: includes/admin/class-formflow-notice.php:79
+#: build/admin/index.js:9
+msgid "Not interested"
+msgstr ""
+
+#: includes/admin/class-formflow-notice.php:82
+#: build/admin/index.js:9
+msgid "Learn more"
+msgstr ""
+
+#: includes/admin/class-formflow-notice.php:86
+msgid "Install Now"
 msgstr ""
 
 #: includes/class-block-manager.php:661
@@ -529,7 +574,7 @@ msgstr ""
 
 #: includes/class-inline-editor.php:636
 #: includes/class-inline-editor.php:694
-#: build/admin/index.js:6
+#: build/admin/index.js:9
 msgid "Editing"
 msgstr ""
 
@@ -540,6 +585,7 @@ msgstr ""
 
 #: includes/class-inline-editor.php:638
 #: includes/class-inline-editor.php:696
+#: build/admin/index.js:9
 msgid "Cancel"
 msgstr ""
 
@@ -548,7 +594,7 @@ msgid "Saved"
 msgstr ""
 
 #: includes/class-inline-editor.php:640
-#: build/admin/index.js:6
+#: build/admin/index.js:9
 msgid "Saving…"
 msgstr ""
 
@@ -629,26 +675,18 @@ msgid_plural "%d comments"
 msgstr[0] ""
 msgstr[1] ""
 
-#. translators: 1: read-more button label, 2: post title.
-#: includes/class-post-query.php:843
-#: build/blocks/rss/render.php:160
-#: src/blocks/rss/render.php:160
-#, php-format
-msgid "%1$s: %2$s"
-msgstr ""
-
-#: includes/class-post-query.php:852
+#: includes/class-post-query.php:871
 msgid "No posts found."
 msgstr ""
 
-#: includes/class-post-query.php:918
+#: includes/class-post-query.php:937
 msgid "Posts navigation"
 msgstr ""
 
 #. translators: %s: number of posts found.
-#: includes/class-post-query.php:949
+#: includes/class-post-query.php:968
 #: build/blocks/post-grid/index.js:1
-#, php-format,js-format
+#, php-format
 msgid "%s posts found"
 msgstr ""
 
@@ -667,6 +705,41 @@ msgstr ""
 #. translators: used at the end of a shortened excerpt.
 #: includes/class-woo-helpers.php:94
 msgid "&hellip;"
+msgstr ""
+
+#: includes/import/class-content-importer.php:50
+msgid "Import item is missing an id."
+msgstr ""
+
+#. translators: %s: media file name
+#: includes/import/class-content-importer.php:206
+msgid "Could not import media: %s"
+msgstr ""
+
+#: includes/import/class-import-rest.php:124
+msgid "That item could not be found."
+msgstr ""
+
+#: includes/import/class-import-rest.php:169
+msgid "Unknown import source."
+msgstr ""
+
+#: includes/import/class-media-importer.php:104
+msgid "Remote media host is not allowed."
+msgstr ""
+
+#: includes/import/class-media-importer.php:111
+msgid "Bundled media file was not found."
+msgstr ""
+
+#: includes/import/class-media-importer.php:117
+msgid "Could not stage the media file for import."
+msgstr ""
+
+#: includes/import/class-sample-source.php:48
+#: build/admin/index.js:6
+#: build/admin/index.js:9
+msgid "Sample Data"
 msgstr ""
 
 #: build/admin/index.js:1
@@ -794,13 +867,12 @@ msgid "Other"
 msgstr ""
 
 #: build/admin/index.js:1
-#: build/admin/index.js:6
+#: build/admin/index.js:9
 msgid "Blocks"
 msgstr ""
 
 #. translators: 1: enabled block count, 2: total block count.
 #: build/admin/index.js:2
-#, js-format
 msgid "%1$d of %2$d blocks enabled"
 msgstr ""
 
@@ -832,7 +904,6 @@ msgstr ""
 
 #. translators: %s: origin label, e.g. "Pro".
 #: build/admin/index.js:3
-#, js-format
 msgid "Available in %s"
 msgstr ""
 
@@ -842,7 +913,6 @@ msgstr ""
 
 #. translators: %s: block title.
 #: build/admin/index.js:4
-#, js-format
 msgid "Enable %s block"
 msgstr ""
 
@@ -953,47 +1023,205 @@ msgstr ""
 
 #. translators: %s: role name.
 #: build/admin/index.js:5
-#, js-format
 msgid "Allow %s to edit on the front end"
 msgstr ""
 
 #. translators: %s: block title.
 #: build/admin/index.js:6
-#, js-format
 msgid "Allow editing %s"
 msgstr ""
 
 #: build/admin/index.js:6
-msgid "Settings sections"
+msgid "Loading samples…"
 msgstr ""
 
 #: build/admin/index.js:6
+msgid "Could not load the sample catalog."
+msgstr ""
+
+#: build/admin/index.js:6
+#: build/admin/index.js:9
+msgid "Retry"
+msgstr ""
+
+#: build/admin/index.js:6
+msgid "No samples are available."
+msgstr ""
+
+#: build/admin/index.js:6
+msgid "Import a ready-made example of a block as a draft page, then open it in the editor to explore and customize, or preview it on the front end."
+msgstr ""
+
+#. translators: %s: sample title
+#: build/admin/index.js:7
+msgid "“%s” imported as a draft."
+msgstr ""
+
+#: build/admin/index.js:7
+msgid "Import failed. Please try again."
+msgstr ""
+
+#. translators: %s: sample title
+#: build/admin/index.js:8
+msgid "“%s” moved to Trash."
+msgstr ""
+
+#: build/admin/index.js:8
+msgid "Could not remove that item."
+msgstr ""
+
+#: build/admin/index.js:8
+msgid "Move to Trash?"
+msgstr ""
+
+#. translators: %s: sample title
+#: build/admin/index.js:9
+msgid "The imported “%s” content will be moved to Trash. You can import it again afterwards."
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Removing…"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Move to Trash"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Imported"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Open in editor"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Preview"
+msgstr ""
+
+#: build/admin/index.js:9
+#: build/blocks/banner/index.js:1
+#: build/blocks/before-after/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/container/index.js:1
+#: build/blocks/countdown/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/data-table/index.js:1
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/faq/index.js:1
+#: build/blocks/filter-reset/index.js:1
+#: build/blocks/filter-search/index.js:1
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/google-map/index.js:1
+#: build/blocks/grid/index.js:1
+#: build/blocks/heading/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/image/index.js:1
+#: build/blocks/images-gallery/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/instagram-feed/index.js:1
+#: build/blocks/lottie/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-filter/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/pricing-table/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-add-to-cart/index.js:1
+#: build/blocks/product-description/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-excerpt/index.js:1
+#: build/blocks/product-field/index.js:1
+#: build/blocks/product-image/index.js:1
+#: build/blocks/product-meta/index.js:1
+#: build/blocks/product-name/index.js:1
+#: build/blocks/product-price/index.js:1
+#: build/blocks/product-rating/index.js:1
+#: build/blocks/product-related/index.js:1
+#: build/blocks/product-stock/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/slide/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/subscribe-form/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/tabs/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/text/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Remove"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Importing…"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Import"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Need a form on the pages you build?"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Free plugin"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Flexa FormFlow is our free form builder, with a visual email designer and a workflow engine built in. Drag fields onto the canvas, design the emails each submission sends, then drop the finished form into any Flexa Block layout."
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Install FormFlow"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Hide this suggestion"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Settings sections"
+msgstr ""
+
+#: build/admin/index.js:9
 #: build/blocks/taxonomy/index.js:1
 msgid "General"
 msgstr ""
 
-#: build/admin/index.js:6
+#: build/admin/index.js:9
 msgid "Dark mode & performance"
 msgstr ""
 
-#: build/admin/index.js:6
+#: build/admin/index.js:9
 msgid "Enable or disable blocks"
 msgstr ""
 
-#: build/admin/index.js:6
+#: build/admin/index.js:9
+msgid "Import block examples"
+msgstr ""
+
+#: build/admin/index.js:9
 msgid "Front-end inline editing"
 msgstr ""
 
-#: build/admin/index.js:6
+#: build/admin/index.js:9
 msgid "All changes saved"
 msgstr ""
 
-#: build/admin/index.js:6
+#: build/admin/index.js:9
 msgid "Could not save."
-msgstr ""
-
-#: build/admin/index.js:6
-msgid "Retry"
 msgstr ""
 
 #: build/blocks/banner/index.js:1
@@ -5772,69 +6000,6 @@ msgstr ""
 #: build/blocks/banner/index.js:1
 #: build/blocks/before-after/index.js:1
 #: build/blocks/breadcrumb/index.js:1
-#: build/blocks/button/index.js:1
-#: build/blocks/comparison-table/index.js:1
-#: build/blocks/container/index.js:1
-#: build/blocks/countdown/index.js:1
-#: build/blocks/counter/index.js:1
-#: build/blocks/cta/index.js:1
-#: build/blocks/data-table/index.js:1
-#: build/blocks/facebook-feed/index.js:1
-#: build/blocks/faq/index.js:1
-#: build/blocks/filter-reset/index.js:1
-#: build/blocks/filter-search/index.js:1
-#: build/blocks/filter-taxonomy/index.js:1
-#: build/blocks/google-map/index.js:1
-#: build/blocks/grid/index.js:1
-#: build/blocks/heading/index.js:1
-#: build/blocks/icon-list/index.js:1
-#: build/blocks/icon/index.js:1
-#: build/blocks/image/index.js:1
-#: build/blocks/images-gallery/index.js:1
-#: build/blocks/info-box/index.js:1
-#: build/blocks/instagram-feed/index.js:1
-#: build/blocks/lottie/index.js:1
-#: build/blocks/modal/index.js:1
-#: build/blocks/notice/index.js:1
-#: build/blocks/post-filter/index.js:1
-#: build/blocks/post-grid/index.js:1
-#: build/blocks/pricing-table/index.js:1
-#: build/blocks/process-bar/index.js:1
-#: build/blocks/product-add-to-cart/index.js:1
-#: build/blocks/product-description/index.js:1
-#: build/blocks/product-detail/index.js:1
-#: build/blocks/product-excerpt/index.js:1
-#: build/blocks/product-field/index.js:1
-#: build/blocks/product-image/index.js:1
-#: build/blocks/product-meta/index.js:1
-#: build/blocks/product-name/index.js:1
-#: build/blocks/product-price/index.js:1
-#: build/blocks/product-rating/index.js:1
-#: build/blocks/product-related/index.js:1
-#: build/blocks/product-stock/index.js:1
-#: build/blocks/rss/index.js:1
-#: build/blocks/slide/index.js:1
-#: build/blocks/slides/index.js:1
-#: build/blocks/social-icon/index.js:1
-#: build/blocks/social-share/index.js:1
-#: build/blocks/star-rating/index.js:1
-#: build/blocks/steps/index.js:1
-#: build/blocks/subscribe-form/index.js:1
-#: build/blocks/tab/index.js:1
-#: build/blocks/table-of-content/index.js:1
-#: build/blocks/tabs/index.js:1
-#: build/blocks/taxonomy/index.js:1
-#: build/blocks/team-member/index.js:1
-#: build/blocks/testimonial/index.js:1
-#: build/blocks/text/index.js:1
-#: build/blocks/timeline/index.js:1
-#: build/blocks/video-popup/index.js:1
-msgid "Remove"
-msgstr ""
-
-#: build/blocks/banner/index.js:1
-#: build/blocks/before-after/index.js:1
-#: build/blocks/breadcrumb/index.js:1
 #: build/blocks/comparison-table/index.js:1
 #: build/blocks/container/index.js:1
 #: build/blocks/countdown/index.js:1
@@ -10329,19 +10494,6 @@ msgid "Seconds label"
 msgstr ""
 
 #: build/blocks/countdown/index.js:1
-#: build/blocks/product-add-to-cart/index.js:1
-#: build/blocks/product-description/index.js:1
-#: build/blocks/product-detail/index.js:1
-#: build/blocks/product-excerpt/index.js:1
-#: build/blocks/product-field/index.js:1
-#: build/blocks/product-price/index.js:1
-#: build/blocks/product-rating/index.js:1
-#: build/blocks/product-related/index.js:1
-#: build/blocks/product-stock/index.js:1
-msgid "Settings"
-msgstr ""
-
-#: build/blocks/countdown/index.js:1
 msgid "When it ends"
 msgstr ""
 
@@ -11189,7 +11341,6 @@ msgstr ""
 
 #. translators: %s: comma-separated term names the target grid is limited to.
 #: build/blocks/filter-taxonomy/index.js:2
-#, js-format
 msgid "The target grid only shows: %s. Visitors can filter within those terms, not outside them."
 msgstr ""
 
@@ -12261,7 +12412,6 @@ msgstr ""
 
 #. translators: %s: the blockId the filter bar is pointing at.
 #: build/blocks/post-filter/index.js:4
-#, js-format
 msgid "No Post Grid on this page has the id \"%s\". If the grid lives in a template this is fine — otherwise the filters will do nothing. Pick a grid below, or choose Auto."
 msgstr ""
 
@@ -12278,7 +12428,6 @@ msgid "Auto — first Post Grid on the page"
 msgstr ""
 
 #: build/blocks/post-filter/index.js:4
-#, js-format
 msgid "Not on this page — %s"
 msgstr ""
 
@@ -12420,7 +12569,6 @@ msgid "Result count text"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
-#, js-format
 msgid "%s is the number of posts. Leave empty for \"%s posts found\"."
 msgstr ""
 
@@ -13672,7 +13820,6 @@ msgstr ""
 
 #. translators: %d: number of entries the feed offers.
 #: build/blocks/rss/index.js:1
-#, js-format
 msgid "This feed offers %d entries."
 msgstr ""
 
@@ -13836,7 +13983,6 @@ msgstr ""
 
 #. translators: %d: slide number.
 #: build/blocks/slides/index.js:1
-#, js-format
 msgid "Slide %d"
 msgstr ""
 

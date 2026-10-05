@@ -4,6 +4,7 @@
 /.idea
 /.vscode
 /node_modules
+/dist
 /vendor
 /src
 /tests

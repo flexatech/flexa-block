@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.15
+Stable tag: 1.0.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -163,6 +163,10 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 
 == Changelog ==
 
+= 1.0.16 =
+* New: an introduction to Flexa FormFlow, our free form builder with a visual email designer and a workflow engine. It shows as a Dashboard notice and as a banner on the Flexa Block screen, and only while FormFlow is not already installed. Choosing "not interested" once hides it everywhere, permanently.
+* The suggestion is coordinated with our other plugins. If another Flexa plugin is active, the Dashboard shows one card rather than one per plugin, and turning it down anywhere turns it down everywhere.
+
 = 1.0.15 =
 * Accessibility and SEO: every "Read more" button in Post Grid and RSS now carries the post or feed item title in its accessible name, so screen readers, voice control and site audits see which card each button belongs to. Previously a page of cards handed them a list of identical "Read more" links. The visible button text is unchanged.
 
@@ -251,6 +255,9 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 * Initial release with the Container block.
 
 == Upgrade Notice ==
+
+= 1.0.16 =
+Adds a one-time, dismissible suggestion for Flexa FormFlow, our free form builder. Nothing else changes.
 
 = 1.0.15 =
 Gives each "Read more" button an accessible name that includes the post title. No visual or content changes.

@@ -41,3 +41,6 @@ Desktop.ini
 
 # built zip file
 *.zip
+
+# release zips (release.sh)
+/dist

@@ -5,9 +5,11 @@ PLUGIN_SLUG="flexa-block"
 PROJECT_PATH=$(pwd)
 STAGE_PATH="/tmp/${PLUGIN_SLUG}-release"
 DEST_PATH="${STAGE_PATH}/${PLUGIN_SLUG}"
+DIST_PATH="${PROJECT_PATH}/dist"
 
 PLUGIN_VERSION=$(grep -iE "^\s*\*\s*Version:" "${PROJECT_PATH}/${PLUGIN_SLUG}.php" | head -1 | sed -E 's/.*Version:\s*//' | tr -d '[:space:]')
 ZIP_NAME="${PLUGIN_SLUG}-${PLUGIN_VERSION}.zip"
+ZIP_PATH="${DIST_PATH}/${ZIP_NAME}"
 
 if [ ! -d "${PROJECT_PATH}/node_modules" ]; then
   echo "Installing dependencies..."
@@ -27,7 +29,13 @@ rsync -rc --exclude-from="${PROJECT_PATH}/.distignore" "${PROJECT_PATH}/" "${DES
 echo "Generating zip file..."
 cd "$STAGE_PATH" || exit
 zip -q -r "${ZIP_NAME}" "${PLUGIN_SLUG}/"
-mv "${ZIP_NAME}" "${PROJECT_PATH}/"
+
+# Release zips live in dist/, kept separate from build/ because build/ is
+# webpack's output directory and `npm run build` wipes it on every run.
+mkdir -p "$DIST_PATH"
+rm -f "$ZIP_PATH"
+mv "${ZIP_NAME}" "$ZIP_PATH"
 rm -rf "$STAGE_PATH"
 
-echo "${ZIP_NAME} generated!"
+echo ""
+echo "Built ${ZIP_PATH}"

@@ -15,6 +15,7 @@ import { BlocksPanel } from './blocks-panel';
 import { GeneralSettings } from './settings-general';
 import { EditingSettings } from './settings-editing';
 import { SamplesPanel } from './samples-panel';
+import { FormFlowBanner } from './formflow-banner';
 import './admin.scss';
 
 type Settings = Record< string, any >;
@@ -169,96 +170,99 @@ function App(): JSX.Element {
 		} );
 
 	return (
-		<div className="flexa-app">
-			<aside className="flexa-sidebar">
-				<div className="flexa-sidebar__brand">
-					<span
-						className="flexa-sidebar__logo dashicons dashicons-layout"
-						aria-hidden="true"
-					/>
-					<div>
-						<h1 className="flexa-sidebar__title">
-							{ __( 'Flexa Block', 'flexa-block' ) }
-						</h1>
-						{ boot.version && (
-							<span className="flexa-sidebar__version">
-								v{ boot.version }
-							</span>
-						) }
+		<>
+			<FormFlowBanner />
+			<div className="flexa-app">
+				<aside className="flexa-sidebar">
+					<div className="flexa-sidebar__brand">
+						<span
+							className="flexa-sidebar__logo dashicons dashicons-layout"
+							aria-hidden="true"
+						/>
+						<div>
+							<h1 className="flexa-sidebar__title">
+								{ __( 'Flexa Block', 'flexa-block' ) }
+							</h1>
+							{ boot.version && (
+								<span className="flexa-sidebar__version">
+									v{ boot.version }
+								</span>
+							) }
+						</div>
 					</div>
+
+					<nav className="flexa-sidebar__nav" aria-label={ __( 'Settings sections', 'flexa-block' ) }>
+						<NavItem
+							icon="admin-settings"
+							label={ __( 'General', 'flexa-block' ) }
+							desc={ __( 'Dark mode & performance', 'flexa-block' ) }
+							active={ view === 'general' }
+							onClick={ () => setView( 'general' ) }
+						/>
+						<NavItem
+							icon="screenoptions"
+							label={ __( 'Blocks', 'flexa-block' ) }
+							desc={ __( 'Enable or disable blocks', 'flexa-block' ) }
+							active={ view === 'blocks' }
+							onClick={ () => setView( 'blocks' ) }
+						/>
+						<NavItem
+							icon="download"
+							label={ __( 'Sample Data', 'flexa-block' ) }
+							desc={ __( 'Import block examples', 'flexa-block' ) }
+							active={ view === 'samples' }
+							onClick={ () => setView( 'samples' ) }
+						/>
+						<NavItem
+							icon="edit-page"
+							label={ __( 'Editing', 'flexa-block' ) }
+							desc={ __( 'Front-end inline editing', 'flexa-block' ) }
+							active={ view === 'editing' }
+							onClick={ () => setView( 'editing' ) }
+						/>
+					</nav>
+				</aside>
+
+				<main className="flexa-content">
+					{ view === 'general' && (
+						<GeneralSettings
+							settings={ settings }
+							onDark={ setDark }
+							onPerf={ setPerf }
+						/>
+					) }
+					{ view === 'blocks' && (
+						<BlocksPanel
+							blocks={ blocks }
+							disabled={ disabled }
+							onToggle={ toggleBlock }
+							onToggleMany={ toggleMany }
+						/>
+					) }
+					{ view === 'samples' && <SamplesPanel /> }
+					{ view === 'editing' && (
+						<EditingSettings
+							settings={ settings }
+							editableBlocks={ boot.editableBlocks || [] }
+							blocks={ blocks }
+							roles={ boot.roles || [] }
+							onSetEnabled={ ( v: boolean ) =>
+								setInline( 'enabled', v )
+							}
+							onToggleRole={ toggleRole }
+							onToggleBlock={ toggleEditableBlock }
+						/>
+					) }
+				</main>
+
+				<div className="flexa-toast" aria-live="polite">
+					<SaveStatus
+						status={ status }
+						onRetry={ () => persist( settings ) }
+					/>
 				</div>
-
-				<nav className="flexa-sidebar__nav" aria-label={ __( 'Settings sections', 'flexa-block' ) }>
-					<NavItem
-						icon="admin-settings"
-						label={ __( 'General', 'flexa-block' ) }
-						desc={ __( 'Dark mode & performance', 'flexa-block' ) }
-						active={ view === 'general' }
-						onClick={ () => setView( 'general' ) }
-					/>
-					<NavItem
-						icon="screenoptions"
-						label={ __( 'Blocks', 'flexa-block' ) }
-						desc={ __( 'Enable or disable blocks', 'flexa-block' ) }
-						active={ view === 'blocks' }
-						onClick={ () => setView( 'blocks' ) }
-					/>
-					<NavItem
-						icon="download"
-						label={ __( 'Sample Data', 'flexa-block' ) }
-						desc={ __( 'Import block examples', 'flexa-block' ) }
-						active={ view === 'samples' }
-						onClick={ () => setView( 'samples' ) }
-					/>
-					<NavItem
-						icon="edit-page"
-						label={ __( 'Editing', 'flexa-block' ) }
-						desc={ __( 'Front-end inline editing', 'flexa-block' ) }
-						active={ view === 'editing' }
-						onClick={ () => setView( 'editing' ) }
-					/>
-				</nav>
-			</aside>
-
-			<main className="flexa-content">
-				{ view === 'general' && (
-					<GeneralSettings
-						settings={ settings }
-						onDark={ setDark }
-						onPerf={ setPerf }
-					/>
-				) }
-				{ view === 'blocks' && (
-					<BlocksPanel
-						blocks={ blocks }
-						disabled={ disabled }
-						onToggle={ toggleBlock }
-						onToggleMany={ toggleMany }
-					/>
-				) }
-				{ view === 'samples' && <SamplesPanel /> }
-				{ view === 'editing' && (
-					<EditingSettings
-						settings={ settings }
-						editableBlocks={ boot.editableBlocks || [] }
-						blocks={ blocks }
-						roles={ boot.roles || [] }
-						onSetEnabled={ ( v: boolean ) =>
-							setInline( 'enabled', v )
-						}
-						onToggleRole={ toggleRole }
-						onToggleBlock={ toggleEditableBlock }
-					/>
-				) }
-			</main>
-
-			<div className="flexa-toast" aria-live="polite">
-				<SaveStatus
-					status={ status }
-					onRetry={ () => persist( settings ) }
-				/>
 			</div>
-		</div>
+		</>
 	);
 }
 
