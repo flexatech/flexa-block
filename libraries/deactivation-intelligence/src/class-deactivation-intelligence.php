@@ -10,17 +10,11 @@
  *   - optionally surface configurable recovery actions
  *   - NEVER block or delay deactivation
  *
- * Usage (in your plugin bootstrap):
- *
- *   require_once __DIR__ . '/vendor/deactivation-intelligence/src/class-deactivation-intelligence.php';
- *
- *   Deactivation_Intelligence::init( array(
- *       'product'     => 'flexa',
- *       'tier'        => 'free',
- *       'version'     => FLEXA_VERSION,
- *       'plugin_file' => plugin_basename( __FILE__ ), // e.g. flexa/flexa.php
- *       'api_url'     => 'https://api.example.com',
- *   ) );
+ * Do NOT require this file from a host plugin. Require `loader.php` beside it
+ * and call `deactivation_intelligence_init()`: several Flexa plugins each bundle
+ * a copy of this global class, only one can define it, and the loader is what
+ * makes that the newest copy rather than the alphabetically-first plugin. See
+ * loader.php for the usage snippet and the reasoning.
  *
  * @package DeactivationIntelligence
  */
@@ -31,6 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'Deactivation_Intelligence' ) ) :
 
+	// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound -- the unprefixed name is this shared SDK's contract: every Flexa plugin bundles a copy and they all talk to one class, which loader.php resolves to the newest copy on the site. A per-plugin prefix would give each its own class and a site with two of them would run two SDKs.
 	class Deactivation_Intelligence {
 
 		/**
@@ -49,6 +44,15 @@ if ( ! class_exists( 'Deactivation_Intelligence' ) ) :
 
 			// Only ever runs in wp-admin. Zero footprint on the front end.
 			add_action( 'admin_enqueue_scripts', array( $this, 'maybe_enqueue' ) );
+
+			// Win-back tracking. Record a marker on a real deactivation of this
+			// plugin, and report the reactivation once it is turned back on.
+			// WordPress suppresses the deactivate_{plugin} hook during silent
+			// upgrades, so plugin updates never look like a deactivation here.
+			if ( ! empty( $this->config['plugin_file'] ) ) {
+				add_action( 'deactivate_' . $this->config['plugin_file'], array( $this, 'mark_deactivated' ) );
+			}
+			add_action( 'admin_init', array( $this, 'maybe_report_reactivation' ) );
 		}
 
 		/**
@@ -60,6 +64,9 @@ if ( ! class_exists( 'Deactivation_Intelligence' ) ) :
 		 *     @type string $version     Plugin version string.
 		 *     @type string $plugin_file Basename of the plugin whose deactivation to intercept.
 		 *     @type string $api_url     Base URL of the central API (no trailing slash).
+		 *     @type string $support_url Optional. Help/support page. When set, the modal
+		 *                               shows a "Get help" link so a user hitting a problem
+		 *                               has somewhere to go other than Deactivate.
 		 *     @type bool   $collect_environment Whether to send wp/php/locale. Default true.
 		 * }
 		 */
@@ -70,6 +77,7 @@ if ( ! class_exists( 'Deactivation_Intelligence' ) ) :
 				'version'             => '',
 				'plugin_file'         => '',
 				'api_url'             => '',
+				'support_url'         => '',
 				'collect_environment' => true,
 			);
 			$config = wp_parse_args( $args, $defaults );
@@ -103,13 +111,83 @@ if ( ! class_exists( 'Deactivation_Intelligence' ) ) :
 			return $id;
 		}
 
+		/** Option name holding the timestamp of the last real deactivation. */
+		private function deactivated_option_key() {
+			return sanitize_key( $this->config['product'] ) . '_di_deactivated_at';
+		}
+
+		/**
+		 * Fires only on a genuine (non-silent) deactivation of this plugin, so a
+		 * later reactivation can be detected. Stored non-autoloaded: it is read
+		 * once, on the next admin load, then deleted.
+		 */
+		public function mark_deactivated() {
+			update_option( $this->deactivated_option_key(), time(), false );
+		}
+
+		/**
+		 * When a deactivation marker is present while the plugin is loaded, the
+		 * install is active again: the user reactivated. Report it once as a
+		 * 'reactivated' recovery event, with how long it stayed off, then clear
+		 * the marker. Best-effort and non-blocking; never delays wp-admin.
+		 */
+		public function maybe_report_reactivation() {
+			$key = $this->deactivated_option_key();
+			$at  = (int) get_option( $key );
+			if ( ! $at ) {
+				return;
+			}
+
+			// Clear first so a failed or duplicated request cannot double-count.
+			delete_option( $key );
+
+			$seconds = time() - $at;
+			if ( $seconds < 0 ) {
+				$seconds = 0;
+			}
+
+			$this->post_event(
+				$this->config['api_url'] . '/api/v1/recovery-events',
+				array(
+					'product'          => $this->config['product'],
+					'tier'             => $this->config['tier'],
+					'version'          => $this->config['version'],
+					'installation_id'  => $this->installation_id(),
+					'stage'            => 'reactivated',
+					'seconds_inactive' => $seconds,
+				)
+			);
+		}
+
+		/**
+		 * Best-effort server-to-server POST. Unlike the browser beacon this is a
+		 * plain PHP request with no CORS, so a JSON content-type is fine; the
+		 * call is non-blocking so wp-admin never waits on it.
+		 */
+		private function post_event( $url, array $payload ) {
+			wp_remote_post(
+				$url,
+				array(
+					'timeout'  => 2,
+					'blocking' => false,
+					'headers'  => array( 'Content-Type' => 'application/json' ),
+					'body'     => wp_json_encode( $payload ),
+				)
+			);
+		}
+
 		/** Enqueue assets only on the plugins list screen. */
 		public function maybe_enqueue( $hook ) {
 			if ( 'plugins.php' !== $hook ) {
 				return;
 			}
 
-			$handle   = 'deactivation-intelligence-' . $this->config['product'];
+			// One handle for every product, not one per product. All instances
+			// now resolve to the same winning copy (see loader.php), so a
+			// per-product handle would emit N identical <script> tags and run
+			// the same file N times. Sharing it means one tag, with every
+			// product's config localized before it executes.
+			$handle   = 'deactivation-intelligence';
 			$src_dir  = plugin_dir_url( __FILE__ ) . '../assets/';
 			$dist_dir = __DIR__ . '/../assets/';
 
@@ -134,6 +212,15 @@ if ( ! class_exists( 'Deactivation_Intelligence' ) ) :
 		}
 
 		/**
+		 * Version of the copy that actually got loaded. Defined by loader.php,
+		 * which is the only place that knows it; '' when a host required this
+		 * file directly, bypassing the loader.
+		 */
+		public static function sdk_version() {
+			return defined( 'DEACTIVATION_INTELLIGENCE_VERSION' ) ? (string) DEACTIVATION_INTELLIGENCE_VERSION : '';
+		}
+
+		/**
 		 * Config handed to the browser. Includes reasons, i18n strings, endpoints,
 		 * and (best-effort) recovery actions fetched + cached server-side.
 		 */
@@ -142,6 +229,7 @@ if ( ! class_exists( 'Deactivation_Intelligence' ) ) :
 				'product'        => $this->config['product'],
 				'tier'           => $this->config['tier'],
 				'version'        => $this->config['version'],
+				'sdkVersion'     => self::sdk_version(),
 				'installationId' => $this->installation_id(),
 				'pluginFile'     => $this->config['plugin_file'],
 				'endpoints'      => array(
@@ -156,10 +244,30 @@ if ( ! class_exists( 'Deactivation_Intelligence' ) ) :
 					'php_version' => PHP_VERSION,
 					'locale'      => get_locale(),
 				) : new stdClass(),
+				'supportUrl'     => $this->support_url(),
 				'recoveryActions' => $this->fetch_recovery_config(),
 				'reasons'        => $this->reasons(),
 				'i18n'           => $this->strings(),
 			);
+		}
+
+		/**
+		 * The host plugin's support URL, or '' when it has none.
+		 *
+		 * Validated here rather than in the browser so a mistyped or hostile
+		 * value never reaches the DOM: anything that is not an absolute http(s)
+		 * URL is dropped, and the link is simply not rendered.
+		 */
+		private function support_url() {
+			$url = trim( (string) $this->config['support_url'] );
+			if ( '' === $url ) {
+				return '';
+			}
+			$scheme = wp_parse_url( $url, PHP_URL_SCHEME );
+			if ( ! in_array( $scheme, array( 'http', 'https' ), true ) ) {
+				return '';
+			}
+			return esc_url_raw( $url, array( 'http', 'https' ) );
 		}
 
 		/**

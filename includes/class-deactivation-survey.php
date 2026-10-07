@@ -29,22 +29,40 @@ final class Deactivation_Survey {
 	/**
 	 * Load the SDK and initialise it once.
 	 */
+	/**
+	 * Put this plugin's copy of the SDK on the ballot.
+	 *
+	 * Called from the bootstrap at plugin-file load time. The SDK client is a
+	 * single global class, so on a site running several Flexa plugins only one
+	 * bundled copy can define it, and that copy also serves the JS and CSS for
+	 * every product (its enqueue resolves them relative to its own file).
+	 * `loader.php` turns the include into an offer: every copy registers its
+	 * version, and the newest one is loaded at `plugins_loaded`. Registering
+	 * after that point means this copy missed the vote and the site keeps
+	 * running whatever older copy a neighbouring plugin shipped.
+	 *
+	 * Deliberately not gated on the `enabled` filter: a filter cannot be trusted
+	 * to exist this early, and offering the file costs nothing. Whether the
+	 * survey runs for THIS plugin is decided below; a copy that wins the vote
+	 * while disabled here still serves the other products correctly.
+	 */
+	public static function preload(): void {
+		$loader = FLEXA_BLOCK_DIR . 'libraries/deactivation-intelligence/src/loader.php';
+		if ( is_readable( $loader ) ) {
+			require_once $loader;
+		}
+	}
+
 	public static function init(): void {
 		if ( ! apply_filters( 'flexa-block/deactivation_survey/enabled', true ) ) {
 			return;
 		}
 
-		$sdk = FLEXA_BLOCK_DIR . 'libraries/deactivation-intelligence/src/class-deactivation-intelligence.php';
-		if ( ! is_readable( $sdk ) ) {
-			return;
-		}
-		require_once $sdk;
-
-		if ( ! class_exists( \Deactivation_Intelligence::class ) ) {
+		if ( ! function_exists( 'deactivation_intelligence_init' ) ) {
 			return;
 		}
 
-		\Deactivation_Intelligence::init(
+		\deactivation_intelligence_init(
 			apply_filters(
 				'flexa-block/deactivation_survey/config',
 				array(

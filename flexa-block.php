@@ -25,6 +25,14 @@ define( 'FLEXA_BLOCK_URL', plugin_dir_url( __FILE__ ) );
 define( 'FLEXA_BLOCK_BASENAME', plugin_basename( __FILE__ ) );
 define( 'FLEXA_BLOCK_MIN_WP', '6.4' );
 
+// Deactivation Intelligence SDK. Offered here, at file-load time, rather than
+// from flexa_block_init(): the SDK is a single global class shared by every
+// Flexa plugin on the site, and its loader picks the newest bundled copy at
+// `plugins_loaded`, so a copy registered later than that has already lost the
+// vote. The survey's own config is set up in Deactivation_Survey::init().
+require_once FLEXA_BLOCK_DIR . 'includes/class-deactivation-survey.php';
+Flexa\Block\Deactivation_Survey::preload();
+
 /**
  * Boot the plugin.
  */
@@ -34,8 +42,8 @@ function flexa_block_init() {
 		return;
 	}
 
-	// Deactivation feedback survey (admin-only; never blocks deactivation).
-	require_once FLEXA_BLOCK_DIR . 'includes/class-deactivation-survey.php';
+	// Deactivation feedback survey (admin-only; never blocks deactivation). The
+	// class file is already loaded above, where it offers its copy of the SDK.
 	Flexa\Block\Deactivation_Survey::init();
 
 	// Core services.
