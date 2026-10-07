@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Flexa Block – Blocks & Page Builder 1.0.15\n"
+"Project-Id-Version: Flexa Block – Blocks & Page Builder 1.0.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/flexa-block\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-05T03:17:46+00:00\n"
+"POT-Creation-Date: 2026-10-07T03:56:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: flexa-block\n"
@@ -48,7 +48,6 @@ msgstr ""
 #. translators: %s: search query.
 #: build/blocks/breadcrumb/render.php:131
 #: src/blocks/breadcrumb/render.php:131
-#, php-format
 msgid "Search: %s"
 msgstr ""
 
@@ -328,14 +327,12 @@ msgstr ""
 #. translators: %s: average product rating out of 5.
 #: build/blocks/product-detail/render.php:137
 #: src/blocks/product-detail/render.php:137
-#, php-format
 msgid "Average rating: %s out of 5"
 msgstr ""
 
 #. translators: %s: number of product reviews.
 #: build/blocks/product-detail/render.php:143
 #: src/blocks/product-detail/render.php:143
-#, php-format
 msgid "%s review"
 msgid_plural "%s reviews"
 msgstr[0] ""
@@ -376,14 +373,12 @@ msgstr ""
 #: src/blocks/product-rating/render.php:66
 #: src/blocks/product-related/render.php:138
 #: src/blocks/star-rating/render.php:76
-#, php-format
 msgid "Rated %1$s out of %2$s"
 msgstr ""
 
 #. translators: %s: number of reviews.
 #: build/blocks/product-rating/render.php:87
 #: src/blocks/product-rating/render.php:87
-#, php-format
 msgid "(%s review)"
 msgid_plural "(%s reviews)"
 msgstr[0] ""
@@ -399,7 +394,6 @@ msgstr ""
 #: build/blocks/rss/render.php:160
 #: includes/class-post-query.php:843
 #: src/blocks/rss/render.php:160
-#, php-format
 msgid "%1$s: %2$s"
 msgstr ""
 
@@ -434,7 +428,6 @@ msgstr ""
 #. translators: %s: social network name.
 #: build/blocks/social-share/render.php:139
 #: src/blocks/social-share/render.php:139
-#, php-format
 msgid "Share on %s"
 msgstr ""
 
@@ -481,7 +474,6 @@ msgstr ""
 #. translators: %d: star rating out of five.
 #: build/blocks/testimonial/render.php:68
 #: src/blocks/testimonial/render.php:68
-#, php-format
 msgid "Rated %d out of 5"
 msgstr ""
 
@@ -497,8 +489,7 @@ msgid "Video"
 msgstr ""
 
 #. translators: %s: minimum WordPress version
-#: flexa-block.php:106
-#, php-format
+#: flexa-block.php:114
 msgid "Flexa Block requires WordPress %s or higher."
 msgstr ""
 
@@ -518,6 +509,7 @@ msgstr ""
 
 #: includes/admin/class-admin.php:385
 #: includes/admin/class-admin.php:386
+#: includes/admin/class-admin.php:404
 #: build/admin/index.js:9
 msgid "Flexa Block"
 msgstr ""
@@ -564,7 +556,6 @@ msgstr ""
 
 #. translators: %s: site name.
 #: includes/class-form-handler.php:341
-#, php-format
 msgid "A new subscription was submitted on %s."
 msgstr ""
 
@@ -585,6 +576,7 @@ msgstr ""
 
 #: includes/class-inline-editor.php:638
 #: includes/class-inline-editor.php:696
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:339
 #: build/admin/index.js:9
 msgid "Cancel"
 msgstr ""
@@ -616,7 +608,6 @@ msgstr ""
 
 #. translators: %s: block type slug.
 #: includes/class-inline-editor.php:806
-#, php-format
 msgid "Front-end editing is turned off for the “%s” block. Turn it on under Flexa Block → Editing."
 msgstr ""
 
@@ -639,7 +630,6 @@ msgstr ""
 
 #. translators: 1: block type, 2: old text, 3: new text.
 #: includes/class-inline-editor.php:1049
-#, php-format
 msgid "Edited %1$s from front end: \"%2$s\" → \"%3$s\""
 msgstr ""
 
@@ -661,7 +651,6 @@ msgstr ""
 
 #. translators: %d: estimated minutes to read the post.
 #: includes/class-post-query.php:718
-#, php-format
 msgid "%d min read"
 msgid_plural "%d min read"
 msgstr[0] ""
@@ -669,7 +658,6 @@ msgstr[1] ""
 
 #. translators: %d: number of comments on the post.
 #: includes/class-post-query.php:725
-#, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
 msgstr[0] ""
@@ -686,7 +674,6 @@ msgstr ""
 #. translators: %s: number of posts found.
 #: includes/class-post-query.php:968
 #: build/blocks/post-grid/index.js:1
-#, php-format
 msgid "%s posts found"
 msgstr ""
 
@@ -740,6 +727,402 @@ msgstr ""
 #: build/admin/index.js:6
 #: build/admin/index.js:9
 msgid "Sample Data"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:321
+msgid "I no longer need it"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:322
+msgid "It's missing a feature I need"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:323
+msgid "Something isn't working"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:324
+msgid "It conflicts with another plugin/theme"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:325
+msgid "It's too difficult to use"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:326
+msgid "It's affecting performance"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:327
+msgid "I found a better alternative"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:328
+msgid "I'm troubleshooting"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:329
+#: build/admin/index.js:1
+msgid "Other"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:336
+msgid "Before you go…"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:337
+msgid "What made you deactivate this plugin?"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:338
+msgid "Skip & deactivate"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:340
+msgid "Deactivate"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:341
+msgid "Deactivate anyway"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:342
+msgid "Get help"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:343
+msgid "Notify me if you add it"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:344
+msgid "What feature are you looking for?"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:345
+msgid "What went wrong?"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:346
+msgid "Which plugin or theme is it conflicting with?"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:347
+msgid "What was difficult to use?"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:348
+msgid "What alternative are you using?"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:349
+msgid "Anything you would like to share?"
+msgstr ""
+
+#: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:350
+#: samples/contact-page.php:267
+msgid "Optional"
+msgstr ""
+
+#: samples/contact-page.php:177
+msgid "Get in touch"
+msgstr ""
+
+#: samples/contact-page.php:196
+msgid "Have a question or want to work together? Send us a message and we will get back to you within one business day."
+msgstr ""
+
+#: samples/contact-page.php:233
+msgid "Send message"
+msgstr ""
+
+#: samples/contact-page.php:235
+msgid "New contact message"
+msgstr ""
+
+#: samples/contact-page.php:236
+msgid "Thanks for reaching out. We will reply soon."
+msgstr ""
+
+#: samples/contact-page.php:237
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: samples/contact-page.php:265
+#: build/blocks/filter-taxonomy/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+msgid "Name"
+msgstr ""
+
+#: samples/contact-page.php:265
+msgid "Your name"
+msgstr ""
+
+#: samples/contact-page.php:266
+msgid "Email"
+msgstr ""
+
+#: samples/contact-page.php:266
+msgid "you@example.com"
+msgstr ""
+
+#: samples/contact-page.php:267
+msgid "Phone"
+msgstr ""
+
+#: samples/contact-page.php:268
+#: build/blocks/facebook-feed/index.js:1
+#: build/blocks/notice/index.js:1
+msgid "Message"
+msgstr ""
+
+#: samples/contact-page.php:268
+msgid "How can we help?"
+msgstr ""
+
+#: samples/contact-page.php:283
+msgid "Contact details"
+msgstr ""
+
+#: samples/contact-page.php:338
+msgid "123 Market Street, San Francisco, CA"
+msgstr ""
+
+#: samples/contact-page.php:405
+msgid "Before you write"
+msgstr ""
+
+#: samples/contact-page.php:508
+msgid "What are your support hours?"
+msgstr ""
+
+#: samples/contact-page.php:508
+msgid "We reply Monday to Friday, 9am to 6pm. Messages sent on weekends are answered the next business day."
+msgstr ""
+
+#: samples/contact-page.php:509
+msgid "How quickly will I hear back?"
+msgstr ""
+
+#: samples/contact-page.php:509
+msgid "Most messages get a reply within one business day."
+msgstr ""
+
+#: samples/contact-page.php:510
+msgid "Can I request a call?"
+msgstr ""
+
+#: samples/contact-page.php:510
+msgid "Yes. Mention it in your message and include your phone number and we will arrange a time."
+msgstr ""
+
+#: samples/contact-page.php:520
+msgid "Contact Page"
+msgstr ""
+
+#: samples/contact-page.php:521
+msgid "A two-column contact layout with a working message form, contact details and an embedded map. Set the form recipient email after importing."
+msgstr ""
+
+#: samples/contact-page.php:522
+#: samples/landing-saas.php:1089
+msgid "Page"
+msgstr ""
+
+#: samples/landing-saas.php:252
+msgid "40+ blocks · No page builder"
+msgstr ""
+
+#: samples/landing-saas.php:297
+msgid "Build beautiful WordPress pages, faster"
+msgstr ""
+
+#: samples/landing-saas.php:299
+msgid "A powerful block library for the WordPress editor. Design landing pages and marketing sites without writing code."
+msgstr ""
+
+#: samples/landing-saas.php:300
+msgid "Get started"
+msgstr ""
+
+#: samples/landing-saas.php:307
+msgid "See features"
+msgstr ""
+
+#: samples/landing-saas.php:411
+msgid "Sites launched"
+msgstr ""
+
+#: samples/landing-saas.php:416
+msgid "Uptime"
+msgstr ""
+
+#: samples/landing-saas.php:421
+msgid "Blocks included"
+msgstr ""
+
+#: samples/landing-saas.php:493
+msgid "Lightning fast"
+msgstr ""
+
+#: samples/landing-saas.php:493
+msgid "Blocks output clean, render-ready markup so your pages load in milliseconds."
+msgstr ""
+
+#: samples/landing-saas.php:494
+msgid "Composable blocks"
+msgstr ""
+
+#: samples/landing-saas.php:494
+msgid "Mix and match blocks to build any layout, from a hero to a full pricing page."
+msgstr ""
+
+#: samples/landing-saas.php:495
+msgid "Responsive by design"
+msgstr ""
+
+#: samples/landing-saas.php:495
+msgid "Every block adapts to desktop, tablet and mobile with per-device controls."
+msgstr ""
+
+#: samples/landing-saas.php:496
+msgid "Private by default"
+msgstr ""
+
+#: samples/landing-saas.php:496
+msgid "No tracking and no third-party requests. Your visitors data stays on your site."
+msgstr ""
+
+#: samples/landing-saas.php:497
+msgid "Ship faster"
+msgstr ""
+
+#: samples/landing-saas.php:497
+msgid "Sensible defaults and reusable patterns cut build time down to an afternoon."
+msgstr ""
+
+#: samples/landing-saas.php:498
+msgid "Accessible"
+msgstr ""
+
+#: samples/landing-saas.php:498
+msgid "Keyboard navigation, focus states and ARIA are baked into every block."
+msgstr ""
+
+#: samples/landing-saas.php:568
+msgid "Everything you need to ship faster"
+msgstr ""
+
+#: samples/landing-saas.php:569
+msgid "A focused set of blocks that work together, so you can go from blank page to launch without a page builder."
+msgstr ""
+
+#: samples/landing-saas.php:629
+msgid "How it works"
+msgstr ""
+
+#: samples/landing-saas.php:741
+msgid "Simple, transparent pricing"
+msgstr ""
+
+#: samples/landing-saas.php:742
+msgid "Start free, upgrade when you grow. No hidden fees."
+msgstr ""
+
+#: samples/landing-saas.php:750
+msgid "A joy to build with"
+msgstr ""
+
+#: samples/landing-saas.php:750
+msgid "We rebuilt our marketing site in a weekend. The blocks are flexible and the output is clean."
+msgstr ""
+
+#: samples/landing-saas.php:750
+msgid "Maya Chen"
+msgstr ""
+
+#: samples/landing-saas.php:750
+msgid "Head of Growth, Northwind"
+msgstr ""
+
+#: samples/landing-saas.php:751
+msgid "Exactly what we needed"
+msgstr ""
+
+#: samples/landing-saas.php:751
+msgid "No page-builder bloat and no tracking. Fast pages our whole team can edit with confidence."
+msgstr ""
+
+#: samples/landing-saas.php:751
+msgid "David Osei"
+msgstr ""
+
+#: samples/landing-saas.php:751
+msgid "Founder, Lumen Studio"
+msgstr ""
+
+#: samples/landing-saas.php:835
+msgid "Loved by teams that ship"
+msgstr ""
+
+#: samples/landing-saas.php:844
+msgid "Frequently asked questions"
+msgstr ""
+
+#: samples/landing-saas.php:928
+msgid "Do I need to know how to code?"
+msgstr ""
+
+#: samples/landing-saas.php:928
+msgid "No. Every block is configured visually in the WordPress editor. If you can edit a page, you can build with Flexa."
+msgstr ""
+
+#: samples/landing-saas.php:929
+msgid "Will it slow down my site?"
+msgstr ""
+
+#: samples/landing-saas.php:929
+msgid "No. Blocks only load the CSS and JavaScript they actually use, so pages stay fast."
+msgstr ""
+
+#: samples/landing-saas.php:930
+msgid "Does it work with my theme?"
+msgstr ""
+
+#: samples/landing-saas.php:930
+msgid "Flexa blocks inherit your theme colours and fonts and work with any block-ready theme."
+msgstr ""
+
+#: samples/landing-saas.php:931
+msgid "Is my visitors data tracked?"
+msgstr ""
+
+#: samples/landing-saas.php:931
+msgid "Never. Flexa collects no personal data and makes no third-party requests."
+msgstr ""
+
+#: samples/landing-saas.php:948
+msgid "Ready to build something great?"
+msgstr ""
+
+#: samples/landing-saas.php:949
+msgid "Install Flexa Block and ship your first page today."
+msgstr ""
+
+#: samples/landing-saas.php:950
+msgid "Get started free"
+msgstr ""
+
+#: samples/landing-saas.php:957
+msgid "Browse all blocks"
+msgstr ""
+
+#: samples/landing-saas.php:1087
+msgid "Landing Page — SaaS / Product"
+msgstr ""
+
+#: samples/landing-saas.php:1088
+msgid "A complete one-page layout: hero, stats, feature grid, how-it-works, pricing, testimonials, FAQ and a closing call to action. Media-free and ready to edit."
 msgstr ""
 
 #: build/admin/index.js:1
@@ -860,10 +1243,6 @@ msgstr ""
 
 #: build/admin/index.js:1
 msgid "Forms"
-msgstr ""
-
-#: build/admin/index.js:1
-msgid "Other"
 msgstr ""
 
 #: build/admin/index.js:1
@@ -11015,11 +11394,6 @@ msgid "Timestamp"
 msgstr ""
 
 #: build/blocks/facebook-feed/index.js:1
-#: build/blocks/notice/index.js:1
-msgid "Message"
-msgstr ""
-
-#: build/blocks/facebook-feed/index.js:1
 msgid "Message length (words)"
 msgstr ""
 
@@ -11280,12 +11654,6 @@ msgstr ""
 #: build/blocks/subscribe-form-upload/index.js:1
 #: build/blocks/subscribe-form-url/index.js:1
 msgid "Placeholder"
-msgstr ""
-
-#: build/blocks/filter-taxonomy/index.js:1
-#: build/blocks/taxonomy/index.js:1
-#: build/blocks/team-member/index.js:1
-msgid "Name"
 msgstr ""
 
 #: build/blocks/filter-taxonomy/index.js:1
