@@ -12,7 +12,26 @@ declare(strict_types=1);
  * come through here, and this class is what stands between a caller and that
  * window.
  *
- * What it does about it, in order of how much it is relied on:
+ * @package Flexa\Block
+ */
+
+namespace Flexa\Block\MCP;
+
+use Flexa\Block\Admin\MCP_Settings;
+use Flexa\Block\Import\Content_Importer;
+use Flexa\Block\Import\Import_Registry;
+use Flexa\Block\Import\Preset_Slots;
+use Flexa\Block\Import\Sample_Source;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Creates one draft page from one preset, on behalf of an ability.
+ *
+ * Its job is to keep anything a caller sent away from the code that parses
+ * markup. In order of how much each part is relied on:
  *
  *  1. A caller never supplies markup. It names a preset, and the markup is the
  *     file this plugin ships. The only thing a caller contributes is the value
@@ -38,24 +57,6 @@ declare(strict_types=1);
  * admits no other value, this class refuses one anyway, and the created post is
  * read back and put back to draft if anything on the site moved it. Publishing
  * is a person's decision, and an agent that wants a page live can ask for one.
- *
- * @package Flexa\Block
- */
-
-namespace Flexa\Block\MCP;
-
-use Flexa\Block\Admin\MCP_Settings;
-use Flexa\Block\Import\Content_Importer;
-use Flexa\Block\Import\Import_Registry;
-use Flexa\Block\Import\Preset_Slots;
-use Flexa\Block\Import\Sample_Source;
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
-/**
- * Creates one draft page from one preset, on behalf of an ability.
  */
 class Draft_Writer {
 

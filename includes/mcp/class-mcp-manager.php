@@ -82,9 +82,15 @@ class MCP_Manager {
 	 * Skipped when nothing would go in it, so a site with the module on but no
 	 * abilities registered shows no empty Flexa group to a client browsing the
 	 * registry.
+	 *
+	 * The Abilities API is checked for again even though the gate in
+	 * `flexa-block.php` already answered that question. This is the file that
+	 * makes the call, and anyone asking whether it is safe on a site below
+	 * WordPress 7.0 should find the answer beside the call rather than two
+	 * files away.
 	 */
 	public static function register_category(): void {
-		if ( ! self::abilities() ) {
+		if ( ! function_exists( 'wp_register_ability_category' ) || ! self::abilities() ) {
 			return;
 		}
 
@@ -99,8 +105,15 @@ class MCP_Manager {
 
 	/**
 	 * Register each contributed ability.
+	 *
+	 * Checks for the Abilities API for the same reason {@see register_category()}
+	 * does.
 	 */
 	public static function register_abilities(): void {
+		if ( ! function_exists( 'wp_register_ability' ) ) {
+			return;
+		}
+
 		foreach ( self::abilities() as $name => $args ) {
 			$name = (string) $name;
 
@@ -134,10 +147,14 @@ class MCP_Manager {
 	 * someone else's namespace, where its owner could neither find nor
 	 * unregister it.
 	 *
+	 * Public because the activity log asks the same question, of names that
+	 * arrive from core hooks fired for every ability on the site. One answer,
+	 * in the class that owns the namespace.
+	 *
 	 * @param string $name Full ability name.
 	 * @return bool
 	 */
-	private static function is_own_name( string $name ): bool {
+	public static function is_own_name( string $name ): bool {
 		return 0 === strpos( $name, self::ABILITY_NAMESPACE . '/' ) && strlen( $name ) > strlen( self::ABILITY_NAMESPACE ) + 1;
 	}
 }
