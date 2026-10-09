@@ -283,15 +283,102 @@ class MCP_Settings {
 		$settings = self::get_settings();
 
 		return [
-			'supported' => self::is_supported(),
-			'minWp'     => self::MIN_WP,
-			'enabled'   => self::is_enabled(),
-			'read'      => $settings['read'],
-			'write'     => $settings['write'],
-			'adapter'   => self::adapter_state(),
-			'endpoint'  => self::endpoint(),
-			'restUrl'   => esc_url_raw( rest_url( self::REST_NS . '/mcp' ) ),
+			'supported'    => self::is_supported(),
+			'minWp'        => self::MIN_WP,
+			'enabled'      => self::is_enabled(),
+			'read'         => $settings['read'],
+			'write'        => $settings['write'],
+			'adapter'      => self::adapter_state(),
+			'endpoint'     => self::endpoint(),
+			'restUrl'      => esc_url_raw( rest_url( self::REST_NS . '/mcp' ) ),
+			'activity'     => self::activity_rows(),
+			'activityDays' => self::activity_retention(),
 		];
+	}
+
+	/**
+	 * The module's activity log, ready for the panel to render.
+	 *
+	 * Sent whether the module is on or off. A log is most wanted right after
+	 * someone switches the module off, and a panel that hid it then would be
+	 * answering the question nobody asks.
+	 *
+	 * The user is resolved here rather than in the browser: a row keeps a user
+	 * ID and a snapshot of the login, and turning that into a name someone
+	 * recognises is a lookup, not a formatting choice. The timestamp becomes a
+	 * string here too, so it follows the site's timezone and date format
+	 * instead of the reader's browser. Everything else passes through as the
+	 * log stored it.
+	 *
+	 * @param int $limit Rows to return, newest first.
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function activity_rows( int $limit = 20 ): array {
+		if ( ! class_exists( '\Flexa\Block\MCP\Activity_Log' ) ) {
+			return [];
+		}
+
+		$format = get_option( 'date_format', 'Y-m-d' ) . ' ' . get_option( 'time_format', 'H:i' );
+		$rows   = [];
+
+		foreach ( \Flexa\Block\MCP\Activity_Log::entries( $limit ) as $row ) {
+			$time = isset( $row['time'] ) ? (int) $row['time'] : 0;
+
+			$rows[] = [
+				'time'    => $time,
+				'when'    => $time ? (string) wp_date( $format, $time ) : '',
+				'user'    => self::activity_user( $row ),
+				'ability' => (string) ( $row['ability'] ?? '' ),
+				'post'    => (int) ( $row['post'] ?? 0 ),
+				'outcome' => (string) ( $row['outcome'] ?? '' ),
+				'code'    => (string) ( $row['code'] ?? '' ),
+				'request' => (string) ( $row['request'] ?? '' ),
+			];
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * How long a log row is kept, in days.
+	 *
+	 * @return int Days, or 0 when only the row limit drops them.
+	 */
+	public static function activity_retention(): int {
+		return class_exists( '\Flexa\Block\MCP\Activity_Log' )
+			? \Flexa\Block\MCP\Activity_Log::retention_days()
+			: 0;
+	}
+
+	/**
+	 * A name for whoever made one logged call.
+	 *
+	 * Three sources, in the order of how much they tell the reader: the
+	 * account's current display name, the login snapshotted when the row was
+	 * written (which survives the account being deleted), and the bare ID. A
+	 * row with no user is a call that arrived without a signed-in account,
+	 * which the abilities refuse; it is logged because a refusal is worth
+	 * seeing.
+	 *
+	 * @param array<string, mixed> $row Stored row.
+	 * @return string
+	 */
+	private static function activity_user( array $row ): string {
+		$id = isset( $row['user'] ) ? (int) $row['user'] : 0;
+
+		if ( $id < 1 ) {
+			return __( 'Signed out', 'flexa-block' );
+		}
+
+		$user = get_userdata( $id );
+
+		if ( $user && '' !== (string) $user->display_name ) {
+			return (string) $user->display_name;
+		}
+
+		$login = isset( $row['login'] ) ? (string) $row['login'] : '';
+
+		return '' !== $login ? $login : '#' . $id;
 	}
 
 	/* ---------------------------------------------------------------------

@@ -9,7 +9,7 @@
  */
 
 import { useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Modal } from '@wordpress/components';
 import { CardHeader, SettingRow } from './settings-general';
@@ -59,6 +59,18 @@ export function McpPanel( { mcp }: Props ): JSX.Element {
 				setBusy( false );
 				setPending( null );
 			} );
+	};
+
+	const refresh = () => {
+		setBusy( true );
+		apiFetch( { url: state.restUrl } )
+			.then( ( res: any ) => {
+				if ( res?.mcp ) {
+					setState( res.mcp );
+				}
+			} )
+			.catch( () => undefined )
+			.finally( () => setBusy( false ) );
 	};
 
 	const setEnabled = ( on: boolean ) => {
@@ -169,6 +181,15 @@ export function McpPanel( { mcp }: Props ): JSX.Element {
 						<MissingAdapter />
 					) }
 				</>
+			) }
+
+			{ state.supported && (
+				<Activity
+					rows={ state.activity ?? [] }
+					days={ state.activityDays ?? 0 }
+					busy={ busy }
+					onRefresh={ refresh }
+				/>
 			) }
 
 			{ pending && (
@@ -346,9 +367,16 @@ function Connected( {
 						) }
 					</p>
 
+					<p className="flexa-mcp__text">
+						{ __(
+							'These two switches cover the tools Flexa Block registers. MCP Adapter also serves tools that WordPress and other active plugins register, which these switches do not govern, so the role on that account is what decides how far a client can reach.',
+							'flexa-block'
+						) }
+					</p>
+
 					<p className="flexa-mcp__text flexa-mcp__text--muted">
 						{ __(
-							'This version of Flexa Block registers no tools yet. The switch and its limits ship first so the next update turns tools on for a site that has already made this choice, rather than on its behalf.',
+							'Every call is recorded below, with the user, the tool, the page and the outcome.',
 							'flexa-block'
 						) }
 					</p>
@@ -374,6 +402,155 @@ function Connected( {
 				</section>
 			) }
 		</>
+	);
+}
+
+/**
+ * A word for one recorded outcome.
+ *
+ * Written for whoever reads the panel rather than for whoever wrote the hook:
+ * `refused` and `denied` both mean the call did not happen, and the difference
+ * between a request this module rejected and a capability the account lacks is
+ * worth saying in the row itself.
+ * @param outcome Stored outcome.
+ */
+function outcomeLabel( outcome: string ): string {
+	switch ( outcome ) {
+		case 'ok':
+			return __( 'Done', 'flexa-block' );
+		case 'refused':
+			return __( 'Refused', 'flexa-block' );
+		case 'denied':
+			return __( 'Not allowed', 'flexa-block' );
+		default:
+			return __( 'Unfinished', 'flexa-block' );
+	}
+}
+
+/**
+ * The log of calls this module handled.
+ *
+ * Shown whether the module is on or off, because the question "what did it do
+ * while it was on" arrives after the switch has been turned off. Read-only on
+ * purpose: there is no clear button, since a log someone can erase from the
+ * screen it is displayed on answers nothing later.
+ * @param root0           Props.
+ * @param root0.rows      Recorded calls, newest first.
+ * @param root0.days      Days a row is kept, 0 for no age limit.
+ * @param root0.busy      Whether a request is in flight.
+ * @param root0.onRefresh Re-read handler.
+ */
+function Activity( {
+	rows,
+	days,
+	busy,
+	onRefresh,
+}: {
+	rows: FlexaBlockMcpActivityRow[];
+	days: number;
+	busy: boolean;
+	onRefresh: () => void;
+} ): JSX.Element {
+	return (
+		<section className="flexa-admin-card flexa-setting-card">
+			<CardHeader
+				icon="list-view"
+				tint="#475569"
+				title={ __( 'Recent activity', 'flexa-block' ) }
+				subtitle={
+					days > 0
+						? sprintf(
+								/* translators: %d: number of days a row is kept */
+								_n(
+									'Calls to this plugin’s tools, kept for %d day.',
+									'Calls to this plugin’s tools, kept for %d days.',
+									days,
+									'flexa-block'
+								),
+								days
+						  )
+						: __( 'Calls to this plugin’s tools.', 'flexa-block' )
+				}
+			/>
+			<div className="flexa-setting-card__body">
+				{ rows.length === 0 ? (
+					<p className="flexa-mcp__text flexa-mcp__text--muted">
+						{ __(
+							'Nothing recorded yet. A row appears here the first time a client calls one of these tools.',
+							'flexa-block'
+						) }
+					</p>
+				) : (
+					<table className="flexa-mcp__log">
+						<thead>
+							<tr>
+								<th scope="col">
+									{ __( 'When', 'flexa-block' ) }
+								</th>
+								<th scope="col">
+									{ __( 'Who', 'flexa-block' ) }
+								</th>
+								<th scope="col">
+									{ __( 'Tool', 'flexa-block' ) }
+								</th>
+								<th scope="col">
+									{ __( 'Page', 'flexa-block' ) }
+								</th>
+								<th scope="col">
+									{ __( 'Outcome', 'flexa-block' ) }
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{ rows.map( ( row, index ) => (
+								<tr key={ `${ row.request }-${ index }` }>
+									<td>{ row.when }</td>
+									<td>{ row.user }</td>
+									<td>
+										<code>{ row.ability }</code>
+									</td>
+									<td>
+										{ row.post ? `#${ row.post }` : '' }
+									</td>
+									<td>
+										<span
+											className={ `flexa-mcp__outcome is-${ row.outcome }` }
+										>
+											{ outcomeLabel( row.outcome ) }
+										</span>
+										{ row.code && (
+											<span className="flexa-mcp__code">
+												{ row.code }
+											</span>
+										) }
+									</td>
+								</tr>
+							) ) }
+						</tbody>
+					</table>
+				) }
+
+				<p className="flexa-mcp__log-actions">
+					<button
+						type="button"
+						className="components-button is-secondary"
+						onClick={ onRefresh }
+						disabled={ busy }
+					>
+						{ busy
+							? __( 'Refreshing…', 'flexa-block' )
+							: __( 'Refresh', 'flexa-block' ) }
+					</button>
+				</p>
+
+				<p className="flexa-mcp__text flexa-mcp__text--muted">
+					{ __(
+						'The log keeps the user, the tool, the page and the outcome. It keeps no page content, no prompts and no credentials, and it is not a way to undo what a call did.',
+						'flexa-block'
+					) }
+				</p>
+			</div>
+		</section>
 	);
 }
 

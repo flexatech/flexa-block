@@ -99,11 +99,12 @@ function flexa_block_init() {
 		Flexa\Block\Admin\FormFlow_Notice::init();
 	}
 
-	// MCP module switch. Needed by every request that can show or change it:
-	// admin screens, WP-CLI (`wp option update`), and the REST API, where the
-	// panel's own route lives. A plain page view needs none of it, so on the
-	// front end the file is loaded lazily and only if a REST request arrives.
-	if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	// MCP module switch and its activity log. Needed by every request that can
+	// show or change the switch, or sweep the log: admin screens, WP-CLI
+	// (`wp option update`), cron, and the REST API, where the panel's own route
+	// lives. A plain page view needs none of it, so on the front end the files
+	// are loaded lazily and only if a REST request arrives.
+	if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) || wp_doing_cron() ) {
 		flexa_block_boot_mcp_settings();
 	} else {
 		add_action( 'rest_api_init', 'flexa_block_boot_mcp_settings', 5 );
@@ -126,16 +127,25 @@ function flexa_block_init() {
 		Flexa\Block\MCP\MCP_Manager::init();
 		Flexa\Block\MCP\Read_Abilities::init();
 		Flexa\Block\MCP\Write_Abilities::init();
+
+		// Only the watching half is gated. Storage, retention and reading come
+		// up with the settings above, because a log is most wanted right after
+		// the switch has been turned off, and rows still have to age out then.
+		Flexa\Block\MCP\Activity_Log::watch();
 	}
 }
 add_action( 'plugins_loaded', 'flexa_block_init' );
 
 /**
- * Load the MCP settings store.
+ * Load the MCP settings store and the module's activity log.
  *
  * Reached from three places that can all be true of one request, so it keeps
  * its own flag: `init()` adds filters, and adding them twice would run the
  * write guard twice on every save.
+ *
+ * The log travels with the settings rather than with the runtime. Its own
+ * docblock has the reasoning; the short version is that reading it and
+ * sweeping it both have to keep working after the module is switched off.
  */
 function flexa_block_boot_mcp_settings() {
 	static $booted = false;
@@ -146,7 +156,9 @@ function flexa_block_boot_mcp_settings() {
 	$booted = true;
 
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-mcp-settings.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-activity-log.php';
 	Flexa\Block\Admin\MCP_Settings::init();
+	Flexa\Block\MCP\Activity_Log::init();
 }
 
 /**
@@ -174,6 +186,19 @@ function flexa_block_mcp_runtime_enabled() {
 
 	return is_array( $stored ) && ! empty( $stored['enabled'] );
 }
+
+/**
+ * Clean up what the plugin scheduled, on deactivation.
+ *
+ * One event today: the MCP activity log's daily sweep. A deactivated plugin
+ * whose cron event is still in the schedule leaves WordPress calling a hook
+ * nothing listens to, every day, until someone clears it by hand.
+ */
+function flexa_block_deactivate() {
+	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-activity-log.php';
+	Flexa\Block\MCP\Activity_Log::unschedule();
+}
+register_deactivation_hook( __FILE__, 'flexa_block_deactivate' );
 
 /**
  * Admin notice for unsupported WordPress version.
