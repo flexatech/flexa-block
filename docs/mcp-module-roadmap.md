@@ -1,6 +1,6 @@
 # MCP Module
 
-> ✅ xong (8) · 🧪 đang làm · ⬜ chưa bắt đầu (19)
+> ✅ xong (12) · 🧪 đang làm · ⬜ chưa bắt đầu (15)
 > · Cập nhật: 2026-10-09
 >
 > Module MCP nằm **trong** plugin free này, dưới `includes/mcp/`, tắt mặc định.
@@ -94,16 +94,26 @@ chưa bật không load thêm file nào.
 
 ## Giai đoạn 1 · Ability chỉ đọc
 
-9. ⬜ Helper dùng chung cho ability: schema, permission callback, `meta.mcp`,
-   availability. Tránh lặp 5 lần.
-10. ⬜ `flexa/get-design-context`: palette và dark mode từ
-    `class-global-styles.php` + `class-dark-mode-settings.php`, danh sách block
-    khả dụng từ `Block_Manager`. Chỉ ngữ cảnh thiết kế. Không dump
-    `flexa_block_settings`, không chẩn đoán môi trường.
-11. ⬜ `flexa/get-page-block-tree`: `parse_blocks()` + `current_user_can(
-    'read_post', $id )`. Output phân biệt rõ dữ liệu serialize và attribute đã
-    resolve. Có giới hạn kích thước payload.
-12. ⬜ Toggle read riêng: tắt read thì hai ability trên không được đăng ký.
+Hai ability, không ghi gì. Mục tiêu: một agent trả lời được hai câu hỏi phải có
+trước khi viết được gì hữu ích cho plugin này, site trông thế nào và trang này
+đang có gì.
+
+9. ✅ `includes/mcp/class-ability-support.php`: `read_ability()` điền category,
+   annotation readonly và cờ expose; `requires( $cap )` dựng permission callback;
+   `bound()` / `bound_deep()` chặn độ dài; `json_object()` giữ map rỗng encode
+   thành `{}` chứ không phải `[]`.
+10. ✅ `flexa/get-design-context`: token light và dark từ `Global_Styles`, ba cờ
+    dark mode từ `Dark_Mode_Settings`, block khả dụng từ `Block_Manager`. Không
+    `flexa_block_settings`, không chẩn đoán môi trường. Cần capability
+    `edit_posts`.
+11. ✅ `flexa/get-page-block-tree`: `parse_blocks()`, permission callback dùng
+    `current_user_can( 'read_post', $id )`. `attributes` là đúng thứ post content
+    lưu, `resolved_attributes` là bản đã điền default của block type và phải xin
+    bằng `include_resolved`. Giới hạn 1000 node, sâu 20 cấp, mỗi value 2000 ký
+    tự, cắt ở đâu thì báo `truncated`.
+12. ✅ Toggle read riêng: `Read_Abilities::contribute()` trả rỗng khi
+    `MCP_Settings::allows_read()` false, nên tắt read là hai ability không tồn
+    tại chứ không phải tồn tại rồi bị từ chối.
 
 **Transport đã kiểm thật, 2026-10-09.** Một client HTTP nối được vào
 `/wp-json/mcp/mcp-adapter-default-server` bằng Application Password (Basic auth),
@@ -144,9 +154,39 @@ tên chúng vào `tools` qua filter `mcp_adapter_default_server_config`, hoặc 
 server riêng bằng `create_server()` trên hook `mcp_adapter_init`. Chọn đường nào là
 quyết định của mục 9, không phải chi tiết thi công.
 
-**Xong khi**: một MCP client thật thấy đúng 2 ability của Flexa qua
-`discover-abilities`, đọc được một page, và trả về rỗng với page của user khác mà
-caller không có quyền đọc.
+**Đường đi của ability, chốt ở mục 9**: giữ nguyên `execute-ability`, không nhồi
+tên ability vào `tools` và không dựng server riêng. Lý do là mục 23: thêm một
+server là thêm một endpoint phải viết hướng dẫn và phải bảo hành, còn cái ta được
+lại chỉ là tên hiện ở cấp cao hơn trong danh sách tool của client. Đổi về sau vẫn
+được bằng filter `mcp_adapter_default_server_config`, không phải quyết định một
+lần.
+
+**Xong rồi, kiểm thật ngày 2026-10-09.** `discover-abilities` qua Application
+Password trả đúng hai ability của Flexa. `execute-ability` gọi
+`get-design-context` ra 22 token light, 6 token dark override và 30 block đang
+đăng ký. `get-page-block-tree` trên trang nhiều markup nhất của site cho 43 node
+đúng cấu trúc lồng nhau, 16 KB, và 106 KB khi `include_resolved`: chênh gần bảy
+lần, nên mặc định tắt là đúng. Các biên đã thử: `post_id` không tồn tại trả
+`ability_invalid_permissions` chứ không trả 404, tức là không lộ việc post có hay
+không; `post_id` 0 bị schema chặn; page private của admin đọc bằng account role
+thấp trả `ability_invalid_permissions`; cùng account đó gọi `get-design-context`
+cũng bị từ chối vì thiếu `edit_posts`; tắt read thì catalogue còn 0 ability.
+
+Một chỗ phải sửa lại so với lời hứa cũ ở mục này: không có đường nào "trả về rỗng"
+cho page không được đọc. Core biến mọi permission callback false thành
+`ability_invalid_permissions` trước khi execute kịp chạy, nên câu trả lời là từ
+chối. Từ chối tốt hơn: rỗng và không-có-quyền là hai chuyện khác nhau, gộp lại
+thì client không phân biệt được.
+
+Hai cái bẫy mà chỉ chạy thật mới thấy, ghi lại cho phase 3 đỡ mất buổi:
+
+- Ability không khai `input_schema` thì core **từ chối mọi input**, kể cả
+  `arguments: {}` mà client MCP nào cũng gửi. `get-design-context` không có tham
+  số nào vẫn phải khai schema object rỗng, kèm `default` để lời gọi không input
+  cũng chạy.
+- `invoke_callback()` chỉ truyền `$input` cho callback khi ability có
+  `input_schema`. Permission callback và execute callback phải khớp với chuyện
+  đó.
 
 ## Giai đoạn 2 · Slot layer (phần khó nhất, chưa dính MCP)
 
@@ -230,6 +270,13 @@ fatal nào.
 - **Phụ thuộc một plugin bên thứ ba đang ở 0.x**: `mcp-adapter` 0.7.0 chưa 1.0, API
   còn có thể đổi. Vì thế không bao giờ đặt `Requires Plugins: mcp-adapter` vào
   header, và phải soft-detect kèm báo version trong panel.
+- **`get-page-block-tree` không round-trip được attribute lồng nhau.** PHP decode
+  JSON ra array, nên `{}` rỗng và `[]` rỗng ở cấp lồng bên trong một attribute là
+  một thứ: output báo `[]` cho cả hai. Cấp ngoài cùng của mỗi attribute thì đã
+  giữ đúng object. Chuyện này không sao với đường đọc, nhưng mục 18 tuyệt đối
+  không được lấy output của ability này ghi thẳng ngược lại vào post. Write đi
+  qua preset và slot, không qua echo attribute, nên hiện tại chỉ là giới hạn cần
+  biết chứ không phải việc phải sửa.
 - **`Content_Importer::import()` bỏ KSES** (`kses_remove_filters()`). An toàn cho
   nút admin với markup do plugin bundle, không an toàn cho đường MCP. Mục 18 tồn
   tại chỉ để chặn chuyện này; đừng gọi importer trực tiếp từ ability.

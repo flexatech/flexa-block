@@ -111,16 +111,36 @@ function flexa_block_init() {
 
 	// MCP runtime. Separate from the switch above, and gated on it.
 	if ( flexa_block_mcp_runtime_enabled() ) {
+		// The runtime needs the settings class even on a front-end request: the
+		// read and write toggles decide which abilities get registered, and
+		// asking their owner is better than repeating the option key a third
+		// time. Loading it here is a no-op on the requests that already did.
+		flexa_block_boot_mcp_settings();
+
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-mcp-manager.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-ability-support.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-read-abilities.php';
 		Flexa\Block\MCP\MCP_Manager::init();
+		Flexa\Block\MCP\Read_Abilities::init();
 	}
 }
 add_action( 'plugins_loaded', 'flexa_block_init' );
 
 /**
  * Load the MCP settings store.
+ *
+ * Reached from three places that can all be true of one request, so it keeps
+ * its own flag: `init()` adds filters, and adding them twice would run the
+ * write guard twice on every save.
  */
 function flexa_block_boot_mcp_settings() {
+	static $booted = false;
+
+	if ( $booted ) {
+		return;
+	}
+	$booted = true;
+
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-mcp-settings.php';
 	Flexa\Block\Admin\MCP_Settings::init();
 }

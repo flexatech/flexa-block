@@ -16,8 +16,10 @@ declare(strict_types=1);
  * routes, which is the point of registering them there rather than inventing a
  * second surface.
  *
- * As of phase 0 the plugin contributes nothing: the filter below exists, the
- * hooks are in place, and the catalogue is empty.
+ * The plugin's own abilities live in their own files and arrive through the
+ * filter below like anyone else's, so this class stays a registrar: it has no
+ * knowledge of what it registers, and nothing here has to change when an
+ * ability is added or a toggle takes one away.
  *
  * @package Flexa\Block
  */
