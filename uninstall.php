@@ -17,3 +17,8 @@ delete_option( 'flexa_block_formflow_notice_dismissed' );
 delete_option( 'flexa_block_feed_tokens' );
 delete_option( 'flexa_block_item_style_migrated' );
 delete_option( 'flexa_block_item_style_migration_cursor' );
+
+// MCP module. Its own option, kept apart from flexa_block_settings so that
+// switching the module on never rides along with an unrelated settings save.
+// It stores no transients yet; add them here as later phases introduce them.
+delete_option( 'flexa_block_mcp' );
