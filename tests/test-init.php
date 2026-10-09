@@ -39,13 +39,181 @@ if ( ! function_exists( 'apply_filters' ) ) {
 
 if ( ! function_exists( 'esc_url_raw' ) ) {
 	/**
-	 * Stub: pass the URL through untouched.
+	 * Stub: accept an http(s)/mailto/tel URL, reject anything else.
 	 *
-	 * @param string $url URL.
+	 * Closer to WordPress than a pass-through needs to be, because the slot
+	 * validator reads '' as "that is not a web address" and a pass-through would
+	 * make that branch untestable. Only the scheme is checked: that is the part
+	 * the plugin's own rule depends on.
+	 *
+	 * @param string            $url       URL.
+	 * @param array<int,string> $protocols Allowed schemes.
 	 * @return string
 	 */
-	function esc_url_raw( $url ) {
-		return $url;
+	function esc_url_raw( $url, $protocols = [] ) {
+		$url = trim( (string) $url );
+		if ( '' === $url || ! $protocols ) {
+			return $url;
+		}
+
+		foreach ( $protocols as $scheme ) {
+			if ( 0 === stripos( $url, $scheme . ':' ) ) {
+				return $url;
+			}
+		}
+
+		return '';
+	}
+}
+
+if ( ! function_exists( 'sanitize_textarea_field' ) ) {
+	/**
+	 * Stub: like sanitize_text_field, but newlines survive.
+	 *
+	 * @param string $value Raw value.
+	 * @return string
+	 */
+	function sanitize_textarea_field( $value ) {
+		return flexa_test_sanitize_text( $value, true );
+	}
+}
+
+if ( ! function_exists( 'is_email' ) ) {
+	/**
+	 * Stub: WordPress's shape check, near enough — something, an @, a dotted
+	 * domain.
+	 *
+	 * @param string $email Address.
+	 * @return string|false
+	 */
+	function is_email( $email ) {
+		$email = (string) $email;
+		return preg_match( '/^[^@\s]+@[^@\s.]+(\.[^@\s.]+)+$/', $email ) ? $email : false;
+	}
+}
+
+if ( ! function_exists( 'wp_list_pluck' ) ) {
+	/**
+	 * Stub: collect one field from each row, keys preserved.
+	 *
+	 * @param array<string|int, array<string, mixed>> $list  Rows.
+	 * @param string                                  $field Field to take.
+	 * @return array<string|int, mixed>
+	 */
+	function wp_list_pluck( $list, $field ) {
+		$out = [];
+		foreach ( (array) $list as $key => $row ) {
+			$out[ $key ] = is_array( $row ) ? ( $row[ $field ] ?? null ) : null;
+		}
+		return $out;
+	}
+}
+
+/*
+ * Attachment and capability stubs for the media slot type.
+ *
+ * Driven by two globals rather than a mocking library, which this suite does not
+ * have: `$flexa_test_attachments` maps an id to whether it is an image, and
+ * `$flexa_test_readable` lists the ids the current user may read. An id in
+ * neither is a post that does not exist, which is its own test case.
+ */
+$GLOBALS['flexa_test_attachments'] = [];
+$GLOBALS['flexa_test_readable']    = [];
+
+if ( ! function_exists( 'get_post_type' ) ) {
+	/**
+	 * Stub: 'attachment' for a registered test id, false otherwise.
+	 *
+	 * @param int $post Post ID.
+	 * @return string|false
+	 */
+	function get_post_type( $post = 0 ) {
+		return isset( $GLOBALS['flexa_test_attachments'][ (int) $post ] ) ? 'attachment' : false;
+	}
+}
+
+if ( ! function_exists( 'wp_attachment_is_image' ) ) {
+	/**
+	 * Stub: whatever the test registered for this id.
+	 *
+	 * @param int $post Attachment ID.
+	 * @return bool
+	 */
+	function wp_attachment_is_image( $post = 0 ) {
+		return ! empty( $GLOBALS['flexa_test_attachments'][ (int) $post ] );
+	}
+}
+
+if ( ! function_exists( 'current_user_can' ) ) {
+	/**
+	 * Stub: only 'read_post' is asked about here, and only for the ids the test
+	 * put in the readable list.
+	 *
+	 * @param string $capability Capability.
+	 * @param mixed  ...$args    Capability arguments.
+	 * @return bool
+	 */
+	function current_user_can( $capability, ...$args ) {
+		if ( 'read_post' !== $capability ) {
+			return false;
+		}
+		return in_array( (int) ( $args[0] ?? 0 ), $GLOBALS['flexa_test_readable'], true );
+	}
+}
+
+if ( ! class_exists( 'WP_Error' ) ) {
+	/**
+	 * Stub: enough of WP_Error for the slot layer, which only ever sets one
+	 * code, one message and a status.
+	 */
+	class WP_Error {
+
+		/** @var string */
+		private $code;
+
+		/** @var string */
+		private $message;
+
+		/** @var array<string, mixed> */
+		private $data;
+
+		/**
+		 * @param string               $code    Error code.
+		 * @param string               $message Error message.
+		 * @param array<string, mixed> $data    Error data.
+		 */
+		public function __construct( $code = '', $message = '', $data = [] ) {
+			$this->code    = (string) $code;
+			$this->message = (string) $message;
+			$this->data    = is_array( $data ) ? $data : [];
+		}
+
+		/** @return string */
+		public function get_error_code() {
+			return $this->code;
+		}
+
+		/** @return string */
+		public function get_error_message() {
+			return $this->message;
+		}
+
+		/** @return array<string, mixed> */
+		public function get_error_data() {
+			return $this->data;
+		}
+	}
+}
+
+if ( ! function_exists( 'is_wp_error' ) ) {
+	/**
+	 * Stub: is this a WP_Error.
+	 *
+	 * @param mixed $thing Value to check.
+	 * @return bool
+	 */
+	function is_wp_error( $thing ) {
+		return $thing instanceof WP_Error;
 	}
 }
 
@@ -94,15 +262,48 @@ if ( ! function_exists( 'sanitize_html_class' ) ) {
 	}
 }
 
+/**
+ * Shared body for the two text sanitizers, close to WordPress on the two points
+ * the plugin leans on.
+ *
+ * First, `<script>alert(1)</script>Hi` has to come out as `Hi`. `strip_tags()`
+ * alone leaves `alert(1)Hi`, because it removes the tags and keeps what was
+ * between them; WordPress drops the content of script and style outright. A stub
+ * without that would have the slot layer looking like it leaks script text when
+ * in production it does not.
+ *
+ * Second, runs of whitespace collapse to one space, and a single-line field
+ * loses its newlines on the way. That is what makes a one-line slot one line.
+ *
+ * Not copied: WordPress also strips percent-encoded octets. Nothing here depends
+ * on it, and a half-copy of an internal is worse than an honest omission.
+ *
+ * @param string $value         Raw value.
+ * @param bool   $keep_newlines Whether newlines survive.
+ * @return string
+ */
+function flexa_test_sanitize_text( $value, $keep_newlines = false ) {
+	$value = (string) $value;
+
+	if ( false !== strpos( $value, '<' ) ) {
+		$value = (string) preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $value );
+		$value = strip_tags( $value );
+	}
+
+	$value = (string) preg_replace( $keep_newlines ? '/[\t ]+/' : '/[\r\n\t ]+/', ' ', $value );
+
+	return trim( $value );
+}
+
 if ( ! function_exists( 'sanitize_text_field' ) ) {
 	/**
-	 * Stub: strip tags and trim, like WordPress does for plain text input.
+	 * Stub: plain single-line text.
 	 *
 	 * @param string $value Raw value.
 	 * @return string
 	 */
 	function sanitize_text_field( $value ) {
-		return trim( strip_tags( (string) $value ) );
+		return flexa_test_sanitize_text( $value, false );
 	}
 }
 
@@ -339,6 +540,13 @@ require_once $flexa_inc . 'class-woo-helpers.php';
 require_once $flexa_inc . 'css-generators/class-product-field-css.php';
 require_once $flexa_inc . 'css-generators/class-product-meta-css.php';
 require_once $flexa_inc . 'css-generators/class-product-related-css.php';
+
+/*
+ * The import engine's slot layer. Only the one class: it is written so that
+ * everything except markup substitution is decidable without WordPress, and
+ * substitution is covered against a real install instead.
+ */
+require_once $flexa_inc . 'import/class-preset-slots.php';
 
 // Shared base class for block CSS tests (kept outside the scanned suite dir).
 require_once __DIR__ . '/CssTestCase.php';

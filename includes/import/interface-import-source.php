@@ -44,8 +44,14 @@ interface Import_Source {
 	 *
 	 * Each entry: {
 	 *   id: string, title: string, description: string, category: string,
-	 *   blocks: list<string>, version: string, requires?: list<string>
+	 *   blocks: list<string>, version: string, requires?: list<string>,
+	 *   slots?: map<string, array> (normalized declarations, see Preset_Slots)
 	 * }.
+	 *
+	 * Slot declarations belong here rather than only in {@see definition()}
+	 * because the admin listing has to render the fields before it knows whether
+	 * the user will import the item at all. They are a few short strings, which
+	 * is the kind of metadata this method is for.
 	 *
 	 * @return list<array<string, mixed>>
 	 */
@@ -56,8 +62,13 @@ interface Import_Source {
 	 *
 	 * Shape: {
 	 *   id, title, version, post_type?, post_status?, content: string (block
-	 *   markup), media?: list<array{placeholder:string,file:string,alt?:string}>
+	 *   markup), media?: list<array{placeholder:string,file:string,alt?:string}>,
+	 *   slot_contract?: int, slots?: map<string, array{type, label, default,
+	 *   max?, help?}>
 	 * }.
+	 *
+	 * A definition that declares `slots` must also declare the `slot_contract`
+	 * it was written against; see {@see \Flexa\Block\Import\Preset_Slots}.
 	 *
 	 * @param string $id Item id within this source.
 	 * @return array<string, mixed>|null

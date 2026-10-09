@@ -30,6 +30,7 @@ class Import_Manager {
 		require_once $dir . 'interface-import-source.php';
 		require_once $dir . 'class-import-registry.php';
 		require_once $dir . 'class-media-importer.php';
+		require_once $dir . 'class-preset-slots.php';
 		require_once $dir . 'class-content-importer.php';
 		require_once $dir . 'class-import-cleanup.php';
 		require_once $dir . 'class-sample-source.php';

@@ -13,6 +13,20 @@ import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Modal, Spinner } from '@wordpress/components';
 
+/**
+ * One value a preset lets you fill in before importing, as the server declares
+ * it. Mirrors the normalized shape from Preset_Slots; nothing is validated here
+ * beyond `maxLength`, because the server decides what a slot accepts and a
+ * second opinion in the browser would only drift from it.
+ */
+interface ImportSlot {
+	type: 'text' | 'multiline' | 'url' | 'email' | 'phone' | 'media';
+	label: string;
+	default: string;
+	max: number;
+	help: string;
+}
+
 interface ImportItem {
 	id: string;
 	title: string;
@@ -27,6 +41,7 @@ interface ImportItem {
 	imported_post_id?: number;
 	edit_link?: string;
 	view_link?: string;
+	slots?: Record< string, ImportSlot >;
 }
 
 interface ImportSource {
@@ -52,6 +67,11 @@ export function SamplesPanel(): JSX.Element {
 	// so the dialog is a single centred modal owned by the panel, and so the
 	// in-flight label lives in the dialog instead of resizing the card's button.
 	const [ confirming, setConfirming ] = useState< {
+		source: ImportSource;
+		item: ImportItem;
+	} | null >( null );
+	// The item whose slots are being filled in, held here for the same reason.
+	const [ filling, setFilling ] = useState< {
 		source: ImportSource;
 		item: ImportItem;
 	} | null >( null );
@@ -100,16 +120,34 @@ export function SamplesPanel(): JSX.Element {
 	const key = ( sourceKey: string, itemId: string ) =>
 		`${ sourceKey }:${ itemId }`;
 
-	const doImport = ( source: ImportSource, item: ImportItem ) => {
+	/**
+	 * Import one item, optionally with slot values.
+	 *
+	 * Resolves to an error message, or to '' on success. It does not place the
+	 * message itself: a plain import shows it in the panel's notice, while a
+	 * slot import has to show it inside the open dialog, next to the fields the
+	 * user still has to fix. The panel's notice sits behind the modal, where
+	 * nobody would read it.
+	 * @param source The owning source.
+	 * @param item   The item to import.
+	 * @param slots  Values for the item's declared slots, if it has any.
+	 */
+	const doImport = (
+		source: ImportSource,
+		item: ImportItem,
+		slots: Record< string, string > = {}
+	): Promise< string > => {
 		if ( ! cfg.importUrl ) {
-			return;
+			return Promise.resolve(
+				__( 'The import endpoint is unavailable.', 'flexa-block' )
+			);
 		}
 		setBusy( key( source.key, item.id ) );
 		setFeedback( null );
-		apiFetch( {
+		return apiFetch( {
 			url: cfg.importUrl,
 			method: 'POST',
-			data: { source: source.key, id: item.id },
+			data: { source: source.key, id: item.id, slots },
 		} )
 			.then( ( res: any ) => {
 				patchItem( source.key, item.id, {
@@ -126,16 +164,30 @@ export function SamplesPanel(): JSX.Element {
 						item.title
 					),
 				} );
+				return '';
 			} )
-			.catch( ( err: any ) =>
-				setFeedback( {
-					type: 'error',
-					text:
-						err?.message ||
-						__( 'Import failed. Please try again.', 'flexa-block' ),
-				} )
+			.catch(
+				( err: any ) =>
+					err?.message ||
+					__( 'Import failed. Please try again.', 'flexa-block' )
 			)
 			.finally( () => setBusy( '' ) );
+	};
+
+	// Pressing Import on an item that declares slots opens this first. Same
+	// button, one step in front of it: the values have to be collected before
+	// the request, because the importer applies them while building the post
+	// and there is no second pass that could add them afterwards.
+	const startImport = ( source: ImportSource, item: ImportItem ) => {
+		if ( item.slots && Object.keys( item.slots ).length > 0 ) {
+			setFilling( { source, item } );
+			return;
+		}
+		doImport( source, item ).then( ( message ) => {
+			if ( message ) {
+				setFeedback( { type: 'error', text: message } );
+			}
+		} );
 	};
 
 	const doRemove = ( source: ImportSource, item: ImportItem ) => {
@@ -254,7 +306,7 @@ export function SamplesPanel(): JSX.Element {
 								key={ item.id }
 								item={ item }
 								busy={ busy === key( source.key, item.id ) }
-								onImport={ () => doImport( source, item ) }
+								onImport={ () => startImport( source, item ) }
 								onRemove={ () =>
 									setConfirming( { source, item } )
 								}
@@ -263,6 +315,24 @@ export function SamplesPanel(): JSX.Element {
 					</div>
 				</section>
 			) ) }
+
+			{ filling && (
+				<SlotFormModal
+					item={ filling.item }
+					busy={ busy === key( filling.source.key, filling.item.id ) }
+					onCancel={ () => setFilling( null ) }
+					onSubmit={ ( values ) =>
+						doImport( filling.source, filling.item, values ).then(
+							( message ) => {
+								if ( ! message ) {
+									setFilling( null );
+								}
+								return message;
+							}
+						)
+					}
+				/>
+			) }
 
 			{ confirming && (
 				<ConfirmRemoveModal
@@ -279,6 +349,181 @@ export function SamplesPanel(): JSX.Element {
 			) }
 		</div>
 	);
+}
+
+/**
+ * Collect a preset's slot values, then import.
+ *
+ * Every field starts empty with the preset's own wording as its placeholder.
+ * Prefilling the inputs instead would read the same and be worse in two ways:
+ * the user could not tell which fields they had actually set, and the import
+ * would record all of them as customised when none were touched.
+ *
+ * Validation is the server's. The one thing enforced here is `maxLength`, and
+ * only because a hard stop at the limit is kinder than being told about it
+ * after writing a paragraph. Everything else is reported back from the import
+ * request and shown below, with the dialog left open on the values that need
+ * fixing.
+ * @param root0
+ * @param root0.item     The sample, with its declared slots.
+ * @param root0.busy     Whether the import request is in flight.
+ * @param root0.onCancel Dismiss handler.
+ * @param root0.onSubmit Import handler; resolves to an error message or ''.
+ */
+function SlotFormModal( {
+	item,
+	busy,
+	onCancel,
+	onSubmit,
+}: {
+	item: ImportItem;
+	busy: boolean;
+	onCancel: () => void;
+	onSubmit: ( values: Record< string, string > ) => Promise< string >;
+} ): JSX.Element {
+	const slots = item.slots || {};
+	const [ values, setValues ] = useState< Record< string, string > >( {} );
+	const [ error, setError ] = useState( '' );
+
+	const set = ( slotKey: string, value: string ) =>
+		setValues( ( prev ) => ( { ...prev, [ slotKey ]: value } ) );
+
+	const submit = ( event: any ) => {
+		event.preventDefault();
+		if ( busy ) {
+			return;
+		}
+		setError( '' );
+		onSubmit( values ).then( setError );
+	};
+
+	return (
+		<Modal
+			title={ sprintf(
+				/* translators: %s: sample title */
+				__( 'Import “%s”', 'flexa-block' ),
+				item.title
+			) }
+			onRequestClose={ busy ? () => undefined : onCancel }
+			size="medium"
+			className="flexa-samples__slots"
+		>
+			<form onSubmit={ submit }>
+				<p className="flexa-samples__slots-intro">
+					{ __(
+						'Fill in what you want to change. Anything left blank keeps the wording this sample ships with, and you can edit all of it in the editor afterwards.',
+						'flexa-block'
+					) }
+				</p>
+
+				{ Object.entries( slots ).map( ( [ slotKey, slot ] ) => {
+					const fieldId = `flexa-slot-${ item.id }-${ slotKey }`;
+					const describedBy = slot.help
+						? `${ fieldId }-help`
+						: undefined;
+
+					return (
+						<div
+							key={ slotKey }
+							className="flexa-samples__slot-field"
+						>
+							<label htmlFor={ fieldId }>{ slot.label }</label>
+							{ slot.type === 'multiline' ? (
+								<textarea
+									id={ fieldId }
+									rows={ 3 }
+									maxLength={ slot.max }
+									placeholder={ slot.default }
+									aria-describedby={ describedBy }
+									value={ values[ slotKey ] || '' }
+									onChange={ ( e ) =>
+										set( slotKey, e.target.value )
+									}
+									disabled={ busy }
+								/>
+							) : (
+								<input
+									id={ fieldId }
+									type={ inputType( slot.type ) }
+									maxLength={
+										slot.type === 'media'
+											? undefined
+											: slot.max
+									}
+									placeholder={ slot.default }
+									aria-describedby={ describedBy }
+									value={ values[ slotKey ] || '' }
+									onChange={ ( e ) =>
+										set( slotKey, e.target.value )
+									}
+									disabled={ busy }
+								/>
+							) }
+							{ slot.help && (
+								<p
+									id={ describedBy }
+									className="flexa-samples__slot-help"
+								>
+									{ slot.help }
+								</p>
+							) }
+						</div>
+					);
+				} ) }
+
+				{ error && (
+					<div
+						className="flexa-samples__notice is-error"
+						aria-live="polite"
+					>
+						{ error }
+					</div>
+				) }
+
+				<div className="flexa-samples__confirm-actions">
+					<button
+						type="button"
+						className="components-button is-tertiary"
+						onClick={ onCancel }
+						disabled={ busy }
+					>
+						{ __( 'Cancel', 'flexa-block' ) }
+					</button>
+					<button
+						type="submit"
+						className="components-button is-primary"
+						disabled={ busy }
+					>
+						{ busy
+							? __( 'Importing…', 'flexa-block' )
+							: __( 'Import as draft', 'flexa-block' ) }
+					</button>
+				</div>
+			</form>
+		</Modal>
+	);
+}
+
+/**
+ * The input type a slot wants, so the browser offers the right keyboard and
+ * its own first-pass check. `text` is the fallback rather than a mapping of
+ * last resort: a slot type this bundle does not know about is still a string
+ * the server will validate.
+ * @param type Declared slot type.
+ */
+function inputType( type: ImportSlot[ 'type' ] ): string {
+	switch ( type ) {
+		case 'email':
+			return 'email';
+		case 'phone':
+			return 'tel';
+		case 'url':
+			return 'url';
+		case 'media':
+			return 'number';
+		default:
+			return 'text';
+	}
 }
 
 /**

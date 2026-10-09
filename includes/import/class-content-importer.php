@@ -8,6 +8,11 @@ declare(strict_types=1);
  * tagged with markers tracing it back to the source item, which powers the
  * "already imported" state in the UI and safe cleanup later.
  *
+ * A definition may also declare slots, the handful of values a user is allowed
+ * to supply before importing. Those are handled by `Preset_Slots`, and this
+ * class's only responsibility towards them is the order they are applied in.
+ * See `import()`.
+ *
  * @package Flexa\Block
  */
 
@@ -40,11 +45,20 @@ class Content_Importer {
 	 * that id), and the free CSS engine regenerates each block's CSS when the new
 	 * post is saved below.
 	 *
+	 * The order of the three passes over the markup is deliberate and is the one
+	 * thing here that must not be rearranged. blockIds first, then media, then
+	 * slots: the caller's own text goes in last, so no later pass ever reads it.
+	 * Reverse slots and media and a slot value containing a media placeholder
+	 * would be swapped for an attachment URL; reverse slots and blockIds and a
+	 * value containing `"blockId":"…"` would reshuffle a real block's id. Going
+	 * last, user input is only ever data.
+	 *
 	 * @param string               $source_key Owning source key.
 	 * @param array<string, mixed> $definition Full item definition.
+	 * @param array<string, mixed> $slots      Slot values from the caller, if any.
 	 * @return array{post_id:int, edit_link:string, view_link:string, warnings:list<string>}|\WP_Error
 	 */
-	public static function import( string $source_key, array $definition ) {
+	public static function import( string $source_key, array $definition, array $slots = [] ) {
 		$id = sanitize_key( (string) ( $definition['id'] ?? '' ) );
 		if ( '' === $id ) {
 			return new \WP_Error( 'flexa_import_id', __( 'Import item is missing an id.', 'flexa-block' ) );
@@ -59,6 +73,16 @@ class Content_Importer {
 		if ( $media ) {
 			$content = self::resolve_media( $content, $media, $source_key, $warnings );
 		}
+
+		// Bad slot values abort the import rather than degrading it. A post is
+		// not cheap to undo by hand, and a user who mistyped the address their
+		// contact form sends to is better served by the message than by a draft
+		// that looks right and silently goes nowhere.
+		$filled = Preset_Slots::apply( $definition, $content, $slots, $warnings );
+		if ( is_wp_error( $filled ) ) {
+			return $filled;
+		}
+		$content = $filled;
 
 		$post_type   = self::sanitize_post_type( (string) ( $definition['post_type'] ?? 'page' ) );
 		$post_status = in_array( $definition['post_status'] ?? '', [ 'draft', 'publish' ], true )
@@ -88,6 +112,16 @@ class Content_Importer {
 		update_post_meta( $post_id, self::SOURCE_META, $source_key );
 		update_post_meta( $post_id, self::ID_META, $id );
 		update_post_meta( $post_id, self::VERSION_META, sanitize_text_field( (string) ( $definition['version'] ?? '1.0.0' ) ) );
+
+		// Which slot contract this page was built under, and which of its slots
+		// the user actually filled. A later version that changes what a slot
+		// means needs both to tell a customised page from one taken as it
+		// shipped, and only the second tells it which fields to leave alone.
+		$declared = Preset_Slots::declared( $definition );
+		if ( $declared ) {
+			update_post_meta( $post_id, Preset_Slots::CONTRACT_META, Preset_Slots::CONTRACT );
+			update_post_meta( $post_id, Preset_Slots::FILLED_META, Preset_Slots::filled_keys( $declared, $slots ) );
+		}
 
 		return [
 			'post_id'   => $post_id,

@@ -1,6 +1,6 @@
 # MCP Module
 
-> ✅ xong (12) · 🧪 đang làm · ⬜ chưa bắt đầu (15)
+> ✅ xong (17) · 🧪 đang làm · ⬜ chưa bắt đầu (10)
 > · Cập nhật: 2026-10-09
 >
 > Module MCP nằm **trong** plugin free này, dưới `includes/mcp/`, tắt mặc định.
@@ -190,25 +190,72 @@ Hai cái bẫy mà chỉ chạy thật mới thấy, ghi lại cho phase 3 đỡ
 
 ## Giai đoạn 2 · Slot layer (phần khó nhất, chưa dính MCP)
 
-13. ⬜ Chốt cơ chế slot. Hai sample hiện tại là markup cố định, placeholder duy
+13. ✅ Chốt cơ chế slot. Hai sample hiện tại là markup cố định, placeholder duy
     nhất là `blockId`. Hướng đề xuất: preset khai báo `slots` map từ slot key đến
     block path + tên attribute, thay giá trị trên mảng `parse_blocks()` rồi
     `serialize_blocks()` lại. An toàn được chính vì cả 73 block đều dynamic và
     không attribute nào dùng `source`.
-14. ⬜ `includes/import/class-preset-slots.php`: validate theo kiểu (text,
+14. ✅ `includes/import/class-preset-slots.php`: validate theo kiểu (text,
     multiline, URL, email, phone, media ID), giới hạn độ dài từng slot và trần
     payload, hành vi khi thiếu slot, thứ tự kết hợp với
     `regenerate_block_ids()` và resolve media.
-15. ⬜ Khai báo `slots` cho preset đầu tiên trong `samples/contact-page.php`. Chỉ
+15. ✅ Khai báo `slots` cho preset đầu tiên trong `samples/contact-page.php`. Chỉ
     một preset. Chọn `landing-saas` sau khi preset đầu đã chạy.
-16. ⬜ Versioning hợp đồng slot, để một bản Flexa Block sau không âm thầm làm hỏng
+16. ✅ Versioning hợp đồng slot, để một bản Flexa Block sau không âm thầm làm hỏng
     draft đã tạo.
-17. ⬜ Test: từng kiểu slot, vượt độ dài, thiếu slot, HTML và script nhồi vào slot
+17. ✅ Test: từng kiểu slot, vượt độ dài, thiếu slot, HTML và script nhồi vào slot
     text, media ID không có quyền.
 
 **Xong khi**: điền slot qua đúng nút import trong `samples-panel.tsx` tạo ra page
 mở trong Gutenberg không cảnh báo invalid block, save lại không đổi nội dung,
 front-end render đúng và có CSS per-instance ngay lần xem đầu.
+
+**Cơ chế chốt khác đề xuất ở mục 13.** Không map slot theo block path. Một path
+kiểu `0.1.2` là chỉ số trong cây, nên chỉ cần đổi thứ tự một block trong preset là
+slot im lặng trỏ sang chỗ khác, và lỗi đó không có cách nào phát hiện lúc chạy.
+Thay bằng token đặt thẳng trong giá trị attribute: `{{slot:key}}`, hoặc
+`{{slot:key|variant}}` khi cùng một giá trị phải xuất hiện ở hai dạng (số điện
+thoại hiện ra cho người đọc, và `tel:` trong link). Preset tự nói chỗ nào nhận
+giá trị, đổi thứ tự block không ảnh hưởng gì.
+
+Vẫn `parse_blocks()` rồi `serialize_blocks()` như mục 13 đề xuất, nhưng chỉ thay
+trên **giá trị attribute**, không bao giờ thay trong markup đã lưu. Markup là HTML
+đã escape: giá trị nhét vào đó sẽ bị đọc như markup. Attribute thì nằm trong JSON
+bên trong comment delimiter, và `serialize_blocks()` tự escape lại, nên ký tự
+hiểm như `-->` ra thành `\u002d\u002d\u003e`, không cắt được delimiter.
+
+**Thứ tự ba lượt trong `Content_Importer::import()`**: `regenerate_block_ids()`,
+rồi resolve media, rồi slot. Chữ của người dùng vào sau cùng, nên không lượt nào
+còn cơ hội đọc lại nó.
+
+**Hợp đồng slot (mục 16)**: preset khai `slot_contract`. Bản Flexa Block nào không
+hiểu số đó thì rút slot đi, không chào ra UI và cũng không nhận vào, nhưng vẫn
+điền default để trang nhập về đúng như preset xuất xưởng, kèm một dòng báo cho
+người dùng. Draft đã tạo không bị đụng tới: giá trị nằm trong post, không nằm
+trong hợp đồng. Post được đóng dấu `_flexa_slot_contract` và `_flexa_slot_keys`.
+
+**Hai lỗi do kiểm thật trên site bắt được, không phải do đọc code.** Thứ nhất,
+`max` của một slot bị cắt im lặng xuống trần của kiểu (`intro_text` khai 300, trần
+`text` lúc đó là 200), nay trần `text` là 300 và chuyện trần thắng được ghi rõ.
+Thứ hai, `slot_contract` không hiểu được từng để lại 10 token `{{slot:…}}` nguyên
+văn trên trang, đúng cái mà comment trong code nói là không xảy ra: `apply()` gọi
+`declared()`, hàm này trả rỗng khi contract lạ, nên `apply()` thoát sớm và trả
+markup chưa đụng tới. Tách `supported()` khỏi `normalize()` mới sửa được.
+
+**Kiểm thật qua đúng nút import, 2026-10-09.** Tám slot điền bằng tiếng Việt qua
+dialog trong `samples-panel.tsx`, trong đó intro cố tình chứa `"` và `-->`. Kết
+quả: draft tạo xong còn 0 token, `serialize_blocks(parse_blocks($x)) === $x`,
+`tel:+842838221234` suy ra từ `+84 (28) 3822 1234`, Gutenberg mở không một cảnh
+báo invalid block, front-end render đúng và `generate_for_post()` từ cache lạnh ra
+7750 byte CSS khớp 13 trong 17 `blockId` của trang.
+
+Một chỗ phải nói rõ: **lần save đầu tiên trong Gutenberg có đổi byte của
+`post_content`**, 13376 xuống 12764. Không phải do slot. Đó là chuẩn hoá sẵn có
+của editor: attribute đúng bằng default bị bỏ, thứ tự key xếp lại theo thứ tự khai
+trong JS, và plugin tự đúc lại `blockId` mỗi lần mở. Một draft dựng thẳng từ markup
+xuất xưởng, không đi qua slot, đổi y hệt (12796 xuống 12311). Save lần hai giống
+save lần một từng byte trừ `blockId`. Giá trị slot không suy suyển qua các lượt
+save, kể cả `\u0022` và `\u002d\u002d\u003e`.
 
 ## Giai đoạn 3 · Ability ghi
 

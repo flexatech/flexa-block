@@ -825,6 +825,48 @@ $addon: #4f46e5;
 		gap: 16px;
 	}
 
+	// Slot form (a WP Modal, same as the confirmation below).
+	&__slots-intro {
+		margin: 0 0 18px;
+		font-size: 13px;
+		line-height: 1.6;
+		color: $muted;
+	}
+
+	&__slot-field {
+		margin-bottom: 14px;
+
+		label {
+			display: block;
+			margin-bottom: 4px;
+			font-size: 13px;
+			font-weight: 600;
+			color: $ink;
+		}
+
+		input,
+		textarea {
+			width: 100%;
+			// A placeholder here is the sample's own wording, which the user is
+			// meant to read and decide about rather than skim past, so it gets
+			// more contrast than a browser default placeholder.
+			&::placeholder { color: #8c8f94; }
+		}
+
+		textarea { resize: vertical; }
+	}
+
+	&__slot-help {
+		margin: 4px 0 0;
+		font-size: 12px;
+		line-height: 1.5;
+		color: $muted;
+	}
+
+	// The error from a refused value, shown inside the dialog rather than in the
+	// panel's notice, which the modal covers.
+	&__slots .flexa-samples__notice { margin: 16px 0 0; }
+
 	// Remove confirmation (a WP Modal, so it is centred and focus-trapped for us).
 	&__confirm-text {
 		margin: 0 0 20px;
