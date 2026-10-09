@@ -1,6 +1,6 @@
 # MCP Module
 
-> ⬜ chưa bắt đầu (19) · 🧪 đang làm · ✅ xong
+> ✅ xong (8) · 🧪 đang làm · ⬜ chưa bắt đầu (19)
 > · Cập nhật: 2026-10-09
 >
 > Module MCP nằm **trong** plugin free này, dưới `includes/mcp/`, tắt mặc định.
@@ -29,25 +29,27 @@ Hai nguyên tắc chi phối cách chia giai đoạn:
 
 Không ability nào. Mục tiêu: bật/tắt được, và tắt thì tuyệt đối trơ.
 
-1. ⬜ `includes/admin/class-mcp-settings.php`: option `flexa_block_mcp`, DEFAULTS,
+1. ✅ `includes/admin/class-mcp-settings.php`: option `flexa_block_mcp`, DEFAULTS,
    get/save, sanitize, REST `flexa-block/v1/mcp` (GET/POST, `manage_options`).
    Permission callback viết tại chỗ, không gọi `Admin::rest_permission()`, để sau
    này tách file ra plugin riêng không phải sửa.
-2. ⬜ Guard WP 7.0 ở save path. Chặn cả form post, `update_option()` từ WP-CLI, và
-   payload settings import. Chọn một tầng (sanitize callback hay
-   `pre_update_option_flexa_block_mcp`) rồi ghi lý do vào docblock.
-3. ⬜ Key `mcp` trong boot payload `flexaBlockAdmin`
+2. ✅ Guard WP 7.0 ở save path. Chặn cả form post, `update_option()` từ WP-CLI, và
+   payload settings import. Tầng đã chọn: `pre_update_option_flexa_block_mcp`,
+   vì sanitizer chỉ thấy payload đi qua `save_settings()`, còn filter phủ cả REST
+   route, `wp option update`, script migration và payload settings restore. Lý do
+   nằm trong docblock của `MCP_Settings::guard_write()`.
+3. ✅ Key `mcp` trong boot payload `flexaBlockAdmin`
    (`includes/admin/class-admin.php` ~447):
    `{ supported, minWp, enabled, read, write, adapter: { active, version }, endpoint, restUrl }`.
    Panel đọc từ đây nên vẽ được cả khi module đang tắt.
-4. ⬜ `includes/mcp/class-mcp-manager.php`: `init()`, soft-detect `mcp-adapter`,
+4. ✅ `includes/mcp/class-mcp-manager.php`: `init()`, soft-detect `mcp-adapter`,
    hook `wp_abilities_api_init`, filter `flexa_block_mcp_abilities` (tên đề xuất)
    để sau này plugin Flexa khác góp ability. Chưa đăng ký ability nào.
-5. ⬜ `flexa-block.php`: require `class-mcp-settings.php` trong admin context
+5. ✅ `flexa-block.php`: require `class-mcp-settings.php` trong admin context
    (luôn luôn), và require `includes/mcp/` **chỉ khi** option bật và
    `version_compare( get_bloginfo('version'), '7.0', '>=' )`. Flag đã lưu không
    được tin một mình: site có thể bật ở 7.0 rồi restore backup về 6.9.
-6. ⬜ `src/admin/mcp-panel.tsx` + nav entry và view branch trong
+6. ✅ `src/admin/mcp-panel.tsx` + nav entry và view branch trong
    `src/admin/index.tsx`. Nav item **luôn hiện**, kể cả WP < 7.0. Bốn trạng thái:
    - WP < 7.0: toggle disabled, một câu lý do, không request nào.
    - WP 7.0+, tắt: công tắc và mô tả ngắn việc bật sẽ mở ra cái gì.
@@ -55,15 +57,28 @@ Không ability nào. Mục tiêu: bật/tắt được, và tắt thì tuyệt �
      qua route abilities của core.
    - Bật, có adapter: endpoint, config copy được, setup guide, toggle read/write,
      phạm vi user và nội dung, activity.
-7. ⬜ Panel save tường minh, không tham gia auto-save debounced của app, và hành
+7. ✅ Panel save tường minh, không tham gia auto-save debounced của app, và hành
    động bật có confirm.
-8. ⬜ `uninstall.php`: xoá `flexa_block_mcp` và transient của nó.
+8. ✅ `uninstall.php`: xoá `flexa_block_mcp` và transient của nó.
 
 **Xong khi**: site 6.4 thấy nav item với toggle disabled; bật trên 7.1 thì module
 load, `discover-abilities` của adapter không trả ability Flexa nào; `wp option
 update flexa_block_mcp` để bật trên 6.9 bị từ chối; lưu settings chung không đụng
 option mới và lưu option mới không flush CSS cache; request front-end của site
 chưa bật không load thêm file nào.
+
+**Đã lệch có chủ ý** (2026-10-09, lúc đóng giai đoạn 0):
+
+- Soft-detect `mcp-adapter` nằm ở `MCP_Settings::adapter_state()` chứ ở
+  `MCP_Manager` như mục 4 viết. Panel cần biết adapter có hay không ngay cả khi
+  module đang tắt, mà lúc đó `includes/mcp/` không được load.
+- Detect theo tên thư mục plugin (`mcp-adapter`) thay vì tên class, và
+  `endpoint()` trả `''` sau filter `flexa_block_mcp_endpoint` thay vì đoán URL:
+  chưa có bản `mcp-adapter` nào trên máy để kiểm. Panel ẩn card endpoint khi rỗng.
+  Chốt lại khi cài adapter thật.
+- Trạng thái "bật, có adapter" ở mục 6 ship toggle read/write, đoạn mô tả phạm vi
+  và card endpoint có điều kiện. Config copy được, setup guide và activity thuộc
+  mục 22-23 nên để lại giai đoạn 4.
 
 ## Giai đoạn 1 · Ability chỉ đọc
 
@@ -151,7 +166,6 @@ fatal nào.
 
 - Cơ chế slot cụ thể (mục 13) chốt sau khi có plan chi tiết từ
   `mcp-module-plan-prompt.md`. Hướng đề xuất ở trên là mặc định, không phải kết luận.
-- Tầng nào enforce guard WP 7.0 (mục 2).
 - Preset thứ hai (`landing-saas`) vào v1 hay v1.1.
 - Admin import UI có dùng slot luôn hay giữ nguyên preset cố định (mục 15 chỉ cần
   slot cho đường MCP; mở rộng ra admin là quyết định riêng về scope).

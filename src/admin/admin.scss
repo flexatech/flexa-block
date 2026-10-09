@@ -942,3 +942,75 @@ $addon: #4f46e5;
 		}
 	}
 }
+
+/* -------- MCP tab -------- */
+/*
+ * Stacked cards rather than the two-column grid the General tab uses: these
+ * read in order (the switch, then what it allows, then where to connect), and
+ * the prose in them is long enough that two narrow columns would hurt.
+ */
+.flexa-mcp {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+
+	&__notice {
+		margin-bottom: 16px;
+		padding: 10px 14px;
+		border-radius: 8px;
+		font-size: 13px;
+		border: 1px solid $line;
+
+		&.is-success { background: #edfaef; border-color: #b8e6c1; color: #135e2e; }
+		&.is-error { background: #fcf0f1; border-color: #f0c2c4; color: #8a1f24; }
+	}
+
+	&__text {
+		margin: 16px 0 0;
+		font-size: 13px;
+		line-height: 1.65;
+		color: $ink;
+
+		&--muted { color: $muted; }
+	}
+
+	&__endpoint {
+		display: block;
+		padding: 10px 12px;
+		border: 1px solid $line;
+		border-radius: 8px;
+		background: #f6f7f7;
+		font-size: 12px;
+		word-break: break-all;
+	}
+
+	&__ext {
+		font-size: 14px;
+		width: 14px;
+		height: 14px;
+		margin-left: 4px;
+	}
+
+	&__confirm-text {
+		margin: 0 0 20px;
+		font-size: 13px;
+		line-height: 1.6;
+		color: $ink;
+	}
+
+	&__confirm-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+}
+
+/*
+ * A setting row whose switch cannot be moved. Shown instead of hidden so the
+ * feature stays discoverable, with the reason sitting in the row's help text.
+ */
+.flexa-setting-row.is-disabled {
+	background: #f6f7f7;
+
+	.flexa-setting-row__label { color: $muted; }
+}

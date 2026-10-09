@@ -77,6 +77,26 @@ interface FlexaBlockFormFlowPromo {
 	dismissUrl: string;
 }
 
+/**
+ * MCP module state, from MCP_Settings::boot_payload().
+ *
+ * Sent on every dashboard load, whatever the module's state, so the panel can
+ * describe an unsupported or switched-off site without a request. `enabled` is
+ * the effective value: a site that switched the module on and then moved to an
+ * older WordPress reports false here, with `supported` false beside it.
+ */
+interface FlexaBlockMcpData {
+	supported: boolean;
+	minWp: string;
+	enabled: boolean;
+	read: boolean;
+	write: boolean;
+	adapter: { active: boolean; version: string };
+	/** '' until the adapter's transport URL is known; see MCP_Settings::endpoint(). */
+	endpoint: string;
+	restUrl: string;
+}
+
 interface FlexaBlockAdminData {
 	nonce?: string;
 	restUrl?: string;
@@ -87,6 +107,8 @@ interface FlexaBlockAdminData {
 	roles?: FlexaBlockAdminRole[];
 	/** Cross-promotion banner state; absent on older bundles. */
 	formFlow?: FlexaBlockFormFlowPromo;
+	/** MCP module state; absent on older bundles. */
+	mcp?: FlexaBlockMcpData;
 }
 
 /** REST endpoints for the import engine (Sample Data), from Import_Manager. */
