@@ -119,9 +119,13 @@ function flexa_block_init() {
 
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-mcp-manager.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-ability-support.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-request-limits.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-read-abilities.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-draft-writer.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-write-abilities.php';
 		Flexa\Block\MCP\MCP_Manager::init();
 		Flexa\Block\MCP\Read_Abilities::init();
+		Flexa\Block\MCP\Write_Abilities::init();
 	}
 }
 add_action( 'plugins_loaded', 'flexa_block_init' );

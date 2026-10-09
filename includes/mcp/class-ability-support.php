@@ -3,11 +3,11 @@ declare(strict_types=1);
 /**
  * Shared scaffolding for the plugin's abilities.
  *
- * Five abilities are planned across the read and write phases, and without a
- * common floor each of them would restate the same category, the same
- * annotations, the same exposure flag and the same shape of permission check.
- * The repetition is not just noise: it is five chances to get an exposure flag
- * or a capability wrong, in five places nobody reviews together.
+ * Five abilities across the read and write paths, and without a common floor
+ * each of them would restate the same category, the same annotations, the same
+ * exposure flag and the same shape of permission check. The repetition is not
+ * only noise: it is five chances to get an exposure flag or a capability
+ * wrong, in five places nobody reviews together.
  *
  * Nothing here decides *whether* an ability exists. That is the caller's job,
  * and for the read abilities it is answered by the read toggle before any of
@@ -48,14 +48,66 @@ class Ability_Support {
 	/**
 	 * Build a read-only ability definition.
 	 *
-	 * Fills in the three things every read ability of ours agrees on and would
-	 * otherwise repeat:
+	 * Annotated as reading and not writing, which is what lets a client treat a
+	 * call as safe to retry on a timeout. The rest of the shared scaffolding is
+	 * in {@see expose()}.
+	 *
+	 * @param array<string, mixed> $args Ability arguments; label, description,
+	 *                                   execute_callback and permission_callback
+	 *                                   are the caller's to supply.
+	 * @return array<string, mixed>
+	 */
+	public static function read_ability( array $args ): array {
+		return self::expose(
+			$args,
+			[
+				'readonly'    => true,
+				'destructive' => false,
+				'idempotent'  => true,
+			]
+		);
+	}
+
+	/**
+	 * Build an ability definition that creates something.
+	 *
+	 * Two of the three annotations deserve their reasoning written down, since
+	 * either one read the other way would change how a client behaves:
+	 *
+	 *  - `destructive` is false, and means it: everything this module writes is
+	 *    a new draft. Nothing it offers edits or removes content that was
+	 *    already there, so a call cannot cost a site anything it had.
+	 *  - `idempotent` is false, because for an arbitrary call it is not. Our
+	 *    write path does accept an idempotency key and will hand back the same
+	 *    post for the same key, but that is a property of a request that
+	 *    carries one, and an annotation describes the ability. Claiming it
+	 *    unconditionally would invite a client to retry a keyless call in the
+	 *    belief that a repeat is free, and get a second page.
+	 *
+	 * @param array<string, mixed> $args Ability arguments; label, description,
+	 *                                   execute_callback and permission_callback
+	 *                                   are the caller's to supply.
+	 * @return array<string, mixed>
+	 */
+	public static function write_ability( array $args ): array {
+		return self::expose(
+			$args,
+			[
+				'readonly'    => false,
+				'destructive' => false,
+				'idempotent'  => false,
+			]
+		);
+	}
+
+	/**
+	 * Apply the defaults every ability of ours shares.
+	 *
+	 * Two of them:
 	 *
 	 *  - the Flexa category, so a client browsing the registry sees them
 	 *    grouped rather than scattered through whatever core and other plugins
 	 *    registered;
-	 *  - annotations that say plainly this reads and does not write, which is
-	 *    what lets a client treat a call as safe to retry;
 	 *  - `meta.public`, the single flag that exposes an ability to the outside.
 	 *
 	 * On that last one: the MCP Adapter resolves exposure from `meta.mcp.public`
@@ -65,21 +117,20 @@ class Ability_Support {
 	 * explicit `meta.mcp.public` left behind here would keep MCP serving the
 	 * ability anyway. One switch, no surprises.
 	 *
-	 * @param array<string, mixed> $args Ability arguments; label, description,
-	 *                                   execute_callback and permission_callback
-	 *                                   are the caller's to supply.
+	 * An annotation the caller set itself is kept. The defaults describe the
+	 * shape of ability, and an ability that differs on one of them should say so
+	 * rather than be overruled by its own helper.
+	 *
+	 * @param array<string, mixed> $args        Ability arguments.
+	 * @param array<string, bool>  $annotations Default annotations for this shape.
 	 * @return array<string, mixed>
 	 */
-	public static function read_ability( array $args ): array {
+	private static function expose( array $args, array $annotations ): array {
 		$meta = isset( $args['meta'] ) && is_array( $args['meta'] ) ? $args['meta'] : [];
 
 		$meta['public']      = true;
 		$meta['annotations'] = array_merge(
-			[
-				'readonly'    => true,
-				'destructive' => false,
-				'idempotent'  => true,
-			],
+			$annotations,
 			isset( $meta['annotations'] ) && is_array( $meta['annotations'] ) ? $meta['annotations'] : []
 		);
 

@@ -199,13 +199,38 @@ class Read_Abilities {
 				'id'           => $post->ID,
 				'type'         => $post->post_type,
 				'status'       => $post->post_status,
-				'title'        => Ability_Support::bound( get_the_title( $post ) ),
-				'modified_gmt' => $post->post_modified_gmt,
+				// The stored title rather than `get_the_title()`, whose display
+				// filters would report an ampersand back as `&#038;`.
+				'title'        => Ability_Support::bound( $post->post_title ),
+				// A draft that was never published carries `0000-00-00 00:00:00`
+				// here, because WordPress copies the empty post date into it. A
+				// client parsing that as a timestamp gets an invalid date, so the
+				// local modification time is converted instead, and the column is
+				// only reported as it stands when it holds a real one.
+				'modified_gmt' => self::modified_gmt( $post ),
 			],
 			'blocks'     => $blocks,
 			'node_count' => $count,
 			'truncated'  => $truncated,
 		];
+	}
+
+	/**
+	 * The UTC modification time of a post, as a time rather than a zero date.
+	 *
+	 * @param \WP_Post $post Post to read.
+	 * @return string
+	 */
+	private static function modified_gmt( \WP_Post $post ): string {
+		if ( '' !== $post->post_modified_gmt && '0000-00-00 00:00:00' !== $post->post_modified_gmt ) {
+			return $post->post_modified_gmt;
+		}
+
+		if ( '' === $post->post_modified || '0000-00-00 00:00:00' === $post->post_modified ) {
+			return '';
+		}
+
+		return get_gmt_from_date( $post->post_modified );
 	}
 
 	/**

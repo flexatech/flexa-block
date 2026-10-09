@@ -1,6 +1,6 @@
 # MCP Module
 
-> ✅ xong (17) · 🧪 đang làm · ⬜ chưa bắt đầu (10)
+> ✅ xong (21) · 🧪 đang làm · ⬜ chưa bắt đầu (6)
 > · Cập nhật: 2026-10-09
 >
 > Module MCP nằm **trong** plugin free này, dưới `includes/mcp/`, tắt mặc định.
@@ -259,22 +259,96 @@ save, kể cả `\u0022` và `\u002d\u002d\u003e`.
 
 ## Giai đoạn 3 · Ability ghi
 
-18. ⬜ `includes/mcp/class-draft-writer.php`: wrapper quanh
+18. ✅ `includes/mcp/class-draft-writer.php`: wrapper quanh
     `Content_Importer::import()` ghim `post_status = draft`, và **không** để text
     do caller cung cấp đi qua đường `kses_remove_filters()` mà importer đang dùng
     (xem `class-content-importer.php` ~dòng 78). Chỉ nhận media ID đã tồn tại và
     caller có quyền. Validate toàn bộ request trước khi ghi.
-19. ⬜ Idempotency key theo user + operation, lưu transient có TTL. `find_existing()`
+19. ✅ Idempotency key theo user + operation, lưu transient có TTL. `find_existing()`
     hiện key theo preset nên nó trả lời "preset này từng import chưa", không phải
     "request này xử lý chưa". Nói rõ nó tương tác thế nào với hành vi "mở bản cũ
     hay import bản mới" của admin.
-20. ⬜ `flexa/list-presets`, `flexa/get-preset-schema`, `flexa/create-page-draft`.
-21. ⬜ Giới hạn rate và kích thước request, có số cụ thể. Toggle write riêng, mặc
+20. ✅ `flexa/list-presets`, `flexa/get-preset-schema`, `flexa/create-page-draft`.
+21. ✅ Giới hạn rate và kích thước request, có số cụ thể. Toggle write riêng, mặc
     định tắt kể cả khi MCP đã bật.
 
 **Xong khi**: client thật chạy trọn luồng discover, đọc, tạo draft; mọi cố gắng
 ép `publish` bị từ chối; gửi lại cùng idempotency key trả về đúng post cũ chứ
 không tạo bản thứ hai.
+
+**Mục 18 trả lời bằng ba lớp, không bằng một lần lọc.** Thứ nhất, caller không
+bao giờ gửi markup: nó gửi giá trị slot, và giá trị slot chỉ đi vào **giá trị
+attribute** (cơ chế chốt ở mục 13), nên không có đường nào để chữ của nó bị đọc
+như HTML. Thứ hai, giá trị thô chứa `<` hoặc `>`, hoặc ký tự điều khiển, bị **từ
+chối thẳng** kèm lời giải thích, chứ không lọc rồi ghi. Chỗ đặt kiểm này quan
+trọng: đặt sau `Preset_Slots::values()` thì thành diễn kịch, vì tới đó
+`sanitize_text_field()` đã dọn sạch và sẽ không còn gì để tìm. Thứ ba, cả request
+được validate xong mới tới lần ghi đầu tiên, nên một request sai không để lại
+draft nửa vời. `Draft_Writer` là chỗ duy nhất gọi importer từ đường MCP; ability
+không gọi `Content_Importer::import()` trực tiếp, đúng như mục rủi ro yêu cầu.
+
+**Mục 19, idempotency key là của request, không phải của preset.** Record lưu
+trong transient, key băm theo `user + operation + idempotency_key`, nên hai user
+gửi cùng một chuỗi không đụng nhau. Key do caller gửi sống một ngày; key tự suy
+ra từ nội dung request (`auto:` + md5 của source, preset, title và slot đã ksort)
+sống 5 phút, đủ cho một lần retry sau timeout mà không biến "gọi lại tháng sau"
+thành "không tạo gì cả". Trước khi ghi, record được đặt sẵn ở trạng thái
+`pending` 120 giây, nên hai request song song cùng key thì một cái nhận 409
+`flexa_mcp_in_progress` thay vì cả hai cùng tạo page. Post đã bị trash hoặc xoá
+coi như mất: key còn sống nhưng trả về draft mới.
+
+Quan hệ với `find_existing()` của admin: hai hàm trả lời hai câu khác nhau.
+`find_existing()` key theo preset, nên nó nói "preset này từng import trên site
+chưa", đúng cho cái nút hỏi người dùng "mở bản cũ hay import bản mới". Record
+idempotency nói "request này xử lý chưa". `flexa/list-presets` và
+`flexa/get-preset-schema` có báo lại kết quả `find_existing()`, nhưng **chỉ như
+thông tin** và chỉ khi user có `read_post` với post đó. Nó không bao giờ là lý do
+từ chối: client tự quyết định tạo thêm hay không, và `create-page-draft` không
+đọc nó.
+
+**Mục 21, các con số.** 10 draft mỗi giờ và 120 lần discovery mỗi giờ, đếm theo
+user và theo từng ability, cộng với trần kích thước: 16 KB cho cả request, 120 ký
+tự cho title, 25 field và 8 KB mỗi field (của `Preset_Slots`), 50 preset cho một
+lần listing. Cửa sổ là fixed window trong transient, hết giờ thì counter tự hết
+hạn chứ không gia hạn theo mỗi lần gọi, nếu không thì trần sẽ thôi còn là trần
+theo giờ. Chi phí đã biết của cách này: một burst vắt qua ranh giới hai cửa sổ có
+thể đi gấp đôi trần trong vài phút. Chấp nhận, vì đây là trần chống tai nạn chứ
+không phải chống tấn công. Trần listing có cờ `truncated` trong output, nên một
+site nhiều preset biết là mình nhận bản bị cắt chứ không âm thầm nhận một phần.
+Toggle write riêng, mặc định tắt kể cả khi MCP đã bật, và **cả ba ability** của
+giai đoạn này nằm sau nó, kể cả hai ability chỉ đọc: chúng tồn tại để phục vụ
+luồng ghi, bật chúng khi write đang tắt chỉ là mời client đi một vòng rồi bị từ
+chối ở bước cuối.
+
+`post_status` khai trong input schema là `enum: ['draft']`, nên cố ép `publish`
+bị từ chối ngay ở tầng schema với đúng câu "input[post_status] is not draft",
+không phải bị bỏ qua im lặng. Writer vẫn kiểm lại lần nữa
+(`flexa_mcp_publish_refused`) cho đường gọi trực tiếp từ PHP.
+
+**Kiểm thật qua client MCP, 2026-10-09**, chạy bằng account `editor` chứ không
+phải admin. Discover ra đủ 5 ability với annotation đúng; `list-presets` trả 18
+preset của ba source trong 19421 byte; `get-preset-schema` trả đủ 8 field của
+contact-page với contract 1/1; `create-page-draft` tạo draft 7 slot, 13362 byte,
+còn 0 token, `serialize_blocks(parse_blocks($x)) === $x`, `tel:+842838221234` suy
+ra từ `+84 (28) 3822 1234`, tiếng Việt nguyên vẹn, và `generate_for_post()` từ
+cache lạnh ra 7990 byte CSS khớp 13 trong 17 `blockId`, cùng hình dạng giai đoạn 2
+đo được. Gửi lại cùng key trả về đúng post cũ với `reused: true` và không có post
+thứ hai. Mọi đường từ chối đều kiểm: markup trong slot, slot lạ, email sai, vượt
+độ dài, preset lạ, source lạ, key sai định dạng, 429 ở cả hai trần, 403
+`flexa_mcp_cannot_create` cho user không có `edit_pages`. Trần listing kiểm bằng
+cách hạ `MAX_PRESETS` xuống 3: trả 3 preset và `truncated: true`.
+
+**Hai lỗi nữa do kiểm thật bắt được.** Thứ nhất, với một filter trên
+`wp_insert_post_data` ép `post_status = publish`, chính `wp_update_post()` sửa
+lưng của `hold_at_draft()` cũng bị ép theo, thế mà response vẫn báo "đã đặt về
+draft" trong khi `status` trả về là `publish` kèm permalink công khai. Nay post
+được đọc lại sau khi sửa và báo một trong hai cảnh báo khác nhau, còn `status`
+báo ra là cái site đang có, không phải cái class vừa yêu cầu. Thứ hai,
+`get_the_title()` trả `Liên hệ Bánh &#038; Cà Phê` cho title lưu là `Liên hệ Bánh
+& Cà Phê`: nó chạy filter hiển thị, còn đây là API nên phải báo giá trị. Sửa cả ở
+writer và ở `get-page-block-tree` của giai đoạn 1. Cùng chỗ đó, `modified_gmt`
+của draft chưa từng publish là `0000-00-00 00:00:00` (WordPress copy post date
+rỗng sang), nay quy đổi từ `post_modified`.
 
 ## Giai đoạn 4 · Hoàn thiện để phát hành
 
