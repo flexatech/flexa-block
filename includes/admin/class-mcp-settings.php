@@ -51,6 +51,17 @@ class MCP_Settings {
 	/** WP.org directory slug of the plugin that owns the MCP server. */
 	const ADAPTER_SLUG = 'mcp-adapter';
 
+	/** Server ID the adapter gives the server it builds for itself. */
+	const ADAPTER_DEFAULT_SERVER = 'mcp-adapter-default-server';
+
+	/**
+	 * Route of that server, as the adapter's 0.7.x defaults set it.
+	 *
+	 * Namespace and route, the two halves `DefaultServerFactory` passes to
+	 * `register_rest_route()`. Only a fallback: see `endpoint()`.
+	 */
+	const ADAPTER_DEFAULT_ROUTE = 'mcp/mcp-adapter-default-server';
+
 	/**
 	 * Default settings. Off, and read-only when it is first switched on.
 	 *
@@ -198,23 +209,69 @@ class MCP_Settings {
 	}
 
 	/**
-	 * Public MCP endpoint URL, or '' when it is not known.
+	 * Public MCP endpoint URL, or '' when the site has none to show.
 	 *
-	 * The route belongs to the adapter, not to us, so there is nothing to
-	 * hardcode until that plugin is on a site and its transport has been
-	 * checked against a real install. Until then this is empty and the panel
-	 * shows setup instructions in place of a copyable URL. Filtered so a site
-	 * running a non-default transport can put its own value in front of users.
+	 * Which of two sources answers depends on what the request can see, and
+	 * the difference is not cosmetic. Outside WP-CLI the adapter builds its
+	 * servers on `rest_api_init` only, so during an ordinary admin page render
+	 * no server object exists yet, and instantiating the adapter early just to
+	 * read a route would be a side effect in the wrong request.
+	 *
+	 *  - Inside a REST request, once `mcp_adapter_init` has fired, the route is
+	 *    read off the server itself. This is the only answer that stays true on
+	 *    a site filtering `mcp_adapter_default_server_config`, and it correctly
+	 *    reports nothing on one that turned the default server off through
+	 *    `mcp_adapter_create_default_server`.
+	 *  - Anywhere else, fall back to the route the adapter documents for 0.7.x.
+	 *    The panel re-reads this payload from the REST response on every save,
+	 *    so a site that moved its route sees the real value as soon as it
+	 *    touches a toggle.
+	 *
+	 * Checked against mcp-adapter 0.7.0 on WordPress 7.1.3: the route is live
+	 * at `/wp-json/mcp/mcp-adapter-default-server` and answers 401 to an
+	 * unauthenticated request.
 	 *
 	 * @return string
 	 */
 	public static function endpoint(): string {
+		$url = '';
+
+		if ( self::adapter_state()['active'] ) {
+			$url = esc_url_raw( rest_url( self::ADAPTER_DEFAULT_ROUTE ) );
+
+			$server = self::adapter_default_server();
+			if ( null !== $server ) {
+				$url = esc_url_raw(
+					rest_url( $server->get_server_route_namespace() . '/' . $server->get_server_route() )
+				);
+			} elseif ( did_action( 'mcp_adapter_init' ) ) {
+				$url = '';
+			}
+		}
+
 		/**
 		 * Filters the MCP endpoint URL shown in the dashboard.
 		 *
-		 * @param string $endpoint Endpoint URL, or '' when unknown.
+		 * @param string $endpoint Endpoint URL, or '' when there is none.
 		 */
-		return (string) apply_filters( 'flexa_block_mcp_endpoint', '' );
+		return (string) apply_filters( 'flexa_block_mcp_endpoint', $url );
+	}
+
+	/**
+	 * The adapter's own default server, or null when it is not there to ask.
+	 *
+	 * Null covers two different situations on purpose, and the caller tells
+	 * them apart by whether `mcp_adapter_init` has fired: before it, the server
+	 * is merely not built yet; after it, the site really has no default server.
+	 *
+	 * @return \WP\MCP\Core\McpServer|null
+	 */
+	private static function adapter_default_server() {
+		if ( ! did_action( 'mcp_adapter_init' ) || ! class_exists( '\WP\MCP\Core\McpAdapter' ) ) {
+			return null;
+		}
+
+		return \WP\MCP\Core\McpAdapter::instance()->get_server( self::ADAPTER_DEFAULT_SERVER );
 	}
 
 	/**

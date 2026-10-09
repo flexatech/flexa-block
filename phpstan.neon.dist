@@ -10,3 +10,11 @@ parameters:
 	# analysis of includes/ does not flag them as undefined.
 	bootstrapFiles:
 		- tests/phpstan-bootstrap.php
+	# The MCP Adapter plugin is an optional runtime dependency, deliberately not
+	# required and not vendored: the module soft-detects it and does nothing when
+	# it is absent. Its classes are therefore unknown to analysis, and every call
+	# into them is already guarded by class_exists() at the one entry point.
+	ignoreErrors:
+		-
+			identifier: class.notFound
+			path: includes/admin/class-mcp-settings.php

@@ -72,10 +72,22 @@ chưa bật không load thêm file nào.
 - Soft-detect `mcp-adapter` nằm ở `MCP_Settings::adapter_state()` chứ ở
   `MCP_Manager` như mục 4 viết. Panel cần biết adapter có hay không ngay cả khi
   module đang tắt, mà lúc đó `includes/mcp/` không được load.
-- Detect theo tên thư mục plugin (`mcp-adapter`) thay vì tên class, và
-  `endpoint()` trả `''` sau filter `flexa_block_mcp_endpoint` thay vì đoán URL:
-  chưa có bản `mcp-adapter` nào trên máy để kiểm. Panel ẩn card endpoint khi rỗng.
-  Chốt lại khi cài adapter thật.
+- Detect theo tên thư mục plugin (`mcp-adapter`) thay vì tên class. Giữ nguyên:
+  slug WP.org là hợp đồng công bố, nội bộ adapter thì không.
+- ~~`endpoint()` trả `''` thay vì đoán URL~~ **đã chốt 2026-10-09** trên WP 7.1.3
+  với `mcp-adapter` 0.7.0 cài thật. `endpoint()` giờ có hai nhánh, vì ngoài
+  WP-CLI adapter chỉ `init()` trên `rest_api_init` (p15): lúc render trang admin
+  chưa có server nào để hỏi, nên trả route mặc định `mcp/mcp-adapter-default-server`
+  mà adapter công bố cho 0.7.x; trong request REST, sau khi `mcp_adapter_init` đã
+  chạy thì đọc thẳng `get_server_route_namespace()` + `get_server_route()` của
+  server. Nhánh REST là cái duy nhất còn đúng khi site filter
+  `mcp_adapter_default_server_config`, và trả `''` đúng như mong đợi khi site tắt
+  default server qua `mcp_adapter_create_default_server`. Panel đọc lại payload
+  từ response mỗi lần lưu nên site đã đổi route sẽ thấy giá trị thật ngay khi
+  chạm một toggle. Filter `flexa_block_mcp_endpoint` vẫn phủ lên trên cùng.
+  Đã kiểm cả bốn nhánh trên site thật; route sống, GET không auth trả 401.
+  `phpstan.neon.dist` thêm một `ignoreErrors` hẹp cho `class.notFound` trong
+  đúng file này, vì adapter là dependency tuỳ chọn không vendor.
 - Trạng thái "bật, có adapter" ở mục 6 ship toggle read/write, đoạn mô tả phạm vi
   và card endpoint có điều kiện. Config copy được, setup guide và activity thuộc
   mục 22-23 nên để lại giai đoạn 4.
@@ -93,8 +105,48 @@ chưa bật không load thêm file nào.
     resolve. Có giới hạn kích thước payload.
 12. ⬜ Toggle read riêng: tắt read thì hai ability trên không được đăng ký.
 
-**Xong khi**: một MCP client thật discover thấy đúng 2 tool, đọc được một page,
-và trả về rỗng với page của user khác mà caller không có quyền đọc.
+**Transport đã kiểm thật, 2026-10-09.** Một client HTTP nối được vào
+`/wp-json/mcp/mcp-adapter-default-server` bằng Application Password (Basic auth),
+auth mặc định chỉ đòi capability `read`. Những thứ revision `2026-07-28` bắt buộc,
+mỗi cái sai đều trả HTTP 400 nghe như lỗi transport chứ không phải lỗi tham số:
+
+- Header mirror: `Mcp-Method` phải bằng method trong body; `tools/call`,
+  `resources/read`, `prompts/get` phải có thêm `Mcp-Name` khớp `params.name`
+  (`params.uri` cho resources/read); argument nào có annotation `x-mcp-header`
+  thì cần `Mcp-Param-<name>`. Lỗi `-32020`.
+- Không có session: **mọi** request phải tự mang `params._meta` với
+  `io.modelcontextprotocol/protocolVersion` đúng revision và
+  `io.modelcontextprotocol/clientCapabilities` là object. Lỗi `-32602`. Hệ quả:
+  `initialize` không còn là bước bắt buộc, gọi nó trả thẳng "Method not found".
+
+Revision `2025-11-25` thì vẫn theo lối cũ, `initialize` rồi `Mcp-Session-Id`.
+Claude Code nối vào endpoint này báo Connected, tức là nó đi đường `2025-11-25`.
+Script kiểm từng bước nằm ngoài repo, ở scratchpad (`mcp-bridge-test.sh`); mục 23
+sẽ cần nó, lúc đó quyết định có đưa vào repo hay không.
+
+⚠️ **Site này đã expose sẵn ability ghi mà module của ta không kiểm soát.**
+`discover-abilities` với account role `editor` trả về `core/get-site-info`,
+`core/get-user-info`, `core/get-environment-info` và **mười ability WooCommerce**,
+trong đó có `product-create`, `product-update`, `product-delete`,
+`order-update-status`, `order-add-note`. Chúng là của core và WooCommerce, lộ ra
+ngay khi cắm `mcp-adapter`, không liên quan gì tới toggle của ta. Hai việc phải
+làm vì chuyện này: chữ trong panel ("What agents may do") đang ngụ ý ta kiểm soát
+phạm vi, mà thực tế ta chỉ kiểm soát phần ability của Flexa; và mục 24 phần
+privacy/data-flow phải nói thẳng điều đó thay vì để người đọc tự suy ra.
+
+**Mô hình expose, đọc từ `mcp-adapter` 0.7.0 ngày 2026-10-09**: ability là private
+mặc định. Muốn lộ ra phải đặt `meta.public = true` hoặc `meta.mcp.public = true`
+(`McpAbilityExposure::is_meta_public()`, trong đó `meta.mcp.public` thắng). Và
+default server của adapter chỉ cầm đúng ba meta-tool `mcp-adapter/discover-abilities`,
+`get-ability-info`, `execute-ability`: ability của ta tới tay client **qua
+`execute-ability`**, không phải thành tool riêng ở cấp cao nhất, trừ khi ta nhét
+tên chúng vào `tools` qua filter `mcp_adapter_default_server_config`, hoặc tự dựng
+server riêng bằng `create_server()` trên hook `mcp_adapter_init`. Chọn đường nào là
+quyết định của mục 9, không phải chi tiết thi công.
+
+**Xong khi**: một MCP client thật thấy đúng 2 ability của Flexa qua
+`discover-abilities`, đọc được một page, và trả về rỗng với page của user khác mà
+caller không có quyền đọc.
 
 ## Giai đoạn 2 · Slot layer (phần khó nhất, chưa dính MCP)
 
