@@ -26,6 +26,12 @@ final class Deactivation_Survey {
 	/** Central platform base URL (no trailing slash). */
 	const API_URL = 'https://product-intelligence.flexacommerce.com';
 
+
+	/**
+	 * Where the modal's "Get help" link points. One address for every Flexa
+	 * plugin, so the link means the same thing wherever a user meets it.
+	 */
+	const SUPPORT_URL = 'https://flexacommerce.com/support';
 	/**
 	 * Load the SDK and initialise it once.
 	 */
@@ -71,6 +77,7 @@ final class Deactivation_Survey {
 					'version'     => FLEXA_BLOCK_VER,
 					'plugin_file' => FLEXA_BLOCK_BASENAME,
 					'api_url'     => self::API_URL,
+					'support_url' => self::SUPPORT_URL,
 				)
 			)
 		);
