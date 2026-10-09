@@ -1,6 +1,6 @@
 # MCP Module
 
-> ✅ xong (21) · 🧪 đang làm · ⬜ chưa bắt đầu (6)
+> ✅ xong (27) · 🧪 đang làm · ⬜ chưa bắt đầu (0)
 > · Cập nhật: 2026-10-09
 >
 > Module MCP nằm **trong** plugin free này, dưới `includes/mcp/`, tắt mặc định.
@@ -352,28 +352,100 @@ rỗng sang), nay quy đổi từ `post_modified`.
 
 ## Giai đoạn 4 · Hoàn thiện để phát hành
 
-22. ⬜ Activity log theo `flexa-plugin-activity-log`, sau khi đã kiểm xem
+22. ✅ Activity log theo `flexa-plugin-activity-log`, sau khi đã kiểm xem
     observability của `mcp-adapter` ghi sẵn những gì để không trùng. Chỉ
     timestamp, user, ability, post ID, outcome, request ID. Không nội dung,
     không prompt, không token. Có retention và cleanup. Không mô tả nó như cơ chế
     rollback. Quyết định writer nằm trong module bị gate hay cạnh panel, vì khi
     module tắt thì không có gì để ghi.
-23. ⬜ Setup guide cho đúng một client đã verify, và compatibility matrix chỉ gồm
+23. ✅ Setup guide cho đúng một client đã verify, và compatibility matrix chỉ gồm
     client/transport mà ta phát biểu được yêu cầu, kèm hai protocol revision mà
     `mcp-adapter` 0.7.x hỗ trợ. Không quảng cáo tương thích phổ quát.
-24. ⬜ readme.txt: tính năng mới, tắt mặc định, cần WP 7.0 và `mcp-adapter`, giới
+24. ✅ readme.txt: tính năng mới, tắt mặc định, cần WP 7.0 và `mcp-adapter`, giới
     hạn, mục privacy và data-flow, và nói thẳng rằng AI client do người dùng chọn
     sẽ nhận nội dung website qua các tool call được cho phép. Theo `wp-readme-txt`.
-25. ⬜ Changelog, bump `FLEXA_BLOCK_VER`, xác nhận `Requires at least`,
+25. ✅ Changelog, bump `FLEXA_BLOCK_VER`, xác nhận `Requires at least`,
     `Requires PHP`, `Tested up to` không cần đổi vì module tự gate bên trong.
-26. ⬜ `makepot.sh`, Plugin Check, `phpcs.xml.dist`, `phpstan.neon.dist` sạch như
+26. ✅ `makepot.sh`, Plugin Check, `phpcs.xml.dist`, `phpstan.neon.dist` sạch như
     baseline hiện tại.
-27. ⬜ Regression: site không bật thì bản update không đổi gì, kể cả số file load
+27. ✅ Regression: site không bật thì bản update không đổi gì, kể cả số file load
     trên một request front-end.
 
 **Xong khi**: ZIP build từ `release.sh` cài lên site sạch WP 7.1, bật module, chạy
 trọn luồng với client thật, và trên site WP 6.4 bản update không gây notice hay
 fatal nào.
+
+Đã kiểm trên site dev WP 7.1.3: ZIP `release.sh` build ra giải nén cài được, Plugin
+Check chạy trên đúng bản ZIP đó, và luồng với Claude Code đã chạy từ giai đoạn 3.
+Còn lại hai việc thuộc QA phát hành, cần máy khác chứ không phải code: cài ZIP lên
+một site WP 7.1 sạch hoàn toàn, và chạy bản update trên một site WP 6.4 thật.
+
+**Mục 22, log là option chứ không phải bảng, và nó sống ngoài công tắc.**
+Observability của `mcp-adapter` 0.7 không trả lời được câu hỏi này: handler mặc
+định là null nên site không tự wire thì chẳng ghi gì, tên tool nó thấy luôn là
+`mcp-adapter-execute-ability` (meta-tool, không nói được ability nào chạy), và nó
+chỉ thấy call đi qua MCP trong khi một ability còn gọi được qua REST route của
+core và từ PHP. Nên log này không trùng, nó ghi bốn outcome (`ok`, `refused`,
+`denied`, `error`) bằng cách bám bốn hook của core chứ không bọc callback của
+chính mình, vì hai outcome đáng ghi nhất (input sai schema, caller thiếu quyền)
+không bao giờ chạm tới callback. Plugin này không có bảng và không có bộ máy
+migration, thêm cả hai cho vài trăm dòng log là thay đổi cấu trúc lớn nhất của cả
+module, nên chỗ chứa là một option không autoload, có trần 500 dòng và retention
+30 ngày. Giá phải trả nói thẳng trong docblock: hai request MCP rơi đúng cùng một
+khoảnh khắc có thể mất một dòng, site cần trail chắc chắn thì hook
+`Activity_Log::HOOK` và tự ghi. Phần ghi nằm trong gate (`watch()` gọi từ trong
+runtime), còn phần chứa, quét và đọc nằm cạnh panel, vì lúc người ta muốn đọc log
+nhất là ngay sau khi vừa tắt module, và dòng cũ vẫn phải già đi rồi rụng.
+
+**Mục 23, một client, một transport, hai protocol revision.** `docs/mcp-setup.md`
+viết cho Claude Code vì đó là tổ hợp duy nhất đã chạy thật với plugin này. Bảng
+compatibility chỉ có ba dòng đã kiểm (Claude Code trên `2025-11-25`, curl trên cả
+`2025-11-25` và `2026-07-28`), kèm đúng những gì mỗi revision đòi: revision cũ
+cần session id và header `MCP-Protocol-Version`, revision mới không có session
+nhưng bắt `params._meta` và một bộ header `Mcp-*`. Không có dòng nào nói "tương
+thích mọi client MCP".
+
+**Mục 24 và 25, readme nói thẳng dữ liệu đi đâu.** Mục `== Privacy and data flow ==`
+viết bốn ý: dữ liệu đi tới đâu (tới AI client do chính người dùng chọn, không qua
+máy chủ nào của Flexa), client nhận được gì, cái gì chặn nó lại, và site lưu lại
+gì. Hai chi tiết dễ bị bỏ sót nhưng phải có: MCP Adapter còn phục vụ tool của
+WordPress và của plugin khác mà toggle của Flexa không quản (trên site
+WooCommerce, một tài khoản Editor vươn tới được tool sản phẩm và đơn hàng của
+WooCommerce), và giới hạn theo giờ là 10 draft cùng 120 call cho mỗi tool preset,
+không phải "120 call đọc" như bản nháp đầu viết sai. Version lên 1.0.17 ở cả
+header và `FLEXA_BLOCK_VER`; `Requires at least` giữ 6.4 và `Requires PHP` giữ
+7.4 đúng như mục 25 dự đoán, vì module tự gate bên trong.
+
+**Mục 26, Plugin Check có hai cái bẫy không nằm trong tài liệu của nó.** Thứ nhất,
+`Direct_File_Access_Check` chỉ đọc 50 dòng đầu file, và nó cắt trước khi bỏ
+comment, nên một file docblock dài đẩy guard `ABSPATH` xuống dòng 52 là đủ để báo
+`missing_direct_file_access_protection`. Cách sửa không phải rút ngắn lý lẽ mà là
+chuyển phần dài xuống docblock của class, chỗ nó vốn thuộc về. Thứ hai,
+`WP_Functions_Compatibility_Check` chỉ chấp nhận `function_exists()` nằm **cùng
+file** với lời gọi, nên gate ở `flexa-block.php` không cứu được
+`class-mcp-manager.php`; hai hàm đăng ký giờ tự hỏi lại, và đó cũng là câu trả
+lời đúng chỗ cho người đọc file đó. Sau khi sửa, chạy Plugin Check trên đúng bản
+ZIP chỉ còn một warning có sẵn từ trước (`DynamicHooknameFound` của
+`FormFlow_Promo::RENDERED_ACTION`). phpcs giữ nguyên 12 lỗi cũ trên tám file MCP,
+phpstan giữ nguyên 4 lỗi baseline, `makepot.sh` chạy sạch.
+
+**Mục 27, đo bằng hai bản chạy cạnh nhau chứ không bằng suy luận.** Cách làm: một
+git worktree ở `a529ede` (commit ngay trước giai đoạn 0) copy vào
+`wp-content/plugins/zz-flexa-old`, một mu-plugin tạm đổi `option_active_plugins`
+sang bản cũ khi URL có tham số, và `register_shutdown_function()` ghi
+`get_included_files()` ra file. Hai lần đo đầu bắt được hai thay đổi mà đọc diff
+không thấy. Một: `Import_Manager::init()` require mọi file engine ngay khi boot,
+nên `class-preset-slots.php` thêm vào đó là +1 file cho **mọi** request front-end
+kể cả site không bật module. Sửa bằng `Import_Manager::load_preset_slots()`, gọi
+từ ba chỗ thật sự cần (`Import_Registry::sources()` là nút thắt mọi source đi
+qua, kể cả source của Pro; `Content_Importer::import()`; và
+`Write_Abilities::contribute()`). Hai: `Activity_Log::init()` gọi
+`ensure_scheduled()` trên mọi request admin, nên một site không bao giờ bật module
+vẫn bị bản update cắm thêm một cron event hàng ngày. Giờ dòng đầu tiên mới lên
+lịch, và `collect()` tự gỡ lịch khi log rỗng, nên log vẫn sống lâu hơn công tắc
+còn event thì không sống lâu hơn log. Sau hai lần sửa, ba cặp đo liên tiếp cho
+cùng con số (2765 file, danh sách trùng từng dòng) và HTML trang chủ hai bản khớp
+từng byte sau khi chuẩn hoá đường dẫn plugin.
 
 ## Đang để mở
 

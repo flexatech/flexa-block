@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.16
+Stable tag: 1.0.17
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,6 +23,7 @@ Instead of installing multiple block plugins, Flexa Block focuses on providing c
 * Lightweight and performance-focused
 * Native Gutenberg experience
 * Front-end inline editing — click text on the live page and edit it in place
+* Optional MCP module, so an AI client you connect can read your design and draft pages
 * Responsive by default
 * Clean and modern design
 * Highly customizable
@@ -32,6 +33,14 @@ Instead of installing multiple block plugins, Flexa Block focuses on providing c
 **Front-end inline editing**
 
 Fixing a typo no longer means opening the Block Editor. On the live page, logged-in users who can edit the post simply click the text, type, and save — the change is written straight back to the block, so your layout, styling and generated CSS stay exactly as they were. Every edit is recorded as a note on the post, and you decide from the settings page whether inline editing is on, which roles may use it, and which blocks it applies to.
+
+**AI agents (MCP)**
+
+Flexa Block can expose a few tools to an AI client over the Model Context Protocol, so an assistant you already use can look at how your site is designed and draft a page from one of your presets. It is off by default, and while it is off the plugin registers nothing and answers nothing.
+
+Switching it on takes a confirmation, and two further toggles decide what is possible: reading (your design settings, your presets, and the block structure of a page) and drafting (creating a page from a preset). A draft is all it can ever be. Nothing is published, nothing existing is overwritten, and the agent acts as a WordPress user you create for it, so it can do nothing that user cannot do. Revoking that user's application password cuts access off immediately.
+
+This needs WordPress 7.0 or newer, which is where the Abilities API lives, and the free MCP Adapter plugin, which owns the server, the transport and the authentication. Without either, the panel says so and the switch stays unavailable. Every call is recorded on the **Flexa Block → AI agents** screen under Recent activity: who called which tool, on which page, and how it ended. Setup instructions and the clients that have been tested are in `docs/mcp-setup.md` in the source repository at https://github.com/flexatech/flexa-block
 
 Whether you're building landing pages, business websites, blogs, or eCommerce stores, Flexa Block helps you create professional layouts with less effort.
 
@@ -99,6 +108,18 @@ Every request includes an anonymous per-site identifier (a random UUID), the plu
 Terms of Service: https://flexacommerce.com/pages/terms
 Privacy Policy: https://flexacommerce.com/pages/privacy
 
+== Privacy and data flow ==
+
+The MCP module described above is the one part of this plugin that hands your content to software you choose rather than to us. It is off unless you switch it on. What follows applies only while it is on.
+
+**Where the data goes.** Nothing is sent anywhere by this plugin. An AI client you connect makes requests to your own site, authenticated as a WordPress user you created for it, and the answers go back to that client. Which client that is, where it runs, and what it does with an answer are decisions you make when you connect it. If the client is a hosted AI service, then the content of the tool calls you allow reaches that service, under that service's terms and privacy policy, not ours.
+
+**What a client can receive.** With reading on: your site's design tokens and settings, the list of page presets available, and the block structure of a post or page it names, including the text stored in those blocks. With drafting on: the schema of a preset, and confirmation of a page it created. Nothing else is offered. There is no tool for users, orders, comments, options or files.
+
+**What bounds it.** The account's role. The tools check WordPress capabilities on every call, so an agent reaches exactly what that user could reach by signing in. Note that MCP Adapter also serves tools registered by WordPress itself and by other active plugins, which the Flexa toggles do not govern; on a WooCommerce site, for example, an Editor account can reach WooCommerce's own product and order tools. Give the client a dedicated account with the lowest role that fits. The write side also has hourly limits per user: 10 drafted pages, and 120 calls to each of the two preset tools. Past that, a call is refused until the hour turns over.
+
+**What is stored on your site.** The activity log on the **Flexa Block → AI agents** screen keeps, for each call, the time, the user ID and login, the tool name, the post ID, the outcome, and an identifier that groups the calls made in one request. It keeps no page content, no values an agent sent, no prompts and no credentials. Rows are kept for 30 days and swept daily, and the most recent 500 are held; both are adjustable with a filter. Uninstalling the plugin deletes the log along with the rest of its settings.
+
 == Installation ==
 
 1. Upload the plugin files to `/wp-content/plugins/flexa-block`, or install
@@ -138,6 +159,15 @@ Go to **Flexa Block** in the admin sidebar and open the **Blocks** tab. You can 
 = Where are the plugin settings? =
 In the WordPress admin sidebar, click **Flexa Block** (located below Settings). From there you can control dark mode, CSS specificity, and which blocks are active.
 
+= Can an AI assistant use Flexa Block to change my site? =
+Only if you switch it on, and only within limits you set. Open **Flexa Block → AI agents**, turn the module on, and decide whether an agent may read your site and whether it may draft pages. Reading is reading. Drafting creates a page from one of your presets and leaves it as a draft for you to review; it cannot publish, and it cannot touch a page that already exists. You can turn either off, or the whole module off, at any time.
+
+= What does an AI client receive from my site? =
+With reading on: your design settings, the list of presets, and the blocks of a page it asks about, including the text in them. With drafting on: a preset's fields, and the page it created. Nothing else, and nothing about your users, orders, comments or files. The client is software you choose and connect, so whatever it receives goes wherever that client runs. The **Privacy and data flow** section above spells this out.
+
+= Do I need anything else for the MCP module? =
+WordPress 7.0 or newer, and the free MCP Adapter plugin from WordPress.org, which is what actually speaks the protocol. On an older WordPress, or without that plugin, the panel tells you what is missing and the module stays off. Setup steps and the clients that have been tested live in `docs/mcp-setup.md` in the source repository at https://github.com/flexatech/flexa-block
+
 = Is there a Pro version? =
 Yes. Flexa Block Pro adds additional blocks and advanced features. It works alongside this free plugin.
 
@@ -162,6 +192,12 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 * Some images were generated with ChatGPT (OpenAI); under OpenAI's Terms of Use, ownership of the generated images is assigned to the user.
 
 == Changelog ==
+
+= 1.0.17 =
+* New: an optional MCP module, so an AI client you connect can read how your site is designed and draft a page from one of your presets. Off by default. Turning it on takes a confirmation, and separate toggles cover reading and drafting.
+* Everything an agent creates is a draft. Nothing is published and no existing page is overwritten. An agent acts as a WordPress user you create for it and can do nothing that user cannot do.
+* Needs WordPress 7.0 or newer and the free MCP Adapter plugin. On anything older, or with the module off, this release changes nothing: the files are not even loaded.
+* New: Recent activity on the **Flexa Block → AI agents** screen records each call, with the user, the tool, the page and the outcome. It stores no page content and no prompts, keeps rows for 30 days, and sweeps them daily.
 
 = 1.0.16 =
 * New: an introduction to Flexa FormFlow, our free form builder with a visual email designer and a workflow engine. It shows as a Dashboard notice and as a banner on the Flexa Block screen, and only while FormFlow is not already installed. Choosing "not interested" once hides it everywhere, permanently.
@@ -255,6 +291,9 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 * Initial release with the Container block.
 
 == Upgrade Notice ==
+
+= 1.0.17 =
+Adds an optional MCP module that lets an AI client you connect read your design and draft pages. It is off by default and needs WordPress 7.0 plus the MCP Adapter plugin; with it off, nothing about this release changes how your site behaves.
 
 = 1.0.16 =
 Adds a one-time, dismissible suggestion for Flexa FormFlow, our free form builder. Nothing else changes.
