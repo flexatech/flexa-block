@@ -30,7 +30,6 @@ class Import_Manager {
 		require_once $dir . 'interface-import-source.php';
 		require_once $dir . 'class-import-registry.php';
 		require_once $dir . 'class-media-importer.php';
-		require_once $dir . 'class-preset-slots.php';
 		require_once $dir . 'class-content-importer.php';
 		require_once $dir . 'class-import-cleanup.php';
 		require_once $dir . 'class-sample-source.php';
@@ -41,6 +40,19 @@ class Import_Manager {
 		// Priority 20: run after Admin::enqueue_assets (10) has enqueued the app,
 		// so the handle exists to attach data to.
 		add_action( 'admin_enqueue_scripts', [ __CLASS__, 'localize_admin' ], 20 );
+	}
+
+	/**
+	 * Load the slot declaration reader.
+	 *
+	 * Left out of the list above on purpose. Everything else here is loaded on
+	 * every request the plugin boots on, front end included, and this one file
+	 * is only ever reached from an import, from the admin app asking a preset
+	 * for its fields, and from the MCP writer. The three places that need it
+	 * call this first; `require_once` makes the repeat free.
+	 */
+	public static function load_preset_slots(): void {
+		require_once FLEXA_BLOCK_DIR . 'includes/import/class-preset-slots.php';
 	}
 
 	/**

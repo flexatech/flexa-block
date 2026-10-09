@@ -59,6 +59,8 @@ class Content_Importer {
 	 * @return array{post_id:int, edit_link:string, view_link:string, warnings:list<string>}|\WP_Error
 	 */
 	public static function import( string $source_key, array $definition, array $slots = [] ) {
+		Import_Manager::load_preset_slots();
+
 		$id = sanitize_key( (string) ( $definition['id'] ?? '' ) );
 		if ( '' === $id ) {
 			return new \WP_Error( 'flexa_import_id', __( 'Import item is missing an id.', 'flexa-block' ) );

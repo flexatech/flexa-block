@@ -25,6 +25,7 @@ namespace Flexa\Block\MCP;
 
 use Flexa\Block\Admin\MCP_Settings;
 use Flexa\Block\Import\Content_Importer;
+use Flexa\Block\Import\Import_Manager;
 use Flexa\Block\Import\Import_Registry;
 use Flexa\Block\Import\Preset_Slots;
 use Flexa\Block\Import\Sample_Source;
@@ -70,6 +71,8 @@ class Write_Abilities {
 	 * @return array<string, array<string, mixed>>
 	 */
 	public static function contribute( $abilities ): array {
+		Import_Manager::load_preset_slots();
+
 		$abilities = is_array( $abilities ) ? $abilities : [];
 
 		if ( ! MCP_Settings::allows_write() ) {
