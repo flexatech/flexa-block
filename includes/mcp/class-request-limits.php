@@ -61,6 +61,16 @@ class Request_Limits {
 	const UPDATES_PER_HOUR = 30;
 
 	/**
+	 * Field edits on existing pages one user may make in an hour.
+	 *
+	 * Counted per request, not per field: one request may change up to
+	 * `Page_Editor::MAX_CHANGES` fields and costs one. Same figure as draft
+	 * updates, for the same reason: it is an iterative workflow, and each
+	 * request leaves a revision behind.
+	 */
+	const EDITS_PER_HOUR = 30;
+
+	/**
 	 * Discovery calls one user may make in an hour.
 	 *
 	 * Listing presets and reading a preset's schema cost a glob of the samples

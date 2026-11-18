@@ -124,9 +124,15 @@ function flexa_block_init() {
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-read-abilities.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-draft-writer.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-write-abilities.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-block-patcher.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-editable-fields.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-working-copy.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-page-editor.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-edit-abilities.php';
 		Flexa\Block\MCP\MCP_Manager::init();
 		Flexa\Block\MCP\Read_Abilities::init();
 		Flexa\Block\MCP\Write_Abilities::init();
+		Flexa\Block\MCP\Edit_Abilities::init();
 
 		// Only the watching half is gated. Storage, retention and reading come
 		// up with the settings above, because a log is most wanted right after
@@ -157,8 +163,14 @@ function flexa_block_boot_mcp_settings() {
 
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-mcp-settings.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-activity-log.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-working-copy.php';
 	Flexa\Block\Admin\MCP_Settings::init();
 	Flexa\Block\MCP\Activity_Log::init();
+
+	// Working copies of published pages ride with the settings for the same
+	// reason the log does: a copy an agent made while the module was on still
+	// has to be recognisable, and appliable by a person, after it is off.
+	Flexa\Block\MCP\Working_Copy::init();
 }
 
 /**

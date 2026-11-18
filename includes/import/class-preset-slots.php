@@ -367,6 +367,31 @@ class Preset_Slots {
 	}
 
 	/**
+	 * Check one value against a field description, the way a slot is checked.
+	 *
+	 * For callers that are not filling a preset but still take a typed value
+	 * from outside: editing one attribute of an existing block is the case.
+	 * Same types, same ceilings, same refusals, so a value is held to one
+	 * standard whichever door it came in by.
+	 *
+	 * @param array{type:string, label:string, default:string, max:int} $spec  Field description.
+	 * @param string                                                    $value Raw value.
+	 * @return string|\WP_Error
+	 */
+	public static function check( array $spec, string $value ) {
+		if ( ! isset( self::TYPES[ $spec['type'] ] ) ) {
+			return self::reject( $spec, __( 'this field cannot be set', 'flexa-block' ) );
+		}
+
+		$ceiling = self::TYPES[ $spec['type'] ];
+		if ( $ceiling > 0 && ( $spec['max'] < 1 || $spec['max'] > $ceiling ) ) {
+			$spec['max'] = $ceiling;
+		}
+
+		return self::clean( $spec, $value );
+	}
+
+	/**
 	 * Validate the caller's values against declarations already read.
 	 *
 	 * @param array<string, array<string, mixed>> $declared Normalized declarations.

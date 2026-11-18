@@ -548,5 +548,12 @@ require_once $flexa_inc . 'css-generators/class-product-related-css.php';
  */
 require_once $flexa_inc . 'import/class-preset-slots.php';
 
+/*
+ * The MCP edit path's two WordPress-free halves: finding and rewriting one
+ * block delimiter in place, and the allowlist of fields that may change.
+ */
+require_once $flexa_inc . 'mcp/class-block-patcher.php';
+require_once $flexa_inc . 'mcp/class-editable-fields.php';
+
 // Shared base class for block CSS tests (kept outside the scanned suite dir).
 require_once __DIR__ . '/CssTestCase.php';

@@ -1,6 +1,6 @@
 # MCP Module
 
-> ✅ xong (28) · 🧪 đang làm · ⬜ chưa bắt đầu (0)
+> ✅ xong (30) · 🧪 đang làm · ⬜ chưa bắt đầu (0)
 > · Cập nhật: 2026-11-18
 >
 > Module MCP nằm **trong** plugin free này, dưới `includes/mcp/`, tắt mặc định.
@@ -488,6 +488,63 @@ slot kèm title, gửi lại y hệt (không ghi), reset một slot, HTML trong 
 sai, slot lạ, trang không từ preset, trang import trước khi có hash, trang đã bị
 sửa qua REST như người sửa trong editor, trang đã publish, không đăng nhập. Nội
 dung sau khi sửa có giá trị mới, không còn token, và có revision.
+
+29. ✅ Sửa trang có sẵn, kể cả trang người dùng tạo hoặc đã sửa tay:
+    `flexa/get-editable-fields` và `flexa/edit-page-blocks`, sau toggle riêng
+    `edit` (mặc định tắt). Bản 1: chỉ `draft` và `pending`; trang đã publish bị
+    từ chối, kèm gợi ý nhân bản rồi sửa bản sao. Bản 2 (chưa làm): tự tạo bản
+    sao nháp cho trang đã publish và nút "Áp dụng vào trang gốc".
+
+Ghi bằng byte, không parse rồi serialize lại cả trang: `Block_Patcher` tìm đúng
+delimiter mở của block theo `blockId` (cùng regex với `WP_Block_Parser`), decode
+attribute dạng object để giữ `{}` và `[]`, đổi key cần đổi, encode lại như
+`serialize_block_attributes()` rồi splice vào đúng chỗ. Sau đó đọc lại toàn bộ
+delimiter và từ chối nếu số block, thứ tự, hay attribute của block khác lệch đi.
+Đây là lời giải cho rủi ro round-trip ghi ở mục rủi ro bên dưới.
+
+Chỉ sửa field có trong allowlist `Editable_Fields` (17 block Flexa: chữ, link,
+email, alt ảnh, vị trí bản đồ); không màu, typography, icon, CSS, không block
+core. Giá trị kiểm bằng `Preset_Slots::check()`, cùng luật với slot. Đồng thời
+an toàn: `expected_modified_gmt` bắt buộc, `expect` tuỳ chọn cho từng field,
+`wp_check_post_lock()` từ chối khi có người đang mở editor, khoá transient theo
+post. Một request là tất cả hoặc không gì. Field chưa từng đổi (đang dùng
+default nên không có trong JSON) được đọc từ `block.json` và chỉ được ghi vào
+JSON khi chính nó bị đổi. Giới hạn 30 request/giờ/user.
+
+Kiểm trên site local 2026-11-18: trang từ preset rồi sửa tay qua REST;
+`update-page-draft` từ chối nó, `edit-page-blocks` đổi 5 field trên 4 block và
+diff chỉ khác đúng 4 dòng delimiter, đoạn thêm tay còn nguyên, revision có. Từ
+chối đúng: `modified_gmt` cũ, `expect` lệch, field style, icon markup, HTML, URL
+`javascript:`, email sai (và field hợp lệ cùng request không được ghi), block
+lạ, trang đã publish, không đăng nhập. Chưa kiểm tự động trường hợp có người
+đang mở editor.
+
+30. ✅ Bản 2: sửa trang đã publish qua bản sao làm việc (`Working_Copy`).
+    `edit-page-blocks` không bao giờ ghi vào trang publish: lần sửa đầu tạo một
+    bản nháp sao chép (title, content, excerpt, parent, order, term, meta trừ
+    meta lịch sử/khoá/import), gắn `_flexa_working_copy_of` và
+    `_flexa_working_copy_base` (= `post_modified_gmt` của bản gốc lúc sao chép),
+    rồi patch trên bản sao. Lần sửa sau dùng lại đúng bản sao đó, và
+    `get-editable-fields` đọc qua bản sao nếu có. Bản sao chỉ được tạo sau khi
+    mọi kiểm tra đã qua, nên request bị từ chối không để lại nháp rác.
+
+Áp dụng là việc của người, không phải ability: route
+`POST flexa-block/v1/working-copy/{id}/apply`, chỉ panel trong block editor gọi,
+cần `edit_post` trên cả hai và quyền publish loại bài đó. Ghi title, content,
+excerpt, template và ảnh đại diện lên bản gốc (giữ ID, slug, ngày, tác giả, bình
+luận), core lưu revision, rồi xoá bản sao. Bản gốc đã đổi sau khi sao chép thì từ
+chối với `flexa_working_copy_conflict`, trừ khi người bấm xác nhận `force`. Có
+người đang mở bản gốc thì từ chối. Danh sách Pages gắn nhãn cho bản sao và cho
+trang đang có thay đổi chờ duyệt. `Working_Copy` nạp cùng settings (admin, REST)
+chứ không cùng runtime, để bản sao làm lúc module bật vẫn áp dụng được sau khi
+tắt.
+
+Kiểm trên site local 2026-11-18: trang publish đã sửa tay; sửa qua ability thì
+trang live giữ nguyên từng byte, bản sao nháp có thay đổi và giữ đoạn sửa tay;
+lần sửa thứ hai vào cùng bản sao; `modified_gmt` của bản gốc bị từ chối là cũ;
+người sửa trang live xong thì áp dụng báo xung đột, `force` thì áp dụng được,
+URL giữ nguyên, có revision, bản sao bị xoá. Panel trong editor chưa kiểm bằng
+trình duyệt.
 
 ## Đang để mở
 

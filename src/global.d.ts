@@ -91,6 +91,7 @@ interface FlexaBlockMcpData {
 	enabled: boolean;
 	read: boolean;
 	write: boolean;
+	edit: boolean;
 	adapter: { active: boolean; version: string };
 	/** '' until the adapter's transport URL is known; see MCP_Settings::endpoint(). */
 	endpoint: string;

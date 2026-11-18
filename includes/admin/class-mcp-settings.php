@@ -71,6 +71,7 @@ class MCP_Settings {
 		'enabled' => false,
 		'read'    => true,
 		'write'   => false,
+		'edit'    => false,
 	];
 
 	/**
@@ -115,7 +116,7 @@ class MCP_Settings {
 	 * on a site that has since moved to an older WordPress. Use is_enabled()
 	 * for the question "is the module running".
 	 *
-	 * @return array{enabled: bool, read: bool, write: bool}
+	 * @return array{enabled: bool, read: bool, write: bool, edit: bool}
 	 */
 	public static function get_settings(): array {
 		$stored = get_option( self::OPTION_NAME, [] );
@@ -127,6 +128,7 @@ class MCP_Settings {
 			'enabled' => isset( $stored['enabled'] ) ? (bool) $stored['enabled'] : self::DEFAULTS['enabled'],
 			'read'    => isset( $stored['read'] ) ? (bool) $stored['read'] : self::DEFAULTS['read'],
 			'write'   => isset( $stored['write'] ) ? (bool) $stored['write'] : self::DEFAULTS['write'],
+			'edit'    => isset( $stored['edit'] ) ? (bool) $stored['edit'] : self::DEFAULTS['edit'],
 		];
 	}
 
@@ -159,6 +161,19 @@ class MCP_Settings {
 	 */
 	public static function allows_write(): bool {
 		return self::is_enabled() && self::get_settings()['write'];
+	}
+
+	/**
+	 * Whether the abilities that edit existing content may be exposed.
+	 *
+	 * A toggle of its own, off by default and not implied by `write`. Creating
+	 * a draft cannot cost a site anything it had; editing a page somebody
+	 * already worked on can, so a site has to ask for it separately.
+	 *
+	 * @return bool
+	 */
+	public static function allows_edit(): bool {
+		return self::is_enabled() && self::get_settings()['edit'];
 	}
 
 	/**
@@ -288,6 +303,7 @@ class MCP_Settings {
 			'enabled'      => self::is_enabled(),
 			'read'         => $settings['read'],
 			'write'        => $settings['write'],
+			'edit'         => $settings['edit'],
 			'adapter'      => self::adapter_state(),
 			'endpoint'     => self::endpoint(),
 			'restUrl'      => esc_url_raw( rest_url( self::REST_NS . '/mcp' ) ),
@@ -392,7 +408,7 @@ class MCP_Settings {
 	 * the others. No CSS cache is touched: nothing here changes generated CSS.
 	 *
 	 * @param array<string, mixed> $input Raw settings.
-	 * @return array{enabled: bool, read: bool, write: bool} The stored settings.
+	 * @return array{enabled: bool, read: bool, write: bool, edit: bool} The stored settings.
 	 */
 	public static function save_settings( array $input ): array {
 		$current = self::get_settings();
@@ -401,6 +417,7 @@ class MCP_Settings {
 			'enabled' => array_key_exists( 'enabled', $input ) ? (bool) $input['enabled'] : $current['enabled'],
 			'read'    => array_key_exists( 'read', $input ) ? (bool) $input['read'] : $current['read'],
 			'write'   => array_key_exists( 'write', $input ) ? (bool) $input['write'] : $current['write'],
+			'edit'    => array_key_exists( 'edit', $input ) ? (bool) $input['edit'] : $current['edit'],
 		];
 
 		update_option( self::OPTION_NAME, $sanitized );
@@ -461,6 +478,11 @@ class MCP_Settings {
 				'required'          => false,
 				'sanitize_callback' => 'rest_sanitize_boolean',
 			],
+			'edit'    => [
+				'type'              => 'boolean',
+				'required'          => false,
+				'sanitize_callback' => 'rest_sanitize_boolean',
+			],
 		];
 
 		register_rest_route(
@@ -515,7 +537,7 @@ class MCP_Settings {
 	 */
 	public static function rest_save( \WP_REST_Request $request ) {
 		$input = [];
-		foreach ( [ 'enabled', 'read', 'write' ] as $key ) {
+		foreach ( [ 'enabled', 'read', 'write', 'edit' ] as $key ) {
 			if ( null !== $request->get_param( $key ) ) {
 				$input[ $key ] = (bool) $request->get_param( $key );
 			}

@@ -72,7 +72,7 @@ The adapter's default server publishes three tools, not one tool per ability:
 
 So a call to a Flexa tool is a call to `execute-ability` with
 `ability_name: "flexa/list-presets"` and the ability's own input under
-`parameters`. This plugin registers six abilities:
+`parameters`. This plugin registers eight abilities:
 
 | Ability | Needs | What it does |
 |---|---|---|
@@ -82,6 +82,8 @@ So a call to a Flexa tool is a call to `execute-ability` with
 | `flexa/get-preset-schema` | write toggle, `edit_pages` | One preset's slots and their types. |
 | `flexa/create-page-draft` | write toggle, `edit_pages` | Creates a page from a preset. Draft only, never published, never an overwrite. |
 | `flexa/update-page-draft` | write toggle, `edit_post` on that page | Changes the fields of a draft built from a preset, by rebuilding it from the preset. Refused for anything but a draft, and for a draft someone has edited by hand since it was built. Core keeps a revision of the version it replaced. |
+| `flexa/get-editable-fields` | edit toggle, `edit_post` on that page | The text, link and email fields of each supported block on a page, their values, the page's `modified_gmt`, and whether it can be edited now. |
+| `flexa/edit-page-blocks` | edit toggle, `edit_post` on that page | Changes the title and some of those fields, including on a page edited by hand. Drafts and pending pages are changed in place. A published page is never written to: the change goes onto a draft working copy (reused for later changes) that a person applies from the block editor's "Apply to original" button, which needs the right to publish. Needs the `modified_gmt` it read; refused if the page changed since, or while someone has it open in the editor. Only the changed blocks' attributes are rewritten, and core keeps a revision. |
 
 `discover-abilities` also lists abilities that WordPress core and other active
 plugins registered. Those are not ours and the two toggles in the Flexa panel
@@ -125,14 +127,19 @@ the adapter's default server exposes. There is no stdio path to this plugin.
 - Every call is refused for want of a capability: the account's role is too
   low. See the capabilities column in the table above.
 - `discover-abilities` returns core and WooCommerce abilities but none of ours:
-  the module's switch is off, or both the read and write toggles are.
+  the module's switch is off, or the read, write and edit toggles all are.
 - A tool exists but a call fails with a rate limit: ten drafts, thirty draft
-  updates and 120 discovery calls per user per hour, counted per tool. The
+  updates, thirty page edits and 120 discovery calls per user per hour, counted per tool. The
   message says how long to wait.
 - `update-page-draft` refuses a draft as edited by hand when nothing visible
   changed: any save from the editor rewrites the stored markup, and that is
-  what the check compares. Create a new draft, or make the change in the
-  editor.
+  what the check compares. Use `edit-page-blocks` for such a draft instead,
+  with the edit toggle on.
+- `edit-page-blocks` on a published page answers with a `working_copy_id`:
+  the change is on a draft copy, and the live page is unchanged until someone
+  opens that copy and presses "Apply to original". If the live page was
+  changed meanwhile, applying asks for confirmation first. To discard the
+  changes, trash the copy.
 - Something ran but you cannot tell what: **Flexa Block → AI agents → Recent activity**
   records every call this module handled, with the user, the tool, the page and
   the outcome. It keeps no content and no prompts.

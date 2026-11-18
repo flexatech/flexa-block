@@ -16,7 +16,9 @@ import { CardHeader, SettingRow } from './settings-general';
 
 const ADAPTER_URL = 'https://wordpress.org/plugins/mcp-adapter/';
 
-type Patch = Partial< Pick< FlexaBlockMcpData, 'enabled' | 'read' | 'write' > >;
+type Patch = Partial<
+	Pick< FlexaBlockMcpData, 'enabled' | 'read' | 'write' | 'edit' >
+>;
 type Feedback = { type: 'error' | 'success'; text: string } | null;
 
 interface Props {
@@ -114,6 +116,25 @@ export function McpPanel( { mcp }: Props ): JSX.Element {
 		} );
 	};
 
+	const setEdit = ( on: boolean ) => {
+		if ( ! on ) {
+			save(
+				{ edit: false },
+				__( 'Agents can no longer edit existing pages.', 'flexa-block' )
+			);
+			return;
+		}
+		setPending( {
+			patch: { edit: true },
+			title: __( 'Allow agents to edit existing pages?', 'flexa-block' ),
+			body: __(
+				'A connected agent will be able to change the title, text, links and email addresses in blocks on your pages, including pages you built or edited yourself. Drafts are changed directly. A published page is never changed: the agent works on a draft copy, and nothing goes live until you open the copy and apply it. It cannot change layout or styling, or edit a page while someone has it open, and every change is saved as a revision.',
+				'flexa-block'
+			),
+			action: __( 'Allow', 'flexa-block' ),
+		} );
+	};
+
 	return (
 		<div className="flexa-mcp">
 			<section className="flexa-admin-card flexa-setting-card">
@@ -176,6 +197,7 @@ export function McpPanel( { mcp }: Props ): JSX.Element {
 								)
 							}
 							onWrite={ setWrite }
+							onEdit={ setEdit }
 						/>
 					) : (
 						<MissingAdapter />
@@ -306,17 +328,20 @@ function MissingAdapter(): JSX.Element {
  * @param root0.busy    Whether a save is in flight.
  * @param root0.onRead  Read toggle handler.
  * @param root0.onWrite Write toggle handler.
+ * @param root0.onEdit  Edit toggle handler.
  */
 function Connected( {
 	state,
 	busy,
 	onRead,
 	onWrite,
+	onEdit,
 }: {
 	state: FlexaBlockMcpData;
 	busy: boolean;
 	onRead: ( value: boolean ) => void;
 	onWrite: ( value: boolean ) => void;
+	onEdit: ( value: boolean ) => void;
 } ): JSX.Element {
 	return (
 		<>
@@ -357,6 +382,15 @@ function Connected( {
 							) }
 							checked={ state.write }
 							onChange={ ( v ) => ! busy && onWrite( v ) }
+						/>
+						<SettingRow
+							label={ __( 'Edit existing pages', 'flexa-block' ) }
+							help={ __(
+								'Change the title, text, links and email addresses in blocks, including on pages you edited by hand. Published pages are never changed directly: edits go onto a draft copy that you review and apply. Never layout or styling, never while the page is open in the editor. Each change is kept as a revision.',
+								'flexa-block'
+							) }
+							checked={ state.edit }
+							onChange={ ( v ) => ! busy && onEdit( v ) }
 						/>
 					</div>
 

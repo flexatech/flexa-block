@@ -345,17 +345,25 @@ class Draft_Writer {
 				'flexa_mcp_not_draft',
 				sprintf(
 					/* translators: %s: post status, for example publish */
-					__( 'Only drafts can be changed here, and this page is %s. Changes to it are for a person to make in the editor.', 'flexa-block' ),
+					__( 'Only drafts can be changed here, and this page is %s. To change a published page, use flexa/edit-page-blocks if it is available: it puts the change on a draft copy for a person to review.', 'flexa-block' ),
 					$post->post_status
 				),
 				[ 'status' => 409 ]
 			);
 		}
 
+		// A title on its own does not touch the content, so there is nothing to
+		// rebuild and nothing a person did to the page that it could overwrite.
+		// The checks below exist for the rebuild, and do not apply to it.
+		$has_slots = isset( $input['slots'] ) && is_array( $input['slots'] ) && $input['slots'];
+		if ( ! $has_slots && isset( $input['title'] ) && '' !== trim( (string) $input['title'] ) ) {
+			return self::retitle( $post, $input );
+		}
+
 		if ( '' === (string) get_post_meta( $post_id, Content_Importer::HASH_META, true ) ) {
 			return new \WP_Error(
 				'flexa_mcp_untracked',
-				__( 'This draft was built before Flexa Block could tell whether a draft had been edited by hand, so it cannot be rebuilt safely. Create a new draft from the same preset instead.', 'flexa-block' ),
+				__( 'This draft was built before Flexa Block could tell whether a draft had been edited by hand, so its fields cannot be rebuilt from the preset. To change its text, use flexa/edit-page-blocks if it is available; to change only its title, send the title without slots.', 'flexa-block' ),
 				[ 'status' => 409 ]
 			);
 		}
@@ -363,7 +371,7 @@ class Draft_Writer {
 		if ( ! Content_Importer::untouched( $post_id ) ) {
 			return new \WP_Error(
 				'flexa_mcp_edited_by_person',
-				__( 'This draft has been changed in the editor since it was built, and rebuilding it would throw those changes away. Ask the person to make this change in the editor, or create a new draft instead.', 'flexa-block' ),
+				__( 'This draft has been changed in the editor since it was built, and rebuilding it would throw those changes away. To change its text, use flexa/edit-page-blocks if it is available, which changes single fields and keeps the rest; to change only its title, send the title without slots.', 'flexa-block' ),
 				[ 'status' => 409 ]
 			);
 		}
@@ -460,6 +468,65 @@ class Draft_Writer {
 	}
 
 	/**
+	 * Change only a draft's title.
+	 *
+	 * @param \WP_Post             $post  Draft, already checked.
+	 * @param array<string, mixed> $input Ability input.
+	 * @return array<string, mixed>|\WP_Error
+	 */
+	private static function retitle( \WP_Post $post, array $input ) {
+		$title = self::clean_title( $input );
+		if ( is_wp_error( $title ) ) {
+			return $title;
+		}
+
+		$limited = Request_Limits::tap( self::UPDATE_OPERATION, Request_Limits::UPDATES_PER_HOUR );
+		if ( is_wp_error( $limited ) ) {
+			return $limited;
+		}
+
+		if ( $title === $post->post_title ) {
+			return self::update_payload( (int) $post->ID, [], false, [ __( 'The draft already has that title, so nothing was changed.', 'flexa-block' ) ] );
+		}
+
+		$written = self::write_title( (int) $post->ID, $title );
+		if ( is_wp_error( $written ) ) {
+			return $written;
+		}
+
+		return self::update_payload( (int) $post->ID, [ 'title' ], true, self::hold_at_draft( (int) $post->ID ) );
+	}
+
+	/**
+	 * Store a new title and leave the content byte for byte as it was.
+	 *
+	 * `wp_update_post()` saves the whole post, content included, so the
+	 * content passes through the save filters again even when only the title
+	 * changed. KSES among them would re-filter markup nobody sent, and could
+	 * change a page this call was never meant to touch; it is held off for this
+	 * one write, which carries only a title that `clean_title()` made plain.
+	 *
+	 * @param int    $post_id Post ID.
+	 * @param string $title   Clean title.
+	 * @return true|\WP_Error
+	 */
+	public static function write_title( int $post_id, string $title ) {
+		kses_remove_filters();
+		$result = wp_update_post(
+			wp_slash(
+				[
+					'ID'         => $post_id,
+					'post_title' => $title,
+				]
+			),
+			true
+		);
+		kses_init_filters();
+
+		return is_wp_error( $result ) ? $result : true;
+	}
+
+	/**
 	 * Slots whose value differs between two recorded sets.
 	 *
 	 * @param array<string, mixed>  $before Values before.
@@ -511,7 +578,7 @@ class Draft_Writer {
 	 * @param array<string, mixed> $input Ability input.
 	 * @return string|\WP_Error
 	 */
-	private static function clean_title( array $input ) {
+	public static function clean_title( array $input ) {
 		$title = isset( $input['title'] ) ? trim( (string) $input['title'] ) : '';
 		if ( '' === $title ) {
 			return '';
