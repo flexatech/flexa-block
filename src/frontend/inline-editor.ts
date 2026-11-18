@@ -41,6 +41,9 @@ interface Boot {
 		saved: string;
 		saving: string;
 		error: string;
+		// Warning shown while editing text stored in a shared place, keyed by
+		// the root's `data-flexa-edit-scope`.
+		scope?: Record< string, string >;
 	};
 }
 
@@ -57,6 +60,9 @@ interface ActiveEdit {
 	selector: string;
 	join?: string;
 	itemEl: HTMLElement | null;
+	// Template part or synced pattern the block is stored in; 0 when it is the
+	// viewed post itself.
+	targetId: number;
 }
 
 const boot = ( window as unknown as { flexaBlockInlineEditor?: Boot } )
@@ -136,7 +142,7 @@ function endEdit( restore: boolean ): void {
  * @param el     The editable child element.
  * @param root   The block root carrying the data attributes.
  * @param field  The registry field descriptor.
- * @param index  Position among repeated selectors (repeater fields only).
+ * @param itemEl The repeater item wrapper carrying data-flexa-item, or null.
  */
 function startEdit(
 	el: HTMLElement,
@@ -178,12 +184,20 @@ function startEdit(
 		selector: field.selector,
 		join: field.join,
 		itemEl,
+		targetId:
+			parseInt(
+				root.getAttribute( 'data-flexa-edit-target' ) || '0',
+				10
+			) || 0,
 	};
 
 	el.contentEditable = 'true';
 	el.classList.add( ACTIVE_CLASS );
 	root.classList.add( ACTIVE_CLASS );
-	setMessage( '' );
+	// Text stored in a template part or synced pattern is shared: say so before
+	// the person types, not after they have saved a change to every page.
+	const scope = root.getAttribute( 'data-flexa-edit-scope' ) || '';
+	setMessage( ( scope && boot?.i18n.scope?.[ scope ] ) || '' );
 	toggleToolbar( true );
 	el.focus();
 }
@@ -238,6 +252,9 @@ async function save(): Promise< void > {
 	}
 	if ( active.key !== undefined ) {
 		payload.key = active.key;
+	}
+	if ( active.targetId > 0 ) {
+		payload.targetId = active.targetId;
 	}
 
 	try {
@@ -295,9 +312,9 @@ function initToolbar(): void {
 function bindField( root: HTMLElement, field: FieldDef ): void {
 	const els = field.repeat
 		? Array.from( root.querySelectorAll< HTMLElement >( field.selector ) )
-		: [ root.querySelector< HTMLElement >( field.selector ) ].filter(
+		: ( [ root.querySelector< HTMLElement >( field.selector ) ].filter(
 				Boolean
-		  ) as HTMLElement[];
+		  ) as HTMLElement[] );
 
 	els.forEach( ( el ) => {
 		if ( el.classList.contains( EDITABLE_CLASS ) ) {

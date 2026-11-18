@@ -10,13 +10,13 @@
  */
 
 use PHPUnit\Framework\TestCase;
-use Flexa\Block\MCP\Block_Patcher;
+use Flexa\Block\Block_Patcher;
 use Flexa\Block\MCP\Editable_Fields;
 
 /**
  * Block patcher and editable-field allowlist.
  *
- * @covers \Flexa\Block\MCP\Block_Patcher
+ * @covers \Flexa\Block\Block_Patcher
  * @covers \Flexa\Block\MCP\Editable_Fields
  */
 class BlockPatcherTest extends TestCase {
@@ -117,6 +117,76 @@ class BlockPatcherTest extends TestCase {
 		$this->assertSame( 'a --> b <!-- c "d" & e', $token['attrs']->content );
 	}
 
+	/**
+	 * Values from front-end editing are HTML that has already been through the
+	 * field's kses allowlist. They have to land in the attribute JSON intact and
+	 * read back as the same string, without anything in them being able to end
+	 * the comment that holds the JSON.
+	 *
+	 * @return array<string, array{0: string}>
+	 */
+	public function html_values(): array {
+		return [
+			'inline formatting' => [ 'Xin chào <strong>bạn</strong> và <em>bạn bè</em>' ],
+			'a link'            => [ 'Đọc <a href="https://example.com/a?x=1&amp;y=2" target="_blank" rel="noopener">thêm</a>' ],
+			'a line break'      => [ 'Dòng một<br>Dòng hai' ],
+			'a comment closer'  => [ 'a --> b <!-- c' ],
+			'quotes and slash'  => [ 'He said "hi" and \\ left' ],
+		];
+	}
+
+	/**
+	 * @dataProvider html_values
+	 *
+	 * @param string $value Value to store.
+	 */
+	public function test_an_html_value_round_trips_and_stays_inside_its_comment( string $value ): void {
+		$after = $this->set( $this->page(), 'fx-aaaa1111', 'content', $value );
+
+		$this->assertIsString( $after );
+		$this->assertCount( 4, Block_Patcher::tokens( $after ) );
+
+		$token = Block_Patcher::locate( $after, 'fx-aaaa1111' );
+		$this->assertIsArray( $token );
+		$this->assertSame( $value, $token['attrs']->content );
+
+		// The delimiter line holds no raw angle bracket or comment closer.
+		$line = strtok( $after, "\n" );
+		$this->assertIsString( $line );
+		$json = substr( $line, strlen( '<!-- wp:flexa/heading ' ), -strlen( ' /-->' ) );
+		$this->assertStringNotContainsString( '<', $json );
+		$this->assertStringNotContainsString( '>', $json );
+		$this->assertStringNotContainsString( '--', $json );
+	}
+
+	public function test_an_html_value_in_a_list_item_leaves_its_siblings_alone(): void {
+		$after = $this->set( $this->page(), 'fx-cccc3333', 'items.0.text', '<strong>Một</strong>' );
+
+		$this->assertIsString( $after );
+		$token = Block_Patcher::locate( $after, 'fx-cccc3333' );
+		$this->assertIsArray( $token );
+		$this->assertSame( '<strong>Một</strong>', $token['attrs']->items[0]->text );
+		$this->assertSame( 'Two', $token['attrs']->items[1]->text );
+		$this->assertStringContainsString( '"padding":{},"gap":[]', $after );
+	}
+
+	public function test_block_ids_lists_every_block_in_the_content_including_nested(): void {
+		$this->assertSame(
+			[
+				'fx-aaaa1111' => true,
+				'fx-bbbb2222' => true,
+				'fx-cccc3333' => true,
+			],
+			Block_Patcher::block_ids( $this->page() )
+		);
+	}
+
+	public function test_block_ids_does_not_see_a_block_only_referenced_by_a_synced_pattern(): void {
+		// A synced pattern is stored as a reference; its blocks live in another
+		// post, so their ids are not this post's.
+		$this->assertSame( [], Block_Patcher::block_ids( '<!-- wp:block {"ref":42} /-->' ) );
+	}
+
 	public function test_an_unknown_block_id_is_refused(): void {
 		$this->assertInstanceOf( WP_Error::class, Block_Patcher::locate( $this->page(), 'fx-nope0000' ) );
 	}
@@ -127,7 +197,7 @@ class BlockPatcherTest extends TestCase {
 		$result = Block_Patcher::locate( $page, 'fx-aaaa1111' );
 
 		$this->assertInstanceOf( WP_Error::class, $result );
-		$this->assertSame( 'flexa_mcp_duplicate_block', $result->get_error_code() );
+		$this->assertSame( 'flexa_block_duplicate_block', $result->get_error_code() );
 	}
 
 	public function test_the_encoding_matches_cores_escaping(): void {

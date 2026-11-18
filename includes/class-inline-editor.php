@@ -258,6 +258,29 @@ final class Inline_Editor {
 	private static $should = null;
 
 	/**
+	 * Memoized blockIds of the queried post's own content.
+	 *
+	 * @var array<string, true>|null
+	 */
+	private static $own_ids = null;
+
+	/**
+	 * Where the block being rendered right now is stored, innermost last.
+	 *
+	 * A page is assembled from several stores: the post itself, template parts
+	 * (header, footer), synced patterns, other posts in a query loop. Each of
+	 * those arrives through a block whose render wraps the blocks it contains,
+	 * so a stack pushed in `pre_render_block` and popped in `render_block` of
+	 * that wrapper always knows which store an inner block came from.
+	 *
+	 * @var list<array{block: string, type: string, post: int, ids: array<string, true>}>
+	 */
+	private static $scopes = [];
+
+	/** Wrapper blocks that switch the store their inner blocks come from. */
+	const SCOPE_BLOCKS = [ 'core/template-part', 'core/block', 'core/post-content' ];
+
+	/**
 	 * Memoized registry() result for the current request.
 	 *
 	 * @var array<string, array{fields: list<array<string, mixed>>}>|null
@@ -376,6 +399,8 @@ final class Inline_Editor {
 	 * Register hooks.
 	 */
 	public static function init(): void {
+		add_filter( 'pre_render_block', [ __CLASS__, 'enter_scope' ], PHP_INT_MAX, 2 );
+		add_filter( 'render_block', [ __CLASS__, 'leave_scope' ], 1, 2 );
 		add_filter( 'render_block', [ __CLASS__, 'annotate' ], 20, 2 );
 		add_filter( 'body_class', [ __CLASS__, 'body_class' ] );
 		add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue' ], 25 );
@@ -502,6 +527,21 @@ final class Inline_Editor {
 	}
 
 	/**
+	 * The blockIds stored in the queried post's own content.
+	 *
+	 * Read once per request: `annotate()` runs for every block on the page.
+	 *
+	 * @return array<string, true>
+	 */
+	private static function own_block_ids(): array {
+		if ( null === self::$own_ids ) {
+			$post          = get_post( get_queried_object_id() );
+			self::$own_ids = $post instanceof \WP_Post ? Block_Patcher::block_ids( (string) $post->post_content ) : [];
+		}
+		return self::$own_ids;
+	}
+
+	/**
 	 * A `data-flexa-item` marker for a repeater item's wrapper element.
 	 *
 	 * Repeater render.php loops call this with the ORIGINAL array index so the
@@ -573,6 +613,13 @@ final class Inline_Editor {
 			return $content;
 		}
 
+		// A block is only offered for editing when it can be saved back to where
+		// it is stored. See target_for().
+		$target = self::target_for( $block_id );
+		if ( null === $target ) {
+			return $content;
+		}
+
 		if ( ! class_exists( '\WP_HTML_Tag_Processor' ) ) {
 			return $content;
 		}
@@ -584,8 +631,149 @@ final class Inline_Editor {
 
 		$processor->set_attribute( 'data-flexa-edit-id', $block_id );
 		$processor->set_attribute( 'data-flexa-edit-name', $name );
+		if ( $target['post'] > 0 ) {
+			$processor->set_attribute( 'data-flexa-edit-target', (string) $target['post'] );
+			$processor->set_attribute( 'data-flexa-edit-scope', $target['scope'] );
+		}
 
 		return $processor->get_updated_html();
+	}
+
+	/**
+	 * Where an edit to this block would be saved, or null when it cannot be.
+	 *
+	 * - Stored in the post being viewed: editable, saved to that post. This is
+	 *   the case `post` 0 stands for, and the only one before shared stores.
+	 * - Stored in a template part (header, footer…) that has been customised,
+	 *   so it lives in the database: editable by someone who may edit the
+	 *   theme's templates, saved to that template part, for every page.
+	 * - Stored in a synced pattern: editable by someone who may edit that
+	 *   pattern, saved to it, for everywhere the pattern is used.
+	 * - Anywhere else: not editable. That covers another post shown by a query
+	 *   loop, blocks written straight into the page template, and a template
+	 *   part that still comes from the theme's own file. Saving that last one
+	 *   would mean creating its database copy, which the Site Editor does and
+	 *   front-end editing does not.
+	 *
+	 * @param string $block_id Block's blockId.
+	 * @return array{post: int, scope: string}|null `post` 0 means the viewed post.
+	 */
+	private static function target_for( string $block_id ): ?array {
+		$scope = self::$scopes ? self::$scopes[ count( self::$scopes ) - 1 ] : null;
+
+		if ( null === $scope || 'post' === $scope['type'] ) {
+			$viewed = get_queried_object_id();
+			if ( null !== $scope && $scope['post'] !== $viewed ) {
+				return null;
+			}
+			return isset( self::own_block_ids()[ $block_id ] ) ? [
+				'post'  => 0,
+				'scope' => '',
+			] : null;
+		}
+
+		if ( $scope['post'] < 1 || ! isset( $scope['ids'][ $block_id ] ) ) {
+			return null;
+		}
+
+		$allowed = 'wp_template_part' === $scope['type']
+			? current_user_can( 'edit_theme_options' )
+			: current_user_can( 'edit_post', $scope['post'] );
+
+		return $allowed ? [
+			'post'  => $scope['post'],
+			'scope' => 'wp_template_part' === $scope['type'] ? 'template-part' : 'pattern',
+		] : null;
+	}
+
+	/**
+	 * Note which store the blocks about to render come from.
+	 *
+	 * Runs last on `pre_render_block` and only when no other filter has
+	 * short-circuited the render: a block whose render is replaced never
+	 * reaches `render_block`, and a push without its pop would misattribute
+	 * every block after it.
+	 *
+	 * @param string|null $pre          Short-circuit value from earlier filters.
+	 * @param array       $parsed_block Block about to render.
+	 * @return string|null The short-circuit value, untouched.
+	 */
+	public static function enter_scope( $pre, $parsed_block ) {
+		if ( null !== $pre || ! is_array( $parsed_block ) || ! self::should_render() ) {
+			return $pre;
+		}
+
+		$name  = (string) ( $parsed_block['blockName'] ?? '' );
+		$attrs = is_array( $parsed_block['attrs'] ?? null ) ? $parsed_block['attrs'] : [];
+
+		if ( 'core/post-content' === $name ) {
+			self::$scopes[] = [
+				'block' => $name,
+				'type'  => 'post',
+				'post'  => (int) get_the_ID(),
+				'ids'   => [],
+			];
+		} elseif ( 'core/block' === $name ) {
+			$ref            = (int) ( $attrs['ref'] ?? 0 );
+			$pattern        = $ref > 0 ? get_post( $ref ) : null;
+			self::$scopes[] = [
+				'block' => $name,
+				'type'  => 'wp_block',
+				'post'  => $pattern instanceof \WP_Post && 'wp_block' === $pattern->post_type ? $ref : 0,
+				'ids'   => $pattern instanceof \WP_Post ? Block_Patcher::block_ids( (string) $pattern->post_content ) : [],
+			];
+		} elseif ( 'core/template-part' === $name ) {
+			$part           = self::template_part_post( $attrs );
+			self::$scopes[] = [
+				'block' => $name,
+				'type'  => 'wp_template_part',
+				'post'  => $part instanceof \WP_Post ? (int) $part->ID : 0,
+				'ids'   => $part instanceof \WP_Post ? Block_Patcher::block_ids( (string) $part->post_content ) : [],
+			];
+		}
+
+		return $pre;
+	}
+
+	/**
+	 * Leave the store a wrapper block opened, once it has rendered.
+	 *
+	 * @param string $content      Rendered block HTML.
+	 * @param mixed  $parsed_block Block that rendered.
+	 * @return string The HTML, untouched.
+	 */
+	public static function leave_scope( $content, $parsed_block ) {
+		$name = is_array( $parsed_block ) ? (string) ( $parsed_block['blockName'] ?? '' ) : '';
+
+		if ( self::$scopes && in_array( $name, self::SCOPE_BLOCKS, true ) && self::$scopes[ count( self::$scopes ) - 1 ]['block'] === $name ) {
+			array_pop( self::$scopes );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * The database post behind a template-part block, if it has one.
+	 *
+	 * Only a template part that has been customised (in the Site Editor, say)
+	 * has one; until then it is read from the theme's file and there is no post
+	 * to save into.
+	 *
+	 * @param array<string, mixed> $attrs Template-part block attributes.
+	 * @return \WP_Post|null
+	 */
+	private static function template_part_post( array $attrs ): ?\WP_Post {
+		$slug = isset( $attrs['slug'] ) ? sanitize_title( (string) $attrs['slug'] ) : '';
+		if ( '' === $slug || ! function_exists( 'get_block_template' ) ) {
+			return null;
+		}
+
+		$theme    = isset( $attrs['theme'] ) && '' !== $attrs['theme'] ? (string) $attrs['theme'] : get_stylesheet();
+		$template = get_block_template( $theme . '//' . $slug, 'wp_template_part' );
+		$post_id  = $template instanceof \WP_Block_Template && $template->wp_id ? (int) $template->wp_id : 0;
+		$post     = $post_id > 0 ? get_post( $post_id ) : null;
+
+		return $post instanceof \WP_Post && 'wp_template_part' === $post->post_type ? $post : null;
 	}
 
 	/* ---------------------------------------------------------------------
@@ -639,6 +827,10 @@ final class Inline_Editor {
 					'saved'   => __( 'Saved', 'flexa-block' ),
 					'saving'  => __( 'Saving…', 'flexa-block' ),
 					'error'   => __( 'Could not save', 'flexa-block' ),
+					'scope'   => [
+						'template-part' => __( 'This text is part of the site template (header, footer…). Saving changes it on every page that uses this part.', 'flexa-block' ),
+						'pattern'       => __( 'This text is part of a synced pattern. Saving changes it everywhere the pattern is used.', 'flexa-block' ),
+					],
 				],
 			]
 		);
@@ -748,6 +940,12 @@ final class Inline_Editor {
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
 					],
+					// The template part or synced pattern the block is stored in,
+					// when it is not the viewed post. See target_for().
+					'targetId'  => [
+						'type'              => 'integer',
+						'sanitize_callback' => 'absint',
+					],
 					// Sanitized in the handler against the field's own allowlist.
 					'value'     => [
 						'required' => true,
@@ -778,7 +976,48 @@ final class Inline_Editor {
 		if ( ! self::user_can_edit_inline() ) {
 			return new \WP_Error( 'flexa_role_denied', __( 'Your user role is not allowed to edit on the front end.', 'flexa-block' ), [ 'status' => 403 ] );
 		}
+		$target_id = absint( $request->get_param( 'targetId' ) );
+		if ( $target_id > 0 ) {
+			$target = self::shared_target( $target_id );
+			if ( is_wp_error( $target ) ) {
+				return $target;
+			}
+		}
 		return true;
+	}
+
+	/**
+	 * A shared store an edit may be saved to, if the current user may change it.
+	 *
+	 * Template parts need `edit_theme_options`, the same as editing them in the
+	 * Site Editor, because a change applies to every page that uses the part.
+	 * Synced patterns need the right to edit that pattern.
+	 *
+	 * @param int $target_id Post ID of the template part or synced pattern.
+	 * @return \WP_Post|\WP_Error
+	 */
+	private static function shared_target( int $target_id ) {
+		$target = get_post( $target_id );
+
+		if ( ! $target instanceof \WP_Post || ! in_array( $target->post_type, [ 'wp_template_part', 'wp_block' ], true ) ) {
+			return new \WP_Error( 'flexa_bad_target', __( 'This part of the page could not be found. Reload the page and try again.', 'flexa-block' ), [ 'status' => 404 ] );
+		}
+
+		$allowed = 'wp_template_part' === $target->post_type
+			? current_user_can( 'edit_theme_options' )
+			: current_user_can( 'edit_post', $target_id );
+
+		if ( ! $allowed ) {
+			return new \WP_Error(
+				'flexa_forbidden',
+				'wp_template_part' === $target->post_type
+					? __( 'This text is part of the site template, and your account cannot edit templates.', 'flexa-block' )
+					: __( 'This text is part of a synced pattern you do not have permission to edit.', 'flexa-block' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		return $target;
 	}
 
 	/**
@@ -821,83 +1060,93 @@ final class Inline_Editor {
 			return new \WP_Error( 'flexa_not_found', __( 'The post could not be found. Try reloading the page.', 'flexa-block' ), [ 'status' => 404 ] );
 		}
 
-		$blocks = parse_blocks( $post->post_content );
-		$flat   = [];
-		self::flatten( $blocks, $flat );
-
-		$ref = null;
-		foreach ( $flat as &$candidate ) {
-			if ( ( $candidate['blockName'] ?? '' ) === $name
-				&& (string) ( $candidate['attrs']['blockId'] ?? '' ) === $block_id ) {
-				$ref = &$candidate;
-				break;
+		// Where the block is stored: the viewed post, or a template part or
+		// synced pattern shown on it. Permission for a shared store was already
+		// checked in rest_permission(); asked again here because this is the
+		// object that gets written.
+		$store     = $post;
+		$target_id = absint( $request->get_param( 'targetId' ) );
+		if ( $target_id > 0 ) {
+			$store = self::shared_target( $target_id );
+			if ( is_wp_error( $store ) ) {
+				return $store;
 			}
 		}
-		unset( $candidate );
 
-		if ( null === $ref ) {
+		// Find the one block delimiter this edit is about and rewrite only that.
+		// Parsing the whole post and serializing it back would also re-encode
+		// every other block, and PHP arrays cannot tell `{}` from `[]`, so a
+		// one-word edit could change empty objects anywhere on the page. See
+		// Block_Patcher.
+		$content = (string) $store->post_content;
+		$token   = Block_Patcher::locate( $content, $block_id );
+
+		if ( is_wp_error( $token ) && 'flexa_block_duplicate_block' === $token->get_error_code() ) {
+			return new \WP_Error( 'flexa_block_duplicate', __( 'Two blocks on this page share the same id, so this edit could not be matched to one of them. Open the page in the block editor and save it once, then try again.', 'flexa-block' ), [ 'status' => 409 ] );
+		}
+		if ( is_wp_error( $token ) || $token['name'] !== $name ) {
 			return new \WP_Error( 'flexa_block_not_found', __( 'This block is no longer in the post — it may have been moved or removed in the editor. Reload the page and try again.', 'flexa-block' ), [ 'status' => 404 ] );
 		}
 
 		$clean = wp_kses( $value, self::allowed_html( (string) $field['allowed'] ) );
 
-		if ( ! empty( $field['cell'] ) ) {
-			// 2-axis matrix cell: attr[row]['values'][col] (comparison table).
-			$row_i = absint( $index_raw );
-			$col_i = absint( $sub_raw );
-			if ( ! isset( $ref['attrs'][ $attr ] ) || ! is_array( $ref['attrs'][ $attr ] ) ) {
-				$ref['attrs'][ $attr ] = self::default_attr_array( $name, $attr );
-			}
-			if ( ! isset( $ref['attrs'][ $attr ][ $row_i ] ) || ! is_array( $ref['attrs'][ $attr ][ $row_i ] ) ) {
-				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
-			}
-			if ( ! isset( $ref['attrs'][ $attr ][ $row_i ]['values'] ) || ! is_array( $ref['attrs'][ $attr ][ $row_i ]['values'] ) ) {
-				$ref['attrs'][ $attr ][ $row_i ]['values'] = [];
-			}
-			$old                                             = (string) ( $ref['attrs'][ $attr ][ $row_i ]['values'][ $col_i ] ?? '' );
-			$ref['attrs'][ $attr ][ $row_i ]['values'][ $col_i ] = $clean;
-		} elseif ( ! empty( $field['repeat'] ) ) {
-			$i        = absint( $index_raw );
-			$item_key = (string) $field['key'];
-			// The array attribute is omitted from the block markup while it still
-			// equals the block.json default (Gutenberg only serializes changed
-			// attributes), so seed it from the registered default before indexing.
-			if ( ! isset( $ref['attrs'][ $attr ] ) || ! is_array( $ref['attrs'][ $attr ] ) ) {
-				$ref['attrs'][ $attr ] = self::default_attr_array( $name, $attr );
-			}
-			if ( ! isset( $ref['attrs'][ $attr ][ $i ] ) || ! is_array( $ref['attrs'][ $attr ][ $i ] ) ) {
-				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
-			}
-			$old                                      = (string) ( $ref['attrs'][ $attr ][ $i ][ $item_key ] ?? '' );
-			$ref['attrs'][ $attr ][ $i ][ $item_key ] = $clean;
-		} elseif ( ! empty( $field['object'] ) ) {
-			$obj_key = (string) $field['key'];
-			if ( ! isset( $ref['attrs'][ $attr ] ) || ! is_array( $ref['attrs'][ $attr ] ) ) {
-				$ref['attrs'][ $attr ] = self::default_attr_array( $name, $attr );
-			}
-			$old                               = (string) ( $ref['attrs'][ $attr ][ $obj_key ] ?? '' );
-			$ref['attrs'][ $attr ][ $obj_key ] = $clean;
-		} else {
-			$old                   = (string) ( $ref['attrs'][ $attr ] ?? '' );
-			$ref['attrs'][ $attr ] = $clean;
+		// Decoded as objects, so `{}` and `[]` inside the attribute keep their
+		// shape. An attribute still equal to its block.json default is absent
+		// from the markup (Gutenberg only serializes changed attributes), so an
+		// edit to it starts from the registered default.
+		$attrs   = json_decode( (string) wp_json_encode( $token['attrs'] ) );
+		$attrs   = $attrs instanceof \stdClass ? $attrs : new \stdClass();
+		$current = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+
+		$changed = self::with_field(
+			$current,
+			$field,
+			null === $index_raw ? null : absint( $index_raw ),
+			null === $sub_raw ? null : absint( $sub_raw ),
+			$clean
+		);
+		if ( is_wp_error( $changed ) ) {
+			return $changed;
 		}
 
-		$updated = serialize_blocks( $blocks );
+		$old            = $changed['old'];
+		$attrs->{$attr} = $changed['value'];
 
+		$updated = Block_Patcher::replace( $content, $token, $attrs );
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		// KSES is held off for this one write. The only new data in $updated is
+		// $clean, which already went through this field's own allowlist above,
+		// and it sits inside one block's JSON encoded the way core encodes it.
+		// Everything else is the post's stored content, unchanged. Left on, the
+		// post KSES filter (for a user without unfiltered_html) runs
+		// filter_block_content(), which parses and re-serializes the whole post:
+		// exactly the round trip Block_Patcher exists to avoid, applied to every
+		// other block on the page. Core's custom-CSS stripping filter stays on;
+		// it is surgical and only touches blocks that carry `style.css`.
+		//
 		// wp_slash: wp_update_post runs wp_unslash on the content, so pre-slash it
 		// to keep backslashes/quotes in the serialized block markup intact.
+		kses_remove_filters();
 		$result = wp_update_post(
 			[
-				'ID'           => $post_id,
+				'ID'           => (int) $store->ID,
 				'post_content' => wp_slash( $updated ),
 			],
 			true
 		);
+		// kses_init(), not kses_init_filters(): put back exactly what this user
+		// had, which for one with unfiltered_html is no filters at all.
+		kses_init();
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
+		// A template part or pattern has no comments of its own to hold the
+		// note, so the edit is logged on the page it was made from.
 		self::log_edit( $post_id, $name, $old, $clean );
 
 		return rest_ensure_response( [ 'success' => true ] );
@@ -943,42 +1192,123 @@ final class Inline_Editor {
 	}
 
 	/**
-	 * The block.json default for an array/object attribute (empty array if none).
+	 * The block.json default for an attribute, decoded the way stored ones are.
 	 *
 	 * Blocks omit attributes that still equal their default from the serialized
-	 * markup, so an edit to a still-default list/object must rebuild from this.
+	 * markup, so an edit to a still-default value must start from this. Passed
+	 * through JSON so maps become objects and lists stay lists, the same shape
+	 * `Block_Patcher` decodes a stored attribute into.
 	 *
 	 * @param string $name Block name.
 	 * @param string $attr Attribute name.
-	 * @return array<int|string, mixed>
+	 * @return mixed The default, or null when the block declares none.
 	 */
-	private static function default_attr_array( string $name, string $attr ): array {
+	private static function default_attr( string $name, string $attr ) {
 		if ( ! class_exists( '\WP_Block_Type_Registry' ) ) {
-			return [];
+			return null;
 		}
 		$type = \WP_Block_Type_Registry::get_instance()->get_registered( $name );
 		if ( ! $type || ! is_array( $type->attributes ) ) {
-			return [];
+			return null;
 		}
-		$schema  = $type->attributes[ $attr ] ?? null;
-		$default = is_array( $schema ) ? ( $schema['default'] ?? null ) : null;
-		return is_array( $default ) ? $default : [];
+		$schema = $type->attributes[ $attr ] ?? null;
+		if ( ! is_array( $schema ) || ! array_key_exists( 'default', $schema ) ) {
+			return null;
+		}
+		return json_decode( (string) wp_json_encode( $schema['default'] ) );
 	}
 
 	/**
-	 * Flatten a parsed block tree into a list of references (depth-first).
+	 * An attribute's value with one registry field set, and what it held before.
 	 *
-	 * @param array<int, array<string, mixed>> $blocks Parsed blocks (by ref).
-	 * @param array<int, array<string, mixed>> $flat   Accumulator (by ref).
+	 * Works on decoded JSON (objects as stdClass, lists as arrays) and returns a
+	 * new value rather than changing the one passed in. The four field shapes
+	 * mirror the registry: a cell of a 2-axis table, one key of a list item, one
+	 * key of an object attribute, or the attribute itself. Anything that does not
+	 * line up with the stored structure is refused rather than created, so an
+	 * edit can never invent a list item or leave a gap that would turn a list
+	 * into an object when it is encoded.
+	 *
+	 * @param mixed                $current Current attribute value, or its default.
+	 * @param array<string, mixed> $field   Registry field.
+	 * @param int|null             $index   List index (row for a cell), when sent.
+	 * @param int|null             $sub     Column index for a cell, when sent.
+	 * @param string               $clean   New value, already filtered.
+	 * @return array{value: mixed, old: string}|\WP_Error
 	 */
-	private static function flatten( array &$blocks, array &$flat ): void {
-		foreach ( $blocks as &$block ) {
-			$flat[] = &$block;
-			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-				self::flatten( $block['innerBlocks'], $flat );
+	private static function with_field( $current, array $field, ?int $index, ?int $sub, string $clean ) {
+		$bad_index = new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+
+		if ( ! empty( $field['cell'] ) ) {
+			// 2-axis matrix cell: attr[row].values[col] (comparison table).
+			if ( null === $index || null === $sub || ! is_array( $current ) || ! isset( $current[ $index ] ) || ! $current[ $index ] instanceof \stdClass ) {
+				return $bad_index;
 			}
+			$row    = clone $current[ $index ];
+			$values = isset( $row->values ) && is_array( $row->values ) ? $row->values : [];
+			// The next free column may be filled; anything past it would leave a gap.
+			if ( $sub > count( $values ) ) {
+				return $bad_index;
+			}
+			$old               = self::as_text( $values[ $sub ] ?? '' );
+			$values[ $sub ]    = $clean;
+			$row->values       = array_values( $values );
+			$current[ $index ] = $row;
+
+			return [
+				'value' => $current,
+				'old'   => $old,
+			];
 		}
-		unset( $block );
+
+		if ( ! empty( $field['repeat'] ) ) {
+			if ( null === $index || ! is_array( $current ) || ! isset( $current[ $index ] ) || ! $current[ $index ] instanceof \stdClass ) {
+				return $bad_index;
+			}
+			$key               = (string) $field['key'];
+			$item              = clone $current[ $index ];
+			$old               = self::as_text( $item->{$key} ?? '' );
+			$item->{$key}      = $clean;
+			$current[ $index ] = $item;
+
+			return [
+				'value' => $current,
+				'old'   => $old,
+			];
+		}
+
+		if ( ! empty( $field['object'] ) ) {
+			// Absent, or a `{}` default that PHP handed back as `[]`: start from an
+			// empty object, as the previous array-based code started from an
+			// empty array.
+			if ( ! $current instanceof \stdClass ) {
+				$current = new \stdClass();
+			}
+			$key            = (string) $field['key'];
+			$object         = clone $current;
+			$old            = self::as_text( $object->{$key} ?? '' );
+			$object->{$key} = $clean;
+
+			return [
+				'value' => $object,
+				'old'   => $old,
+			];
+		}
+
+		return [
+			'value' => $clean,
+			'old'   => self::as_text( $current ),
+		];
+	}
+
+	/**
+	 * A stored value as text, for the edit log.
+	 *
+	 * @param mixed $value Stored value.
+	 * @return string
+	 */
+	private static function as_text( $value ): string {
+		return is_scalar( $value ) ? (string) $value : '';
 	}
 
 	/**

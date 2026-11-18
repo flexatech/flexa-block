@@ -6,9 +6,10 @@ declare(strict_types=1);
  * The obvious way to edit a block is `parse_blocks()`, change the array, and
  * `serialize_blocks()` the whole post back. That round trip is not faithful:
  * attributes are decoded as PHP arrays, which cannot tell `{}` from `[]`, so any
- * empty object anywhere on the page comes back as an empty list. The roadmap
- * records this against `flexa/get-page-block-tree`, and it applies just as much
- * to a write path that re-serializes a page a person built by hand.
+ * empty object anywhere on the page comes back as an empty list. Any write path
+ * that re-serializes a page a person built by hand inherits that, which is why
+ * every path in this plugin that changes one field of an existing block goes
+ * through here: the MCP module's page editor, and front-end inline editing.
  *
  * So this works on the bytes. It finds the opening comment delimiter of the one
  * block being changed, decodes that block's attributes as objects (which keeps
@@ -21,12 +22,13 @@ declare(strict_types=1);
  * Deliberately free of WordPress: the delimiter grammar, the encoding and the
  * splice are the parts with the sharp edges, and they can be tested on their
  * own. Deciding which attributes may change, and to what, is not this class's
- * business; see {@see Page_Editor}.
+ * business: each caller keeps its own allowlist and validation, and adds its
+ * own advice on top of the errors returned here, which only say what happened.
  *
  * @package Flexa\Block
  */
 
-namespace Flexa\Block\MCP;
+namespace Flexa\Block;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -85,6 +87,27 @@ class Block_Patcher {
 	}
 
 	/**
+	 * Every `blockId` that appears in a post's own content, as a lookup set.
+	 *
+	 * Used to tell a block the post actually contains from one that is only
+	 * rendered on its page: a template part, a synced pattern, another post's
+	 * content pulled in by a query loop. Only the first can be saved back into
+	 * this post.
+	 *
+	 * @param string $content Post content.
+	 * @return array<string, true>
+	 */
+	public static function block_ids( string $content ): array {
+		$ids = [];
+		foreach ( self::tokens( $content ) as $token ) {
+			if ( isset( $token['attrs']->blockId ) && is_string( $token['attrs']->blockId ) && '' !== $token['attrs']->blockId ) {
+				$ids[ $token['attrs']->blockId ] = true;
+			}
+		}
+		return $ids;
+	}
+
+	/**
 	 * The one block whose `blockId` attribute is the given value.
 	 *
 	 * Two blocks with the same id is a page someone duplicated a block on
@@ -105,10 +128,10 @@ class Block_Patcher {
 
 		if ( ! $found ) {
 			return new \WP_Error(
-				'flexa_mcp_unknown_block',
+				'flexa_block_unknown_block',
 				sprintf(
 					/* translators: %s: block id */
-					__( 'No block with the id %s on this page. Read the page again with flexa/get-editable-fields; it may have changed.', 'flexa-block' ),
+					__( 'No block with the id %s on this page. It may have been moved or removed since the page was read.', 'flexa-block' ),
 					$block_id
 				),
 				[ 'status' => 404 ]
@@ -117,7 +140,7 @@ class Block_Patcher {
 
 		if ( count( $found ) > 1 ) {
 			return new \WP_Error(
-				'flexa_mcp_duplicate_block',
+				'flexa_block_duplicate_block',
 				sprintf(
 					/* translators: %s: block id */
 					__( 'More than one block on this page has the id %s, so it is not clear which one to change. Opening the page in the editor and saving it once gives each block its own id.', 'flexa-block' ),
@@ -266,8 +289,8 @@ class Block_Patcher {
 	 */
 	private static function bad_path(): \WP_Error {
 		return new \WP_Error(
-			'flexa_mcp_bad_path',
-			__( 'That field does not exist on this block. Read the page again with flexa/get-editable-fields.', 'flexa-block' ),
+			'flexa_block_bad_path',
+			__( 'That field does not exist on this block.', 'flexa-block' ),
 			[ 'status' => 400 ]
 		);
 	}
@@ -279,7 +302,7 @@ class Block_Patcher {
 	 */
 	private static function unsafe(): \WP_Error {
 		return new \WP_Error(
-			'flexa_mcp_patch_unsafe',
+			'flexa_block_patch_unsafe',
 			__( 'This change could not be made without risking the rest of the page, so nothing was written. Make it in the editor instead.', 'flexa-block' ),
 			[ 'status' => 409 ]
 		);

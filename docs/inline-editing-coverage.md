@@ -122,3 +122,9 @@ block/trường Pro cố ý không hỗ trợ và lý do.
 - Quyền: Admin luôn có; Editor bật mặc định; role khác tắt (chỉnh ở tab
   **Editing** trong trang cài đặt Flexa Block).
 - Mỗi lần sửa được ghi log dạng comment "note" trên bài viết.
+- Block trong **template part** (header, footer… đã được tuỳ biến, tức là lưu
+  trong DB) sửa được nếu tài khoản có `edit_theme_options`; block trong
+  **synced pattern** sửa được nếu có quyền sửa pattern đó. Toolbar cảnh báo
+  thay đổi áp dụng cho mọi trang dùng phần đó. Block trong bài khác (query
+  loop), viết thẳng trong template, hoặc template part còn trong file theme thì
+  không có viền sửa. Chi tiết: `frontend-editing-roadmap.md` mục 6 và 31.

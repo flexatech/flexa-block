@@ -65,6 +65,7 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-filter-fields.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-post-filter-rest.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-form-handler.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-block-patcher.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-editor.php';
 	// TODO(remove in vNEXT): item-style migration.
 	require_once FLEXA_BLOCK_DIR . 'includes/class-item-style-migration.php';
@@ -124,7 +125,6 @@ function flexa_block_init() {
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-read-abilities.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-draft-writer.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-write-abilities.php';
-		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-block-patcher.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-editable-fields.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-working-copy.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-page-editor.php';
