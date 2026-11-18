@@ -25,7 +25,8 @@ off the plugin registers no tools at all.
    missing.
 
 2. **Switch the module on.** Go to **Flexa Block → AI agents**, turn on "Enable MCP", and
-   confirm. Leave "Create drafts" off until you want an agent writing.
+   confirm. Leave "Create and update drafts" off until you want an agent
+   writing.
 
 3. **Create the account the client will use.** A separate user with the lowest
    role that fits the job, not your own administrator account. Reading the
@@ -71,7 +72,7 @@ The adapter's default server publishes three tools, not one tool per ability:
 
 So a call to a Flexa tool is a call to `execute-ability` with
 `ability_name: "flexa/list-presets"` and the ability's own input under
-`parameters`. This plugin registers five abilities:
+`parameters`. This plugin registers six abilities:
 
 | Ability | Needs | What it does |
 |---|---|---|
@@ -80,6 +81,7 @@ So a call to a Flexa tool is a call to `execute-ability` with
 | `flexa/list-presets` | write toggle, `edit_pages` | The page presets available to build from. |
 | `flexa/get-preset-schema` | write toggle, `edit_pages` | One preset's slots and their types. |
 | `flexa/create-page-draft` | write toggle, `edit_pages` | Creates a page from a preset. Draft only, never published, never an overwrite. |
+| `flexa/update-page-draft` | write toggle, `edit_post` on that page | Changes the fields of a draft built from a preset, by rebuilding it from the preset. Refused for anything but a draft, and for a draft someone has edited by hand since it was built. Core keeps a revision of the version it replaced. |
 
 `discover-abilities` also lists abilities that WordPress core and other active
 plugins registered. Those are not ours and the two toggles in the Flexa panel
@@ -124,9 +126,13 @@ the adapter's default server exposes. There is no stdio path to this plugin.
   low. See the capabilities column in the table above.
 - `discover-abilities` returns core and WooCommerce abilities but none of ours:
   the module's switch is off, or both the read and write toggles are.
-- A tool exists but a call fails with a rate limit: ten drafts and 120
-  discovery calls per user per hour, counted per tool. The message says how
-  long to wait.
+- A tool exists but a call fails with a rate limit: ten drafts, thirty draft
+  updates and 120 discovery calls per user per hour, counted per tool. The
+  message says how long to wait.
+- `update-page-draft` refuses a draft as edited by hand when nothing visible
+  changed: any save from the editor rewrites the stored markup, and that is
+  what the check compares. Create a new draft, or make the change in the
+  editor.
 - Something ran but you cannot tell what: **Flexa Block → AI agents → Recent activity**
   records every call this module handled, with the user, the tool, the page and
   the outcome. It keeps no content and no prompts.

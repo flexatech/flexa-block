@@ -74,9 +74,11 @@ class Ability_Support {
 	 * Two of the three annotations deserve their reasoning written down, since
 	 * either one read the other way would change how a client behaves:
 	 *
-	 *  - `destructive` is false, and means it: everything this module writes is
-	 *    a new draft. Nothing it offers edits or removes content that was
-	 *    already there, so a call cannot cost a site anything it had.
+	 *  - `destructive` is false by default, and means it for creation: a new
+	 *    draft cannot cost a site anything it had. The one ability that
+	 *    replaces existing content, `flexa/update-page-draft`, overrides this
+	 *    and says `destructive: true` itself, even though it is limited to
+	 *    untouched drafts and core keeps a revision.
 	 *  - `idempotent` is false, because for an arbitrary call it is not. Our
 	 *    write path does accept an idempotency key and will hand back the same
 	 *    post for the same key, but that is a property of a request that

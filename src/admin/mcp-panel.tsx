@@ -107,7 +107,7 @@ export function McpPanel( { mcp }: Props ): JSX.Element {
 			patch: { write: true },
 			title: __( 'Allow agents to create content?', 'flexa-block' ),
 			body: __(
-				'A connected agent will be able to create pages on this site. Everything it creates arrives as a draft for you to review, and it can never publish.',
+				'A connected agent will be able to create pages on this site, and change the fields of drafts made from a preset. Everything it creates arrives as a draft for you to review, it can never publish, and it cannot change a draft once you have edited it yourself.',
 				'flexa-block'
 			),
 			action: __( 'Allow', 'flexa-block' ),
@@ -350,9 +350,9 @@ function Connected( {
 							onChange={ ( v ) => ! busy && onRead( v ) }
 						/>
 						<SettingRow
-							label={ __( 'Create drafts', 'flexa-block' ) }
+							label={ __( 'Create and update drafts', 'flexa-block' ) }
 							help={ __(
-								'Create a page from one of your presets. Drafts only, never published, never an existing page overwritten.',
+								'Create a page from one of your presets, and change the fields of a draft made that way. Drafts only: never published, and a page someone has edited by hand is never overwritten.',
 								'flexa-block'
 							) }
 							checked={ state.write }

@@ -441,4 +441,69 @@ class PresetSlotsTest extends TestCase {
 		$this->assertSame( [], Preset_Slots::filled_keys( $declared, [] ) );
 		$this->assertSame( [], Preset_Slots::filled_keys( $declared, [ 'one' => '  ' ] ) );
 	}
+
+	public function test_the_recorded_values_are_the_cleaned_ones_for_filled_slots_only(): void {
+		$declared = Preset_Slots::declared( $this->preset( 'text' ) );
+		$values   = [ 'one' => 'clean' ];
+
+		$this->assertSame( [ 'one' => 'clean' ], Preset_Slots::filled_values( $declared, [ 'one' => ' raw ' ], $values ) );
+		$this->assertSame( [], Preset_Slots::filled_values( $declared, [], $values ) );
+	}
+
+	/**
+	 * How an update combines what a draft has with what a caller sends.
+	 */
+	public function test_an_update_keeps_the_fields_it_was_not_sent(): void {
+		$this->assertSame(
+			[
+				'heading' => 'Ours',
+				'email'   => 'new@example.com',
+			],
+			Preset_Slots::merge(
+				[
+					'heading' => 'Ours',
+					'email'   => 'old@example.com',
+				],
+				[ 'email' => 'new@example.com' ]
+			)
+		);
+	}
+
+	public function test_an_empty_value_sends_a_field_back_to_the_preset_text(): void {
+		$this->assertSame(
+			[ 'email' => 'old@example.com' ],
+			Preset_Slots::merge(
+				[
+					'heading' => 'Ours',
+					'email'   => 'old@example.com',
+				],
+				[ 'heading' => '  ' ]
+			)
+		);
+	}
+
+	public function test_an_update_with_nothing_sent_changes_nothing(): void {
+		$stored = [ 'heading' => 'Ours' ];
+		$this->assertSame( $stored, Preset_Slots::merge( $stored, [] ) );
+	}
+
+	public function test_an_unknown_key_survives_the_merge_so_validation_can_refuse_it(): void {
+		$merged = Preset_Slots::merge( [], [ 'typo' => 'x' ] );
+
+		$this->assertSame( [ 'typo' => 'x' ], $merged );
+		$this->assertInstanceOf( WP_Error::class, Preset_Slots::values( $this->preset( 'text' ), $merged ) );
+	}
+
+	public function test_a_blank_or_non_scalar_stored_value_is_not_carried_forward(): void {
+		$this->assertSame(
+			[],
+			Preset_Slots::merge(
+				[
+					'one' => '',
+					'two' => [ 'nested' ],
+				],
+				[]
+			)
+		);
+	}
 }

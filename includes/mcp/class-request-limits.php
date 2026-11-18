@@ -50,6 +50,17 @@ class Request_Limits {
 	const DRAFTS_PER_HOUR = 10;
 
 	/**
+	 * Draft updates one user may have this module make in an hour.
+	 *
+	 * Higher than creation, because the workflow it serves is iterative: a
+	 * person reads the draft, asks for the heading to be shorter, then for the
+	 * phone number to be fixed. Each of those is one call, and each one saves
+	 * a revision, so the ceiling also bounds how fast a confused client can
+	 * fill a page's revision history.
+	 */
+	const UPDATES_PER_HOUR = 30;
+
+	/**
 	 * Discovery calls one user may make in an hour.
 	 *
 	 * Listing presets and reading a preset's schema cost a glob of the samples

@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 /**
- * The module's write path: discover a preset, read what it takes, create a draft.
+ * The module's write path: discover a preset, read what it takes, create a
+ * draft, and change that draft's fields.
  *
- * Three abilities, and all three are gated on the write toggle, including the
+ * Four abilities, and all four are gated on the write toggle, including the
  * two that only read. That is deliberate. Listing presets and reading a
  * preset's schema exist to be the first two steps of creating a draft; with
  * write off there is no third step, and a client that discovers a preset it can
@@ -15,8 +16,16 @@ declare(strict_types=1);
  * whether an ability exists; the annotation describes what it does once it
  * does.
  *
- * None of them touch `Content_Importer` directly. Creating content goes through
- * {@see Draft_Writer}, which is where the validation and the draft pin live.
+ * None of them touch `Content_Importer` directly. Creating and updating content
+ * go through {@see Draft_Writer}, which is where the validation and the draft
+ * pin live.
+ *
+ * Updating is deliberately narrow: it changes the slot values of a draft built
+ * from a preset, by rebuilding that draft from the preset, and only while the
+ * draft is untouched since. There is no ability that edits arbitrary blocks or
+ * arbitrary pages. Reading a page's blocks and writing them back is not safe
+ * with what `flexa/get-page-block-tree` returns (see the roadmap's known
+ * risks), and a published page is not an agent's to change.
  *
  * @package Flexa\Block
  */
@@ -35,7 +44,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Registers `flexa/list-presets`, `flexa/get-preset-schema` and `flexa/create-page-draft`.
+ * Registers `flexa/list-presets`, `flexa/get-preset-schema`,
+ * `flexa/create-page-draft` and `flexa/update-page-draft`.
  */
 class Write_Abilities {
 
@@ -163,6 +173,44 @@ class Write_Abilities {
 				'output_schema'       => self::draft_schema(),
 				'permission_callback' => [ __CLASS__, 'can_use_presets' ],
 				'execute_callback'    => [ __CLASS__, 'create_page_draft' ],
+			]
+		);
+
+		$abilities['flexa/update-page-draft'] = Ability_Support::write_ability(
+			[
+				'label'               => __( 'Update page draft', 'flexa-block' ),
+				'description'         => __( 'Change the fields of a draft page that was built from a preset, such as one flexa/create-page-draft returned. Send only the fields to change; the others keep their current values, and a field sent as an empty string goes back to the preset\'s own text. Works only on drafts, and only while nobody has edited the draft in the editor since it was built; otherwise it is refused, so that a person\'s work is never overwritten. Send no fields to read the values the draft has now.', 'flexa-block' ),
+				'input_schema'        => [
+					'type'       => 'object',
+					'properties' => [
+						'post_id' => [
+							'type'        => 'integer',
+							'minimum'     => 1,
+							'description' => __( 'The draft to change, as flexa/create-page-draft returned it.', 'flexa-block' ),
+						],
+						'slots'   => [
+							'type'                 => 'object',
+							'default'              => [],
+							'description'          => __( 'New values for the fields to change, keyed by field name as flexa/get-preset-schema reports them. Plain text only: a value containing < or > is refused. An empty string resets that field to the preset\'s own text.', 'flexa-block' ),
+							'additionalProperties' => [ 'type' => [ 'string', 'integer' ] ],
+						],
+						'title'   => [
+							'type'        => 'string',
+							'maxLength'   => Draft_Writer::MAX_TITLE_CHARS,
+							'description' => __( 'New title for the page. Omit it to keep the current one.', 'flexa-block' ),
+						],
+					],
+					'required'   => [ 'post_id' ],
+				],
+				'output_schema'       => self::update_schema(),
+				'permission_callback' => [ __CLASS__, 'can_use_presets' ],
+				'execute_callback'    => [ __CLASS__, 'update_page_draft' ],
+				'meta'                => [
+					// It replaces a draft's content, which is a destructive update
+					// even with a revision kept, and a client should be free to ask
+					// its user before making one.
+					'annotations' => [ 'destructive' => true ],
+				],
 			]
 		);
 
@@ -334,6 +382,16 @@ class Write_Abilities {
 	}
 
 	/**
+	 * Change the fields of one draft built from a preset.
+	 *
+	 * @param mixed $input Validated ability input.
+	 * @return array<string, mixed>|\WP_Error
+	 */
+	public static function update_page_draft( $input ) {
+		return Draft_Writer::update_draft( is_array( $input ) ? $input : [] );
+	}
+
+	/**
 	 * The post already created from a preset, when the caller may see it.
 	 *
 	 * Reported as information, never as a refusal. The admin import panel uses
@@ -367,6 +425,8 @@ class Write_Abilities {
 		return [
 			'drafts_per_hour'      => Request_Limits::DRAFTS_PER_HOUR,
 			'drafts_left'          => max( 0, Request_Limits::DRAFTS_PER_HOUR - Request_Limits::used( Draft_Writer::OPERATION ) ),
+			'updates_per_hour'     => Request_Limits::UPDATES_PER_HOUR,
+			'updates_left'         => max( 0, Request_Limits::UPDATES_PER_HOUR - Request_Limits::used( Draft_Writer::UPDATE_OPERATION ) ),
 			'max_fields'           => Preset_Slots::MAX_SLOTS,
 			'max_field_bytes'      => Preset_Slots::MAX_TOTAL_BYTES,
 			'max_request_bytes'    => Draft_Writer::MAX_REQUEST_BYTES,
@@ -388,6 +448,11 @@ class Write_Abilities {
 				'drafts_left'          => [
 					'type'        => 'integer',
 					'description' => __( 'Drafts you may still create in the current hour.', 'flexa-block' ),
+				],
+				'updates_per_hour'     => [ 'type' => 'integer' ],
+				'updates_left'         => [
+					'type'        => 'integer',
+					'description' => __( 'Draft updates you may still make in the current hour.', 'flexa-block' ),
 				],
 				'max_fields'           => [ 'type' => 'integer' ],
 				'max_field_bytes'      => [
@@ -499,6 +564,51 @@ class Write_Abilities {
 				'notes'            => [
 					'type'        => 'array',
 					'description' => __( 'Anything about this preset a client should know before sending values.', 'flexa-block' ),
+					'items'       => [ 'type' => 'string' ],
+				],
+			],
+		];
+	}
+
+	/**
+	 * Output schema for `flexa/update-page-draft`.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function update_schema(): array {
+		return [
+			'type'       => 'object',
+			'properties' => [
+				'post_id'      => [ 'type' => 'integer' ],
+				'post_type'    => [ 'type' => 'string' ],
+				'status'       => [
+					'type'        => 'string',
+					'description' => __( 'Always draft.', 'flexa-block' ),
+				],
+				'title'        => [ 'type' => 'string' ],
+				'edit_link'    => [ 'type' => 'string' ],
+				'view_link'    => [
+					'type'        => 'string',
+					'description' => __( 'Preview link. Works only for someone who can edit the page.', 'flexa-block' ),
+				],
+				'slot_values'  => [
+					'type'                 => 'object',
+					'description'          => __( 'Every field that now has a value of its own, after this call. A field absent here shows the preset\'s own text.', 'flexa-block' ),
+					'additionalProperties' => [ 'type' => 'string' ],
+				],
+				'changed'      => [
+					'type'        => 'array',
+					'description' => __( 'Fields this call changed, and title if the title changed.', 'flexa-block' ),
+					'items'       => [ 'type' => 'string' ],
+				],
+				'updated'      => [
+					'type'        => 'boolean',
+					'description' => __( 'False when the values sent were what the draft already had, so nothing was written.', 'flexa-block' ),
+				],
+				'updates_left' => [ 'type' => 'integer' ],
+				'warnings'     => [
+					'type'        => 'array',
+					'description' => __( 'Things that went less than perfectly but did not stop the update.', 'flexa-block' ),
 					'items'       => [ 'type' => 'string' ],
 				],
 			],

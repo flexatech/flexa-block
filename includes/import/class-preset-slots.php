@@ -57,6 +57,16 @@ class Preset_Slots {
 	const FILLED_META = '_flexa_slot_keys';
 
 	/**
+	 * Post meta: the cleaned value of each slot that was filled in.
+	 *
+	 * Kept so a draft can be rebuilt from its preset with one field changed and
+	 * the others as they were. Only filled slots are recorded: a slot left at its
+	 * default stays at the preset's default, including when a later version of
+	 * the preset improves that default.
+	 */
+	const VALUES_META = '_flexa_slot_values';
+
+	/**
 	 * Slot types and the longest value each accepts.
 	 *
 	 * A preset may tighten a limit per slot; a `max` above the ceiling gets the
@@ -259,6 +269,64 @@ class Preset_Slots {
 			}
 		}
 		return $keys;
+	}
+
+	/**
+	 * The cleaned values of the slots the caller filled in, keyed by slot.
+	 *
+	 * What gets recorded in {@see VALUES_META}. Cleaned rather than raw, so that
+	 * what is stored is what the page shows; cleaning is idempotent, so running a
+	 * stored value through validation again on a rebuild gives the same value.
+	 *
+	 * @param array<string, array<string, mixed>> $declared Normalized declarations.
+	 * @param array<string, mixed>                $raw      Values as the caller sent them.
+	 * @param array<string, string>               $values   Resolved values, from `values()`.
+	 * @return array<string, string>
+	 */
+	public static function filled_values( array $declared, array $raw, array $values ): array {
+		$out = [];
+		foreach ( self::filled_keys( $declared, $raw ) as $key ) {
+			if ( isset( $values[ $key ] ) ) {
+				$out[ $key ] = (string) $values[ $key ];
+			}
+		}
+		return $out;
+	}
+
+	/**
+	 * Combine the values a draft was built with and the ones a caller now sends.
+	 *
+	 * A slot the caller names takes the caller's value; a blank one means "back
+	 * to the preset's own text", so it is dropped. A slot the caller leaves out
+	 * keeps what the draft already had. Keys the preset does not declare are
+	 * passed through untouched, so that validation refuses them by name rather
+	 * than this quietly losing a typo.
+	 *
+	 * Pure on purpose: this is the decision an update turns on, and it can be
+	 * tested without WordPress.
+	 *
+	 * @param array<string, mixed> $stored   Values recorded on the draft.
+	 * @param array<string, mixed> $incoming Values the caller sent now.
+	 * @return array<string, mixed> Raw values to validate and apply.
+	 */
+	public static function merge( array $stored, array $incoming ): array {
+		$merged = [];
+
+		foreach ( $stored as $key => $value ) {
+			if ( is_string( $key ) && is_scalar( $value ) && '' !== trim( (string) $value ) ) {
+				$merged[ $key ] = (string) $value;
+			}
+		}
+
+		foreach ( $incoming as $key => $value ) {
+			if ( is_string( $value ) && '' === trim( $value ) ) {
+				unset( $merged[ $key ] );
+				continue;
+			}
+			$merged[ $key ] = $value;
+		}
+
+		return $merged;
 	}
 
 	/**

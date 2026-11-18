@@ -1,7 +1,7 @@
 # MCP Module
 
-> ✅ xong (27) · 🧪 đang làm · ⬜ chưa bắt đầu (0)
-> · Cập nhật: 2026-10-09
+> ✅ xong (28) · 🧪 đang làm · ⬜ chưa bắt đầu (0)
+> · Cập nhật: 2026-11-18
 >
 > Module MCP nằm **trong** plugin free này, dưới `includes/mcp/`, tắt mặc định.
 > Quyết định kiến trúc và lý do: [`mcp-module-plan-prompt.md`](mcp-module-plan-prompt.md).
@@ -446,6 +446,48 @@ lịch, và `collect()` tự gỡ lịch khi log rỗng, nên log vẫn sống l
 còn event thì không sống lâu hơn log. Sau hai lần sửa, ba cặp đo liên tiếp cho
 cùng con số (2765 file, danh sách trùng từng dòng) và HTML trang chủ hai bản khớp
 từng byte sau khi chuẩn hoá đường dẫn plugin.
+
+## Bổ sung sau giai đoạn 4 · Sửa bản nháp
+
+28. ✅ `flexa/update-page-draft`: đổi giá trị slot của một bản nháp dựng từ preset.
+    Không có ability sửa block tuỳ ý hay sửa trang bất kỳ, và không định có: đường
+    "đọc block tree rồi ghi ngược" không an toàn (xem rủi ro `get-page-block-tree`
+    bên dưới). Ability này dựng lại cả trang từ file preset với slot mới gộp lên
+    slot cũ, nên caller vẫn chỉ gửi giá trị slot, không bao giờ gửi markup.
+
+Bốn điều kiện, cái nào hỏng cũng là từ chối chứ không cố làm:
+
+- Trang là `draft`. Trang đã publish là việc của người.
+- Trang có meta `_flexa_import_source` / `_flexa_import_id` và preset đó còn trên
+  site.
+- Nội dung còn đúng như lần import hoặc rebuild cuối. `Content_Importer` lưu
+  `_flexa_import_hash` (md5 của `post_content` đọc lại từ DB sau khi ghi) và
+  `untouched()` so với nội dung hiện tại. Trang import trước khi có hash bị từ chối
+  với mã riêng `flexa_mcp_untracked`, vì không biết được đã ai sửa chưa. Bất kỳ
+  lần lưu nào từ editor cũng đổi markup, kể cả khi nhìn không khác: lệch về phía
+  để yên trang của người.
+- Caller có `edit_post` trên đúng trang đó; không đọc được thì báo "không có
+  trang", để không dò được nháp riêng của người khác.
+
+Giá trị slot đã điền giờ được lưu ở `_flexa_slot_values` (giá trị đã clean, chỉ
+slot đã điền). `Preset_Slots::merge()` là quyết định thuần, có test: slot được gửi
+thì lấy giá trị mới, chuỗi rỗng là trả về chữ của preset, slot không gửi giữ
+nguyên, key lạ đi tiếp để validation từ chối đích danh. Slot đã lưu nhưng preset
+bản mới bỏ đi thì bị lọc trước khi gộp. Gửi giá trị giống hệt thì không ghi gì (tránh
+blockId mới và revision thừa), và response luôn kèm `slot_values` hiện tại nên gọi
+không có slot là cách đọc trạng thái.
+
+Core tự lưu revision khi `wp_update_post()`, nên mỗi lần sửa đều undo được. Giới
+hạn 30 lần/giờ/user (`Request_Limits::UPDATES_PER_HOUR`), có khoá transient theo
+post để hai lần sửa cùng lúc không chồng nhau. Annotation `destructive: true` vì
+ghi đè nội dung một bản nháp, để client có thể hỏi người dùng trước. Dùng chung
+toggle write, đổi nhãn thành "Create and update drafts".
+
+Kiểm trên site local 2026-11-18, account `editor`: tạo, đọc trạng thái, sửa một
+slot kèm title, gửi lại y hệt (không ghi), reset một slot, HTML trong slot, email
+sai, slot lạ, trang không từ preset, trang import trước khi có hash, trang đã bị
+sửa qua REST như người sửa trong editor, trang đã publish, không đăng nhập. Nội
+dung sau khi sửa có giá trị mới, không còn token, và có revision.
 
 ## Đang để mở
 

@@ -110,6 +110,12 @@ class Draft_Writer {
 	/** Operation name the idempotency scope is keyed on. */
 	const OPERATION = 'create-page-draft';
 
+	/** Operation name for updates, also their rate-limit bucket. */
+	const UPDATE_OPERATION = 'update-page-draft';
+
+	/** Transient prefix for the per-post lock an update holds while it writes. */
+	const LOCK_PREFIX = 'flexa_mcp_lock_';
+
 	/**
 	 * Characters refused anywhere in caller text.
 	 *
@@ -140,17 +146,9 @@ class Draft_Writer {
 			);
 		}
 
-		$size = strlen( (string) wp_json_encode( $input ) );
-		if ( $size > self::MAX_REQUEST_BYTES ) {
-			return new \WP_Error(
-				'flexa_mcp_request_too_large',
-				sprintf(
-					/* translators: %s: size limit in bytes */
-					__( 'That request is too large; the limit is %s bytes.', 'flexa-block' ),
-					number_format_i18n( self::MAX_REQUEST_BYTES )
-				),
-				[ 'status' => 413 ]
-			);
+		$sized = self::check_size( $input );
+		if ( is_wp_error( $sized ) ) {
+			return $sized;
 		}
 
 		$status = isset( $input['post_status'] ) ? (string) $input['post_status'] : 'draft';
@@ -199,25 +197,9 @@ class Draft_Writer {
 			return $gated;
 		}
 
-		$title = isset( $input['title'] ) ? trim( (string) $input['title'] ) : '';
-		if ( '' !== $title ) {
-			$gated = self::gate_one( __( 'Title', 'flexa-block' ), $title );
-			if ( is_wp_error( $gated ) ) {
-				return $gated;
-			}
-
-			$title = trim( (string) sanitize_text_field( $title ) );
-			if ( mb_strlen( $title ) > self::MAX_TITLE_CHARS ) {
-				return new \WP_Error(
-					'flexa_mcp_title_too_long',
-					sprintf(
-						/* translators: %s: character limit */
-						__( 'Keep the title to %s characters or fewer.', 'flexa-block' ),
-						number_format_i18n( self::MAX_TITLE_CHARS )
-					),
-					[ 'status' => 400 ]
-				);
-			}
+		$title = self::clean_title( $input );
+		if ( is_wp_error( $title ) ) {
+			return $title;
 		}
 
 		// The whole request, checked before the first write. A bad media ID, a
@@ -286,6 +268,274 @@ class Draft_Writer {
 		set_transient( $scope, $post_id, '' !== $key ? self::EXPLICIT_TTL : self::DERIVED_TTL );
 
 		return self::payload( $post_id, false, $key, $warnings );
+	}
+
+	/**
+	 * Change the fields of a draft that was built from a preset.
+	 *
+	 * The draft is rebuilt from its preset with the new values merged over the
+	 * ones it already had, which keeps every guarantee of creation: the caller
+	 * still never supplies markup, only slot values, and they still land only
+	 * in block attributes. What this adds is the set of conditions under which
+	 * overwriting a post's content is acceptable at all, and each one is a
+	 * refusal rather than a best effort:
+	 *
+	 *  - the post is a draft. A published page is what visitors see, and a
+	 *    change to it is a person's call;
+	 *  - it was built from a preset this site still has, so there is something
+	 *    to rebuild it from;
+	 *  - its content is exactly what the last import or rebuild wrote. A draft
+	 *    someone has worked on in the editor is theirs now, and rebuilding
+	 *    would throw that work away;
+	 *  - the caller may edit this particular post, not just pages in general.
+	 *
+	 * A revision is saved by core on the way, so even an update that passes all
+	 * of that is one click from undone.
+	 *
+	 * @param array<string, mixed> $input Ability input, already schema-validated.
+	 * @return array<string, mixed>|\WP_Error
+	 */
+	public static function update_draft( array $input ) {
+		if ( ! MCP_Settings::allows_write() ) {
+			return new \WP_Error(
+				'flexa_mcp_write_disabled',
+				__( 'Changing content over MCP is switched off for this site.', 'flexa-block' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$sized = self::check_size( $input );
+		if ( is_wp_error( $sized ) ) {
+			return $sized;
+		}
+
+		$post_id = isset( $input['post_id'] ) ? (int) $input['post_id'] : 0;
+		$post    = $post_id > 0 ? get_post( $post_id ) : null;
+
+		// "No such page" for a post the caller cannot even read, so this cannot
+		// be used to probe for someone else's private drafts.
+		if ( ! $post instanceof \WP_Post || 'trash' === $post->post_status || ! current_user_can( 'read_post', $post_id ) ) {
+			return new \WP_Error(
+				'flexa_mcp_unknown_post',
+				__( 'No page with that ID. Use the post_id that flexa/create-page-draft returned.', 'flexa-block' ),
+				[ 'status' => 404 ]
+			);
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return new \WP_Error(
+				'flexa_mcp_cannot_edit',
+				__( 'You do not have permission to edit this page.', 'flexa-block' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$source_key = (string) get_post_meta( $post_id, Content_Importer::SOURCE_META, true );
+		$preset_id  = (string) get_post_meta( $post_id, Content_Importer::ID_META, true );
+		if ( '' === $source_key || '' === $preset_id ) {
+			return new \WP_Error(
+				'flexa_mcp_not_from_preset',
+				__( 'This page was not built from a preset, so there are no fields to change. Only drafts made with flexa/create-page-draft, or imported from a preset, can be updated here.', 'flexa-block' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		if ( 'draft' !== $post->post_status ) {
+			return new \WP_Error(
+				'flexa_mcp_not_draft',
+				sprintf(
+					/* translators: %s: post status, for example publish */
+					__( 'Only drafts can be changed here, and this page is %s. Changes to it are for a person to make in the editor.', 'flexa-block' ),
+					$post->post_status
+				),
+				[ 'status' => 409 ]
+			);
+		}
+
+		if ( '' === (string) get_post_meta( $post_id, Content_Importer::HASH_META, true ) ) {
+			return new \WP_Error(
+				'flexa_mcp_untracked',
+				__( 'This draft was built before Flexa Block could tell whether a draft had been edited by hand, so it cannot be rebuilt safely. Create a new draft from the same preset instead.', 'flexa-block' ),
+				[ 'status' => 409 ]
+			);
+		}
+
+		if ( ! Content_Importer::untouched( $post_id ) ) {
+			return new \WP_Error(
+				'flexa_mcp_edited_by_person',
+				__( 'This draft has been changed in the editor since it was built, and rebuilding it would throw those changes away. Ask the person to make this change in the editor, or create a new draft instead.', 'flexa-block' ),
+				[ 'status' => 409 ]
+			);
+		}
+
+		$source     = Import_Registry::source( $source_key );
+		$definition = null !== $source ? $source->definition( $preset_id ) : null;
+		if ( ! is_array( $definition ) ) {
+			return new \WP_Error(
+				'flexa_mcp_preset_gone',
+				__( 'The preset this draft was built from is no longer available on this site, so it cannot be rebuilt.', 'flexa-block' ),
+				[ 'status' => 409 ]
+			);
+		}
+		$definition['id'] = $preset_id;
+
+		$incoming = isset( $input['slots'] ) && is_array( $input['slots'] ) ? $input['slots'] : [];
+
+		// Only what the caller sent now is held to the plain-text rule. Stored
+		// values were already accepted once, by this gate or by the admin form.
+		$gated = self::gate_values( $incoming );
+		if ( is_wp_error( $gated ) ) {
+			return $gated;
+		}
+
+		$title = self::clean_title( $input );
+		if ( is_wp_error( $title ) ) {
+			return $title;
+		}
+		$title = '' !== $title ? $title : $post->post_title;
+
+		// Stored values are narrowed to the slots the preset declares today. A
+		// newer preset that dropped a field should not make every update to an
+		// older draft fail on a value nobody is sending.
+		$declared = Preset_Slots::declared( $definition );
+		$stored   = get_post_meta( $post_id, Preset_Slots::VALUES_META, true );
+		$stored   = is_array( $stored ) ? array_intersect_key( $stored, $declared ) : [];
+		$merged   = Preset_Slots::merge( $stored, $incoming );
+
+		$values = Preset_Slots::values( $definition, $merged );
+		if ( is_wp_error( $values ) ) {
+			return $values;
+		}
+
+		$after   = Preset_Slots::filled_values( $declared, $merged, $values );
+		$changed = self::changed_keys( $stored, $after );
+
+		$limited = Request_Limits::tap( self::UPDATE_OPERATION, Request_Limits::UPDATES_PER_HOUR );
+		if ( is_wp_error( $limited ) ) {
+			return $limited;
+		}
+
+		// Nothing to do is answered without writing. A rebuild would mint new
+		// blockIds and a revision for a page that looks exactly the same.
+		if ( ! $changed && $title === $post->post_title ) {
+			return self::update_payload( $post_id, [], false, [ __( 'Those values are what the draft already has, so nothing was changed.', 'flexa-block' ) ] );
+		}
+
+		$lock = self::LOCK_PREFIX . $post_id;
+		if ( get_transient( $lock ) ) {
+			return new \WP_Error(
+				'flexa_mcp_in_progress',
+				__( 'This draft is already being updated. Wait for that answer before sending another change.', 'flexa-block' ),
+				[ 'status' => 409 ]
+			);
+		}
+		set_transient( $lock, 1, self::PENDING_TTL );
+
+		$warnings = [];
+		$built    = (string) get_post_meta( $post_id, Content_Importer::VERSION_META, true );
+		$current  = (string) ( $definition['version'] ?? '' );
+		if ( '' !== $built && '' !== $current && $built !== $current ) {
+			$warnings[] = sprintf(
+				/* translators: 1: version the draft was built from, 2: current preset version */
+				__( 'This draft was built from version %1$s of its preset and has been rebuilt from version %2$s, so parts of its layout may have changed too.', 'flexa-block' ),
+				$built,
+				$current
+			);
+		}
+
+		$result = Content_Importer::rebuild( $post_id, $source_key, $definition, $merged, $title );
+		delete_transient( $lock );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$warnings = array_merge( $warnings, $result, self::hold_at_draft( $post_id ) );
+
+		if ( $title !== $post->post_title ) {
+			$changed[] = 'title';
+		}
+
+		return self::update_payload( $post_id, $changed, true, $warnings );
+	}
+
+	/**
+	 * Slots whose value differs between two recorded sets.
+	 *
+	 * @param array<string, mixed>  $before Values before.
+	 * @param array<string, string> $after  Values after.
+	 * @return list<string>
+	 */
+	private static function changed_keys( array $before, array $after ): array {
+		$keys = array_unique( array_merge( array_keys( $before ), array_keys( $after ) ) );
+		$out  = [];
+
+		foreach ( $keys as $key ) {
+			$was = isset( $before[ $key ] ) ? (string) $before[ $key ] : null;
+			$now = $after[ $key ] ?? null;
+			if ( $was !== $now ) {
+				$out[] = (string) $key;
+			}
+		}
+
+		sort( $out );
+		return $out;
+	}
+
+	/**
+	 * Refuse a request too large to be worth decoding further.
+	 *
+	 * @param array<string, mixed> $input Ability input.
+	 * @return true|\WP_Error
+	 */
+	private static function check_size( array $input ) {
+		$size = strlen( (string) wp_json_encode( $input ) );
+		if ( $size <= self::MAX_REQUEST_BYTES ) {
+			return true;
+		}
+
+		return new \WP_Error(
+			'flexa_mcp_request_too_large',
+			sprintf(
+				/* translators: %s: size limit in bytes */
+				__( 'That request is too large; the limit is %s bytes.', 'flexa-block' ),
+				number_format_i18n( self::MAX_REQUEST_BYTES )
+			),
+			[ 'status' => 413 ]
+		);
+	}
+
+	/**
+	 * The caller's title, checked and cleaned, or '' when none was sent.
+	 *
+	 * @param array<string, mixed> $input Ability input.
+	 * @return string|\WP_Error
+	 */
+	private static function clean_title( array $input ) {
+		$title = isset( $input['title'] ) ? trim( (string) $input['title'] ) : '';
+		if ( '' === $title ) {
+			return '';
+		}
+
+		$gated = self::gate_one( __( 'Title', 'flexa-block' ), $title );
+		if ( is_wp_error( $gated ) ) {
+			return $gated;
+		}
+
+		$title = trim( (string) sanitize_text_field( $title ) );
+		if ( mb_strlen( $title ) > self::MAX_TITLE_CHARS ) {
+			return new \WP_Error(
+				'flexa_mcp_title_too_long',
+				sprintf(
+					/* translators: %s: character limit */
+					__( 'Keep the title to %s characters or fewer.', 'flexa-block' ),
+					number_format_i18n( self::MAX_TITLE_CHARS )
+				),
+				[ 'status' => 400 ]
+			);
+		}
+
+		return $title;
 	}
 
 	/**
@@ -515,6 +765,46 @@ class Draft_Writer {
 				__( 'Something else on this site is forcing a status of %s on new pages, and would not let this one stay a draft. The page exists and may be publicly visible. Someone should look at it.', 'flexa-block' ),
 				$after instanceof \WP_Post ? $after->post_status : 'unknown'
 			),
+		];
+	}
+
+	/**
+	 * What an ability reports about a draft it was asked to update.
+	 *
+	 * Carries the values the draft now has, so a client can see the current
+	 * state of every field it may change without a separate read, and can
+	 * confirm the change it asked for is the change that happened.
+	 *
+	 * @param int          $post_id  Post ID.
+	 * @param list<string> $changed  Fields this call changed, plus `title`.
+	 * @param bool         $written  Whether the draft was rebuilt.
+	 * @param list<string> $warnings Warnings collected on the way here.
+	 * @return array<string, mixed>
+	 */
+	private static function update_payload( int $post_id, array $changed, bool $written, array $warnings ): array {
+		$post   = get_post( $post_id );
+		$values = get_post_meta( $post_id, Preset_Slots::VALUES_META, true );
+		$values = is_array( $values ) ? $values : [];
+
+		return [
+			'post_id'      => $post_id,
+			'post_type'    => $post instanceof \WP_Post ? $post->post_type : '',
+			'status'       => $post instanceof \WP_Post ? $post->post_status : '',
+			'title'        => Ability_Support::bound( $post instanceof \WP_Post ? $post->post_title : '' ),
+			'edit_link'    => (string) get_edit_post_link( $post_id, 'raw' ),
+			'view_link'    => Content_Importer::view_link( $post_id ),
+			'slot_values'  => Ability_Support::json_object(
+				array_map(
+					static function ( $value ): string {
+						return Ability_Support::bound( (string) $value );
+					},
+					$values
+				)
+			),
+			'changed'      => $changed,
+			'updated'      => $written,
+			'updates_left' => max( 0, Request_Limits::UPDATES_PER_HOUR - Request_Limits::used( self::UPDATE_OPERATION ) ),
+			'warnings'     => array_values( array_unique( $warnings ) ),
 		];
 	}
 
