@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.17
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -193,9 +193,11 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 
 == Changelog ==
 
-= 1.0.17 =
-* New: an optional MCP module, so an AI client you connect can read how your site is designed and draft a page from one of your presets. Off by default. Turning it on takes a confirmation, and separate toggles cover reading and drafting.
-* Everything an agent creates is a draft. Nothing is published and no existing page is overwritten. An agent acts as a WordPress user you create for it and can do nothing that user cannot do.
+= 2.0.0 =
+* New: an optional MCP module, so an AI client you connect can read how your site is designed, draft a page from one of your presets, and edit the text of existing pages. Off by default. Turning it on takes a confirmation, and separate toggles cover reading, drafting and editing (editing is off even after the module is on).
+* An agent never publishes. It can change the fields of a draft it built while nobody has touched that draft, and with editing on it can change the title, text, links and email addresses in Flexa blocks of any page, never layout or styling. Every change is kept as a revision.
+* A published page is never written to directly. Edits to one go onto a draft copy, which you review in the block editor and apply with one button; if the live page changed in the meantime, you are asked to confirm first.
+* An agent acts as a WordPress user you create for it and can do nothing that user cannot do.
 * Needs WordPress 7.0 or newer and the free MCP Adapter plugin. On anything older, or with the module off, this release changes nothing: the files are not even loaded.
 * New: Recent activity on the **Flexa Block → AI agents** screen records each call, with the user, the tool, the page and the outcome. It stores no page content and no prompts, keeps rows for 30 days, and sweeps them daily.
 
@@ -292,8 +294,8 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 
 == Upgrade Notice ==
 
-= 1.0.17 =
-Adds an optional MCP module that lets an AI client you connect read your design and draft pages. It is off by default and needs WordPress 7.0 plus the MCP Adapter plugin; with it off, nothing about this release changes how your site behaves.
+= 2.0.0 =
+Adds an optional MCP module that lets an AI client you connect read your design, draft pages and edit page text. Changes to a published page wait on a copy until you apply them. It is off by default and needs WordPress 7.0 plus the MCP Adapter plugin; with it off, nothing about this release changes how your site behaves.
 
 = 1.0.16 =
 Adds a one-time, dismissible suggestion for Flexa FormFlow, our free form builder. Nothing else changes.
