@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Flexa Block – Blocks & Page Builder
  * Description:       A collection of lightweight, customizable blocks for building modern WordPress websites with the block editor.
- * Version:           1.0.16
+ * Version:           1.0.17
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Flexa Tech
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FLEXA_BLOCK_VER', '1.0.16' );
+define( 'FLEXA_BLOCK_VER', '1.0.17' );
 define( 'FLEXA_BLOCK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FLEXA_BLOCK_URL', plugin_dir_url( __FILE__ ) );
 define( 'FLEXA_BLOCK_BASENAME', plugin_basename( __FILE__ ) );
@@ -98,8 +98,119 @@ function flexa_block_init() {
 	if ( is_admin() ) {
 		Flexa\Block\Admin\FormFlow_Notice::init();
 	}
+
+	// MCP module switch and its activity log. Needed by every request that can
+	// show or change the switch, or sweep the log: admin screens, WP-CLI
+	// (`wp option update`), cron, and the REST API, where the panel's own route
+	// lives. A plain page view needs none of it, so on the front end the files
+	// are loaded lazily and only if a REST request arrives.
+	if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) || wp_doing_cron() ) {
+		flexa_block_boot_mcp_settings();
+	} else {
+		add_action( 'rest_api_init', 'flexa_block_boot_mcp_settings', 5 );
+	}
+
+	// MCP runtime. Separate from the switch above, and gated on it.
+	if ( flexa_block_mcp_runtime_enabled() ) {
+		// The runtime needs the settings class even on a front-end request: the
+		// read and write toggles decide which abilities get registered, and
+		// asking their owner is better than repeating the option key a third
+		// time. Loading it here is a no-op on the requests that already did.
+		flexa_block_boot_mcp_settings();
+
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-mcp-manager.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-ability-support.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-request-limits.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-read-abilities.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-draft-writer.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-write-abilities.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-block-patcher.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-editable-fields.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-working-copy.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-page-editor.php';
+		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-edit-abilities.php';
+		Flexa\Block\MCP\MCP_Manager::init();
+		Flexa\Block\MCP\Read_Abilities::init();
+		Flexa\Block\MCP\Write_Abilities::init();
+		Flexa\Block\MCP\Edit_Abilities::init();
+
+		// Only the watching half is gated. Storage, retention and reading come
+		// up with the settings above, because a log is most wanted right after
+		// the switch has been turned off, and rows still have to age out then.
+		Flexa\Block\MCP\Activity_Log::watch();
+	}
 }
 add_action( 'plugins_loaded', 'flexa_block_init' );
+
+/**
+ * Load the MCP settings store and the module's activity log.
+ *
+ * Reached from three places that can all be true of one request, so it keeps
+ * its own flag: `init()` adds filters, and adding them twice would run the
+ * write guard twice on every save.
+ *
+ * The log travels with the settings rather than with the runtime. Its own
+ * docblock has the reasoning; the short version is that reading it and
+ * sweeping it both have to keep working after the module is switched off.
+ */
+function flexa_block_boot_mcp_settings() {
+	static $booted = false;
+
+	if ( $booted ) {
+		return;
+	}
+	$booted = true;
+
+	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-mcp-settings.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-activity-log.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-working-copy.php';
+	Flexa\Block\Admin\MCP_Settings::init();
+	Flexa\Block\MCP\Activity_Log::init();
+
+	// Working copies of published pages ride with the settings for the same
+	// reason the log does: a copy an agent made while the module was on still
+	// has to be recognisable, and appliable by a person, after it is off.
+	Flexa\Block\MCP\Working_Copy::init();
+}
+
+/**
+ * Whether the MCP runtime may load on this request.
+ *
+ * Reads the stored switch straight from the option rather than through
+ * MCP_Settings, because this gate also runs on the front end, where that class
+ * is not loaded. MCP_Settings owns the option and its shape; the key is
+ * repeated here and nowhere else.
+ *
+ * The WordPress version is re-checked at load, every request. A stored flag is
+ * not evidence that the Abilities API is still present: a site can switch the
+ * module on under 7.0 and then restore a 6.9 backup, and what loads has to
+ * follow the site as it is now, not as it was when someone flipped a switch.
+ *
+ * @return bool
+ */
+function flexa_block_mcp_runtime_enabled() {
+	if ( ! function_exists( 'wp_register_ability' )
+		|| version_compare( get_bloginfo( 'version' ), '7.0', '<' ) ) {
+		return false;
+	}
+
+	$stored = get_option( 'flexa_block_mcp', [] );
+
+	return is_array( $stored ) && ! empty( $stored['enabled'] );
+}
+
+/**
+ * Clean up what the plugin scheduled, on deactivation.
+ *
+ * One event today: the MCP activity log's daily sweep. A deactivated plugin
+ * whose cron event is still in the schedule leaves WordPress calling a hook
+ * nothing listens to, every day, until someone clears it by hand.
+ */
+function flexa_block_deactivate() {
+	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-activity-log.php';
+	Flexa\Block\MCP\Activity_Log::unschedule();
+}
+register_deactivation_hook( __FILE__, 'flexa_block_deactivate' );
 
 /**
  * Admin notice for unsupported WordPress version.

@@ -61,6 +61,7 @@ class Sample_Source implements Import_Source {
 				'category'    => (string) ( $def['category'] ?? 'content' ),
 				'blocks'      => array_values( array_map( 'strval', (array) ( $def['blocks'] ?? [] ) ) ),
 				'version'     => (string) ( $def['version'] ?? '1.0.0' ),
+				'slots'       => Preset_Slots::declared( $def ),
 			];
 		}
 		return $out;

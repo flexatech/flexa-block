@@ -77,12 +77,29 @@ if ( fs.existsSync( frontendDir ) ) {
 	} );
 }
 
+// Block editor extensions under src/editor/<name>.{ts,…} — scripts that add to
+// the post editor itself rather than to one block, such as the panel that lets
+// a person apply an agent's working copy. Each file becomes build/editor/<name>.js.
+const editorEntry = {};
+const editorDir = path.resolve( process.cwd(), 'src', 'editor' );
+if ( fs.existsSync( editorDir ) ) {
+	fs.readdirSync( editorDir ).forEach( ( file ) => {
+		const full = path.join( editorDir, file );
+		const ext = path.extname( file );
+		if ( ! fs.statSync( full ).isFile() || ! SCRIPT_EXTENSIONS.includes( ext ) ) {
+			return;
+		}
+		editorEntry[ `editor/${ path.basename( file, ext ) }` ] = full;
+	} );
+}
+
 module.exports = {
 	...defaultConfig,
 	entry: {
 		...blockEntries,
 		...adminEntry,
 		...frontendEntry,
+		...editorEntry,
 	},
 	output: {
 		...defaultConfig.output,

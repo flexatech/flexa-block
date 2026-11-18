@@ -77,6 +77,56 @@ interface FlexaBlockFormFlowPromo {
 	dismissUrl: string;
 }
 
+/**
+ * MCP module state, from MCP_Settings::boot_payload().
+ *
+ * Sent on every dashboard load, whatever the module's state, so the panel can
+ * describe an unsupported or switched-off site without a request. `enabled` is
+ * the effective value: a site that switched the module on and then moved to an
+ * older WordPress reports false here, with `supported` false beside it.
+ */
+interface FlexaBlockMcpData {
+	supported: boolean;
+	minWp: string;
+	enabled: boolean;
+	read: boolean;
+	write: boolean;
+	edit: boolean;
+	adapter: { active: boolean; version: string };
+	/** '' until the adapter's transport URL is known; see MCP_Settings::endpoint(). */
+	endpoint: string;
+	restUrl: string;
+	/** Newest first. Absent on older bundles; see MCP_Settings::activity_rows(). */
+	activity?: FlexaBlockMcpActivityRow[];
+	/** Days a row is kept. 0 means only the row limit removes one. */
+	activityDays?: number;
+}
+
+/**
+ * One call recorded by the module's activity log.
+ *
+ * Deliberately narrow. The log keeps no content, no slot values, no prompts
+ * and no tokens, so there is nothing here to render beyond who called what,
+ * on which page, and how it ended.
+ */
+interface FlexaBlockMcpActivityRow {
+	/** Unix timestamp, for sorting and for a precise tooltip. */
+	time: number;
+	/** The same moment in the site's timezone and date format. */
+	when: string;
+	/** Display name, snapshotted login, or '#12'. */
+	user: string;
+	ability: string;
+	/** 0 when the call was not about one page. */
+	post: number;
+	/** 'ok' | 'refused' | 'denied' | 'error'. */
+	outcome: string;
+	/** Error code behind a refusal; '' for a call that succeeded. */
+	code: string;
+	/** Correlates the rows written during one request. */
+	request: string;
+}
+
 interface FlexaBlockAdminData {
 	nonce?: string;
 	restUrl?: string;
@@ -87,6 +137,8 @@ interface FlexaBlockAdminData {
 	roles?: FlexaBlockAdminRole[];
 	/** Cross-promotion banner state; absent on older bundles. */
 	formFlow?: FlexaBlockFormFlowPromo;
+	/** MCP module state; absent on older bundles. */
+	mcp?: FlexaBlockMcpData;
 }
 
 /** REST endpoints for the import engine (Sample Data), from Import_Manager. */

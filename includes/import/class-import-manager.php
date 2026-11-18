@@ -43,6 +43,19 @@ class Import_Manager {
 	}
 
 	/**
+	 * Load the slot declaration reader.
+	 *
+	 * Left out of the list above on purpose. Everything else here is loaded on
+	 * every request the plugin boots on, front end included, and this one file
+	 * is only ever reached from an import, from the admin app asking a preset
+	 * for its fields, and from the MCP writer. The three places that need it
+	 * call this first; `require_once` makes the repeat free.
+	 */
+	public static function load_preset_slots(): void {
+		require_once FLEXA_BLOCK_DIR . 'includes/import/class-preset-slots.php';
+	}
+
+	/**
 	 * Add the free Sample Data source to the registry.
 	 *
 	 * @param mixed $sources Existing sources.

@@ -48,6 +48,16 @@ class Import_REST {
 				'args'                => [
 					'source' => [ 'required' => true ],
 					'id'     => [ 'required' => true ],
+					// Values for the item's declared slots, keyed by slot. Left
+					// deliberately loose here: what a slot accepts is the
+					// preset's business, not this route's, and Preset_Slots is
+					// the one place that decides. A schema here would be a
+					// second, weaker copy of those rules.
+					'slots'  => [
+						'required' => false,
+						'type'     => 'object',
+						'default'  => [],
+					],
 				],
 			]
 		);
@@ -125,9 +135,17 @@ class Import_REST {
 		}
 		$definition['id'] = $item_id;
 
-		$result = Content_Importer::import( $source->key(), $definition );
+		$slots = $request->get_param( 'slots' );
+		$slots = is_array( $slots ) ? $slots : [];
+
+		$result = Content_Importer::import( $source->key(), $definition, $slots );
 		if ( is_wp_error( $result ) ) {
-			$result->add_data( [ 'status' => 500 ] );
+			// A rejected slot value is the caller's mistake and already carries
+			// its own 4xx and a message worth showing. Only an error that named
+			// no status is ours, and that one is a 500.
+			if ( ! isset( $result->get_error_data()['status'] ) ) {
+				$result->add_data( [ 'status' => 500 ] );
+			}
 			return $result;
 		}
 

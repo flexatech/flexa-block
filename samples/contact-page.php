@@ -5,8 +5,15 @@ declare(strict_types=1);
  *
  * A two-column contact layout: a working subscribe/contact form (name, email,
  * phone, message) beside contact details and an embedded map. Media-free; the
- * icons are inline SVG stored in attributes. The form recipient is left blank so
- * the site owner sets their own address after import.
+ * icons are inline SVG stored in attributes.
+ *
+ * The first sample with slots. Eight of them, and the choice of which eight is
+ * the point: the heading and the lead, the address the form sends to, and the
+ * four contact details with the map. Everything a contact page has to say about
+ * one particular business, and nothing about how it looks. A user who fills them
+ * in at import has a page that is already theirs; one who skips them gets this
+ * file exactly as it reads, because every slot's default is the text written
+ * here. See `Preset_Slots`.
  *
  * Markup is assembled from PHP arrays through wp_json_encode; every `blockId` is
  * a placeholder regenerated to a unique id on import.
@@ -174,7 +181,7 @@ return ( static function (): array {
 		$mk(
 			'flexa/heading',
 			[
-				'content'    => __( 'Get in touch', 'flexa-block' ),
+				'content'    => '{{slot:page_heading}}',
 				'tag'        => 'h1',
 				'alignment'  => [ 'desktop' => 'center', 'tablet' => '', 'mobile' => '' ],
 				'typography' => [
@@ -193,7 +200,7 @@ return ( static function (): array {
 		$mk(
 			'flexa/text',
 			[
-				'content'    => __( 'Have a question or want to work together? Send us a message and we will get back to you within one business day.', 'flexa-block' ),
+				'content'    => '{{slot:intro_text}}',
 				'htmlTag'    => 'p',
 				'alignment'  => [ 'desktop' => 'center', 'tablet' => '', 'mobile' => '' ],
 				'typography' => [
@@ -231,7 +238,7 @@ return ( static function (): array {
 		array_merge(
 			[
 				'submitText'        => __( 'Send message', 'flexa-block' ),
-				'toEmail'           => '',
+				'toEmail'           => '{{slot:form_recipient}}',
 				'emailSubject'      => __( 'New contact message', 'flexa-block' ),
 				'successMessage'    => __( 'Thanks for reaching out. We will reply soon.', 'flexa-block' ),
 				'errorMessage'      => __( 'Something went wrong. Please try again.', 'flexa-block' ),
@@ -280,7 +287,7 @@ return ( static function (): array {
 		$mk(
 			'flexa/heading',
 			[
-				'content'    => __( 'Contact details', 'flexa-block' ),
+				'content'    => '{{slot:details_heading}}',
 				'tag'        => 'h2',
 				'typography' => [
 					'desktop' => [ 'fontSize' => [ 'value' => '19', 'unit' => 'px' ], 'fontWeight' => '600', 'lineHeight' => '1.3' ],
@@ -323,19 +330,22 @@ return ( static function (): array {
 				'items'      => [
 					[
 						'id'   => 'contact-email',
-						'text' => 'hello@example.com',
-						'link' => [ 'url' => 'mailto:hello@example.com', 'target' => '', 'rel' => '' ],
+						'text' => '{{slot:contact_email}}',
+						'link' => [ 'url' => 'mailto:{{slot:contact_email}}', 'target' => '', 'rel' => '' ],
 						'icon' => $icon( 'mail', '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>' ),
 					],
 					[
 						'id'   => 'contact-phone',
-						'text' => '+1 (555) 000-1234',
-						'link' => [ 'url' => 'tel:+15550001234', 'target' => '', 'rel' => '' ],
+						'text' => '{{slot:contact_phone}}',
+						// The same number twice, in the two forms it has to take: as
+						// the visitor reads it, and stripped to digits for the dial
+						// link. One slot, so the two can never disagree.
+						'link' => [ 'url' => 'tel:{{slot:contact_phone|tel}}', 'target' => '', 'rel' => '' ],
 						'icon' => $icon( 'phone', '<path d="M5 4h4l2 5-3 2a12 12 0 0 0 5 5l2-3 5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>' ),
 					],
 					[
 						'id'   => 'contact-address',
-						'text' => __( '123 Market Street, San Francisco, CA', 'flexa-block' ),
+						'text' => '{{slot:contact_address}}',
 						'link' => [ 'url' => '', 'target' => '', 'rel' => '' ],
 						'icon' => $icon( 'pin', '<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>' ),
 					],
@@ -345,7 +355,7 @@ return ( static function (): array {
 		$mk(
 			'flexa/google-map',
 			[
-				'location'      => 'San Francisco, CA',
+				'location'      => '{{slot:map_location}}',
 				'zoom'          => 13,
 				'containerType' => 'full-width',
 				'height'        => [ 'desktop' => [ 'value' => '320', 'unit' => 'px' ], 'tablet' => [], 'mobile' => [] ],
@@ -516,12 +526,73 @@ return ( static function (): array {
 	$content = implode( "\n\n", [ $intro, $body, $faq ] );
 
 	return [
-		'id'          => 'contact-page',
-		'title'       => __( 'Contact Page', 'flexa-block' ),
-		'description' => __( 'A two-column contact layout with a working message form, contact details and an embedded map. Set the form recipient email after importing.', 'flexa-block' ),
-		'category'    => __( 'Page', 'flexa-block' ),
-		'blocks'      => [ 'flexa/container', 'flexa/grid', 'flexa/heading', 'flexa/text', 'flexa/subscribe-form', 'flexa/icon-list', 'flexa/google-map', 'flexa/faq' ],
-		'version'     => '1.0.0',
-		'content'     => $content,
+		'id'            => 'contact-page',
+		'title'         => __( 'Contact Page', 'flexa-block' ),
+		'description'   => __( 'A two-column contact layout with a working message form, contact details and an embedded map. Fill in your own details as you import it.', 'flexa-block' ),
+		'category'      => __( 'Page', 'flexa-block' ),
+		'blocks'        => [ 'flexa/container', 'flexa/grid', 'flexa/heading', 'flexa/text', 'flexa/subscribe-form', 'flexa/icon-list', 'flexa/google-map', 'flexa/faq' ],
+		'version'       => '1.1.0',
+		'content'       => $content,
+
+		// The contract these declarations are written against. Not decoration:
+		// Preset_Slots refuses the lot, and falls back to the defaults below, if
+		// this ever names a contract the running plugin does not speak.
+		'slot_contract' => 1,
+		'slots'         => [
+			'page_heading'    => [
+				'type'    => 'text',
+				'label'   => __( 'Page heading', 'flexa-block' ),
+				'default' => __( 'Get in touch', 'flexa-block' ),
+				'max'     => 80,
+			],
+			'intro_text'      => [
+				'type'    => 'text',
+				'label'   => __( 'Intro paragraph', 'flexa-block' ),
+				'default' => __( 'Have a question or want to work together? Send us a message and we will get back to you within one business day.', 'flexa-block' ),
+				'max'     => 300,
+			],
+			'form_recipient'  => [
+				'type'    => 'email',
+				'label'   => __( 'Send messages to', 'flexa-block' ),
+				// No default address, and nothing to invent one from. An empty
+				// recipient is the honest state: the form is there, it is not
+				// wired up, and the help text says so. Guessing the admin email
+				// here would be worse, because the page would look finished
+				// while quietly mailing somewhere nobody reads.
+				'default' => '',
+				'help'    => __( 'Leave blank to set it later in the form block.', 'flexa-block' ),
+			],
+			'details_heading' => [
+				'type'    => 'text',
+				'label'   => __( 'Contact details heading', 'flexa-block' ),
+				'default' => __( 'Contact details', 'flexa-block' ),
+				'max'     => 60,
+			],
+			'contact_email'   => [
+				'type'    => 'email',
+				'label'   => __( 'Public email address', 'flexa-block' ),
+				'default' => 'hello@example.com',
+				'help'    => __( 'Shown in the contact list and used for its mailto link.', 'flexa-block' ),
+			],
+			'contact_phone'   => [
+				'type'    => 'phone',
+				'label'   => __( 'Phone number', 'flexa-block' ),
+				'default' => '+1 (555) 000-1234',
+				'help'    => __( 'Written however you want it read; the dial link is derived from it.', 'flexa-block' ),
+			],
+			'contact_address' => [
+				'type'    => 'text',
+				'label'   => __( 'Street address', 'flexa-block' ),
+				'default' => __( '123 Market Street, San Francisco, CA', 'flexa-block' ),
+				'max'     => 120,
+			],
+			'map_location'    => [
+				'type'    => 'text',
+				'label'   => __( 'Map location', 'flexa-block' ),
+				'default' => 'San Francisco, CA',
+				'max'     => 120,
+				'help'    => __( 'Anything Google Maps can search: an address, a place name, or coordinates.', 'flexa-block' ),
+			],
+		],
 	];
 } )();

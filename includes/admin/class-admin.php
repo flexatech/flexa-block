@@ -459,6 +459,10 @@ class Admin {
 				),
 				'roles'          => self::roles_for_admin(),
 				'formFlow'       => self::formflow_promo(),
+				// Sent whatever the module's state is, so the panel can explain
+				// an unsupported or switched-off site without a request of its
+				// own. Its own route handles saving.
+				'mcp'            => MCP_Settings::boot_payload(),
 			]
 		);
 	}

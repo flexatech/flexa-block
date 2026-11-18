@@ -5,6 +5,10 @@
  * performance) and "Blocks" (a searchable, group-filtered card grid), with the
  * active panel rendered on the right. Changes auto-save (debounced) to the
  * plugin REST endpoint; bootstrap data comes from `window.flexaBlockAdmin`.
+ *
+ * The MCP panel is the one exception to that auto-save: it owns its own state
+ * and its own endpoint, because switching it on opens a path that reaches
+ * outside the site and should never happen as a side effect of a debounce.
  */
 
 import { createRoot, useMemo, useState, useEffect, useRef } from '@wordpress/element';
@@ -15,12 +19,13 @@ import { BlocksPanel } from './blocks-panel';
 import { GeneralSettings } from './settings-general';
 import { EditingSettings } from './settings-editing';
 import { SamplesPanel } from './samples-panel';
+import { McpPanel } from './mcp-panel';
 import { FormFlowBanner } from './formflow-banner';
 import './admin.scss';
 
 type Settings = Record< string, any >;
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
-type View = 'general' | 'blocks' | 'samples' | 'editing';
+type View = 'general' | 'blocks' | 'samples' | 'editing' | 'mcp';
 
 const SAVE_DEBOUNCE_MS = 700;
 
@@ -220,6 +225,17 @@ function App(): JSX.Element {
 							active={ view === 'editing' }
 							onClick={ () => setView( 'editing' ) }
 						/>
+						{ /* Always listed, including on a WordPress too old to run
+						     the module: the panel explains why the switch is
+						     unavailable, which is more use than an item that
+						     silently is not there. */ }
+						<NavItem
+							icon="rest-api"
+							label={ __( 'AI agents', 'flexa-block' ) }
+							desc={ __( 'MCP access for AI clients', 'flexa-block' ) }
+							active={ view === 'mcp' }
+							onClick={ () => setView( 'mcp' ) }
+						/>
 					</nav>
 				</aside>
 
@@ -253,6 +269,17 @@ function App(): JSX.Element {
 							onToggleBlock={ toggleEditableBlock }
 						/>
 					) }
+					{ view === 'mcp' &&
+						( boot.mcp ? (
+							<McpPanel mcp={ boot.mcp } />
+						) : (
+							<p>
+								{ __(
+									'Reload this page to load the MCP settings.',
+									'flexa-block'
+								) }
+							</p>
+						) ) }
 				</main>
 
 				<div className="flexa-toast" aria-live="polite">

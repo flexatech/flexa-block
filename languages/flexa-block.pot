@@ -2,14 +2,14 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Flexa Block – Blocks & Page Builder 1.0.16\n"
+"Project-Id-Version: Flexa Block – Blocks & Page Builder 1.0.17\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/flexa-block\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-07T03:56:52+00:00\n"
+"POT-Creation-Date: 2026-10-09T10:56:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
 "X-Domain: flexa-block\n"
@@ -489,7 +489,7 @@ msgid "Video"
 msgstr ""
 
 #. translators: %s: minimum WordPress version
-#: flexa-block.php:114
+#: flexa-block.php:213
 msgid "Flexa Block requires WordPress %s or higher."
 msgstr ""
 
@@ -510,7 +510,8 @@ msgstr ""
 #: includes/admin/class-admin.php:385
 #: includes/admin/class-admin.php:386
 #: includes/admin/class-admin.php:404
-#: build/admin/index.js:9
+#: includes/mcp/class-mcp-manager.php:100
+#: build/admin/index.js:13
 msgid "Flexa Block"
 msgstr ""
 
@@ -523,17 +524,26 @@ msgid "Flexa FormFlow is our free form builder, with a visual email designer and
 msgstr ""
 
 #: includes/admin/class-formflow-notice.php:79
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Not interested"
 msgstr ""
 
 #: includes/admin/class-formflow-notice.php:82
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Learn more"
 msgstr ""
 
 #: includes/admin/class-formflow-notice.php:86
 msgid "Install Now"
+msgstr ""
+
+#: includes/admin/class-mcp-settings.php:370
+msgid "Signed out"
+msgstr ""
+
+#. translators: %s: minimum WordPress version
+#: includes/admin/class-mcp-settings.php:529
+msgid "The MCP module needs WordPress %s or newer, which provides the Abilities API."
 msgstr ""
 
 #: includes/class-block-manager.php:661
@@ -565,7 +575,7 @@ msgstr ""
 
 #: includes/class-inline-editor.php:636
 #: includes/class-inline-editor.php:694
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Editing"
 msgstr ""
 
@@ -578,6 +588,8 @@ msgstr ""
 #: includes/class-inline-editor.php:696
 #: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:339
 #: build/admin/index.js:9
+#: build/admin/index.js:10
+#: build/admin/index.js:13
 msgid "Cancel"
 msgstr ""
 
@@ -586,7 +598,7 @@ msgid "Saved"
 msgstr ""
 
 #: includes/class-inline-editor.php:640
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Saving…"
 msgstr ""
 
@@ -694,20 +706,20 @@ msgstr ""
 msgid "&hellip;"
 msgstr ""
 
-#: includes/import/class-content-importer.php:50
+#: includes/import/class-content-importer.php:66
 msgid "Import item is missing an id."
 msgstr ""
 
 #. translators: %s: media file name
-#: includes/import/class-content-importer.php:206
+#: includes/import/class-content-importer.php:242
 msgid "Could not import media: %s"
 msgstr ""
 
-#: includes/import/class-import-rest.php:124
+#: includes/import/class-import-rest.php:134
 msgid "That item could not be found."
 msgstr ""
 
-#: includes/import/class-import-rest.php:169
+#: includes/import/class-import-rest.php:187
 msgid "Unknown import source."
 msgstr ""
 
@@ -723,10 +735,396 @@ msgstr ""
 msgid "Could not stage the media file for import."
 msgstr ""
 
+#: includes/import/class-preset-slots.php:219
+msgid "This preset takes no slot values; the ones supplied were ignored."
+msgstr ""
+
+#: includes/import/class-preset-slots.php:230
+msgid "This preset was built for a newer version of Flexa Block, so its fields were skipped and its own wording kept."
+msgstr ""
+
+#. translators: %s: size limit in bytes
+#: includes/import/class-preset-slots.php:320
+msgid "Those slot values are too large; the limit is %s bytes in total."
+msgstr ""
+
+#. translators: %s: comma-separated slot keys
+#: includes/import/class-preset-slots.php:333
+msgid "This preset has no slot named %s."
+msgstr ""
+
+#: includes/import/class-preset-slots.php:350
+msgid "that is not a value this slot can take"
+msgstr ""
+
+#. translators: %s: character limit
+#: includes/import/class-preset-slots.php:396
+msgid "keep it to %s characters or fewer"
+msgstr ""
+
+#: includes/import/class-preset-slots.php:403
+msgid "that is not an email address"
+msgstr ""
+
+#: includes/import/class-preset-slots.php:409
+msgid "that is not a web address"
+msgstr ""
+
+#: includes/import/class-preset-slots.php:415
+msgid "a phone number needs at least one digit"
+msgstr ""
+
+#: includes/import/class-preset-slots.php:436
+msgid "that is not a media ID"
+msgstr ""
+
+#: includes/import/class-preset-slots.php:440
+msgid "that media ID is not an image in this library"
+msgstr ""
+
+#: includes/import/class-preset-slots.php:444
+msgid "that media ID is not one you can use"
+msgstr ""
+
+#. translators: 1: slot label, 2: reason the value was refused
+#: includes/import/class-preset-slots.php:462
+msgid "%1$s: %2$s."
+msgstr ""
+
+#. translators: %s: slot key found in the preset markup
+#: includes/import/class-preset-slots.php:541
+msgid "The preset refers to a slot it does not declare: %s."
+msgstr ""
+
+#. translators: 1: variant name, 2: slot key
+#: includes/import/class-preset-slots.php:557
+msgid "The preset asks for an unsupported %1$s form of slot %2$s."
+msgstr ""
+
+#: includes/import/class-preset-slots.php:610
+msgid "The preset puts a slot in its markup instead of a block attribute; that spot was left empty."
+msgstr ""
+
 #: includes/import/class-sample-source.php:48
-#: build/admin/index.js:6
-#: build/admin/index.js:9
+#: build/admin/index.js:7
+#: build/admin/index.js:13
 msgid "Sample Data"
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:138
+msgid "Creating content over MCP is switched off for this site."
+msgstr ""
+
+#. translators: %s: size limit in bytes
+#: includes/mcp/class-draft-writer.php:149
+msgid "That request is too large; the limit is %s bytes."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:160
+msgid "This only creates drafts. Publishing a page is left to a person, so ask for a draft and have someone review it."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:174
+#: includes/mcp/class-write-abilities.php:272
+msgid "No preset source with that key. Call flexa/list-presets to see what this site has."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:184
+#: includes/mcp/class-write-abilities.php:281
+msgid "No preset with that id in this source. Call flexa/list-presets to see what this site has."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:204
+#: build/blocks/comparison-table/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/post-grid/index.js:1
+#: build/blocks/process-bar/index.js:1
+#: build/blocks/product-detail/index.js:1
+#: build/blocks/product-related/index.js:1
+#: build/blocks/rss/index.js:1
+#: build/blocks/social-share/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/table-of-content/index.js:1
+#: build/blocks/testimonial/index.js:1
+#: build/blocks/timeline/index.js:1
+msgid "Title"
+msgstr ""
+
+#. translators: %s: character limit
+#: includes/mcp/class-draft-writer.php:215
+msgid "Keep the title to %s characters or fewer."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:242
+msgid "An identical request is already being processed. Wait for its answer rather than sending it again."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:252
+msgid "This request was already handled, so the page it created is being returned rather than a second copy."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:312
+msgid "You do not have permission to create this kind of content on this site."
+msgstr ""
+
+#. translators: %s: slot key
+#: includes/mcp/class-draft-writer.php:352
+msgid "The value for %s has to be a single piece of text or a number."
+msgstr ""
+
+#. translators: %s: field or slot name
+#: includes/mcp/class-draft-writer.php:384
+msgid "The value for %s has to be plain text. Remove the angle brackets: these fields hold words, and nothing sent here is treated as markup."
+msgstr ""
+
+#. translators: %s: character limit
+#: includes/mcp/class-draft-writer.php:412
+msgid "An idempotency key may be up to %s characters of letters, digits, and the marks _ . : and -."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:509
+msgid "Something else on this site changed the new page's status while it was being created; it was set back to draft."
+msgstr ""
+
+#. translators: %s: the status the page ended up with, for example publish
+#: includes/mcp/class-draft-writer.php:515
+msgid "Something else on this site is forcing a status of %s on new pages, and would not let this one stay a draft. The page exists and may be publicly visible. Someone should look at it."
+msgstr ""
+
+#: includes/mcp/class-mcp-manager.php:101
+msgid "Read the design context of a Flexa Block site and create pages from its presets."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:78
+msgid "Get design context"
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:79
+msgid "Read the site design system: the light and dark design tokens, how dark mode is applied, and which Flexa blocks are available to build with."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:100
+msgid "Get page block tree"
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:101
+msgid "Read the block structure of one post or page: block names, the attributes stored in the content, and the nesting between them."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:108
+msgid "ID of the post or page to read."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:113
+msgid "Also return each block's attributes with its block type defaults filled in. Off by default: a Flexa block declares a lot of defaults, and measured on a real landing page this makes the response several times larger."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:188
+msgid "No post with that ID."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:432
+msgid "Design tokens, as CSS custom property names without the leading dashes."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:437
+msgid "Only the tokens dark mode overrides. Anything absent keeps its light value."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:446
+msgid "Whether dark mode is switched on at all."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:450
+msgid "Whether the dark tokens follow the visitor's system preference."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:454
+msgid "Whether the dark tokens also apply under an explicit data-theme=\"dark\" attribute."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:460
+msgid "Blocks registered on this site and available to build with."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:470
+msgid "Whether the block is only valid nested inside a Flexa parent block."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:508
+msgid "Top-level blocks, in document order."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:515
+msgid "Attributes as serialized in the post content. An attribute missing here is not unset, it is taking its block type default. One caveat on nesting: PHP cannot tell an empty JSON object from an empty array once decoded, so a nested value that is empty is reported as [] whichever it was in the content."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:519
+msgid "The same attributes with block type defaults filled in. Present only when include_resolved was requested."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:523
+msgid "Markup held directly by the block. Reported for blocks with no children only, since a parent repeats the markup of everything below it."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:527
+msgid "Child blocks, same shape as this one."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:535
+msgid "Blocks reported, counting every level."
+msgstr ""
+
+#: includes/mcp/class-read-abilities.php:539
+msgid "True when the tree was cut at a size or depth limit, so what came back is incomplete."
+msgstr ""
+
+#. translators: 1: number of calls allowed, 2: number of minutes to wait
+#: includes/mcp/class-request-limits.php:91
+msgid "This has reached its limit of %1$s calls an hour. Try again in %2$s minutes."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:85
+msgid "Which preset source to read. Omit it for the presets this plugin ships."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:90
+msgid "List presets"
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:91
+msgid "List the ready-made pages this site can create: their ids, what each one is for, how many fields it takes, and whether one has been created from it already."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:95
+msgid "Limit the listing to one preset source. Omit it to list every source."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:107
+msgid "Get preset schema"
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:108
+msgid "Read the fields one preset accepts: each field's type, what it is called, the text the preset ships with, and how long a value may be. Call this before creating a draft from it."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:115
+#: includes/mcp/class-write-abilities.php:136
+msgid "Preset id, as flexa/list-presets reports it."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:128
+msgid "Create page draft"
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:129
+msgid "Create a new draft page from one preset, with your own text in its fields. Always a draft: this never publishes, and a person has to review the page and publish it."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:141
+msgid "Values for the preset's fields, keyed by field name as flexa/get-preset-schema reports them. A field left out keeps the text the preset ships with. Plain text only: a value containing < or > is refused rather than stripped. A media field takes an existing attachment ID."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:147
+msgid "Title for the new page. Omit it to use the preset's own title."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:153
+msgid "Only draft. The field exists so that asking for anything else is refused plainly rather than ignored."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:158
+msgid "Your own id for this request. Send the same key again and the same page comes back instead of a second one. Without a key, an identical request repeated within five minutes is still treated as a retry."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:239
+msgid "No preset source with that key. Omit source to list every one this site has."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:308
+msgid "This preset was written for a newer version of Flexa Block, so its fields are not offered here. Creating a draft from it still works and produces the page as the preset ships it."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:385
+msgid "The ceilings this site applies, so a client can stay inside them instead of discovering them by being refused."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:390
+msgid "Drafts you may still create in the current hour."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:395
+msgid "Total size of all field values in one request, in bytes."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:426
+msgid "Blocks this preset is built from."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:431
+msgid "Names of the fields this preset accepts. Call flexa/get-preset-schema for what each one takes."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:436
+msgid "A page already created from this preset, or 0. Information, not a restriction: creating another is allowed."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:443
+msgid "True when there were more presets than one listing reports, so this one is incomplete. Ask again for a single source."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:466
+msgid "Which version of the field contract this preset was written against."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:470
+msgid "The highest contract version this site understands. A preset above it keeps its own wording and offers no fields."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:474
+msgid "The fields this preset accepts, keyed by the name to send in slots. Every field is optional: one left out keeps the text the preset ships with."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:481
+msgid "What the field holds. A media field takes the ID of an image already in this site's library."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:486
+msgid "What the preset uses when the field is left out."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:490
+msgid "Longest value accepted, in characters."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:501
+msgid "Anything about this preset a client should know before sending values."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:521
+msgid "Always draft."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:526
+msgid "Where a person opens the new page in the editor."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:530
+msgid "Preview link. A draft has no public address, so this is a preview URL and works only for someone who can edit the page."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:534
+msgid "Which fields took a value from this request. Anything absent kept the preset's own text."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:539
+msgid "True when this request had already been handled, so the page reported is the one it created the first time."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:545
+msgid "Things that went less than perfectly but did not stop the page being created."
 msgstr ""
 
 #: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:321
@@ -819,114 +1217,163 @@ msgid "Anything you would like to share?"
 msgstr ""
 
 #: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:350
-#: samples/contact-page.php:267
+#: samples/contact-page.php:274
 msgid "Optional"
 msgstr ""
 
-#: samples/contact-page.php:177
-msgid "Get in touch"
-msgstr ""
-
-#: samples/contact-page.php:196
-msgid "Have a question or want to work together? Send us a message and we will get back to you within one business day."
-msgstr ""
-
-#: samples/contact-page.php:233
+#: samples/contact-page.php:240
 msgid "Send message"
 msgstr ""
 
-#: samples/contact-page.php:235
+#: samples/contact-page.php:242
 msgid "New contact message"
 msgstr ""
 
-#: samples/contact-page.php:236
+#: samples/contact-page.php:243
 msgid "Thanks for reaching out. We will reply soon."
 msgstr ""
 
-#: samples/contact-page.php:237
+#: samples/contact-page.php:244
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: samples/contact-page.php:265
+#: samples/contact-page.php:272
 #: build/blocks/filter-taxonomy/index.js:1
 #: build/blocks/taxonomy/index.js:1
 #: build/blocks/team-member/index.js:1
 msgid "Name"
 msgstr ""
 
-#: samples/contact-page.php:265
+#: samples/contact-page.php:272
 msgid "Your name"
 msgstr ""
 
-#: samples/contact-page.php:266
+#: samples/contact-page.php:273
 msgid "Email"
 msgstr ""
 
-#: samples/contact-page.php:266
+#: samples/contact-page.php:273
 msgid "you@example.com"
 msgstr ""
 
-#: samples/contact-page.php:267
+#: samples/contact-page.php:274
 msgid "Phone"
 msgstr ""
 
-#: samples/contact-page.php:268
+#: samples/contact-page.php:275
 #: build/blocks/facebook-feed/index.js:1
 #: build/blocks/notice/index.js:1
 msgid "Message"
 msgstr ""
 
-#: samples/contact-page.php:268
+#: samples/contact-page.php:275
 msgid "How can we help?"
 msgstr ""
 
-#: samples/contact-page.php:283
-msgid "Contact details"
-msgstr ""
-
-#: samples/contact-page.php:338
-msgid "123 Market Street, San Francisco, CA"
-msgstr ""
-
-#: samples/contact-page.php:405
+#: samples/contact-page.php:415
 msgid "Before you write"
 msgstr ""
 
-#: samples/contact-page.php:508
+#: samples/contact-page.php:518
 msgid "What are your support hours?"
 msgstr ""
 
-#: samples/contact-page.php:508
+#: samples/contact-page.php:518
 msgid "We reply Monday to Friday, 9am to 6pm. Messages sent on weekends are answered the next business day."
 msgstr ""
 
-#: samples/contact-page.php:509
+#: samples/contact-page.php:519
 msgid "How quickly will I hear back?"
 msgstr ""
 
-#: samples/contact-page.php:509
+#: samples/contact-page.php:519
 msgid "Most messages get a reply within one business day."
 msgstr ""
 
-#: samples/contact-page.php:510
+#: samples/contact-page.php:520
 msgid "Can I request a call?"
 msgstr ""
 
-#: samples/contact-page.php:510
+#: samples/contact-page.php:520
 msgid "Yes. Mention it in your message and include your phone number and we will arrange a time."
 msgstr ""
 
-#: samples/contact-page.php:520
+#: samples/contact-page.php:530
 msgid "Contact Page"
 msgstr ""
 
-#: samples/contact-page.php:521
-msgid "A two-column contact layout with a working message form, contact details and an embedded map. Set the form recipient email after importing."
+#: samples/contact-page.php:531
+msgid "A two-column contact layout with a working message form, contact details and an embedded map. Fill in your own details as you import it."
 msgstr ""
 
-#: samples/contact-page.php:522
+#: samples/contact-page.php:532
 #: samples/landing-saas.php:1089
+#: build/admin/index.js:13
 msgid "Page"
+msgstr ""
+
+#: samples/contact-page.php:544
+msgid "Page heading"
+msgstr ""
+
+#: samples/contact-page.php:545
+msgid "Get in touch"
+msgstr ""
+
+#: samples/contact-page.php:550
+msgid "Intro paragraph"
+msgstr ""
+
+#: samples/contact-page.php:551
+msgid "Have a question or want to work together? Send us a message and we will get back to you within one business day."
+msgstr ""
+
+#: samples/contact-page.php:556
+msgid "Send messages to"
+msgstr ""
+
+#: samples/contact-page.php:563
+msgid "Leave blank to set it later in the form block."
+msgstr ""
+
+#: samples/contact-page.php:567
+msgid "Contact details heading"
+msgstr ""
+
+#: samples/contact-page.php:568
+msgid "Contact details"
+msgstr ""
+
+#: samples/contact-page.php:573
+msgid "Public email address"
+msgstr ""
+
+#: samples/contact-page.php:575
+msgid "Shown in the contact list and used for its mailto link."
+msgstr ""
+
+#: samples/contact-page.php:579
+msgid "Phone number"
+msgstr ""
+
+#: samples/contact-page.php:581
+msgid "Written however you want it read; the dial link is derived from it."
+msgstr ""
+
+#: samples/contact-page.php:585
+msgid "Street address"
+msgstr ""
+
+#: samples/contact-page.php:586
+msgid "123 Market Street, San Francisco, CA"
+msgstr ""
+
+#: samples/contact-page.php:591
+msgid "Map location"
+msgstr ""
+
+#: samples/contact-page.php:594
+msgid "Anything Google Maps can search: an address, a place name, or coordinates."
 msgstr ""
 
 #: samples/landing-saas.php:252
@@ -1246,7 +1693,7 @@ msgid "Forms"
 msgstr ""
 
 #: build/admin/index.js:1
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Blocks"
 msgstr ""
 
@@ -1410,27 +1857,6 @@ msgstr ""
 msgid "Allow editing %s"
 msgstr ""
 
-#: build/admin/index.js:6
-msgid "Loading samples…"
-msgstr ""
-
-#: build/admin/index.js:6
-msgid "Could not load the sample catalog."
-msgstr ""
-
-#: build/admin/index.js:6
-#: build/admin/index.js:9
-msgid "Retry"
-msgstr ""
-
-#: build/admin/index.js:6
-msgid "No samples are available."
-msgstr ""
-
-#: build/admin/index.js:6
-msgid "Import a ready-made example of a block as a draft page, then open it in the editor to explore and customize, or preview it on the front end."
-msgstr ""
-
 #. translators: %s: sample title
 #: build/admin/index.js:7
 msgid "“%s” imported as a draft."
@@ -1438,6 +1864,31 @@ msgstr ""
 
 #: build/admin/index.js:7
 msgid "Import failed. Please try again."
+msgstr ""
+
+#: build/admin/index.js:7
+msgid "The import endpoint is unavailable."
+msgstr ""
+
+#: build/admin/index.js:7
+msgid "Loading samples…"
+msgstr ""
+
+#: build/admin/index.js:7
+msgid "Could not load the sample catalog."
+msgstr ""
+
+#: build/admin/index.js:7
+#: build/admin/index.js:13
+msgid "Retry"
+msgstr ""
+
+#: build/admin/index.js:7
+msgid "No samples are available."
+msgstr ""
+
+#: build/admin/index.js:7
+msgid "Import a ready-made example of a block as a draft page, then open it in the editor to explore and customize, or preview it on the front end."
 msgstr ""
 
 #. translators: %s: sample title
@@ -1449,36 +1900,54 @@ msgstr ""
 msgid "Could not remove that item."
 msgstr ""
 
-#: build/admin/index.js:8
+#. translators: %s: sample title
+#: build/admin/index.js:9
+msgid "Import “%s”"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Fill in what you want to change. Anything left blank keeps the wording this sample ships with, and you can edit all of it in the editor afterwards."
+msgstr ""
+
+#: build/admin/index.js:9
+#: build/admin/index.js:10
+msgid "Importing…"
+msgstr ""
+
+#: build/admin/index.js:9
+msgid "Import as draft"
+msgstr ""
+
+#: build/admin/index.js:9
 msgid "Move to Trash?"
 msgstr ""
 
 #. translators: %s: sample title
-#: build/admin/index.js:9
+#: build/admin/index.js:10
 msgid "The imported “%s” content will be moved to Trash. You can import it again afterwards."
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:10
 msgid "Removing…"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:10
 msgid "Move to Trash"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:10
 msgid "Imported"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:10
 msgid "Open in editor"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:10
 msgid "Preview"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:10
 #: build/blocks/banner/index.js:1
 #: build/blocks/before-after/index.js:1
 #: build/blocks/breadcrumb/index.js:1
@@ -1542,64 +2011,275 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: build/admin/index.js:9
-msgid "Importing…"
-msgstr ""
-
-#: build/admin/index.js:9
+#: build/admin/index.js:10
 msgid "Import"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:10
+msgid "Could not save that change."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "AI agents (MCP)"
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Let an AI client read this site, and optionally draft pages from your presets, over the Model Context Protocol."
+msgstr ""
+
+#: build/admin/index.js:10
+#: build/admin/index.js:11
+msgid "Enable MCP"
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Off by default. While it is off this plugin registers nothing and answers nothing."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Turn on MCP?"
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "An AI client you connect will be able to read this site through the tools you allow, using an account you create for it. You can turn this off again at any time."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Turn on"
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "MCP is off. Nothing on this site is reachable by an agent."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Agents can read this site."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Agents can no longer read this site."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Allow agents to create content?"
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "A connected agent will be able to create pages on this site. Everything it creates arrives as a draft for you to review, and it can never publish."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Allow"
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Agents can no longer create content."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Saved."
+msgstr ""
+
+#. translators: %s: minimum WordPress version
+#: build/admin/index.js:11
+msgid "Needs WordPress %s or newer, which is where the Abilities API this is built on lives."
+msgstr ""
+
+#: build/admin/index.js:11
+msgid "One plugin still missing"
+msgstr ""
+
+#: build/admin/index.js:11
+msgid "MCP Adapter is what speaks the protocol. Flexa Block does not."
+msgstr ""
+
+#: build/admin/index.js:11
+msgid "The MCP server, its transport and its authentication belong to the MCP Adapter plugin, maintained on WordPress.org. Install and activate it, and the tools this module registers become reachable by an MCP client."
+msgstr ""
+
+#: build/admin/index.js:11
+msgid "Until then nothing is lost: the same tools are already registered with WordPress core, so they can be listed and run through the core abilities REST routes with an account that has permission."
+msgstr ""
+
+#: build/admin/index.js:11
+msgid "View MCP Adapter"
+msgstr ""
+
+#: build/admin/index.js:11
+msgid "What agents may do"
+msgstr ""
+
+#. translators: %s: MCP Adapter version
+#: build/admin/index.js:12
+msgid "Served by MCP Adapter %s."
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Served by MCP Adapter."
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Read"
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Site design settings, the list of presets, and the block structure of a page an agent asks about."
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Create drafts"
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Create a page from one of your presets. Drafts only, never published, never an existing page overwritten."
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "An agent acts as the WordPress user whose credentials it was given, and can do nothing that user cannot do. Create a dedicated account with the lowest role that fits, give it an application password, and revoke that password to cut access off."
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "These two switches cover the tools Flexa Block registers. MCP Adapter also serves tools that WordPress and other active plugins register, which these switches do not govern, so the role on that account is what decides how far a client can reach."
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Every call is recorded below, with the user, the tool, the page and the outcome."
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Endpoint"
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "The address an MCP client connects to."
+msgstr ""
+
+#: build/admin/index.js:12
+#: build/blocks/steps/index.js:1
+msgid "Done"
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Refused"
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Not allowed"
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Unfinished"
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Recent activity"
+msgstr ""
+
+#. translators: %d: number of days a row is kept
+#: build/admin/index.js:13
+msgid "Calls to this plugin’s tools, kept for %d day."
+msgid_plural "Calls to this plugin’s tools, kept for %d days."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/admin/index.js:13
+msgid "Calls to this plugin’s tools."
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "Nothing recorded yet. A row appears here the first time a client calls one of these tools."
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "When"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "Who"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "Tool"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "Outcome"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "Refreshing…"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "Refresh"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "The log keeps the user, the tool, the page and the outcome. It keeps no page content, no prompts and no credentials, and it is not a way to undo what a call did."
+msgstr ""
+
+#: build/admin/index.js:13
 msgid "Need a form on the pages you build?"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Free plugin"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Flexa FormFlow is our free form builder, with a visual email designer and a workflow engine built in. Drag fields onto the canvas, design the emails each submission sends, then drop the finished form into any Flexa Block layout."
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Install FormFlow"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Hide this suggestion"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Settings sections"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 #: build/blocks/taxonomy/index.js:1
 msgid "General"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Dark mode & performance"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Enable or disable blocks"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Import block examples"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Front-end inline editing"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
+msgid "AI agents"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "MCP access for AI clients"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "Reload this page to load the MCP settings."
+msgstr ""
+
+#: build/admin/index.js:13
 msgid "All changes saved"
 msgstr ""
 
-#: build/admin/index.js:9
+#: build/admin/index.js:13
 msgid "Could not save."
 msgstr ""
 
@@ -10309,23 +10989,6 @@ msgid "Select logo"
 msgstr ""
 
 #: build/blocks/comparison-table/index.js:1
-#: build/blocks/info-box/index.js:1
-#: build/blocks/notice/index.js:1
-#: build/blocks/post-grid/index.js:1
-#: build/blocks/process-bar/index.js:1
-#: build/blocks/product-detail/index.js:1
-#: build/blocks/product-related/index.js:1
-#: build/blocks/rss/index.js:1
-#: build/blocks/social-share/index.js:1
-#: build/blocks/star-rating/index.js:1
-#: build/blocks/steps/index.js:1
-#: build/blocks/table-of-content/index.js:1
-#: build/blocks/testimonial/index.js:1
-#: build/blocks/timeline/index.js:1
-msgid "Title"
-msgstr ""
-
-#: build/blocks/comparison-table/index.js:1
 msgid "Subtitle"
 msgstr ""
 
@@ -14462,10 +15125,6 @@ msgstr ""
 
 #: build/blocks/steps/index.js:1
 msgid "Follow block default"
-msgstr ""
-
-#: build/blocks/steps/index.js:1
-msgid "Done"
 msgstr ""
 
 #: build/blocks/steps/index.js:1

@@ -48,6 +48,11 @@ class Import_Registry {
 		 *
 		 * @param list<Import_Source> $sources Registered sources.
 		 */
+		// Sources read slot declarations off their definitions, so the reader
+		// has to be in memory before any of them is asked for its items. Every
+		// path to a source comes through here, Pro's included.
+		Import_Manager::load_preset_slots();
+
 		$registered = apply_filters( 'flexa_block_import_sources', [] );
 
 		$out = [];
