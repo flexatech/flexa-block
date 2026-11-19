@@ -158,6 +158,18 @@ function flexa_test_unslash( $value ) {
 	return is_string( $value ) ? stripslashes( $value ) : $value;
 }
 
+if ( ! function_exists( 'wp_get_attachment_url' ) ) {
+	function wp_get_attachment_url( $id ) {
+		return $GLOBALS['flexa_test_attachment_urls'][ (int) $id ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_metadata' ) ) {
+	function wp_get_attachment_metadata( $id ) {
+		return $GLOBALS['flexa_test_attachment_meta'][ (int) $id ] ?? false;
+	}
+}
+
 if ( ! function_exists( 'wp_next_scheduled' ) ) {
 	function wp_next_scheduled( $hook ) {
 		return $GLOBALS['flexa_test_cron'][ $hook ] ?? false;
@@ -392,6 +404,10 @@ if ( ! function_exists( 'current_user_can' ) ) {
 	 * @return bool
 	 */
 	function current_user_can( $capability, ...$args ) {
+		// Capabilities a test grants outright, by name.
+		if ( isset( $GLOBALS['flexa_test_caps'][ $capability ] ) ) {
+			return (bool) $GLOBALS['flexa_test_caps'][ $capability ];
+		}
 		if ( 'read_post' !== $capability ) {
 			return false;
 		}
@@ -792,6 +808,7 @@ require_once $flexa_inc . 'import/class-preset-slots.php';
  * are WordPress-free.
  */
 require_once $flexa_inc . 'class-link-url.php';
+require_once $flexa_inc . 'class-image-source.php';
 require_once $flexa_inc . 'class-block-patcher.php';
 require_once $flexa_inc . 'class-inline-revision-session.php';
 require_once $flexa_inc . 'class-inline-edit-log.php';

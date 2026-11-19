@@ -1,6 +1,6 @@
 # Sửa ngoài Front-End: nâng cấp
 
-> ✅ xong (19) · 🧪 cần kiểm tra lại (1) · ⬜ chưa bắt đầu (11)
+> ✅ xong (24) · 🧪 cần kiểm tra lại (0) · ⬜ chưa bắt đầu (7)
 > · Cập nhật: 2026-11-19 · Nhánh: `feat/frontend-editing` (tách từ `feat/mcp-module-phase-0`)
 >
 > Phạm vi block/trường đang sửa được: [`inline-editing-coverage.md`](inline-editing-coverage.md).
@@ -287,7 +287,7 @@ không bị tính là đã sửa), hoặc một lần lưu đang chạy dở.
 
 ## Giai đoạn 5 · Sửa link
 
-19. 🧪 **Sửa link — cần thử trên site thật.** Registry: loại trường `'type' => 'url'` gắn với trường chữ đi kèm (nút: `text`
+19. ✅ **Sửa link.** Registry: loại trường `'type' => 'url'` gắn với trường chữ đi kèm (nút: `text`
     + `url`; heading: `content` + `url`; info box, CTA, banner: nút chính/phụ; icon
     list: `items[].link.url`). Khi đang sửa chữ của một phần tử có link, toolbar có
     thêm nút "Sửa link" mở popover nhập URL và tuỳ chọn mở tab mới nếu block có
@@ -318,11 +318,16 @@ không bị tính là đã sửa), hoặc một lần lưu đang chạy dở.
     Kiểm: 1.569 test PHP (gồm ~35 ca cho `Link_Url`); trên site thật qua
     `handle_save()` đổi URL, bật/tắt tab mới, gỡ link, hoàn tác, từ chối 5 kiểu
     ngụy trang, `{}`/`[]` của block khác còn nguyên; 19 kiểm tra giao diện trên
-    Chromium, Firefox, WebKit. Chưa thử trên trang thật trong trình duyệt.
+    Chromium, Firefox, WebKit; đã thử trên trang thật, gồm cả Firefox (2026-11-19).
 
 ## Giai đoạn 6 · Sửa hình ảnh
 
-Attribute ảnh trong plugin có cùng hình dạng `{ id, url, alt, width, height }`:
+Attribute ảnh trong plugin **không** cùng một hình dạng. Image, Before / After,
+Modal và Video Popup lưu `{ id, url, alt, width, height }`; Info Box, Team Member,
+Testimonial và Timeline chỉ lưu `{ id, url, alt }`. Block editor lưu URL **ảnh gốc**
+(không phải theo `imageSize`) cùng kích thước gốc và alt của attachment; riêng block
+Image tính lại URL theo `id` và `imageSize` mỗi lần render, các block còn lại dùng
+thẳng `url` đã lưu nên server phải ghi đúng `url`:
 
 | Block | Attribute |
 |---|---|
@@ -335,19 +340,73 @@ Attribute ảnh trong plugin có cùng hình dạng `{ id, url, alt, width, heig
 | Video Popup | `thumbnailImage` |
 | Timeline | `items[].image` |
 
-20. ⬜ Registry: loại trường mới `'type' => 'image'` (cạnh trường chữ hiện có), khai
+20. ✅ Registry: loại trường mới `'type' => 'image'` (cạnh trường chữ hiện có), khai
     báo `attr` (+ `repeat`/`key` cho Timeline) và `selector` của thẻ `<img>`. Filter
     `flexa_block_inline_editable` nhận loại mới để add-on dùng được.
-21. ⬜ Front-end: click ảnh mở **media modal của WordPress** (`wp.media`). Chỉ
+21. ✅ Front-end: click ảnh mở **media modal của WordPress** (`wp.media`). Chỉ
     `wp_enqueue_media()` khi toolbar thật sự render cho user có quyền, không nạp
     cho khách. Chọn xong đổi `src` tạm để xem trước, rồi lưu.
-22. ⬜ Server **chỉ nhận ID attachment**, không nhận URL hay kích thước từ client.
+22. ✅ Server **chỉ nhận ID attachment**, không nhận URL hay kích thước từ client.
     Kiểm: attachment tồn tại, là ảnh (`wp_attachment_is_image`), user đọc được
     (`read_post`), user có `upload_files`. Rồi tự dựng `url` / `width` / `height`
     từ attachment theo đúng `imageSize` của block, `alt` lấy alt của attachment
     nếu block đang trống. Dùng lại cách `Preset_Slots::clean_media()` đang kiểm.
-23. ⬜ Sửa alt text tại chỗ (ô nhập nhỏ trên ảnh) cho `image.alt`: là chữ, đi
+23. ✅ Sửa alt text tại chỗ (ô nhập nhỏ trên ảnh) cho `image.alt`: là chữ, đi
     đường lưu chữ hiện có.
+
+    **Đã làm (mục 20–23):** khác dự kiến ban đầu ở ba chỗ
+    có chủ ý. (1) Registry có khoá `images` riêng cạnh `fields` (một block có thể
+    chỉ có ảnh, như Image và Video Popup): `attr`, `selector` của `<img>`, `hit`
+    (phần tử nhận click khi có lớp phủ), `shape` (`full` hay `basic`), `alt` (thuộc
+    tính alt riêng, `altText` của Image), `size` (thuộc tính cỡ ảnh) và
+    `repeat` + `key` cho ảnh trong item. Đã khai báo cho Image, Info Box, Team
+    Member, Testimonial, Before/After (hai ảnh), Modal, Video Popup, Timeline.
+    (2) Alt text không có chữ nào để sửa tại chỗ, nên ảnh và alt nằm chung một hộp
+    thoại **Edit image** (xem trước, "Choose another image", ô Alt text); đổi ảnh
+    và alt là một lần lưu, một dòng log, một lần Hoàn tác. (3) Server dựng dữ liệu
+    giống hệt block editor (URL gốc, kích thước gốc nếu block lưu kích thước, alt
+    của attachment) chứ không theo `imageSize`.
+
+    Server: `Image_Source::describe()` (`includes/class-image-source.php`) chỉ nhận
+    ID, kiểm là attachment ảnh, user có `upload_files` và `read_post`, rồi đọc URL,
+    chiều rộng/cao, alt từ thư viện; không bao giờ tin URL hay kích thước từ trình
+    duyệt. Đi qua `handle_save()` với `image: true` và `value` JSON `{id, alt}`
+    (`id` null là giữ ảnh, chỉ đổi alt, và không cần `upload_files`): giữ các khoá lạ
+    trong object ảnh, không thêm width/height cho block kiểu `basic`, `{}`/`[]` của
+    block khác còn nguyên. Alt riêng (`altText` của Image) chỉ được cập nhật khi
+    block đã dùng nó, để không đè alt của ảnh chọn sau. Phản hồi trả `after` (địa
+    chỉ hiển thị đúng cỡ block, kích thước, alt) và `before` (`{id, alt}`) cho nút
+    Undo; ảnh cũ không có ID thư viện thì không Undo được (`undo: false`). Log ghi
+    `kind: image`, dạng `tên-file (#id) · alt: …`.
+
+    Giao diện: rê vào ảnh thì viền nét đứt; bấm (kể cả qua lớp phủ, link hay
+    lightbox của block, bắt ở pha capture) mở hộp thoại, hỏi Lưu/Bỏ/Tiếp tục trước
+    nếu có chữ chưa lưu. "Choose another image" mở `wp.media` (chỉ ảnh, một ảnh)
+    và điền alt của ảnh vừa chọn; Esc trong khung media không đóng hộp thoại của
+    mình. Lưu xong `<img>` trên trang đổi ngay (bỏ `srcset`/`sizes` cũ) kèm
+    "Saved · Undo". `wp_enqueue_media()` chỉ chạy cho người có `upload_files` và
+    chỉ khi site có block ảnh sửa được; khách không bao giờ nhận. Người không có
+    `upload_files` không thấy nút chọn ảnh nhưng vẫn sửa được alt.
+
+    **Kiểm:** 1.579 test PHP (10 ca cho `Image_Source`); trên site thật qua
+    `handle_save()` với ảnh thật: đổi ảnh Image/Info Box/Timeline (item 1, item 0
+    nguyên), chỉ đổi alt, Hoàn tác, từ chối ID không phải ảnh / không tồn tại /
+    contributor chọn ảnh (403) / thuộc tính chưa khai báo / thiếu index. Đã thử
+    trong trình duyệt (giao diện, `wp.media`, lớp phủ, Before/After).
+    **Bổ sung:** Images Gallery (ảnh là chính mục trong `images[]`: khai báo
+    `repeat` không có `key`, render gắn `data-flexa-item`; đổi ảnh thì xoá caption
+    cũ lưu sẵn, chặn lightbox khi bấm); ảnh nền của Slide (`background: true`:
+    chỉ thay khi nền đang là ảnh, giữ position/size/repeat, CSS dựng lại khi
+    lưu; mở bằng nút "Change background" ở góc slide vì nền không có `<img>`);
+    Before/After mở bằng hai nút "Edit before/after image" ở góc dưới thay vì bấm
+    vào ảnh (bấm vào khung là kéo thanh trượt). Nút được xử lý uỷ quyền từ
+    `document` (slider sao chép slide sau khi script chạy) và chặn pointerdown để
+    không kéo slider/swiper. Click vào ảnh giờ bắt ở block root (capture) để chạy
+    trước lightbox của block. Kiểm trên site thật qua `handle_save()`: gallery
+    đổi mục 1 giữ mục 0, chỉ đổi alt mục 0, slide đổi nền (CSS mới có URL mới),
+    nền màu bị từ chối, before/after đổi ảnh. Đã thử trên trình duyệt (2026-11-19).
+    **Chưa làm:** thêm ảnh vào chỗ chưa có ảnh (trang không có `<img>` để bấm);
+    nạp `wp.media` muộn khi bấm lần đầu (hiện nạp cùng trang cho người sửa).
 
 ## Giai đoạn 7 · Sửa icon
 
@@ -418,6 +477,15 @@ Icon List, Counter, Team Member, Timeline (`items[].icon`).
 ---
 
 ## Đang để mở
+
+- **Sửa video (để bản sau).** Video Popup lưu video bằng `videoSource`
+  (`youtube` / `vimeo` / `mp4`) và `videoUrl`; hiện ngoài front-end chỉ đổi được
+  ảnh thumbnail. Hướng đã bàn: thêm phần Video vào hộp thoại của block (chọn
+  nguồn, dán link YouTube/Vimeo, hoặc chọn file từ thư viện media cho MP4).
+  Server kiểm link YouTube/Vimeo bằng cùng mẫu block đang dùng để lấy mã video,
+  với MP4 chỉ nhận ID video trong thư viện rồi tự lấy URL (như ảnh); lưu qua
+  `handle_save()` nên có phiên bản nội dung, log và Hoàn tác. Còn chốt: có cho
+  dán URL MP4 ngoài thư viện không, và có làm cho block khác có video không.
 
 - **Nguồn SVG cho icon thư viện (mục 24).** Thư viện icon hiện chỉ có ở phía JS
   (`IconPicker.tsx`); markup được client ghi vào attribute lúc chọn trong editor,

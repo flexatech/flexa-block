@@ -82,7 +82,39 @@ final class Inline_Editor {
 				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'secondaryUrl', 'target' => 'secondaryTarget', 'anchor' => '.flexa-promo__button--secondary' ] ],
 			],
 		],
+		// An image is a media-library picture, not text: `images` lists where a block
+		// keeps one. `selector` is the <img>; `hit` (optional) is what is clicked
+		// when overlays sit on top of it; `shape` is "full" for blocks that also
+		// store width and height; `alt` names a separate alt-text attribute that
+		// wins over the image's own; `size` names the attribute holding the size
+		// the block renders at; `repeat` + `key` is an image inside a list item.
+		// A gallery's pictures are the list items themselves (`repeat` with no `key`).
+		'flexa/images-gallery' => [
+			'images' => [
+				[ 'attr' => 'images', 'repeat' => true, 'selector' => '.flexa-images-gallery__image', 'hit' => '.flexa-images-gallery__media', 'shape' => 'full', 'size' => 'imageSize', 'caption' => true ],
+			],
+		],
+		// A slide's picture is a CSS background: there is no <img> to click, so a
+		// button is placed on the slide instead (`button`).
+		'flexa/slide' => [
+			'images' => [
+				[ 'attr' => 'background', 'background' => true, 'button' => 'top-right' ],
+			],
+		],
+		'flexa/image' => [
+			'images' => [
+				[ 'attr' => 'image', 'selector' => '.flexa-image__img', 'hit' => '.flexa-image__frame', 'shape' => 'full', 'alt' => 'altText', 'size' => 'imageSize' ],
+			],
+		],
+		'flexa/video-popup' => [
+			'images' => [
+				[ 'attr' => 'thumbnailImage', 'selector' => '.flexa-video-popup__image', 'shape' => 'full' ],
+			],
+		],
 		'flexa/info-box' => [
+			'images' => [
+				[ 'attr' => 'image', 'selector' => '.flexa-info-box__image', 'shape' => 'basic' ],
+			],
 			'fields' => [
 				[ 'attr' => 'prefix', 'selector' => '.flexa-info-box__prefix', 'allowed' => 'minimal' ],
 				[ 'attr' => 'title', 'selector' => '.flexa-info-box__title', 'allowed' => 'minimal' ],
@@ -91,6 +123,9 @@ final class Inline_Editor {
 			],
 		],
 		'flexa/testimonial' => [
+			'images' => [
+				[ 'attr' => 'authorImage', 'selector' => '.flexa-testimonial__avatar', 'shape' => 'basic' ],
+			],
 			'fields' => [
 				[ 'attr' => 'title', 'selector' => '.flexa-testimonial__title', 'allowed' => 'minimal' ],
 				[ 'attr' => 'quote', 'selector' => '.flexa-testimonial__quote', 'allowed' => 'minimal-link' ],
@@ -99,6 +134,9 @@ final class Inline_Editor {
 			],
 		],
 		'flexa/team-member' => [
+			'images' => [
+				[ 'attr' => 'image', 'selector' => '.flexa-team-member__image', 'shape' => 'basic' ],
+			],
 			'fields' => [
 				[ 'attr' => 'name', 'selector' => '.flexa-team-member__name', 'allowed' => 'minimal' ],
 				[ 'attr' => 'role', 'selector' => '.flexa-team-member__role', 'allowed' => 'minimal' ],
@@ -117,6 +155,12 @@ final class Inline_Editor {
 			],
 		],
 		'flexa/before-after' => [
+			'images' => [
+				// Pressing anywhere on the frame drags the slider, so these open from a
+				// button of their own rather than from a click on the picture.
+				[ 'attr' => 'beforeImage', 'selector' => '.flexa-before-after__img-wrap--before .flexa-before-after__img', 'shape' => 'full', 'button' => 'bottom-left', 'host' => '.flexa-before-after__frame' ],
+				[ 'attr' => 'afterImage', 'selector' => '.flexa-before-after__img-wrap--after .flexa-before-after__img', 'shape' => 'full', 'button' => 'bottom-right', 'host' => '.flexa-before-after__frame' ],
+			],
 			'fields' => [
 				[ 'attr' => 'beforeLabel', 'selector' => '.flexa-before-after__label--before', 'allowed' => 'plain' ],
 				[ 'attr' => 'afterLabel', 'selector' => '.flexa-before-after__label--after', 'allowed' => 'plain' ],
@@ -167,6 +211,9 @@ final class Inline_Editor {
 			],
 		],
 		'flexa/timeline' => [
+			'images' => [
+				[ 'attr' => 'items', 'key' => 'image', 'repeat' => true, 'selector' => '.flexa-timeline__image', 'shape' => 'basic' ],
+			],
 			'fields' => [
 				[ 'attr' => 'items', 'key' => 'date', 'repeat' => true, 'selector' => '.flexa-timeline__date', 'allowed' => 'minimal' ],
 				[ 'attr' => 'items', 'key' => 'title', 'repeat' => true, 'selector' => '.flexa-timeline__title', 'allowed' => 'minimal' ],
@@ -204,6 +251,9 @@ final class Inline_Editor {
 		// trigger types render it (icon/image triggers have no text element). The
 		// label is plain text (esc_html in render.php).
 		'flexa/modal' => [
+			'images' => [
+				[ 'attr' => 'triggerImage', 'selector' => '.flexa-modal__trigger-image', 'shape' => 'full' ],
+			],
 			'fields' => [
 				[ 'attr' => 'triggerText', 'selector' => '.flexa-modal__trigger-text', 'allowed' => 'plain' ],
 			],
@@ -335,8 +385,12 @@ final class Inline_Editor {
 					continue;
 				}
 				$fields = self::valid_fields( $def );
-				if ( $fields ) {
-					$registry[ $name ] = [ 'fields' => $fields ];
+				$images = self::valid_images( $def );
+				if ( $fields || $images ) {
+					$registry[ $name ] = [
+						'fields' => $fields,
+						'images' => $images,
+					];
 				}
 			}
 		}
@@ -378,6 +432,42 @@ final class Inline_Editor {
 				continue;
 			}
 			$out[] = $field;
+		}
+
+		return $out;
+	}
+
+	/**
+	 * The well-formed image declarations of a registry entry.
+	 *
+	 * An image needs the attribute that holds it and the rendered <img> to click;
+	 * one inside a list item also needs the item key.
+	 *
+	 * @param mixed $def Registry entry.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function valid_images( $def ): array {
+		if ( ! is_array( $def ) || ! isset( $def['images'] ) || ! is_array( $def['images'] ) ) {
+			return [];
+		}
+
+		$out = [];
+		foreach ( $def['images'] as $image ) {
+			if ( ! is_array( $image ) || empty( $image['attr'] ) || ! is_string( $image['attr'] ) ) {
+				continue;
+			}
+			// A background is the block root itself; anything else names its <img>.
+			if ( empty( $image['background'] ) && ( empty( $image['selector'] ) || ! is_string( $image['selector'] ) ) ) {
+				continue;
+			}
+			// A background is one per block, never a list item.
+			if ( ! empty( $image['background'] ) && ! empty( $image['repeat'] ) ) {
+				continue;
+			}
+			if ( isset( $image['key'] ) && ! is_string( $image['key'] ) ) {
+				continue;
+			}
+			$out[] = $image;
 		}
 
 		return $out;
@@ -489,6 +579,17 @@ final class Inline_Editor {
 	private static function fields_for( string $name ): array {
 		$registry = self::registry();
 		return isset( $registry[ $name ] ) ? $registry[ $name ]['fields'] : [];
+	}
+
+	/**
+	 * The editable images for a block (empty if none).
+	 *
+	 * @param string $name Block name.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function images_for( string $name ): array {
+		$registry = self::registry();
+		return isset( $registry[ $name ]['images'] ) ? $registry[ $name ]['images'] : [];
 	}
 
 	/**
@@ -845,6 +946,13 @@ final class Inline_Editor {
 
 		wp_set_script_translations( 'flexa-block-inline-editor', 'flexa-block', FLEXA_BLOCK_DIR . 'languages' );
 
+		// The media library (Backbone, the media views and their templates) for the
+		// people who may use it, and only on pages that have an image to change.
+		// It is never loaded for a visitor: this whole method returns for them.
+		if ( current_user_can( 'upload_files' ) && self::has_images() ) {
+			wp_enqueue_media( [ 'post' => (int) get_queried_object_id() ] );
+		}
+
 		wp_localize_script(
 			'flexa-block-inline-editor',
 			'flexaBlockInlineEditor',
@@ -853,7 +961,18 @@ final class Inline_Editor {
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 				'endpoint' => esc_url_raw( rest_url( self::REST_NS . '/inline-edit' ) ),
 				'fields'   => self::js_fields(),
+				'images'   => self::js_images(),
+				// Choosing a different picture needs the media library; changing only
+				// the alt text does not.
+				'canPick'  => current_user_can( 'upload_files' ),
 				'i18n'     => [
+					'imageEdit'  => __( 'Edit image', 'flexa-block' ),
+					'imageBg'    => __( 'Change background', 'flexa-block' ),
+					'imageBefore' => __( 'Edit “before” image', 'flexa-block' ),
+					'imageAfter'  => __( 'Edit “after” image', 'flexa-block' ),
+					'imageNoWp'  => __( 'The media library could not be loaded on this page. Reload and try again.', 'flexa-block' ),
+					'imageTitle' => __( 'Choose image', 'flexa-block' ),
+					'imageUse'   => __( 'Use this image', 'flexa-block' ),
 					'editing' => __( 'Editing', 'flexa-block' ),
 					'save'    => __( 'Save', 'flexa-block' ),
 					'cancel'  => __( 'Cancel', 'flexa-block' ),
@@ -919,6 +1038,57 @@ final class Inline_Editor {
 			$out[ $name ] = $fields;
 		}
 		return $out;
+	}
+
+	/**
+	 * The JS-facing list of editable images, by block.
+	 *
+	 * @return array<string, list<array<string, mixed>>>
+	 */
+	private static function js_images(): array {
+		$out = [];
+		foreach ( self::registry() as $name => $def ) {
+			if ( self::is_block_disabled( $name ) || empty( $def['images'] ) ) {
+				continue;
+			}
+			$list = [];
+			foreach ( $def['images'] as $image ) {
+				$entry = [
+					'attr'     => (string) $image['attr'],
+					'selector' => (string) ( $image['selector'] ?? '' ),
+				];
+				if ( ! empty( $image['hit'] ) ) {
+					$entry['hit'] = (string) $image['hit'];
+				}
+				if ( ! empty( $image['repeat'] ) ) {
+					$entry['repeat'] = true;
+					if ( isset( $image['key'] ) && '' !== $image['key'] ) {
+						$entry['key'] = (string) $image['key'];
+					}
+				}
+				if ( ! empty( $image['background'] ) ) {
+					$entry['background'] = true;
+				}
+				// Where to put a button that opens the editor, when clicking the
+				// picture itself would clash with what the block does on press.
+				if ( ! empty( $image['button'] ) ) {
+					$entry['button'] = (string) $image['button'];
+					if ( ! empty( $image['host'] ) ) {
+						$entry['host'] = (string) $image['host'];
+					}
+				}
+				$list[] = $entry;
+			}
+			$out[ $name ] = $list;
+		}
+		return $out;
+	}
+
+	/**
+	 * Whether any block on the site declares an editable image.
+	 */
+	private static function has_images(): bool {
+		return [] !== self::js_images();
 	}
 
 	/**
@@ -1003,6 +1173,38 @@ final class Inline_Editor {
 			</form>
 		</div>
 		<?php
+		/*
+		 * The image editor: the picture (changed from the media library) and its alt
+		 * text. A dialog like the link editor's, so it works the same whether or not
+		 * text is being edited.
+		 */
+		?>
+		<div
+			class="flexa-fee-toolbar__prompt flexa-fee-linkdialog flexa-fee-imagedialog"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="flexa-fee-image-title"
+			hidden
+		>
+			<form class="flexa-fee-toolbar__prompt-dialog" novalidate>
+				<div class="flexa-fee-toolbar__prompt-content">
+					<div class="flexa-fee-linkdialog__body">
+						<h2 id="flexa-fee-image-title" class="flexa-fee-toolbar__prompt-title"><?php echo esc_html__( 'Edit image', 'flexa-block' ); ?></h2>
+						<div class="flexa-fee-imagedialog__preview"><img alt="" /></div>
+						<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel flexa-fee-imagedialog__pick" data-image="pick"><?php echo esc_html__( 'Choose another image', 'flexa-block' ); ?></button>
+						<label class="flexa-fee-linkdialog__label" for="flexa-fee-image-alt"><?php echo esc_html__( 'Alt text', 'flexa-block' ); ?></label>
+						<input id="flexa-fee-image-alt" class="flexa-fee-linkdialog__input" type="text" autocomplete="off" />
+						<p class="flexa-fee-linkdialog__hint"><?php echo esc_html__( 'Describes the image for people who cannot see it. Leave it empty for a purely decorative image.', 'flexa-block' ); ?></p>
+						<p class="flexa-fee-linkdialog__error" role="alert" hidden></p>
+					</div>
+				</div>
+				<div class="flexa-fee-toolbar__prompt-actions">
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-image="cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
+					<button type="submit" class="flexa-fee-btn flexa-fee-btn--save" data-image="apply"><?php echo esc_html__( 'Apply', 'flexa-block' ); ?></button>
+				</div>
+			</form>
+		</div>
+		<?php
 	}
 
 	/* ---------------------------------------------------------------------
@@ -1075,6 +1277,13 @@ final class Inline_Editor {
 					// A link edit: `attr` names the URL attribute and `value` is
 					// JSON {"url": "...", "newTab": true|false}. See with_link().
 					'link'      => [
+						'type'    => 'boolean',
+						'default' => false,
+					],
+					// An image edit: `attr` names the image attribute and `value` is
+					// JSON {"id": attachment ID or null to keep it, "alt": text}.
+					// Only the ID is trusted. See with_image() and Image_Source.
+					'image'     => [
 						'type'    => 'boolean',
 						'default' => false,
 					],
@@ -1181,8 +1390,22 @@ final class Inline_Editor {
 			);
 		}
 
-		$is_link = (bool) rest_sanitize_boolean( $request->get_param( 'link' ) );
-		if ( $is_link ) {
+		$is_link  = (bool) rest_sanitize_boolean( $request->get_param( 'link' ) );
+		$is_image = (bool) rest_sanitize_boolean( $request->get_param( 'image' ) );
+		$image    = null;
+		if ( $is_link && $is_image ) {
+			return new \WP_Error( 'flexa_invalid_field', __( 'That edit could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+		}
+		if ( $is_image ) {
+			// An image goes through Image_Source, never through kses or the browser's
+			// idea of its address: only an attachment ID is accepted.
+			$image = self::find_image( $name, $attr, $key, null !== $index_raw );
+			$link  = null;
+			$field = [];
+			if ( null === $image ) {
+				return new \WP_Error( 'flexa_invalid_field', __( 'This image cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+		} elseif ( $is_link ) {
 			// A link is not a text field and never goes through kses: its value is
 			// checked by Link_Url and only ever lands in the URL attribute.
 			$link  = self::find_link( $name, $attr );
@@ -1298,8 +1521,19 @@ final class Inline_Editor {
 
 		// What the log shows, and (for a link) the exact state Undo has to send back.
 		$after_json = null;
+		$undoable   = true;
 
-		if ( $is_link ) {
+		if ( $is_image ) {
+			$changed = self::with_image( $attrs, $name, (array) $image, null === $index_raw ? null : absint( $index_raw ), $value );
+			if ( is_wp_error( $changed ) ) {
+				return $changed;
+			}
+			$old        = $changed['old'];
+			$clean      = $changed['summary'];
+			$log_before = $changed['old_summary'];
+			$after_json = $changed['after'];
+			$undoable   = $changed['undoable'];
+		} elseif ( $is_link ) {
 			$changed = self::with_link( $attrs, $name, (array) $link, $value );
 			if ( is_wp_error( $changed ) ) {
 				return $changed;
@@ -1398,7 +1632,7 @@ final class Inline_Editor {
 				'store_id'    => (int) $store->ID,
 				'store_type'  => (string) $store->post_type,
 				'post_id'     => $post_id,
-				'kind'        => $is_link ? 'link' : 'text',
+				'kind'        => $is_image ? 'image' : ( $is_link ? 'link' : 'text' ),
 				'before'      => $log_before,
 				'after'       => $clean,
 				'revision_id' => Inline_Revision_Session::baseline_id( (int) $store->ID ),
@@ -1431,12 +1665,235 @@ final class Inline_Editor {
 			'before'  => (string) $old,
 			'logId'   => $entry_id,
 		];
-		// For a link, the address as stored (cleaned), so the page shows what was saved.
+		// For a link or an image, the state as stored (cleaned or read from the
+		// library), so the page shows what was saved and not what was asked for.
 		if ( null !== $after_json ) {
 			$response['after'] = $after_json;
 		}
+		// An image that was not from the library cannot be put back from an ID.
+		if ( ! $undoable ) {
+			$response['undo'] = false;
+		}
 
 		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * The declaration of an editable image, by attribute (and item key).
+	 *
+	 * @param string      $name      Block name.
+	 * @param string      $attr      Image attribute (the list attribute for an image in a list item).
+	 * @param string|null $key       Item key for an image in a list item.
+	 * @param bool        $has_index Whether the request names a list item.
+	 * @return array<string, mixed>|null
+	 */
+	private static function find_image( string $name, string $attr, ?string $key, bool $has_index ): ?array {
+		$key = ( null === $key || '' === $key ) ? null : $key;
+
+		foreach ( self::images_for( $name ) as $image ) {
+			if ( (string) $image['attr'] !== $attr ) {
+				continue;
+			}
+			if ( ! empty( $image['repeat'] ) ) {
+				// With a key the picture is items[i][key]; without one it is items[i].
+				$ikey = isset( $image['key'] ) && '' !== $image['key'] ? (string) $image['key'] : null;
+				if ( $has_index && $ikey === $key ) {
+					return $image;
+				}
+			} elseif ( ! $has_index && null === $key ) {
+				return $image;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Apply an image edit to a block's attributes.
+	 *
+	 * Changes the picture, its alt text, or both in one pass. A new picture is
+	 * described by Image_Source from its attachment ID alone: the same address,
+	 * size and alt text the block editor stores when it is picked there. Keys the
+	 * image object already has and this code does not know about are kept.
+	 *
+	 * @param \stdClass           $attrs Block attributes, changed in place.
+	 * @param string              $name  Block name.
+	 * @param array<string,mixed> $image Declaration from find_image().
+	 * @param int|null            $index List item index, for an image in a list item.
+	 * @param string              $value JSON: {"id": int|null, "alt": string}.
+	 * @return array{old:string,after:string,old_summary:string,summary:string,undoable:bool}|\WP_Error
+	 */
+	private static function with_image( \stdClass $attrs, string $name, array $image, ?int $index, string $value ) {
+		$parsed = json_decode( $value, true );
+		if ( ! is_array( $parsed ) ) {
+			return new \WP_Error( 'flexa_invalid_image', __( 'The image could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+		}
+
+		$new_id    = isset( $parsed['id'] ) && is_numeric( $parsed['id'] ) ? (int) $parsed['id'] : 0;
+		$alt_given = isset( $parsed['alt'] ) && is_string( $parsed['alt'] );
+		$alt       = $alt_given ? Image_Source::clean_alt( $parsed['alt'] ) : '';
+
+		$attr = (string) $image['attr'];
+		$list = null;
+		$item = null;
+
+		$bg    = null;
+		$ikey  = isset( $image['key'] ) && '' !== $image['key'] ? (string) $image['key'] : '';
+
+		if ( ! empty( $image['repeat'] ) ) {
+			$list = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			if ( null === $index || ! is_array( $list ) || ! isset( $list[ $index ] ) || ! $list[ $index ] instanceof \stdClass ) {
+				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+			$item = clone $list[ $index ];
+			if ( '' === $ikey ) {
+				// The list item is the picture itself (a gallery).
+				$current = clone $item;
+			} else {
+				$current = isset( $item->{$ikey} ) && $item->{$ikey} instanceof \stdClass ? clone $item->{$ikey} : new \stdClass();
+			}
+		} elseif ( ! empty( $image['background'] ) ) {
+			// A CSS background: only a picture that is already an image background is
+			// replaced. Turning a colour or gradient into a picture is a design
+			// change for the block editor, not a front-end swap.
+			$stored = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			$bg     = $stored instanceof \stdClass ? clone $stored : new \stdClass();
+			if ( 'image' !== ( $bg->type ?? '' ) ) {
+				return new \WP_Error( 'flexa_invalid_image', __( 'This block has no background image to replace. Set one in the block editor first.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+			$current   = isset( $bg->image ) && $bg->image instanceof \stdClass ? clone $bg->image : new \stdClass();
+			$alt_given = false;
+		} else {
+			$stored  = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			$current = $stored instanceof \stdClass ? clone $stored : new \stdClass();
+		}
+
+		$alt_attr = isset( $image['alt'] ) ? (string) $image['alt'] : '';
+		$read_str = static function ( $v ): string {
+			return is_string( $v ) ? $v : '';
+		};
+
+		$old_id  = isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : null;
+		$old_url = $read_str( $current->url ?? '' );
+		$old_alt = $read_str( $current->alt ?? '' );
+		$override = '';
+		if ( '' !== $alt_attr ) {
+			$override = $read_str( property_exists( $attrs, $alt_attr ) ? $attrs->{$alt_attr} : self::default_attr( $name, $alt_attr ) );
+			$old_alt  = '' !== $override ? $override : $old_alt;
+		}
+
+		$changed_image = false;
+		if ( $new_id > 0 && $new_id !== $old_id ) {
+			$info = Image_Source::describe( $new_id );
+			if ( is_wp_error( $info ) ) {
+				return $info;
+			}
+			$current->id  = $info['id'];
+			$current->url = $info['url'];
+			$current->alt = $info['alt'];
+			if ( 'full' === ( $image['shape'] ?? 'basic' ) ) {
+				$current->width  = $info['width'];
+				$current->height = $info['height'];
+			}
+			// A stored caption belonged to the old picture; the block reads the new
+			// one's own caption from the library.
+			if ( ! empty( $image['caption'] ) && property_exists( $current, 'caption' ) ) {
+				$current->caption = '';
+			}
+			if ( null !== $bg ) {
+				unset( $current->alt );
+			}
+			$changed_image = true;
+		}
+
+		if ( $alt_given ) {
+			$current->alt = $alt;
+			// A separate alt attribute wins over the image's own, so it is only kept
+			// in step when the block already uses it. Writing it where there was none
+			// would leave it overriding the alt of whatever image is picked next.
+			if ( '' !== $override ) {
+				self::put_link_attr( $attrs, $name, $alt_attr, $alt );
+			}
+		}
+
+		if ( null !== $list && null !== $item ) {
+			if ( '' === $ikey ) {
+				$list[ $index ] = $current;
+			} else {
+				$item->{$ikey}  = $current;
+				$list[ $index ] = $item;
+			}
+			$attrs->{$attr} = $list;
+		} elseif ( null !== $bg ) {
+			$bg->image      = $current;
+			$attrs->{$attr} = $bg;
+		} else {
+			$attrs->{$attr} = $current;
+		}
+
+		$new_url = $read_str( $current->url ?? '' );
+		$new_alt = $alt_given ? $alt : $old_alt;
+		if ( $changed_image && ! $alt_given ) {
+			$new_alt = $read_str( $current->alt ?? '' );
+		}
+
+		// What the page should show now. The Image block renders at a size of its
+		// own, so ask WordPress for that size; other blocks use the stored address.
+		$src    = $new_url;
+		$width  = isset( $current->width ) && is_numeric( $current->width ) ? (int) $current->width : null;
+		$height = isset( $current->height ) && is_numeric( $current->height ) ? (int) $current->height : null;
+		$cur_id = isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : 0;
+		if ( $cur_id > 0 && ! empty( $image['size'] ) ) {
+			$size_attr = (string) $image['size'];
+			$size      = $read_str( property_exists( $attrs, $size_attr ) ? $attrs->{$size_attr} : self::default_attr( $name, $size_attr ) );
+			$sized     = wp_get_attachment_image_src( $cur_id, '' !== $size ? $size : 'large' );
+			if ( is_array( $sized ) && ! empty( $sized[0] ) ) {
+				$src    = (string) $sized[0];
+				$width  = (int) $sized[1];
+				$height = (int) $sized[2];
+			}
+		}
+
+		return [
+			'old'         => (string) wp_json_encode(
+				[
+					'id'  => $old_id,
+					'alt' => $old_alt,
+				]
+			),
+			'after'       => (string) wp_json_encode(
+				[
+					'id'     => $cur_id > 0 ? $cur_id : null,
+					'src'    => $src,
+					'alt'    => $new_alt,
+					'width'  => $width,
+					'height' => $height,
+				]
+			),
+			'old_summary' => self::image_summary( $old_id, $old_url, $old_alt ),
+			'summary'     => self::image_summary( $cur_id > 0 ? $cur_id : null, $new_url, $new_alt ),
+			// An image with no library ID cannot be put back from one.
+			'undoable'    => ! $changed_image || null !== $old_id,
+		];
+	}
+
+	/**
+	 * An image as one line of text, for the edit log.
+	 *
+	 * @param int|null $id  Attachment ID, if any.
+	 * @param string   $url Image address.
+	 * @param string   $alt Alt text.
+	 */
+	private static function image_summary( ?int $id, string $url, string $alt ): string {
+		$path = (string) wp_parse_url( $url, PHP_URL_PATH );
+		$file = '' !== $path ? basename( $path ) : '';
+		$text = '' !== $file ? $file : '(no image)';
+		if ( null !== $id ) {
+			$text .= ' (#' . $id . ')';
+		}
+		if ( '' !== $alt ) {
+			$text .= ' · alt: ' . $alt;
+		}
+		return $text;
 	}
 
 	/**

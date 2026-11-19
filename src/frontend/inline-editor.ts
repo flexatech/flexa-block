@@ -38,11 +38,32 @@ interface LinkDef {
 	anchor: string;
 }
 
+// A picture a block keeps: the attribute, the <img>, and (optionally) the
+// element to click when overlays sit on top of it. An image in a list item
+// has `repeat` + `key`.
+interface ImageDef {
+	attr: string;
+	selector: string;
+	hit?: string;
+	repeat?: boolean;
+	key?: string;
+	// The picture is the block root's CSS background, not an <img>.
+	background?: boolean;
+	// Open the editor from a button at this corner instead of from a click on
+	// the picture, inside `host` (a selector within the root) or the root.
+	button?: string;
+	host?: string;
+}
+
 interface Boot {
 	postId: number;
 	nonce: string;
 	endpoint: string;
 	fields: Record< string, FieldDef[] >;
+	images?: Record< string, ImageDef[] >;
+	// Whether the person may choose from the media library (and so whether the
+	// library was loaded on this page).
+	canPick?: boolean;
 	i18n: {
 		editing: string;
 		save: string;
@@ -52,6 +73,14 @@ interface Boot {
 		// The Undo button after a save, and what is said once it has worked.
 		undo?: string;
 		undone?: string;
+		// The image editor.
+		imageEdit?: string;
+		imageBg?: string;
+		imageBefore?: string;
+		imageAfter?: string;
+		imageNoWp?: string;
+		imageTitle?: string;
+		imageUse?: string;
 		// The link editor.
 		linkEdit?: string;
 		linkApply?: string;
@@ -139,6 +168,7 @@ let undoState: UndoState | null = null;
 let undoBtn: HTMLButtonElement | null = null;
 let linkBtn: HTMLButtonElement | null = null;
 let linkDialog: HTMLElement | null = null;
+let imageDialog: HTMLElement | null = null;
 let undoing = false;
 
 const UNDO_WINDOW_MS = 10000;
@@ -557,8 +587,10 @@ interface EditResult {
 	version?: string;
 	before?: string;
 	logId?: string;
-	// For a link edit: the state the server stored, as JSON.
+	// For a link or image edit: the state the server stored, as JSON.
 	after?: string;
+	// False when the change cannot be undone (an image that was not from the library).
+	undo?: boolean;
 }
 
 /**
@@ -758,7 +790,7 @@ async function doSave(): Promise< boolean > {
 		// What Undo needs, taken before the edit ends and `active` is cleared.
 		// Nothing to undo when the save changed nothing (no log id then).
 		const undo: UndoState | null =
-			result.logId && typeof result.before === 'string'
+			result.logId && typeof result.before === 'string' && result.undo !== false
 				? {
 						payload: {
 							postId: payload.postId,
@@ -1088,6 +1120,525 @@ function openLinkDialog( ctx: {
 	input.select();
 }
 
+interface ImageCtx {
+	// Null for a CSS background.
+	img: HTMLImageElement | null;
+	root: HTMLElement;
+	def: ImageDef;
+	index?: number;
+	blockId: string;
+	blockName: string;
+	targetId: number;
+}
+
+interface MediaSelection {
+	id: number;
+	url: string;
+	alt?: string;
+	sizes?: Record< string, { url: string } >;
+}
+
+// A WordPress media frame, as far as this file uses one.
+interface MediaFrame {
+	on: ( event: string, cb: () => void ) => void;
+	open: () => void;
+	state: () => {
+		get: ( name: string ) => { first: () => { toJSON: () => MediaSelection } };
+	};
+}
+
+/**
+ * The context an image editor needs, for one image of one block.
+ *
+ * @param root  Block root.
+ * @param name  Block name.
+ * @param def   Image declaration.
+ * @param img   The <img>, or null for a CSS background.
+ * @param index List item index, for an image in a list.
+ */
+function imageCtx(
+	root: HTMLElement,
+	name: string,
+	def: ImageDef,
+	img: HTMLImageElement | null,
+	index?: number
+): ImageCtx {
+	return {
+		img,
+		root,
+		def,
+		index,
+		blockId: root.getAttribute( 'data-flexa-edit-id' ) || '',
+		blockName: name,
+		targetId:
+			parseInt( root.getAttribute( 'data-flexa-edit-target' ) || '0', 10 ) ||
+			0,
+	};
+}
+
+/**
+ * Label for the button that opens an image editor.
+ *
+ * @param def Image declaration.
+ */
+function imageButtonLabel( def: ImageDef ): string {
+	const i18n = boot?.i18n;
+	if ( def.background ) {
+		return i18n?.imageBg || '';
+	}
+	if ( def.attr === 'beforeImage' ) {
+		return i18n?.imageBefore || '';
+	}
+	if ( def.attr === 'afterImage' ) {
+		return i18n?.imageAfter || '';
+	}
+	return i18n?.imageEdit || '';
+}
+
+/**
+ * Make a block's image editable.
+ *
+ * Most images open the editor when clicked, instead of doing what they normally
+ * do (follow a link, open a lightbox or a video). That listener sits on the
+ * block root in the capture phase, so it runs before anything the block itself
+ * listens for, whichever element under the picture receives the click.
+ *
+ * Some images cannot be clicked that way: a CSS background has no element of
+ * its own, and pressing a before/after picture drags the slider. Those get a
+ * small button instead (`button` in the declaration); see onImageButton().
+ *
+ * @param root Block root.
+ * @param name Block name.
+ * @param def  Image declaration from the registry.
+ */
+function bindImage( root: HTMLElement, name: string, def: ImageDef ): void {
+	if ( def.button ) {
+		// Only a new picture can change a background, and that needs the library.
+		if ( def.background && ! boot?.canPick ) {
+			return;
+		}
+		const host =
+			( def.host && root.querySelector< HTMLElement >( def.host ) ) || root;
+		const defs = boot?.images?.[ name ] || [];
+		const btn = document.createElement( 'button' );
+		btn.type = 'button';
+		btn.className = `flexa-fee-imgbtn flexa-fee-imgbtn--${ def.button }`;
+		btn.setAttribute( 'data-fee-image', String( defs.indexOf( def ) ) );
+		btn.textContent = imageButtonLabel( def );
+		if ( getComputedStyle( host ).position === 'static' ) {
+			host.classList.add( 'flexa-fee-imgbtn-host' );
+		}
+		host.appendChild( btn );
+		return;
+	}
+
+	const imgs = def.repeat
+		? Array.from( root.querySelectorAll< HTMLImageElement >( def.selector ) )
+		: ( [ root.querySelector< HTMLImageElement >( def.selector ) ].filter(
+				Boolean
+		  ) as HTMLImageElement[] );
+
+	imgs.forEach( ( img ) => {
+		// An image of a block nested inside this one belongs to that block.
+		if ( img.closest( '[data-flexa-edit-id]' ) !== root ) {
+			return;
+		}
+		let index: number | undefined;
+		if ( def.repeat ) {
+			const item = img.closest< HTMLElement >( '[data-flexa-item]' );
+			if ( ! item ) {
+				return;
+			}
+			index = parseInt( item.getAttribute( 'data-flexa-item' ) || '', 10 );
+			if ( Number.isNaN( index ) ) {
+				return;
+			}
+		}
+
+		const hit =
+			( def.hit && img.closest< HTMLElement >( def.hit ) ) || img;
+		if ( hit.classList.contains( 'flexa-fee-image-hit' ) ) {
+			return;
+		}
+		hit.classList.add( 'flexa-fee-image-hit' );
+		if ( ! hit.getAttribute( 'title' ) ) {
+			hit.setAttribute( 'title', boot?.i18n.imageEdit || '' );
+		}
+
+		root.addEventListener(
+			'click',
+			( e ) => {
+				if ( ! ( e.target instanceof Node ) || ! hit.contains( e.target ) ) {
+					return;
+				}
+				e.preventDefault();
+				e.stopPropagation();
+				void startImageEdit( imageCtx( root, name, def, img, index ) );
+			},
+			true
+		);
+	} );
+}
+
+/**
+ * A click on one of the image buttons placed by bindImage().
+ *
+ * Delegated from the document, because a slider may copy its slides (and the
+ * buttons in them) after this script has run, and copies carry no listeners.
+ *
+ * @param e The click.
+ */
+function onImageButton( e: Event ): void {
+	const btn =
+		e.target instanceof Element
+			? e.target.closest< HTMLElement >( '.flexa-fee-imgbtn' )
+			: null;
+	if ( ! btn || ! boot ) {
+		return;
+	}
+	e.preventDefault();
+	e.stopPropagation();
+	const root = btn.closest< HTMLElement >( '[data-flexa-edit-id]' );
+	if ( ! root ) {
+		return;
+	}
+	const name = root.getAttribute( 'data-flexa-edit-name' ) || '';
+	const def = boot.images?.[ name ]?.[
+		parseInt( btn.getAttribute( 'data-fee-image' ) || '-1', 10 )
+	];
+	if ( ! def ) {
+		return;
+	}
+	const img = def.background
+		? null
+		: root.querySelector< HTMLImageElement >( def.selector );
+	void startImageEdit( imageCtx( root, name, def, img ) );
+}
+
+/**
+ * Open the image editor, after settling any text that has unsaved changes.
+ *
+ * @param ctx Which image, and where it is stored.
+ */
+async function startImageEdit( ctx: ImageCtx ): Promise< void > {
+	if ( ! boot || undoing ) {
+		return;
+	}
+	if ( active ) {
+		if ( isDirty() && ! ( await settle( boot.i18n.unsaved || '' ) ) ) {
+			return;
+		}
+		if ( active ) {
+			endEdit( true );
+		}
+	}
+	openImageDialog( ctx );
+}
+
+/**
+ * Put an <img> back to the attributes it had.
+ *
+ * @param img   The element.
+ * @param attrs Attribute values; null removes the attribute.
+ */
+function setImgAttrs(
+	img: HTMLImageElement,
+	attrs: Record< string, string | null >
+): void {
+	Object.keys( attrs ).forEach( ( k ) => {
+		const v = attrs[ k ];
+		if ( v === null ) {
+			img.removeAttribute( k );
+		} else {
+			img.setAttribute( k, v );
+		}
+	} );
+}
+
+/**
+ * The picture and alt-text dialog, and what Apply does.
+ *
+ * @param ctx Which image, and where it is stored.
+ */
+function openImageDialog( ctx: ImageCtx ): void {
+	const dialog = imageDialog;
+	if ( ! dialog || ! boot ) {
+		return;
+	}
+	const form = dialog.querySelector< HTMLFormElement >( 'form' );
+	const preview = dialog.querySelector< HTMLImageElement >(
+		'.flexa-fee-imagedialog__preview img'
+	);
+	const altInput = dialog.querySelector< HTMLInputElement >( '#flexa-fee-image-alt' );
+	const pick = dialog.querySelector< HTMLButtonElement >( '[data-image="pick"]' );
+	const error = dialog.querySelector< HTMLElement >( '.flexa-fee-linkdialog__error' );
+	const apply = dialog.querySelector< HTMLButtonElement >( '[data-image="apply"]' );
+	if ( ! form || ! preview || ! altInput || ! pick || ! error || ! apply ) {
+		return;
+	}
+
+	const { img } = ctx;
+	const isBg = ! img;
+	const startAlt = img ? img.getAttribute( 'alt' ) || '' : '';
+	let chosenId: number | null = null;
+	let picking = false;
+
+	// Every element showing this block (a slider may hold copies of a slide).
+	const copies = Array.from(
+		document.querySelectorAll< HTMLElement >( '[data-flexa-edit-id]' )
+	).filter( ( el ) => el.getAttribute( 'data-flexa-edit-id' ) === ctx.blockId );
+
+	if ( img ) {
+		preview.src = img.currentSrc || img.src;
+	} else {
+		const m = /url\((['"]?)(.*?)\1\)/.exec(
+			getComputedStyle( ctx.root ).backgroundImage
+		);
+		preview.src = m ? m[ 2 ] : '';
+	}
+	altInput.value = startAlt;
+	// A background has no alt text: it is decoration by definition.
+	dialog
+		.querySelectorAll< HTMLElement >(
+			'label[for="flexa-fee-image-alt"], #flexa-fee-image-alt, .flexa-fee-linkdialog__hint'
+		)
+		.forEach( ( el ) => {
+			el.hidden = isBg;
+		} );
+	const title = dialog.querySelector< HTMLElement >( '.flexa-fee-toolbar__prompt-title' );
+	if ( title ) {
+		title.textContent = imageButtonLabel( ctx.def ) || boot.i18n.imageEdit || '';
+	}
+	error.hidden = true;
+	error.textContent = '';
+	apply.disabled = false;
+	// Without the right to use the library only the alt text can change.
+	pick.hidden = ! boot.canPick;
+
+	const fail = ( message: string ) => {
+		error.textContent = message;
+		error.hidden = false;
+		apply.disabled = false;
+	};
+
+	const close = () => {
+		dialog.setAttribute( 'hidden', '' );
+		document.body.classList.remove( 'flexa-fee-modal-open' );
+		form.removeEventListener( 'submit', onSubmit );
+		dialog.removeEventListener( 'click', onClick );
+		document.removeEventListener( 'keydown', onKey, true );
+	};
+
+	const choose = () => {
+		const media = (
+			window as unknown as {
+				wp?: { media?: ( o: Record< string, unknown > ) => MediaFrame };
+			}
+		 ).wp?.media;
+		if ( ! media ) {
+			fail( boot?.i18n.imageNoWp || '' );
+			return;
+		}
+		const frame = media( {
+			title: boot?.i18n.imageTitle || '',
+			button: { text: boot?.i18n.imageUse || '' },
+			library: { type: 'image' },
+			multiple: false,
+		} );
+		picking = true;
+		frame.on( 'select', () => {
+			const att = frame.state().get( 'selection' ).first().toJSON();
+			chosenId = att.id;
+			preview.src = att.sizes?.medium?.url || att.url;
+			// The picture's own alt text, as the block editor would fill in.
+			altInput.value = att.alt || '';
+			error.hidden = true;
+		} );
+		// Escape inside the media modal must not also close this dialog.
+		frame.on( 'close', () => {
+			window.setTimeout( () => {
+				picking = false;
+			}, 0 );
+		} );
+		frame.open();
+	};
+
+	const onSubmit = ( e: Event ) => {
+		e.preventDefault();
+		const alt = altInput.value.trim();
+		if ( chosenId === null && ( isBg || alt === startAlt.trim() ) ) {
+			close();
+			return;
+		}
+		apply.disabled = true;
+		error.hidden = true;
+
+		const payload: Record< string, unknown > = {
+			postId: boot?.postId,
+			blockId: ctx.blockId,
+			blockName: ctx.blockName,
+			attr: ctx.def.attr,
+			image: true,
+			value: JSON.stringify( isBg ? { id: chosenId } : { id: chosenId, alt } ),
+		};
+		if ( ctx.def.repeat ) {
+			payload.index = ctx.index;
+			if ( ctx.def.key ) {
+				payload.key = ctx.def.key;
+			}
+		}
+		if ( ctx.targetId > 0 ) {
+			payload.targetId = ctx.targetId;
+		}
+		const version = ctx.root.getAttribute( 'data-flexa-edit-version' ) || '';
+		if ( version ) {
+			payload.version = version;
+		}
+
+		// What the page looks like now, to put back on Undo.
+		const previous: Record< string, string | null > = {};
+		if ( img ) {
+			[ 'src', 'srcset', 'sizes', 'alt', 'width', 'height' ].forEach( ( k ) => {
+				previous[ k ] = img.getAttribute( k );
+			} );
+		}
+		const previousBg = copies.map( ( el ) => el.style.backgroundImage );
+		const restore = () => {
+			if ( img ) {
+				setImgAttrs( img, previous );
+			} else {
+				copies.forEach( ( el, i ) => {
+					el.style.backgroundImage = previousBg[ i ];
+				} );
+			}
+		};
+
+		postEdit( payload, ctx.targetId )
+			.then( ( result ) => {
+				close();
+				// What the server stored, read from the library, not what was typed.
+				try {
+					const saved = JSON.parse( result.after || '{}' ) as {
+						src?: string;
+						alt?: string;
+						width?: number | null;
+						height?: number | null;
+					};
+					if ( ! img ) {
+						// The stylesheet is rebuilt on the server; until the page is
+						// reloaded, show the new picture from an inline style.
+						if ( saved.src ) {
+							const css = `url("${ saved.src.replace( /"/g, '%22' ) }")`;
+							copies.forEach( ( el ) => {
+								el.style.backgroundImage = css;
+							} );
+						}
+					} else {
+						const next: Record< string, string | null > = {
+							alt: saved.alt ?? alt,
+						};
+						if ( saved.src ) {
+							next.src = saved.src;
+							// The old picture's other sizes no longer apply.
+							next.srcset = null;
+							next.sizes = null;
+							next.width = saved.width ? String( saved.width ) : null;
+							next.height = saved.height ? String( saved.height ) : null;
+						}
+						setImgAttrs( img, next );
+					}
+				} catch ( _e ) {
+					// Leave the page as it was; the save itself succeeded.
+				}
+				setMessage( boot?.i18n.saved || '', 'success' );
+
+				if (
+					result.logId &&
+					typeof result.before === 'string' &&
+					result.undo !== false
+				) {
+					offerUndo( {
+						payload: {
+							postId: payload.postId,
+							blockId: ctx.blockId,
+							blockName: ctx.blockName,
+							attr: ctx.def.attr,
+							image: true,
+							...( ctx.def.repeat && { index: ctx.index } ),
+							...( ctx.def.repeat && ctx.def.key && { key: ctx.def.key } ),
+							...( ctx.targetId > 0 && { targetId: ctx.targetId } ),
+						},
+						before: result.before,
+						logId: result.logId,
+						el: img || ctx.root,
+						root: ctx.root,
+						originalHTML: '',
+						targetId: ctx.targetId,
+						timer: 0,
+						restore,
+					} );
+				}
+			} )
+			.catch( ( e: unknown ) => {
+				// Refused (a conflict, a lock, a permission): stay open and say why.
+				fail( e instanceof Error && e.message ? e.message : boot?.i18n.error || '' );
+			} );
+	};
+
+	const onClick = ( e: Event ) => {
+		const target = e.target as HTMLElement;
+		if ( target.closest( '[data-image="pick"]' ) ) {
+			choose();
+			return;
+		}
+		// The backdrop and the Cancel button both mean "leave it as it was".
+		if ( target === dialog || target.closest( '[data-image="cancel"]' ) ) {
+			close();
+		}
+	};
+
+	const onKey = ( e: KeyboardEvent ) => {
+		if ( picking ) {
+			return;
+		}
+		if ( e.key === 'Escape' ) {
+			e.preventDefault();
+			e.stopPropagation();
+			close();
+			return;
+		}
+		if ( e.key === 'Tab' ) {
+			const stops = Array.from(
+				dialog.querySelectorAll< HTMLElement >( 'input, button' )
+			).filter(
+				( el ) =>
+					! ( el as HTMLButtonElement ).disabled &&
+					! ( el as HTMLButtonElement ).hidden
+			);
+			const first = stops[ 0 ];
+			const last = stops[ stops.length - 1 ];
+			if ( ! first || ! last ) {
+				return;
+			}
+			if ( e.shiftKey && dialog.ownerDocument.activeElement === first ) {
+				e.preventDefault();
+				last.focus();
+			} else if ( ! e.shiftKey && dialog.ownerDocument.activeElement === last ) {
+				e.preventDefault();
+				first.focus();
+			}
+		}
+	};
+
+	form.addEventListener( 'submit', onSubmit );
+	dialog.addEventListener( 'click', onClick );
+	document.addEventListener( 'keydown', onKey, true );
+	dialog.removeAttribute( 'hidden' );
+	document.body.classList.add( 'flexa-fee-modal-open' );
+	altInput.focus();
+	altInput.select();
+}
+
 /**
  * Wire the toolbar buttons once.
  */
@@ -1119,7 +1670,10 @@ function initToolbar(): void {
 	linkBtn?.addEventListener( 'click', () => {
 		void startLinkEdit();
 	} );
-	linkDialog = document.querySelector( '.flexa-fee-linkdialog' );
+	linkDialog = document.querySelector(
+		'.flexa-fee-linkdialog:not(.flexa-fee-imagedialog)'
+	);
+	imageDialog = document.querySelector( '.flexa-fee-imagedialog' );
 	undoBtn = toolbar.querySelector( '.flexa-fee-toolbar__inner > .flexa-fee-btn--undo' );
 	undoBtn?.addEventListener( 'click', () => {
 		void runUndo();
@@ -1205,11 +1759,32 @@ function init(): void {
 	roots.forEach( ( root ) => {
 		const name = root.getAttribute( 'data-flexa-edit-name' ) || '';
 		const fields = boot.fields[ name ];
-		if ( ! fields ) {
-			return;
+		if ( fields ) {
+			fields.forEach( ( field ) => bindField( root, field ) );
 		}
-		fields.forEach( ( field ) => bindField( root, field ) );
+		const images = boot.images?.[ name ];
+		if ( images ) {
+			images.forEach( ( def ) => bindImage( root, name, def ) );
+		}
 	} );
+
+	// Image buttons: opened from a click, and kept from starting what a press on
+	// their host does (dragging a before/after slider, swiping a slider).
+	document.addEventListener( 'click', onImageButton, true );
+	[ 'pointerdown', 'mousedown', 'touchstart' ].forEach( ( type ) =>
+		document.addEventListener(
+			type,
+			( e ) => {
+				if (
+					e.target instanceof Element &&
+					e.target.closest( '.flexa-fee-imgbtn' )
+				) {
+					e.stopPropagation();
+				}
+			},
+			true
+		)
+	);
 
 	// Escape cancels (asking first if something would be lost); Ctrl/Cmd+Enter
 	// saves. While the unsaved-changes question is open it owns the keyboard.

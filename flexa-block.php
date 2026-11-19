@@ -66,6 +66,7 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-post-filter-rest.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-form-handler.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-link-url.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-image-source.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-block-patcher.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-revision-session.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-edit-log.php';
