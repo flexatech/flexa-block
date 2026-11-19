@@ -289,6 +289,10 @@ if ( ! function_exists( 'esc_url_raw' ) ) {
 		if ( '' === $url || ! $protocols ) {
 			return $url;
 		}
+		// No scheme to check: WordPress leaves a path, an anchor or a query as it is.
+		if ( in_array( $url[0], [ '/', '#', '?' ], true ) ) {
+			return $url;
+		}
 
 		foreach ( $protocols as $scheme ) {
 			if ( 0 === stripos( $url, $scheme . ':' ) ) {
@@ -787,6 +791,7 @@ require_once $flexa_inc . 'import/class-preset-slots.php';
  * field of an existing block, and the MCP edit path's field allowlist. Both
  * are WordPress-free.
  */
+require_once $flexa_inc . 'class-link-url.php';
 require_once $flexa_inc . 'class-block-patcher.php';
 require_once $flexa_inc . 'class-inline-revision-session.php';
 require_once $flexa_inc . 'class-inline-edit-log.php';

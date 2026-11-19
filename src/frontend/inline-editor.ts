@@ -27,6 +27,15 @@ interface FieldDef {
 	// joined by this string (e.g. a `\n`-separated feature list stored as one
 	// string attribute). Editing any one line rewrites the whole field.
 	join?: string;
+	// The link that wraps this text, when it can be edited: the URL attribute,
+	// its target attribute, and a selector (within the block root) for the <a>.
+	link?: LinkDef;
+}
+
+interface LinkDef {
+	attr: string;
+	target: string;
+	anchor: string;
 }
 
 interface Boot {
@@ -43,6 +52,10 @@ interface Boot {
 		// The Undo button after a save, and what is said once it has worked.
 		undo?: string;
 		undone?: string;
+		// The link editor.
+		linkEdit?: string;
+		linkApply?: string;
+		linkInvalid?: string;
 		error: string;
 		// Warning shown while editing text stored in a shared place, keyed by
 		// the root's `data-flexa-edit-scope`.
@@ -71,6 +84,7 @@ interface ActiveEdit {
 	// Template part or synced pattern the block is stored in; 0 when it is the
 	// viewed post itself.
 	targetId: number;
+	link?: LinkDef;
 	// The value as it was when editing started, in the same form currentValue()
 	// returns, so "has anything changed" compares like with like.
 	originalValue: string;
@@ -117,10 +131,14 @@ interface UndoState {
 	join?: string;
 	targetId: number;
 	timer: number;
+	// Puts the page back when the text itself is not what changed (a link).
+	restore?: () => void;
 }
 
 let undoState: UndoState | null = null;
 let undoBtn: HTMLButtonElement | null = null;
+let linkBtn: HTMLButtonElement | null = null;
+let linkDialog: HTMLElement | null = null;
 let undoing = false;
 
 const UNDO_WINDOW_MS = 10000;
@@ -274,6 +292,9 @@ function endEdit( restore: boolean ): void {
 		active.el.innerHTML = active.originalHTML;
 	}
 	lockMarkers( active.el, false );
+	if ( linkBtn ) {
+		linkBtn.hidden = true;
+	}
 	active.el.contentEditable = 'false';
 	active.el.classList.remove( ACTIVE_CLASS );
 	active.root.classList.remove( ACTIVE_CLASS );
@@ -472,6 +493,7 @@ function startEdit(
 				root.getAttribute( 'data-flexa-edit-target' ) || '0',
 				10
 			) || 0,
+		link: field.link,
 		originalValue: '',
 	};
 	active.originalValue = currentValue();
@@ -487,6 +509,7 @@ function startEdit(
 	const scope = root.getAttribute( 'data-flexa-edit-scope' ) || '';
 	setMessage( ( scope && boot?.i18n.scope?.[ scope ] ) || '' );
 	toggleToolbar( true );
+	updateLinkButton();
 	el.focus();
 }
 
@@ -534,6 +557,8 @@ interface EditResult {
 	version?: string;
 	before?: string;
 	logId?: string;
+	// For a link edit: the state the server stored, as JSON.
+	after?: string;
 }
 
 /**
@@ -659,7 +684,11 @@ async function runUndo(): Promise< void > {
 			window.location.reload();
 			return;
 		}
-		state.el.innerHTML = state.originalHTML;
+		if ( state.restore ) {
+			state.restore();
+		} else {
+			state.el.innerHTML = state.originalHTML;
+		}
 		undoState = null;
 		undoing = false;
 		if ( undoBtn ) {
@@ -778,6 +807,287 @@ async function doSave(): Promise< boolean > {
 	}
 }
 
+interface LinkState {
+	url: string;
+	newTab: boolean;
+}
+
+/**
+ * The <a> a text field's link lives on, if the page has it.
+ *
+ * @param root Block root.
+ * @param link Link descriptor from the registry.
+ */
+function anchorOf( root: HTMLElement, link: LinkDef ): HTMLAnchorElement | null {
+	return root.querySelector< HTMLAnchorElement >( link.anchor );
+}
+
+/**
+ * Show "Edit link" only while editing text that has a link to edit.
+ */
+function updateLinkButton(): void {
+	if ( ! linkBtn ) {
+		return;
+	}
+	linkBtn.hidden = ! (
+		active &&
+		active.link &&
+		anchorOf( active.root, active.link )
+	);
+	if ( boot?.i18n.linkEdit ) {
+		linkBtn.textContent = boot.i18n.linkEdit;
+	}
+}
+
+/**
+ * The link as the page shows it now.
+ *
+ * @param anchor The <a>.
+ */
+function linkStateOf( anchor: HTMLAnchorElement ): LinkState {
+	return {
+		url: anchor.getAttribute( 'href' ) || '',
+		newTab: anchor.getAttribute( 'target' ) === '_blank',
+	};
+}
+
+/**
+ * Make an <a> match a link state, as the server would render it.
+ *
+ * @param anchor The <a>.
+ * @param state  Address and whether it opens in a new tab.
+ */
+function paintLink( anchor: HTMLAnchorElement, state: LinkState ): void {
+	if ( state.url ) {
+		anchor.setAttribute( 'href', state.url );
+	} else {
+		anchor.removeAttribute( 'href' );
+	}
+	if ( state.newTab ) {
+		anchor.setAttribute( 'target', '_blank' );
+		if ( ! anchor.getAttribute( 'rel' ) ) {
+			anchor.setAttribute( 'rel', 'noopener noreferrer' );
+		}
+	} else {
+		anchor.removeAttribute( 'target' );
+		if ( anchor.getAttribute( 'rel' ) === 'noopener noreferrer' ) {
+			anchor.removeAttribute( 'rel' );
+		}
+	}
+}
+
+/**
+ * Whether an address uses a scheme other than the four a link may use.
+ *
+ * Only a courtesy to the person typing (the server decides, and says the same
+ * thing): a colon before the first / ? or # makes what precedes it a scheme.
+ *
+ * @param url Address as typed.
+ */
+function badScheme( url: string ): boolean {
+	const v = url.replace( /[\u0000-\u001f\u007f]+/g, '' ).trim();
+	return /^[^/?#]*:/.test( v ) && ! /^(?:https?|mailto|tel):/i.test( v );
+}
+
+/**
+ * Open the link editor for the text being edited.
+ *
+ * The text edit ends first (after the usual question if it has unsaved changes),
+ * so the dialog and "Saved · Undo" never compete with an edit still in progress.
+ */
+async function startLinkEdit(): Promise< void > {
+	if ( ! active || ! active.link || ! boot ) {
+		return;
+	}
+	const ctx = {
+		root: active.root,
+		link: active.link,
+		blockId: active.blockId,
+		blockName: active.blockName,
+		targetId: active.targetId,
+	};
+
+	if ( isDirty() ) {
+		if ( ! ( await settle( boot.i18n.unsaved || '' ) ) ) {
+			return;
+		}
+	}
+	// Not dirty: settle() left the edit open; close it without changing anything.
+	if ( active ) {
+		endEdit( true );
+	}
+
+	const anchor = anchorOf( ctx.root, ctx.link );
+	if ( anchor ) {
+		openLinkDialog( { ...ctx, anchor } );
+	}
+}
+
+/**
+ * The address / new-tab dialog, and what Apply does.
+ *
+ * @param ctx Where the link is and how to save it.
+ */
+function openLinkDialog( ctx: {
+	root: HTMLElement;
+	link: LinkDef;
+	anchor: HTMLAnchorElement;
+	blockId: string;
+	blockName: string;
+	targetId: number;
+} ): void {
+	const dialog = linkDialog;
+	if ( ! dialog || ! boot ) {
+		return;
+	}
+	const form = dialog.querySelector< HTMLFormElement >( 'form' );
+	const input = dialog.querySelector< HTMLInputElement >( '#flexa-fee-link-url' );
+	const tab = dialog.querySelector< HTMLInputElement >( '#flexa-fee-link-tab' );
+	const error = dialog.querySelector< HTMLElement >( '.flexa-fee-linkdialog__error' );
+	const apply = dialog.querySelector< HTMLButtonElement >( '[data-link="apply"]' );
+	if ( ! form || ! input || ! tab || ! error || ! apply ) {
+		return;
+	}
+
+	const current = linkStateOf( ctx.anchor );
+	input.value = current.url;
+	tab.checked = current.newTab;
+	error.hidden = true;
+	error.textContent = '';
+	apply.disabled = false;
+
+	const fail = ( message: string ) => {
+		error.textContent = message;
+		error.hidden = false;
+		apply.disabled = false;
+		input.focus();
+	};
+
+	const close = () => {
+		dialog.setAttribute( 'hidden', '' );
+		document.body.classList.remove( 'flexa-fee-modal-open' );
+		form.removeEventListener( 'submit', onSubmit );
+		dialog.removeEventListener( 'click', onClick );
+		document.removeEventListener( 'keydown', onKey, true );
+	};
+
+	const onSubmit = ( e: Event ) => {
+		e.preventDefault();
+		const url = input.value.trim();
+		if ( badScheme( url ) ) {
+			fail( boot?.i18n.linkInvalid || '' );
+			return;
+		}
+		apply.disabled = true;
+		error.hidden = true;
+
+		const payload: Record< string, unknown > = {
+			postId: boot?.postId,
+			blockId: ctx.blockId,
+			blockName: ctx.blockName,
+			attr: ctx.link.attr,
+			link: true,
+			value: JSON.stringify( { url, newTab: tab.checked } ),
+		};
+		if ( ctx.targetId > 0 ) {
+			payload.targetId = ctx.targetId;
+		}
+		const version = ctx.root.getAttribute( 'data-flexa-edit-version' ) || '';
+		if ( version ) {
+			payload.version = version;
+		}
+
+		postEdit( payload, ctx.targetId )
+			.then( ( result ) => {
+				close();
+				// What the server stored (cleaned), not what was typed.
+				let saved: LinkState = { url, newTab: tab.checked };
+				try {
+					if ( result.after ) {
+						saved = JSON.parse( result.after ) as LinkState;
+					}
+				} catch ( _e ) {
+					// Keep what was typed.
+				}
+				paintLink( ctx.anchor, saved );
+				setMessage( boot?.i18n.saved || '', 'success' );
+
+				if ( result.logId && typeof result.before === 'string' ) {
+					let previous: LinkState = current;
+					try {
+						previous = JSON.parse( result.before ) as LinkState;
+					} catch ( _e ) {
+						// Fall back to what the page showed.
+					}
+					offerUndo( {
+						payload: {
+							postId: payload.postId,
+							blockId: ctx.blockId,
+							blockName: ctx.blockName,
+							attr: ctx.link.attr,
+							link: true,
+							...( ctx.targetId > 0 && { targetId: ctx.targetId } ),
+						},
+						before: result.before,
+						logId: result.logId,
+						el: ctx.anchor,
+						root: ctx.root,
+						originalHTML: '',
+						targetId: ctx.targetId,
+						timer: 0,
+						restore: () => paintLink( ctx.anchor, previous ),
+					} );
+				}
+			} )
+			.catch( ( e: unknown ) => {
+				// Refused (a conflict, a lock, a bad address): stay open and say why.
+				fail( e instanceof Error && e.message ? e.message : boot?.i18n.error || '' );
+			} );
+	};
+
+	const onClick = ( e: Event ) => {
+		const target = e.target as HTMLElement;
+		// The backdrop and the Cancel button both mean "leave it as it was".
+		if ( target === dialog || target.closest( '[data-link="cancel"]' ) ) {
+			close();
+		}
+	};
+
+	const onKey = ( e: KeyboardEvent ) => {
+		if ( e.key === 'Escape' ) {
+			e.preventDefault();
+			e.stopPropagation();
+			close();
+			return;
+		}
+		if ( e.key === 'Tab' ) {
+			const stops = Array.from(
+				dialog.querySelectorAll< HTMLElement >( 'input, button' )
+			).filter( ( el ) => ! ( el as HTMLButtonElement ).disabled );
+			const first = stops[ 0 ];
+			const last = stops[ stops.length - 1 ];
+			if ( ! first || ! last ) {
+				return;
+			}
+			if ( e.shiftKey && dialog.ownerDocument.activeElement === first ) {
+				e.preventDefault();
+				last.focus();
+			} else if ( ! e.shiftKey && dialog.ownerDocument.activeElement === last ) {
+				e.preventDefault();
+				first.focus();
+			}
+		}
+	};
+
+	form.addEventListener( 'submit', onSubmit );
+	dialog.addEventListener( 'click', onClick );
+	document.addEventListener( 'keydown', onKey, true );
+	dialog.removeAttribute( 'hidden' );
+	document.body.classList.add( 'flexa-fee-modal-open' );
+	input.focus();
+	input.select();
+}
+
 /**
  * Wire the toolbar buttons once.
  */
@@ -794,13 +1104,22 @@ function initToolbar(): void {
 	cancelBtn = toolbar.querySelector(
 		'.flexa-fee-toolbar__inner > .flexa-fee-btn--cancel'
 	);
-	promptEl = document.querySelector( '.flexa-fee-toolbar__prompt' );
+	promptEl = document.querySelector(
+		'.flexa-fee-toolbar__prompt:not(.flexa-fee-linkdialog)'
+	);
 	promptMsgEl =
 		promptEl?.querySelector( '.flexa-fee-toolbar__prompt-msg' ) || null;
 
 	saveBtn?.addEventListener( 'click', () => {
 		void save();
 	} );
+	linkBtn = toolbar.querySelector(
+		'.flexa-fee-toolbar__inner > .flexa-fee-btn--link'
+	);
+	linkBtn?.addEventListener( 'click', () => {
+		void startLinkEdit();
+	} );
+	linkDialog = document.querySelector( '.flexa-fee-linkdialog' );
 	undoBtn = toolbar.querySelector( '.flexa-fee-toolbar__inner > .flexa-fee-btn--undo' );
 	undoBtn?.addEventListener( 'click', () => {
 		void runUndo();

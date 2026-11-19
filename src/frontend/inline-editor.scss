@@ -295,6 +295,92 @@ body:not(.admin-bar) .flexa-fee-toolbar {
 	display: none;
 }
 
+/* Link editor dialog: the unsaved-changes dialog's frame, with a form inside. */
+.flexa-fee-linkdialog .flexa-fee-toolbar__prompt-dialog {
+	width: min(460px, 100%);
+}
+
+.flexa-fee-linkdialog__body {
+	flex: 1;
+	min-width: 0;
+}
+
+.flexa-fee-linkdialog__label {
+	display: block;
+	margin: 6px 0 6px;
+	color: #1d2327;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.flexa-fee-linkdialog__input {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid #8c8f94;
+	border-radius: 6px;
+	background: #fff;
+	color: #1d2327;
+	font-family: inherit;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.flexa-fee-linkdialog__input:focus {
+	border-color: #3858e9;
+	box-shadow: 0 0 0 1px #3858e9;
+	outline: none;
+}
+
+.flexa-fee-linkdialog__check {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 14px 0 0;
+	color: #1d2327;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.flexa-fee-linkdialog__check input {
+	margin: 0;
+}
+
+.flexa-fee-linkdialog__hint {
+	margin: 12px 0 0;
+	color: #646970;
+	font-size: 12px;
+}
+
+.flexa-fee-linkdialog__error {
+	margin: 12px 0 0;
+	padding: 8px 12px;
+	border-left: 4px solid #d63638;
+	background: #fcf0f1;
+	color: #8a2424;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.flexa-fee-linkdialog__error[hidden] {
+	display: none;
+}
+
+.flexa-fee-btn--link {
+	background: transparent;
+	color: #fff;
+	border: 1px solid #555;
+}
+
+.flexa-fee-btn--link:hover {
+	border-color: #888;
+}
+
+.flexa-fee-toolbar.is-undo .flexa-fee-toolbar__inner > .flexa-fee-btn--link {
+	display: none;
+}
+
 body.flexa-fee-modal-open {
 	overflow: hidden;
 }

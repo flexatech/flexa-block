@@ -1,6 +1,6 @@
 # Sửa ngoài Front-End: nâng cấp
 
-> ✅ xong (19) · 🧪 cần kiểm tra lại (0) · ⬜ chưa bắt đầu (12)
+> ✅ xong (19) · 🧪 cần kiểm tra lại (1) · ⬜ chưa bắt đầu (11)
 > · Cập nhật: 2026-11-19 · Nhánh: `feat/frontend-editing` (tách từ `feat/mcp-module-phase-0`)
 >
 > Phạm vi block/trường đang sửa được: [`inline-editing-coverage.md`](inline-editing-coverage.md).
@@ -287,12 +287,38 @@ không bị tính là đã sửa), hoặc một lần lưu đang chạy dở.
 
 ## Giai đoạn 5 · Sửa link
 
-19. ⬜ Registry: loại trường `'type' => 'url'` gắn với trường chữ đi kèm (nút: `text`
+19. 🧪 **Sửa link — cần thử trên site thật.** Registry: loại trường `'type' => 'url'` gắn với trường chữ đi kèm (nút: `text`
     + `url`; heading: `content` + `url`; info box, CTA, banner: nút chính/phụ; icon
     list: `items[].link.url`). Khi đang sửa chữ của một phần tử có link, toolbar có
     thêm nút "Sửa link" mở popover nhập URL và tuỳ chọn mở tab mới nếu block có
     attribute đó. Server kiểm URL cùng luật với MCP (`http`, `https`, `mailto`,
     `tel`; từ chối `javascript:`), dùng chung hàm kiểm của `Preset_Slots`.
+
+    **Đã làm (bản đầu, thuộc tính phẳng):** trường chữ trong registry có khoá
+    `link` (`attr` URL, `target`, `anchor` là selector của thẻ `<a>`): heading
+    (`content` → `url`), button (`text` → `url`), info-box (`buttonText` →
+    `buttonUrl`), cta và banner (nút chính/phụ → `primaryUrl`/`secondaryUrl`).
+    `Link_Url::clean()` (`includes/class-link-url.php`) là luật chung cho cả inline
+    editor lẫn `Preset_Slots` của MCP: chấp nhận `http`, `https`, `mailto`, `tel` và
+    địa chỉ không có scheme (`/lien-he`, `#muc`, `?trang=2`, `//cdn…`); từ chối mọi
+    scheme khác kể cả ngụy trang (`JaVaScRiPt:`, xuống dòng/tab trong scheme,
+    `java&#x0A;script:`, entity lồng nhau, `java script:`, `host:port` trần, ký tự
+    điều khiển), dài quá 2.048 ký tự; địa chỉ rỗng nghĩa là gỡ link. Lưu qua đúng
+    `handle_save()` với `link: true`, `value` là JSON `{url, newTab}`: ghi cả URL và
+    thuộc tính target trong một lần (một dòng log, một lần Hoàn tác), thuộc tính
+    bằng giá trị mặc định thì bỏ khỏi markup, không đụng kses; phiên bản nội dung,
+    khoá editor, quyền và log đều như lưu chữ. Log ghi `kind: link` với trước/sau
+    dạng `địa-chỉ (new tab)`. Giao diện: nút **Edit link** trên toolbar khi đang
+    sửa chữ của phần tử có thẻ `<a>`; bấm thì kết thúc sửa chữ (hỏi Lưu/Bỏ/Tiếp tục
+    nếu có thay đổi chưa lưu) rồi mở hộp thoại (địa chỉ, "Open in a new tab", gợi ý
+    để trống là gỡ link; Esc/Huỷ/bấm nền để đóng). Lưu xong thẻ `<a>` trên trang
+    đổi ngay và có "Saved · Undo". Server từ chối thì hộp thoại ở lại và nêu lý do.
+    **Chưa làm:** Icon List (`items[i].link.url`, cần hỗ trợ đường dẫn lồng nhau);
+    heading chưa có link thì chưa thêm được (trang không có thẻ `<a>` để bám vào).
+    Kiểm: 1.569 test PHP (gồm ~35 ca cho `Link_Url`); trên site thật qua
+    `handle_save()` đổi URL, bật/tắt tab mới, gỡ link, hoàn tác, từ chối 5 kiểu
+    ngụy trang, `{}`/`[]` của block khác còn nguyên; 19 kiểm tra giao diện trên
+    Chromium, Firefox, WebKit. Chưa thử trên trang thật trong trình duyệt.
 
 ## Giai đoạn 6 · Sửa hình ảnh
 

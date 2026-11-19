@@ -54,13 +54,13 @@ final class Inline_Editor {
 		],
 		'flexa/heading' => [
 			'fields' => [
-				[ 'attr' => 'content', 'selector' => '.flexa-heading__title', 'allowed' => 'inline' ],
+				[ 'attr' => 'content', 'selector' => '.flexa-heading__title', 'allowed' => 'inline', 'link' => [ 'attr' => 'url', 'target' => 'linkTarget', 'anchor' => '.flexa-heading__link' ] ],
 				[ 'attr' => 'subheadingContent', 'selector' => '.flexa-heading__subheading', 'allowed' => 'inline' ],
 			],
 		],
 		'flexa/button'  => [
 			'fields' => [
-				[ 'attr' => 'text', 'selector' => '.flexa-button__text', 'allowed' => 'minimal' ],
+				[ 'attr' => 'text', 'selector' => '.flexa-button__text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'url', 'target' => 'linkTarget', 'anchor' => '.flexa-button__link' ] ],
 			],
 		],
 		// Composite blocks — several top-level string attributes each. The two
@@ -70,16 +70,16 @@ final class Inline_Editor {
 			'fields' => [
 				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
 				[ 'attr' => 'description', 'selector' => '.flexa-promo__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'primaryText', 'selector' => '.flexa-promo__button--primary .flexa-promo__button-text', 'allowed' => 'minimal' ],
-				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal' ],
+				[ 'attr' => 'primaryText', 'selector' => '.flexa-promo__button--primary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'primaryUrl', 'target' => 'primaryTarget', 'anchor' => '.flexa-promo__button--primary' ] ],
+				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'secondaryUrl', 'target' => 'secondaryTarget', 'anchor' => '.flexa-promo__button--secondary' ] ],
 			],
 		],
 		'flexa/cta'     => [
 			'fields' => [
 				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
 				[ 'attr' => 'description', 'selector' => '.flexa-promo__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'primaryText', 'selector' => '.flexa-promo__button--primary .flexa-promo__button-text', 'allowed' => 'minimal' ],
-				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal' ],
+				[ 'attr' => 'primaryText', 'selector' => '.flexa-promo__button--primary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'primaryUrl', 'target' => 'primaryTarget', 'anchor' => '.flexa-promo__button--primary' ] ],
+				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'secondaryUrl', 'target' => 'secondaryTarget', 'anchor' => '.flexa-promo__button--secondary' ] ],
 			],
 		],
 		'flexa/info-box' => [
@@ -87,7 +87,7 @@ final class Inline_Editor {
 				[ 'attr' => 'prefix', 'selector' => '.flexa-info-box__prefix', 'allowed' => 'minimal' ],
 				[ 'attr' => 'title', 'selector' => '.flexa-info-box__title', 'allowed' => 'minimal' ],
 				[ 'attr' => 'description', 'selector' => '.flexa-info-box__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'buttonText', 'selector' => '.flexa-info-box__button-text', 'allowed' => 'minimal' ],
+				[ 'attr' => 'buttonText', 'selector' => '.flexa-info-box__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'buttonUrl', 'target' => 'buttonTarget', 'anchor' => '.flexa-info-box__button' ] ],
 			],
 		],
 		'flexa/testimonial' => [
@@ -860,6 +860,9 @@ final class Inline_Editor {
 					'saved'   => __( 'Saved', 'flexa-block' ),
 					'undo'    => __( 'Undo', 'flexa-block' ),
 					'undone'  => __( 'Change undone', 'flexa-block' ),
+					'linkEdit'    => __( 'Edit link', 'flexa-block' ),
+					'linkApply'   => __( 'Apply', 'flexa-block' ),
+					'linkInvalid' => __( 'Links can start with http://, https://, mailto: or tel:, or be a path such as /contact.', 'flexa-block' ),
 					'saving'  => __( 'Saving…', 'flexa-block' ),
 					'error'   => __( 'Could not save', 'flexa-block' ),
 					'unsaved' => __( 'You have unsaved changes. Save them before you go?', 'flexa-block' ),
@@ -903,6 +906,14 @@ final class Inline_Editor {
 					$entry['object'] = true;
 					$entry['key']    = $field['key'];
 				}
+				// The link that wraps this text, so the toolbar can offer "Edit link".
+				if ( isset( $field['link'] ) && is_array( $field['link'] ) && ! empty( $field['link']['attr'] ) && ! empty( $field['link']['anchor'] ) ) {
+					$entry['link'] = [
+						'attr'   => (string) $field['link']['attr'],
+						'target' => (string) ( $field['link']['target'] ?? '' ),
+						'anchor' => (string) $field['link']['anchor'],
+					];
+				}
 				$fields[] = $entry;
 			}
 			$out[ $name ] = $fields;
@@ -925,6 +936,7 @@ final class Inline_Editor {
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
 				<span class="flexa-fee-toolbar__msg" aria-live="polite"></span>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--undo" hidden><?php echo esc_html__( 'Undo', 'flexa-block' ); ?></button>
+				<button type="button" class="flexa-fee-btn flexa-fee-btn--link" hidden><?php echo esc_html__( 'Edit link', 'flexa-block' ); ?></button>
 			</div>
 		</div>
 		<?php
@@ -955,6 +967,40 @@ final class Inline_Editor {
 					<button type="button" class="flexa-fee-btn flexa-fee-btn--save" data-choice="save"><?php echo esc_html__( 'Save', 'flexa-block' ); ?></button>
 				</div>
 			</div>
+		</div>
+		<?php
+		/*
+		 * The link editor: where a button's, heading's or promo button's address and
+		 * "open in a new tab" are changed. A dialog of its own rather than part of
+		 * the toolbar, so it works the same whether or not text is being edited.
+		 */
+		?>
+		<div
+			class="flexa-fee-toolbar__prompt flexa-fee-linkdialog"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="flexa-fee-link-title"
+			hidden
+		>
+			<form class="flexa-fee-toolbar__prompt-dialog" novalidate>
+				<div class="flexa-fee-toolbar__prompt-content">
+					<div class="flexa-fee-linkdialog__body">
+						<h2 id="flexa-fee-link-title" class="flexa-fee-toolbar__prompt-title"><?php echo esc_html__( 'Edit link', 'flexa-block' ); ?></h2>
+						<label class="flexa-fee-linkdialog__label" for="flexa-fee-link-url"><?php echo esc_html__( 'Web address', 'flexa-block' ); ?></label>
+						<input id="flexa-fee-link-url" class="flexa-fee-linkdialog__input" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://" />
+						<label class="flexa-fee-linkdialog__check">
+							<input id="flexa-fee-link-tab" type="checkbox" />
+							<span><?php echo esc_html__( 'Open in a new tab', 'flexa-block' ); ?></span>
+						</label>
+						<p class="flexa-fee-linkdialog__hint"><?php echo esc_html__( 'Leave the address empty to remove the link.', 'flexa-block' ); ?></p>
+						<p class="flexa-fee-linkdialog__error" role="alert" hidden></p>
+					</div>
+				</div>
+				<div class="flexa-fee-toolbar__prompt-actions">
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-link="cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
+					<button type="submit" class="flexa-fee-btn flexa-fee-btn--save" data-link="apply"><?php echo esc_html__( 'Apply', 'flexa-block' ); ?></button>
+				</div>
+			</form>
 		</div>
 		<?php
 	}
@@ -1025,6 +1071,12 @@ final class Inline_Editor {
 					'undoOf'    => [
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_key',
+					],
+					// A link edit: `attr` names the URL attribute and `value` is
+					// JSON {"url": "...", "newTab": true|false}. See with_link().
+					'link'      => [
+						'type'    => 'boolean',
+						'default' => false,
 					],
 					// Sanitized in the handler against the field's own allowlist.
 					'value'     => [
@@ -1129,10 +1181,22 @@ final class Inline_Editor {
 			);
 		}
 
-		$has_index = ( null !== $index_raw );
-		$field     = self::find_field( $name, $attr, $key, $has_index );
-		if ( null === $field ) {
-			return new \WP_Error( 'flexa_invalid_field', __( 'This text cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+		$is_link = (bool) rest_sanitize_boolean( $request->get_param( 'link' ) );
+		if ( $is_link ) {
+			// A link is not a text field and never goes through kses: its value is
+			// checked by Link_Url and only ever lands in the URL attribute.
+			$link  = self::find_link( $name, $attr );
+			$field = [];
+			if ( null === $link ) {
+				return new \WP_Error( 'flexa_invalid_field', __( 'This link cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+		} else {
+			$link      = null;
+			$has_index = ( null !== $index_raw );
+			$field     = self::find_field( $name, $attr, $key, $has_index );
+			if ( null === $field ) {
+				return new \WP_Error( 'flexa_invalid_field', __( 'This text cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
 		}
 
 		$post = get_post( $post_id );
@@ -1225,29 +1289,44 @@ final class Inline_Editor {
 			return new \WP_Error( 'flexa_block_not_found', __( 'This block is no longer in the post — it may have been moved or removed in the editor. Reload the page and try again.', 'flexa-block' ), [ 'status' => 404 ] );
 		}
 
-		$clean = wp_kses( $value, self::allowed_html( (string) $field['allowed'] ) );
-
 		// Decoded as objects, so `{}` and `[]` inside the attribute keep their
 		// shape. An attribute still equal to its block.json default is absent
 		// from the markup (Gutenberg only serializes changed attributes), so an
 		// edit to it starts from the registered default.
-		$attrs   = json_decode( (string) wp_json_encode( $token['attrs'] ) );
-		$attrs   = $attrs instanceof \stdClass ? $attrs : new \stdClass();
-		$current = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+		$attrs = json_decode( (string) wp_json_encode( $token['attrs'] ) );
+		$attrs = $attrs instanceof \stdClass ? $attrs : new \stdClass();
 
-		$changed = self::with_field(
-			$current,
-			$field,
-			null === $index_raw ? null : absint( $index_raw ),
-			null === $sub_raw ? null : absint( $sub_raw ),
-			$clean
-		);
-		if ( is_wp_error( $changed ) ) {
-			return $changed;
+		// What the log shows, and (for a link) the exact state Undo has to send back.
+		$after_json = null;
+
+		if ( $is_link ) {
+			$changed = self::with_link( $attrs, $name, (array) $link, $value );
+			if ( is_wp_error( $changed ) ) {
+				return $changed;
+			}
+			$old        = $changed['old'];
+			$clean      = $changed['summary'];
+			$log_before = $changed['old_summary'];
+			$after_json = $changed['after'];
+		} else {
+			$clean   = wp_kses( $value, self::allowed_html( (string) $field['allowed'] ) );
+			$current = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+
+			$changed = self::with_field(
+				$current,
+				$field,
+				null === $index_raw ? null : absint( $index_raw ),
+				null === $sub_raw ? null : absint( $sub_raw ),
+				$clean
+			);
+			if ( is_wp_error( $changed ) ) {
+				return $changed;
+			}
+
+			$old            = $changed['old'];
+			$log_before     = $old;
+			$attrs->{$attr} = $changed['value'];
 		}
-
-		$old            = $changed['old'];
-		$attrs->{$attr} = $changed['value'];
 
 		$updated = Block_Patcher::replace( $content, $token, $attrs );
 		if ( is_wp_error( $updated ) ) {
@@ -1319,7 +1398,8 @@ final class Inline_Editor {
 				'store_id'    => (int) $store->ID,
 				'store_type'  => (string) $store->post_type,
 				'post_id'     => $post_id,
-				'before'      => $old,
+				'kind'        => $is_link ? 'link' : 'text',
+				'before'      => $log_before,
 				'after'       => $clean,
 				'revision_id' => Inline_Revision_Session::baseline_id( (int) $store->ID ),
 			]
@@ -1334,7 +1414,7 @@ final class Inline_Editor {
 		 * @param bool $enabled Default false.
 		 */
 		if ( apply_filters( 'flexa_block_inline_edit_log_as_comment', false ) ) {
-			self::log_edit( $post_id, $name, $old, $clean );
+			self::log_edit( $post_id, $name, $log_before, $clean );
 		}
 
 		// The new version, read back from what was stored rather than hashed from
@@ -1345,14 +1425,116 @@ final class Inline_Editor {
 
 		// `before` and `logId` are what the Undo button needs: the value to put
 		// back, and the entry it will say it reverses.
-		return rest_ensure_response(
-			[
-				'success' => true,
-				'version' => $saved instanceof \WP_Post ? md5( (string) $saved->post_content ) : '',
-				'before'  => (string) $old,
-				'logId'   => $entry_id,
-			]
-		);
+		$response = [
+			'success' => true,
+			'version' => $saved instanceof \WP_Post ? md5( (string) $saved->post_content ) : '',
+			'before'  => (string) $old,
+			'logId'   => $entry_id,
+		];
+		// For a link, the address as stored (cleaned), so the page shows what was saved.
+		if ( null !== $after_json ) {
+			$response['after'] = $after_json;
+		}
+
+		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * The link descriptor of a text field, by the name of its URL attribute.
+	 *
+	 * @param string $name Block name.
+	 * @param string $attr URL attribute name.
+	 * @return array<string, mixed>|null
+	 */
+	private static function find_link( string $name, string $attr ): ?array {
+		foreach ( self::fields_for( $name ) as $field ) {
+			if ( isset( $field['link']['attr'] ) && (string) $field['link']['attr'] === $attr ) {
+				return (array) $field['link'];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Apply a link edit to a block's attributes.
+	 *
+	 * Writes the URL attribute and, when the block has one, the target attribute
+	 * in the same pass, so changing the address and "open in a new tab" is a single
+	 * save, a single log entry and a single Undo. An attribute that ends up equal
+	 * to its block.json default is removed rather than stored, as Gutenberg does.
+	 *
+	 * @param \stdClass          $attrs Block attributes, changed in place.
+	 * @param string             $name  Block name.
+	 * @param array<string,mixed> $link  Descriptor from find_link().
+	 * @param string             $value JSON: {"url": "...", "newTab": bool}.
+	 * @return array{old:string,after:string,old_summary:string,summary:string}|\WP_Error
+	 */
+	private static function with_link( \stdClass $attrs, string $name, array $link, string $value ) {
+		$parsed = json_decode( $value, true );
+		if ( ! is_array( $parsed ) ) {
+			return new \WP_Error( 'flexa_invalid_link', __( 'The link could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+		}
+
+		$url = Link_Url::clean( is_string( $parsed['url'] ?? null ) ? $parsed['url'] : '' );
+		if ( is_wp_error( $url ) ) {
+			return $url;
+		}
+
+		$url_attr    = (string) $link['attr'];
+		$target_attr = (string) ( $link['target'] ?? '' );
+		$new_tab     = ! empty( $parsed['newTab'] ) && '' !== $target_attr;
+
+		$read = static function ( string $attr ) use ( $attrs, $name ): string {
+			$value = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			return is_string( $value ) ? $value : '';
+		};
+
+		$before = [
+			'url'    => $read( $url_attr ),
+			'newTab' => '' !== $target_attr && '_blank' === $read( $target_attr ),
+		];
+		$after  = [
+			'url'    => $url,
+			'newTab' => $new_tab,
+		];
+
+		self::put_link_attr( $attrs, $name, $url_attr, $url );
+		if ( '' !== $target_attr ) {
+			self::put_link_attr( $attrs, $name, $target_attr, $new_tab ? '_blank' : '' );
+		}
+
+		return [
+			'old'         => (string) wp_json_encode( $before ),
+			'after'       => (string) wp_json_encode( $after ),
+			'old_summary' => self::link_summary( $before ),
+			'summary'     => self::link_summary( $after ),
+		];
+	}
+
+	/**
+	 * Set a string attribute, or drop it when it equals its default.
+	 *
+	 * @param \stdClass $attrs Attributes.
+	 * @param string   $name  Block name.
+	 * @param string   $attr  Attribute.
+	 * @param string   $value New value.
+	 */
+	private static function put_link_attr( \stdClass $attrs, string $name, string $attr, string $value ): void {
+		$default = self::default_attr( $name, $attr );
+		if ( $value === ( is_string( $default ) ? $default : '' ) ) {
+			unset( $attrs->{$attr} );
+			return;
+		}
+		$attrs->{$attr} = $value;
+	}
+
+	/**
+	 * A link as one line of text, for the edit log.
+	 *
+	 * @param array{url:string,newTab:bool} $state Link state.
+	 */
+	private static function link_summary( array $state ): string {
+		return $state['url'] . ( $state['newTab'] ? ' (new tab)' : '' );
 	}
 
 	/* ---------------------------------------------------------------------

@@ -266,6 +266,7 @@ final class Inline_Edit_Log {
 			'user_name'   => (string) ( $f['user_name'] ?? '' ),
 			'user_role'   => (string) ( $f['user_role'] ?? '' ),
 			'action'      => 'undo' === ( $f['action'] ?? '' ) ? 'undo' : 'edit',
+			'kind'        => 'link' === ( $f['kind'] ?? '' ) ? 'link' : 'text',
 			'undo_of'     => (string) ( $f['undo_of'] ?? '' ),
 			'block_name'  => (string) ( $f['block_name'] ?? '' ),
 			'block_id'    => (string) ( $f['block_id'] ?? '' ),
