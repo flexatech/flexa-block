@@ -277,6 +277,13 @@ final class Inline_Editor {
 	 */
 	private static $scopes = [];
 
+	/**
+	 * Memoized content versions, keyed by post ID. See store_version().
+	 *
+	 * @var array<int, string>
+	 */
+	private static $versions = [];
+
 	/** Wrapper blocks that switch the store their inner blocks come from. */
 	const SCOPE_BLOCKS = [ 'core/template-part', 'core/block', 'core/post-content' ];
 
@@ -635,6 +642,11 @@ final class Inline_Editor {
 			$processor->set_attribute( 'data-flexa-edit-target', (string) $target['post'] );
 			$processor->set_attribute( 'data-flexa-edit-scope', $target['scope'] );
 		}
+		// The version of the store this block was read from, sent back with a
+		// save so a change made since (in the editor, another tab, by another
+		// person) is refused instead of silently overwritten.
+		$store_id = $target['post'] > 0 ? $target['post'] : (int) get_queried_object_id();
+		$processor->set_attribute( 'data-flexa-edit-version', self::store_version( $store_id ) );
 
 		return $processor->get_updated_html();
 	}
@@ -684,6 +696,27 @@ final class Inline_Editor {
 			'post'  => $scope['post'],
 			'scope' => 'wp_template_part' === $scope['type'] ? 'template-part' : 'pattern',
 		] : null;
+	}
+
+	/**
+	 * A token for the exact stored content of a post: changes when anything in
+	 * it changes, and only then.
+	 *
+	 * Used instead of `post_modified_gmt`, which has one-second resolution (two
+	 * saves inside a second look the same) and moves on writes that never touch
+	 * the content. Comparing what the page shows against what is stored is not
+	 * an option either: rendering runs kses, entities and block markup over the
+	 * stored value, so the two differ even when nothing has changed.
+	 *
+	 * @param int $post_id Post ID of the store.
+	 * @return string
+	 */
+	private static function store_version( int $post_id ): string {
+		if ( ! isset( self::$versions[ $post_id ] ) ) {
+			$post                       = $post_id > 0 ? get_post( $post_id ) : null;
+			self::$versions[ $post_id ] = $post instanceof \WP_Post ? md5( (string) $post->post_content ) : '';
+		}
+		return self::$versions[ $post_id ];
 	}
 
 	/**
@@ -825,8 +858,12 @@ final class Inline_Editor {
 					'save'    => __( 'Save', 'flexa-block' ),
 					'cancel'  => __( 'Cancel', 'flexa-block' ),
 					'saved'   => __( 'Saved', 'flexa-block' ),
+					'undo'    => __( 'Undo', 'flexa-block' ),
+					'undone'  => __( 'Change undone', 'flexa-block' ),
 					'saving'  => __( 'Saving…', 'flexa-block' ),
 					'error'   => __( 'Could not save', 'flexa-block' ),
+					'unsaved' => __( 'You have unsaved changes. Save them before you go?', 'flexa-block' ),
+					'discard' => __( 'Discard the changes you made to this text?', 'flexa-block' ),
 					'scope'   => [
 						'template-part' => __( 'This text is part of the site template (header, footer…). Saving changes it on every page that uses this part.', 'flexa-block' ),
 						'pattern'       => __( 'This text is part of a synced pattern. Saving changes it everywhere the pattern is used.', 'flexa-block' ),
@@ -887,6 +924,36 @@ final class Inline_Editor {
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--save"><?php echo esc_html__( 'Save', 'flexa-block' ); ?></button>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
 				<span class="flexa-fee-toolbar__msg" aria-live="polite"></span>
+				<button type="button" class="flexa-fee-btn flexa-fee-btn--undo" hidden><?php echo esc_html__( 'Undo', 'flexa-block' ); ?></button>
+			</div>
+		</div>
+		<?php
+		/*
+		 * Modal shown before an in-page action would leave an unsaved edit.
+		 * Reloading or closing the tab still uses the browser's native dialog.
+		 */
+		?>
+		<div
+			class="flexa-fee-toolbar__prompt"
+			role="alertdialog"
+			aria-modal="true"
+			aria-labelledby="flexa-fee-unsaved-title"
+			aria-describedby="flexa-fee-unsaved-message"
+			hidden
+		>
+			<div class="flexa-fee-toolbar__prompt-dialog" role="document">
+				<div class="flexa-fee-toolbar__prompt-content">
+					<span class="flexa-fee-toolbar__prompt-icon" aria-hidden="true">!</span>
+					<div>
+						<h2 id="flexa-fee-unsaved-title" class="flexa-fee-toolbar__prompt-title"><?php echo esc_html__( 'Unsaved changes', 'flexa-block' ); ?></h2>
+						<p id="flexa-fee-unsaved-message" class="flexa-fee-toolbar__prompt-msg"></p>
+					</div>
+				</div>
+				<div class="flexa-fee-toolbar__prompt-actions">
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-choice="stay"><?php echo esc_html__( 'Keep editing', 'flexa-block' ); ?></button>
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--discard" data-choice="discard"><?php echo esc_html__( 'Discard changes', 'flexa-block' ); ?></button>
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--save" data-choice="save"><?php echo esc_html__( 'Save', 'flexa-block' ); ?></button>
+				</div>
 			</div>
 		</div>
 		<?php
@@ -945,6 +1012,19 @@ final class Inline_Editor {
 					'targetId'  => [
 						'type'              => 'integer',
 						'sanitize_callback' => 'absint',
+					],
+					// Content version the page was rendered from. See
+					// store_version(). Optional so a script cached from before
+					// it existed still saves, without the check.
+					'version'   => [
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_key',
+					],
+					// ID of the log entry this save reverses (the Undo button). Only
+					// a label for the log: the save itself is checked like any other.
+					'undoOf'    => [
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_key',
 					],
 					// Sanitized in the handler against the field's own allowlist.
 					'value'     => [
@@ -1073,6 +1153,63 @@ final class Inline_Editor {
 			}
 		}
 
+		// Someone has this post open in the block editor. Their next save would
+		// overwrite this edit (the editor holds its own copy of the content), so
+		// say so now instead. The editor's lock is the signal WordPress itself
+		// uses for "someone else is editing"; a lock held by this same user is
+		// not reported by wp_check_post_lock().
+		if ( ! function_exists( 'wp_check_post_lock' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/post.php';
+		}
+		$holder = wp_check_post_lock( (int) $store->ID );
+		if ( $holder ) {
+			$user = get_userdata( (int) $holder );
+
+			// How long the lock outlives a closed editor, as a range a person can
+			// act on. WordPress keeps the lock for this window after the last
+			// heartbeat (150 seconds by default, so "2–3 minutes"); while the
+			// editor stays open the heartbeat keeps renewing it, which is why
+			// this is phrased as "once they close it" and not as a countdown.
+			$window = max( 60, (int) apply_filters( 'wp_check_post_lock_window', 150 ) );
+			$low    = (int) floor( $window / MINUTE_IN_SECONDS );
+			$high   = (int) ceil( $window / MINUTE_IN_SECONDS );
+			$wait   = $low === $high
+				? sprintf(
+					/* translators: %s: number of minutes */
+					_n( 'about %s minute', 'about %s minutes', $low, 'flexa-block' ),
+					number_format_i18n( $low )
+				)
+				: sprintf(
+					/* translators: 1: lower number of minutes, 2: upper number of minutes */
+					__( 'about %1$s–%2$s minutes', 'flexa-block' ),
+					number_format_i18n( $low ),
+					number_format_i18n( $high )
+				);
+
+			return new \WP_Error(
+				'flexa_inline_locked',
+				sprintf(
+					/* translators: 1: display name of the person editing, 2: how long to wait, for example "about 2–3 minutes" */
+					__( '%1$s is editing this in the block editor right now, and their next save would overwrite yours. Once they close the editor, you can save again in %2$s. Your text stays here until then.', 'flexa-block' ),
+					$user ? $user->display_name : __( 'Someone', 'flexa-block' ),
+					$wait
+				),
+				[ 'status' => 409 ]
+			);
+		}
+
+		// The content changed after this page was rendered: saved in the editor,
+		// in another tab, or by another person. Writing now would be based on a
+		// page the person is no longer looking at.
+		$version = (string) $request->get_param( 'version' );
+		if ( '' !== $version && ! hash_equals( md5( (string) $store->post_content ), $version ) ) {
+			return new \WP_Error(
+				'flexa_inline_stale',
+				__( 'This content has changed since the page was loaded, so your edit was not saved. Copy your text if you need it, reload the page, and edit again.', 'flexa-block' ),
+				[ 'status' => 409 ]
+			);
+		}
+
 		// Find the one block delimiter this edit is about and rewrite only that.
 		// Parsing the whole post and serializing it back would also re-encode
 		// every other block, and PHP arrays cannot tell `{}` from `[]`, so a
@@ -1116,6 +1253,14 @@ final class Inline_Editor {
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
 		}
+		if ( $updated === $content ) {
+			return rest_ensure_response(
+				[
+					'success' => true,
+					'version' => md5( $content ),
+				]
+			);
+		}
 
 		// KSES is held off for this one write. The only new data in $updated is
 		// $clean, which already went through this field's own allowlist above,
@@ -1130,26 +1275,84 @@ final class Inline_Editor {
 		// wp_slash: wp_update_post runs wp_unslash on the content, so pre-slash it
 		// to keep backslashes/quotes in the serialized block markup intact.
 		kses_remove_filters();
-		$result = wp_update_post(
-			[
-				'ID'           => (int) $store->ID,
-				'post_content' => wp_slash( $updated ),
-			],
-			true
-		);
-		// kses_init(), not kses_init_filters(): put back exactly what this user
-		// had, which for one with unfiltered_html is no filters at all.
-		kses_init();
+		try {
+			$result = Inline_Revision_Session::update_post(
+				$store,
+				[
+					'ID'           => (int) $store->ID,
+					'post_content' => wp_slash( $updated ),
+				]
+			);
+		} finally {
+			// kses_init(), not kses_init_filters(): put back exactly what this user
+			// had, which for one with unfiltered_html is no filters at all. A finally
+			// also restores it if a save hook throws.
+			kses_init();
+		}
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
-		// A template part or pattern has no comments of its own to hold the
-		// note, so the edit is logged on the page it was made from.
-		self::log_edit( $post_id, $name, $old, $clean );
+		// Logged on the post that stores the text (a pattern's history shows who
+		// edited it from any page). The old note comment is opt-in below.
+		$user     = wp_get_current_user();
+		$entry_id = wp_generate_uuid4();
+		$undo_of  = (string) $request->get_param( 'undoOf' );
+		$is_undo  = Inline_Edit_Log::has_entry( (int) $store->ID, $undo_of );
+		Inline_Edit_Log::record(
+			(int) $store->ID,
+			[
+				'entry_id'    => $entry_id,
+				'action'      => $is_undo ? 'undo' : 'edit',
+				'undo_of'     => $is_undo ? $undo_of : '',
+				'time_gmt'    => gmdate( 'Y-m-d H:i:s' ),
+				'user_id'     => (int) $user->ID,
+				'user_name'   => (string) $user->display_name,
+				'user_role'   => (string) ( $user->roles ? reset( $user->roles ) : '' ),
+				'block_name'  => $name,
+				'block_id'    => $block_id,
+				'attr'        => $attr,
+				'index'       => null === $index_raw ? null : absint( $index_raw ),
+				'subindex'    => null === $sub_raw ? null : absint( $sub_raw ),
+				'key'         => $key,
+				'store_id'    => (int) $store->ID,
+				'store_type'  => (string) $store->post_type,
+				'post_id'     => $post_id,
+				'before'      => $old,
+				'after'       => $clean,
+				'revision_id' => Inline_Revision_Session::baseline_id( (int) $store->ID ),
+			]
+		);
 
-		return rest_ensure_response( [ 'success' => true ] );
+		/**
+		 * Filters whether each front-end edit also leaves a "note" comment.
+		 *
+		 * Off by default: the edit history in the block editor replaces it, and
+		 * comments inflate the count shown in the admin bar.
+		 *
+		 * @param bool $enabled Default false.
+		 */
+		if ( apply_filters( 'flexa_block_inline_edit_log_as_comment', false ) ) {
+			self::log_edit( $post_id, $name, $old, $clean );
+		}
+
+		// The new version, read back from what was stored rather than hashed from
+		// what was sent: save filters may have changed it, and the next edit on
+		// this page is checked against the database, not against this request.
+		clean_post_cache( (int) $store->ID );
+		$saved = get_post( (int) $store->ID );
+
+		// `before` and `logId` are what the Undo button needs: the value to put
+		// back, and the entry it will say it reverses.
+		return rest_ensure_response(
+			[
+				'success' => true,
+				'version' => $saved instanceof \WP_Post ? md5( (string) $saved->post_content ) : '',
+				'before'  => (string) $old,
+				'logId'   => $entry_id,
+			]
+		);
 	}
 
 	/* ---------------------------------------------------------------------

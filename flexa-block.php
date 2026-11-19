@@ -66,6 +66,8 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-post-filter-rest.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-form-handler.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-block-patcher.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-revision-session.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-edit-log.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-editor.php';
 	// TODO(remove in vNEXT): item-style migration.
 	require_once FLEXA_BLOCK_DIR . 'includes/class-item-style-migration.php';
@@ -87,6 +89,7 @@ function flexa_block_init() {
 	Flexa\Block\Form_Handler::init();
 	Flexa\Block\Post_Filter_REST::init();
 	Flexa\Block\Inline_Editor::init();
+	Flexa\Block\Inline_Edit_Log::init();
 	Flexa\Block\Item_Style_Migration::init(); // TODO(remove in vNEXT): item-style migration.
 	Flexa\Block\Uploads::init();
 	Flexa\Block\Rss_Feed::init();
@@ -202,13 +205,15 @@ function flexa_block_mcp_runtime_enabled() {
 /**
  * Clean up what the plugin scheduled, on deactivation.
  *
- * One event today: the MCP activity log's daily sweep. A deactivated plugin
+ * Two events: the MCP activity log's daily sweep and the front-end edit log's. A deactivated plugin
  * whose cron event is still in the schedule leaves WordPress calling a hook
  * nothing listens to, every day, until someone clears it by hand.
  */
 function flexa_block_deactivate() {
 	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-activity-log.php';
 	Flexa\Block\MCP\Activity_Log::unschedule();
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-edit-log.php';
+	Flexa\Block\Inline_Edit_Log::unschedule();
 }
 register_deactivation_hook( __FILE__, 'flexa_block_deactivate' );
 

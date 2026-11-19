@@ -23,6 +23,10 @@ delete_option( 'flexa_block_item_style_migration_cursor' );
 delete_option( 'flexa_block_mcp' );
 delete_option( 'flexa_block_mcp_log' );
 
+// Front-end edit history, kept in post meta of the pages and patterns edited.
+delete_post_meta_by_key( '_flexa_block_inline_edit_log' );
+wp_clear_scheduled_hook( 'flexa_block_inline_edit_log_sweep' );
+
 // The module's transients: one per rate-limit window, one per idempotency
 // record, both named after a hash, so there is no list of keys to walk. The
 // options table is where a site without a persistent object cache keeps them.

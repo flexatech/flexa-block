@@ -40,12 +40,20 @@ interface Boot {
 		cancel: string;
 		saved: string;
 		saving: string;
+		// The Undo button after a save, and what is said once it has worked.
+		undo?: string;
+		undone?: string;
 		error: string;
 		// Warning shown while editing text stored in a shared place, keyed by
 		// the root's `data-flexa-edit-scope`.
 		scope?: Record< string, string >;
+		// Prompt questions for leaving an edit with unsaved changes.
+		unsaved?: string;
+		discard?: string;
 	};
 }
+
+type Choice = 'save' | 'discard' | 'stay';
 
 interface ActiveEdit {
 	el: HTMLElement;
@@ -63,6 +71,30 @@ interface ActiveEdit {
 	// Template part or synced pattern the block is stored in; 0 when it is the
 	// viewed post itself.
 	targetId: number;
+	// The value as it was when editing started, in the same form currentValue()
+	// returns, so "has anything changed" compares like with like.
+	originalValue: string;
+}
+
+/**
+ * Every block root stored in the same place (post, template part or pattern).
+ *
+ * After a save, the store's content has a new version, and every block read
+ * from it has to carry that version or the next edit on this page would be
+ * refused as a conflict with the person's own save.
+ *
+ * @param targetId Store's post ID, or 0 for the viewed post.
+ */
+function rootsInStore( targetId: number ): HTMLElement[] {
+	return Array.from(
+		document.querySelectorAll< HTMLElement >( '[data-flexa-edit-id]' )
+	).filter(
+		( r ) =>
+			( parseInt(
+				r.getAttribute( 'data-flexa-edit-target' ) || '0',
+				10
+			) || 0 ) === targetId
+	);
 }
 
 const boot = ( window as unknown as { flexaBlockInlineEditor?: Boot } )
@@ -74,10 +106,104 @@ const ACTIVE_CLASS = 'flexa-fee-active';
 let active: ActiveEdit | null = null;
 let saving = false;
 
+// What the Undo button will do, for a few seconds after a save. See offerUndo().
+interface UndoState {
+	payload: Record< string, unknown >;
+	before: string;
+	logId: string;
+	el: HTMLElement;
+	root: HTMLElement;
+	originalHTML: string;
+	join?: string;
+	targetId: number;
+	timer: number;
+}
+
+let undoState: UndoState | null = null;
+let undoBtn: HTMLButtonElement | null = null;
+let undoing = false;
+
+const UNDO_WINDOW_MS = 10000;
+
+// The save request in flight, so a second trigger waits for it instead of
+// racing it (see save() and settle()).
+let inflight: Promise< boolean > | null = null;
+
 let toolbar: HTMLElement | null = null;
 let msgEl: HTMLElement | null = null;
 let saveBtn: HTMLButtonElement | null = null;
 let cancelBtn: HTMLButtonElement | null = null;
+let promptEl: HTMLElement | null = null;
+let promptMsgEl: HTMLElement | null = null;
+
+// The open "unsaved changes" question, so a second trigger while it is showing
+// gets the same answer instead of stacking another prompt.
+let pendingAsk: Promise< Choice > | null = null;
+
+// Whether the beforeunload guard is attached. See updateGuard().
+let guarded = false;
+
+// Set while re-submitting a form the person chose to leave the edit for, so the
+// submit listener does not stop it a second time.
+let bypassSubmit = false;
+
+/**
+ * Bring a value to the form two values are compared in.
+ *
+ * Clicking into text and out again can leave a non-breaking space or a trailing
+ * <br> behind without the person typing anything; neither should count as a
+ * change worth asking about.
+ *
+ * @param value Value as currentValue() returns it.
+ */
+function normalize( value: string ): string {
+	return value
+		.replace( /&nbsp;|\u00a0/g, ' ' )
+		.replace( /<br\s*\/?>\s*$/i, '' )
+		.replace( /\s+/g, ' ' )
+		.trim();
+}
+
+/**
+ * Whether the active edit holds something that would be lost by leaving it.
+ */
+function isDirty(): boolean {
+	if ( ! active ) {
+		return false;
+	}
+	return (
+		saving ||
+		normalize( currentValue() ) !== normalize( active.originalValue )
+	);
+}
+
+/**
+ * The browser's own "leave site?" question, for leaving the page entirely.
+ *
+ * @param e The beforeunload event.
+ */
+function onBeforeUnload( e: BeforeUnloadEvent ): void {
+	e.preventDefault();
+	// Still required by some browsers to show the dialog.
+	e.returnValue = '';
+}
+
+/**
+ * Attach the beforeunload guard only while there is something to lose.
+ *
+ * A permanent listener would ask on every navigation, and in some browsers a
+ * page with one cannot be kept in the back/forward cache.
+ */
+function updateGuard(): void {
+	const need = isDirty();
+	if ( need && ! guarded ) {
+		window.addEventListener( 'beforeunload', onBeforeUnload );
+		guarded = true;
+	} else if ( ! need && guarded ) {
+		window.removeEventListener( 'beforeunload', onBeforeUnload );
+		guarded = false;
+	}
+}
 
 /**
  * Show / hide the editing toolbar.
@@ -117,6 +243,25 @@ function setMessage( text: string, tone: MessageTone = 'info' ): void {
 }
 
 /**
+ * Make the required-field markers inside an edited element uneditable (or
+ * editable again).
+ *
+ * @param el   The element being edited.
+ * @param lock True to lock, false to release.
+ */
+function lockMarkers( el: HTMLElement, lock: boolean ): void {
+	el.querySelectorAll< HTMLElement >( '.flexa-field__required' ).forEach(
+		( m ) => {
+			if ( lock ) {
+				m.contentEditable = 'false';
+			} else {
+				m.removeAttribute( 'contenteditable' );
+			}
+		}
+	);
+}
+
+/**
  * Leave edit mode, optionally restoring the original markup.
  *
  * @param restore Whether to put the original HTML back.
@@ -128,12 +273,147 @@ function endEdit( restore: boolean ): void {
 	if ( restore ) {
 		active.el.innerHTML = active.originalHTML;
 	}
+	lockMarkers( active.el, false );
 	active.el.contentEditable = 'false';
 	active.el.classList.remove( ACTIVE_CLASS );
 	active.root.classList.remove( ACTIVE_CLASS );
 	active = null;
 	saving = false;
 	toggleToolbar( false );
+	updateGuard();
+}
+
+/**
+ * Ask what to do with unsaved changes in a modal dialog.
+ *
+ * Three answers rather than the browser's two-button confirm(): saving first is
+ * the answer people usually want, and confirm() cannot offer it. Escape while
+ * the question is open means "keep editing".
+ *
+ * @param message The question to show.
+ */
+function ask( message: string ): Promise< Choice > {
+	if ( pendingAsk ) {
+		return pendingAsk;
+	}
+
+	// The toolbar from a cached page may predate the prompt markup.
+	if ( ! toolbar || ! promptEl || ! promptMsgEl ) {
+		return Promise.resolve(
+			// eslint-disable-next-line no-alert
+			window.confirm( message ) ? 'discard' : 'stay'
+		);
+	}
+
+	const bar = toolbar;
+	const prompt = promptEl;
+	const promptMsg = promptMsgEl;
+
+	pendingAsk = new Promise< Choice >( ( resolve ) => {
+		const onClick = ( e: Event ) => {
+			// Clicking the backdrop is the safe answer: keep the current edit.
+			if ( e.target === prompt ) {
+				done( 'stay' );
+				return;
+			}
+			const btn = ( e.target as HTMLElement ).closest< HTMLElement >(
+				'[data-choice]'
+			);
+			if ( btn ) {
+				done(
+					( btn.getAttribute( 'data-choice' ) as Choice ) || 'stay'
+				);
+			}
+		};
+		const onKey = ( e: KeyboardEvent ) => {
+			if ( e.key === 'Escape' ) {
+				e.preventDefault();
+				e.stopPropagation();
+				done( 'stay' );
+				return;
+			}
+			if ( e.key === 'Tab' ) {
+				const choices = Array.from(
+					prompt.querySelectorAll< HTMLElement >( '[data-choice]' )
+				);
+				const first = choices[ 0 ];
+				const last = choices[ choices.length - 1 ];
+				if ( ! first || ! last ) {
+					return;
+				}
+				if (
+					e.shiftKey &&
+					prompt.ownerDocument.activeElement === first
+				) {
+					e.preventDefault();
+					last.focus();
+				} else if (
+					! e.shiftKey &&
+					prompt.ownerDocument.activeElement === last
+				) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
+		};
+		function done( choice: Choice ): void {
+			prompt.setAttribute( 'hidden', '' );
+			bar.classList.remove( 'is-asking' );
+			document.body.classList.remove( 'flexa-fee-modal-open' );
+			prompt.removeEventListener( 'click', onClick );
+			document.removeEventListener( 'keydown', onKey, true );
+			pendingAsk = null;
+			resolve( choice );
+		}
+
+		promptMsg.textContent = message;
+		prompt.removeAttribute( 'hidden' );
+		bar.classList.add( 'is-asking' );
+		document.body.classList.add( 'flexa-fee-modal-open' );
+		toggleToolbar( true );
+		prompt.addEventListener( 'click', onClick );
+		document.addEventListener( 'keydown', onKey, true );
+		prompt.querySelector< HTMLElement >( '[data-choice="save"]' )?.focus();
+	} );
+
+	return pendingAsk;
+}
+
+/**
+ * Settle unsaved changes before something takes the person away from them.
+ *
+ * Resolves true when it is fine to go ahead: nothing was unsaved, the changes
+ * were saved, or the person chose to discard them. Resolves false when they
+ * chose to keep editing, or a save they asked for failed (its message is
+ * already in the toolbar, and their text is still there).
+ *
+ * @param message The question to ask, if there is anything to ask about.
+ */
+async function settle( message: string ): Promise< boolean > {
+	// A save already on its way is the answer to "save or discard?": let it
+	// finish rather than restoring the old text under a request that may still
+	// succeed. If it fails the text is still there and we ask as usual.
+	if ( inflight ) {
+		if ( await inflight ) {
+			return true;
+		}
+	}
+	if ( ! isDirty() ) {
+		return true;
+	}
+
+	const choice = await ask( message );
+
+	if ( choice === 'save' ) {
+		return save();
+	}
+	if ( choice === 'discard' ) {
+		endEdit( true );
+		return true;
+	}
+
+	active?.el.focus();
+	return false;
 }
 
 /**
@@ -153,7 +433,10 @@ function startEdit(
 	if ( active && active.el === el ) {
 		return;
 	}
-	// Switching straight from another element: discard that unsaved edit.
+	// A new edit takes the toolbar over from "Saved · Undo".
+	clearUndo( false );
+	// Switching from another element. Callers settle unsaved changes first
+	// (see bindField), so whatever is left here has nothing to lose.
 	if ( active ) {
 		endEdit( true );
 	}
@@ -189,8 +472,13 @@ function startEdit(
 				root.getAttribute( 'data-flexa-edit-target' ) || '0',
 				10
 			) || 0,
+		originalValue: '',
 	};
+	active.originalValue = currentValue();
 
+	// The "*" of a required field is not part of the text: stop the caret from
+	// typing into it, or what is typed there is dropped by currentValue().
+	lockMarkers( el, true );
 	el.contentEditable = 'true';
 	el.classList.add( ACTIVE_CLASS );
 	root.classList.add( ACTIVE_CLASS );
@@ -229,12 +517,184 @@ function currentValue(): string {
 
 /**
  * Persist the active edit to the server.
+ *
+ * @return Whether the edit was saved.
  */
-async function save(): Promise< void > {
-	if ( ! active || ! boot || saving ) {
+function save(): Promise< boolean > {
+	if ( inflight ) {
+		return inflight;
+	}
+	inflight = doSave().finally( () => {
+		inflight = null;
+	} );
+	return inflight;
+}
+
+interface EditResult {
+	version?: string;
+	before?: string;
+	logId?: string;
+}
+
+/**
+ * Send one edit to the server and keep the stored-content version in step.
+ *
+ * Throws with the server's own message when the save is refused (a conflict,
+ * a lock, a permission), falling back to the HTTP status so an opaque failure
+ * is still identifiable.
+ *
+ * @param payload  Request body.
+ * @param targetId Store the edit was made in, to carry the new version to.
+ */
+async function postEdit(
+	payload: Record< string, unknown >,
+	targetId: number
+): Promise< EditResult > {
+	if ( ! boot ) {
+		throw new Error( '' );
+	}
+	const resp = await fetch( boot.endpoint, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-WP-Nonce': boot.nonce,
+		},
+		body: JSON.stringify( payload ),
+	} );
+
+	if ( ! resp.ok ) {
+		const err = await resp.json().catch( () => ( {} ) );
+		const detail = ( err && ( err as { message?: string } ).message ) || '';
+		throw new Error( detail || `HTTP ${ resp.status }` );
+	}
+
+	const result = ( await resp.json().catch( () => ( {} ) ) ) as EditResult;
+	if ( result.version ) {
+		const next = result.version;
+		rootsInStore( targetId ).forEach( ( r ) =>
+			r.setAttribute( 'data-flexa-edit-version', next )
+		);
+	}
+	return result;
+}
+
+/**
+ * Stop offering Undo.
+ *
+ * @param hideToolbar Whether to hide the toolbar too (not when a new edit has
+ *                    just taken it over).
+ */
+function clearUndo( hideToolbar = true ): void {
+	if ( undoState ) {
+		window.clearTimeout( undoState.timer );
+	}
+	undoState = null;
+	undoing = false;
+	if ( undoBtn ) {
+		undoBtn.hidden = true;
+		undoBtn.disabled = false;
+	}
+	toolbar?.classList.remove( 'is-undo' );
+	if ( hideToolbar && ! active ) {
+		toggleToolbar( false );
+		setMessage( '' );
+	}
+}
+
+/**
+ * Show "Saved · Undo" for a few seconds after a save.
+ *
+ * The toolbar is shown again in a reduced form (message and Undo only). Starting
+ * another edit, or letting the time run out, ends the offer.
+ *
+ * @param state What Undo will do.
+ */
+function offerUndo( state: UndoState ): void {
+	if ( ! toolbar || ! undoBtn ) {
 		return;
 	}
+	clearUndo( false );
+	state.timer = window.setTimeout( () => clearUndo(), UNDO_WINDOW_MS );
+	undoState = state;
+	undoBtn.hidden = false;
+	toolbar.classList.add( 'is-undo' );
+	toggleToolbar( true );
+}
+
+/**
+ * Put the text back the way it was before the last save.
+ *
+ * It is an ordinary save of the old value, sent with the page's current content
+ * version, so it is refused (and nothing is overwritten) if anyone changed the
+ * content in the meantime, and it is logged as an undo of the edit it reverses.
+ */
+async function runUndo(): Promise< void > {
+	const state = undoState;
+	if ( ! state || ! boot || undoing ) {
+		return;
+	}
+	undoing = true;
+	window.clearTimeout( state.timer );
+	if ( undoBtn ) {
+		undoBtn.disabled = true;
+	}
+	setMessage( boot.i18n.saving );
+
+	const payload: Record< string, unknown > = {
+		...state.payload,
+		value: state.before,
+		undoOf: state.logId,
+	};
+	const version = state.root.getAttribute( 'data-flexa-edit-version' ) || '';
+	if ( version ) {
+		payload.version = version;
+	}
+
+	try {
+		await postEdit( payload, state.targetId );
+
+		// A field made of several elements cannot be put back from one string;
+		// the page reloads with the restored content instead.
+		if ( state.join !== undefined ) {
+			window.location.reload();
+			return;
+		}
+		state.el.innerHTML = state.originalHTML;
+		undoState = null;
+		undoing = false;
+		if ( undoBtn ) {
+			undoBtn.hidden = true;
+		}
+		setMessage( boot.i18n.undone || boot.i18n.saved, 'success' );
+		window.setTimeout( () => {
+			if ( ! undoState ) {
+				clearUndo();
+			}
+		}, 2500 );
+	} catch ( e ) {
+		// Say why (usually: the content changed since), keep the message up for
+		// a while, and let go of the offer: undoing again would fail the same way.
+		const message = e instanceof Error ? e.message : boot.i18n.error;
+		setMessage( `${ boot.i18n.error }: ${ message }`, 'error' );
+		if ( undoBtn ) {
+			undoBtn.hidden = true;
+		}
+		undoState = null;
+		undoing = false;
+		window.setTimeout( () => {
+			if ( ! undoState ) {
+				clearUndo();
+			}
+		}, 8000 );
+	}
+}
+
+async function doSave(): Promise< boolean > {
+	if ( ! active || ! boot || saving ) {
+		return false;
+	}
 	saving = true;
+	updateGuard();
 	setMessage( boot.i18n.saving );
 
 	const payload: Record< string, unknown > = {
@@ -256,32 +716,65 @@ async function save(): Promise< void > {
 	if ( active.targetId > 0 ) {
 		payload.targetId = active.targetId;
 	}
+	// Read from the root at save time rather than at startEdit: an earlier
+	// save on this page may have moved the store to a newer version since.
+	const version = active.root.getAttribute( 'data-flexa-edit-version' ) || '';
+	if ( version ) {
+		payload.version = version;
+	}
 
 	try {
-		const resp = await fetch( boot.endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'X-WP-Nonce': boot.nonce,
-			},
-			body: JSON.stringify( payload ),
-		} );
+		const result = await postEdit( payload, active.targetId );
 
-		if ( ! resp.ok ) {
-			const err = await resp.json().catch( () => ( {} ) );
-			const detail =
-				( err && ( err as { message?: string } ).message ) || '';
-			// Fall back to the HTTP status so an opaque failure is still
-			// identifiable (e.g. a 403 permission block).
-			throw new Error( detail || `HTTP ${ resp.status }` );
-		}
+		// What Undo needs, taken before the edit ends and `active` is cleared.
+		// Nothing to undo when the save changed nothing (no log id then).
+		const undo: UndoState | null =
+			result.logId && typeof result.before === 'string'
+				? {
+						payload: {
+							postId: payload.postId,
+							blockId: payload.blockId,
+							blockName: payload.blockName,
+							attr: payload.attr,
+							...( payload.index !== undefined && {
+								index: payload.index,
+							} ),
+							...( payload.subindex !== undefined && {
+								subindex: payload.subindex,
+							} ),
+							...( payload.key !== undefined && {
+								key: payload.key,
+							} ),
+							...( payload.targetId !== undefined && {
+								targetId: payload.targetId,
+							} ),
+						},
+						before: result.before,
+						logId: result.logId,
+						el: active.el,
+						root: active.root,
+						originalHTML: active.originalHTML,
+						join: active.join,
+						targetId: active.targetId,
+						timer: 0,
+				  }
+				: null;
 
 		setMessage( boot.i18n.saved, 'success' );
 		endEdit( false );
+		if ( undo ) {
+			offerUndo( undo );
+		}
+		return true;
 	} catch ( e ) {
+		// The edit stays open with the person's text in it: a conflict (the
+		// content changed, or someone has it open in the editor) must never
+		// cost them what they typed. The server's message says what to do.
 		saving = false;
+		updateGuard();
 		const message = e instanceof Error ? e.message : boot.i18n.error;
 		setMessage( `${ boot.i18n.error }: ${ message }`, 'error' );
+		return false;
 	}
 }
 
@@ -294,13 +787,30 @@ function initToolbar(): void {
 		return;
 	}
 	msgEl = toolbar.querySelector( '.flexa-fee-toolbar__msg' );
-	saveBtn = toolbar.querySelector( '.flexa-fee-btn--save' );
-	cancelBtn = toolbar.querySelector( '.flexa-fee-btn--cancel' );
+	// The toolbar's own buttons, not the prompt's (which share the classes).
+	saveBtn = toolbar.querySelector(
+		'.flexa-fee-toolbar__inner > .flexa-fee-btn--save'
+	);
+	cancelBtn = toolbar.querySelector(
+		'.flexa-fee-toolbar__inner > .flexa-fee-btn--cancel'
+	);
+	promptEl = document.querySelector( '.flexa-fee-toolbar__prompt' );
+	promptMsgEl =
+		promptEl?.querySelector( '.flexa-fee-toolbar__prompt-msg' ) || null;
 
 	saveBtn?.addEventListener( 'click', () => {
 		void save();
 	} );
-	cancelBtn?.addEventListener( 'click', () => endEdit( true ) );
+	undoBtn = toolbar.querySelector( '.flexa-fee-toolbar__inner > .flexa-fee-btn--undo' );
+	undoBtn?.addEventListener( 'click', () => {
+		void runUndo();
+	} );
+	cancelBtn?.addEventListener( 'click', () => {
+		// Not while a save is on its way: it may still succeed.
+		if ( ! inflight ) {
+			endEdit( true );
+		}
+	} );
 }
 
 /**
@@ -337,12 +847,24 @@ function bindField( root: HTMLElement, field: FieldDef ): void {
 		el.addEventListener( 'click', ( e ) => {
 			// While editing this very element, let the caret move normally.
 			if ( active && active.el === el ) {
+				// Text inside a link: keep the caret here, do not follow the link.
+				e.preventDefault();
 				return;
 			}
 			// Editable text often sits inside a link (button, linked heading) —
 			// stop navigation and start editing instead.
 			e.preventDefault();
 			e.stopPropagation();
+			// Moving on from another text with unsaved changes: ask first, and
+			// only switch once those changes are saved or deliberately dropped.
+			if ( active && isDirty() ) {
+				void settle( boot?.i18n.unsaved || '' ).then( ( ok ) => {
+					if ( ok ) {
+						startEdit( el, root, field, itemEl );
+					}
+				} );
+				return;
+			}
 			startEdit( el, root, field, itemEl );
 		} );
 	} );
@@ -370,19 +892,145 @@ function init(): void {
 		fields.forEach( ( field ) => bindField( root, field ) );
 	} );
 
-	// Escape cancels; Ctrl/Cmd+Enter saves.
+	// Escape cancels (asking first if something would be lost); Ctrl/Cmd+Enter
+	// saves. While the unsaved-changes question is open it owns the keyboard.
 	document.addEventListener( 'keydown', ( e ) => {
-		if ( ! active ) {
+		if ( ! active || pendingAsk ) {
 			return;
 		}
 		if ( e.key === 'Escape' ) {
 			e.preventDefault();
-			endEdit( true );
+			if ( isDirty() ) {
+				void settle( boot.i18n.discard || '' );
+			} else {
+				endEdit( true );
+			}
 		} else if ( ( e.metaKey || e.ctrlKey ) && e.key === 'Enter' ) {
 			e.preventDefault();
 			void save();
 		}
 	} );
+
+	// Some browsers (Firefox) park the caret inside an uneditable marker, such as
+	// the "*" of a required field, and then swallow what is typed. Step out of it
+	// to just after the marker before the text goes in.
+	document.addEventListener(
+		'beforeinput',
+		() => {
+			if ( ! active ) {
+				return;
+			}
+			const sel = window.getSelection();
+			const node = sel?.anchorNode;
+			if ( ! sel || ! sel.isCollapsed || ! node ) {
+				return;
+			}
+			const host = ( node instanceof Element ? node : node.parentElement )?.closest(
+				'.flexa-field__required'
+			);
+			if ( host && active.el.contains( host ) ) {
+				const range = document.createRange();
+				range.setStartAfter( host );
+				range.collapse( true );
+				sel.removeAllRanges();
+				sel.addRange( range );
+			}
+		},
+		true
+	);
+
+	// Typing is what makes an edit dirty; keep the beforeunload guard in step.
+	document.addEventListener(
+		'input',
+		() => {
+			if ( active ) {
+				updateGuard();
+			}
+		},
+		true
+	);
+
+	// A link on the page while an edit has unsaved changes: stop it, ask, and
+	// follow it once the changes are saved or discarded. Runs in the capture
+	// phase so it sees the click before the page's own handlers act on it.
+	document.addEventListener(
+		'click',
+		( e ) => {
+			if ( ! isDirty() || ! ( e.target instanceof Element ) ) {
+				return;
+			}
+			const target = e.target;
+			// The toolbar, and editable text (bindField asks for those itself).
+			if (
+				toolbar?.contains( target ) ||
+				target.closest( `.${ EDITABLE_CLASS }` )
+			) {
+				return;
+			}
+			const link = target.closest< HTMLAnchorElement >( 'a[href]' );
+			if ( ! link ) {
+				return;
+			}
+			// Anything that does not leave this page needs no question: a new
+			// tab or window, a download, an in-page anchor, a script link.
+			const href = link.getAttribute( 'href' ) || '';
+			if (
+				e.button !== 0 ||
+				e.metaKey ||
+				e.ctrlKey ||
+				e.shiftKey ||
+				e.altKey ||
+				( link.target && link.target !== '_self' ) ||
+				link.hasAttribute( 'download' ) ||
+				href.startsWith( '#' ) ||
+				/^javascript:/i.test( href )
+			) {
+				return;
+			}
+
+			e.preventDefault();
+			e.stopPropagation();
+			const destination = link.href;
+			void settle( boot.i18n.unsaved || '' ).then( ( ok ) => {
+				if ( ok ) {
+					window.location.assign( destination );
+				}
+			} );
+		},
+		true
+	);
+
+	// The same for a form on the page (search, contact form…).
+	document.addEventListener(
+		'submit',
+		( e ) => {
+			if ( bypassSubmit || ! isDirty() ) {
+				return;
+			}
+			const form = e.target;
+			if ( ! ( form instanceof HTMLFormElement ) ) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+			const submitter = ( e as SubmitEvent ).submitter;
+			void settle( boot.i18n.unsaved || '' ).then( ( ok ) => {
+				if ( ! ok ) {
+					return;
+				}
+				// Submitted again through requestSubmit() so the form's own
+				// submit handlers still run; the flag keeps this listener out.
+				bypassSubmit = true;
+				if ( submitter && form.contains( submitter ) ) {
+					form.requestSubmit( submitter );
+				} else {
+					form.requestSubmit();
+				}
+				bypassSubmit = false;
+			} );
+		},
+		true
+	);
 }
 
 if ( document.readyState === 'loading' ) {

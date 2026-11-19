@@ -12,7 +12,7 @@
  */
 
 import { createRoot, useMemo, useState, useEffect, useRef } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { Spinner } from '@wordpress/components';
 import { BlocksPanel } from './blocks-panel';
@@ -20,12 +20,13 @@ import { GeneralSettings } from './settings-general';
 import { EditingSettings } from './settings-editing';
 import { SamplesPanel } from './samples-panel';
 import { McpPanel } from './mcp-panel';
+import { LogPanel } from './log-panel';
 import { FormFlowBanner } from './formflow-banner';
 import './admin.scss';
 
 type Settings = Record< string, any >;
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
-type View = 'general' | 'blocks' | 'samples' | 'editing' | 'mcp';
+type View = 'general' | 'blocks' | 'samples' | 'editing' | 'log' | 'mcp';
 
 const SAVE_DEBOUNCE_MS = 700;
 
@@ -120,6 +121,9 @@ function App(): JSX.Element {
 			}
 			return { ...s, disabled_blocks: Array.from( list ) };
 		} );
+
+	// Front-end editing on or off (on unless saved as off); the edit log follows it.
+	const inlineOn = settings.inline_editor?.enabled !== false;
 
 	const setInline = ( key: string, value: unknown ) =>
 		setSettings( ( s: Settings ) => ( {
@@ -225,6 +229,24 @@ function App(): JSX.Element {
 							active={ view === 'editing' }
 							onClick={ () => setView( 'editing' ) }
 						/>
+						{ /* The history belongs to front-end editing: no tab while it is off. */ }
+						{ inlineOn && boot.editLog && (
+						<NavItem
+							icon="backup"
+							label={ __( 'Edit log', 'flexa-block' ) }
+							desc={
+								( boot.editLog?.days ?? 0 ) > 0
+									? sprintf(
+											/* translators: %d: number of days */
+											__( 'Front-end edits, kept %d days', 'flexa-block' ),
+											boot.editLog?.days
+									  )
+									: __( 'Front-end edits', 'flexa-block' )
+							}
+							active={ view === 'log' }
+							onClick={ () => setView( 'log' ) }
+						/>
+						) }
 						{ /* Always listed, including on a WordPress too old to run
 						     the module: the panel explains why the switch is
 						     unavailable, which is more use than an item that
@@ -268,6 +290,9 @@ function App(): JSX.Element {
 							onToggleRole={ toggleRole }
 							onToggleBlock={ toggleEditableBlock }
 						/>
+					) }
+					{ view === 'log' && inlineOn && boot.editLog && (
+						<LogPanel url={ boot.editLog.url } days={ boot.editLog.days } />
 					) }
 					{ view === 'mcp' &&
 						( boot.mcp ? (

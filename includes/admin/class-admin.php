@@ -459,6 +459,10 @@ class Admin {
 				),
 				'roles'          => self::roles_for_admin(),
 				'formFlow'       => self::formflow_promo(),
+				'editLog'        => [
+					'url'  => esc_url_raw( rest_url( self::REST_NS . '/inline-edit-log/all' ) ),
+					'days' => \Flexa\Block\Inline_Edit_Log::retention_days(),
+				],
 				// Sent whatever the module's state is, so the panel can explain
 				// an unsupported or switched-off site without a request of its
 				// own. Its own route handles saving.

@@ -1,7 +1,7 @@
 # Sửa ngoài Front-End: nâng cấp
 
-> ✅ xong (7) · 🧪 đang làm (0) · ⬜ chưa bắt đầu (24)
-> · Cập nhật: 2026-11-18 · Nhánh: `feat/frontend-editing` (tách từ `feat/mcp-module-phase-0`)
+> ✅ xong (19) · 🧪 cần kiểm tra lại (0) · ⬜ chưa bắt đầu (12)
+> · Cập nhật: 2026-11-19 · Nhánh: `feat/frontend-editing` (tách từ `feat/mcp-module-phase-0`)
 >
 > Phạm vi block/trường đang sửa được: [`inline-editing-coverage.md`](inline-editing-coverage.md).
 > File này là thứ tự thi công cho phần nâng cấp: lưu an toàn, chống ghi đè,
@@ -98,17 +98,36 @@ Những chỗ cần sửa, theo mức độ nghiêm trọng:
 
 ## Giai đoạn 2 · Chống ghi đè
 
-7. ⬜ Khi render toolbar, đưa `post_modified_gmt` của bài vào boot data. Mỗi lần
-   lưu gửi kèm `expectedModified`; server so với bài hiện tại, lệch thì trả 409
-   `flexa_inline_stale`. Lưu thành công trả về `modified_gmt` mới để JS dùng cho
-   lần lưu sau (người sửa liên tiếp nhiều trường trên một trang không bị tự chặn).
-8. ⬜ Từ chối khi người khác đang giữ khoá bài (`wp_check_post_lock()`), báo tên
-   người đó. Không tự lấy khoá: front-end không giữ phiên sửa như editor.
-9. ⬜ Gửi kèm giá trị cũ mà JS đang hiển thị (`expect`); server từ chối nếu attribute
-   hiện tại khác. Đây là lưới thứ hai cho trường hợp `modified_gmt` khớp nhưng hai
+7. ✅ **Phiên bản nội dung thay cho `post_modified_gmt`.** Lúc render, mỗi block
+   sửa được mang `data-flexa-edit-version` = md5 của `post_content` đang lưu ở
+   nơi chứa nó (trang, template part hoặc pattern; tính một lần cho mỗi nơi).
+   Lưu gửi kèm `version`; server so với md5 của nội dung hiện tại, lệch thì trả
+   409 `flexa_inline_stale` và không ghi gì. Lưu xong trả `version` mới (đọc lại
+   từ DB), front-end gắn vào mọi block cùng nơi chứa để lần sửa sau trên cùng
+   trang không tự chặn. Không dùng `post_modified_gmt` như dự định ban đầu: nó
+   chỉ chính xác tới giây (hai lần lưu trong một giây trông như nhau) và đổi cả
+   khi chỉ meta thay đổi. `version` là tuỳ chọn ở phía server để script cũ còn
+   trong cache vẫn lưu được, chỉ là không được kiểm.
+8. ✅ Từ chối khi người khác đang mở chính nơi chứa đó trong block editor
+   (`wp_check_post_lock()` trên trang, template part hoặc pattern), trả 409
+   `flexa_inline_locked` kèm tên người đó và thời gian chờ ước tính ("khoảng
+   2–3 phút", tính từ `wp_check_post_lock_window`, mặc định 150 giây): khoá còn
+   hiệu lực ngần ấy sau lần gia hạn cuối, và editor còn mở thì Heartbeat cứ gia
+   hạn, nên thông báo nói "sau khi họ đóng editor" chứ không đếm ngược. Không tự
+   lấy khoá. Đã kiểm trên site bằng hai tài khoản: khoá của tài khoản khác trả
+   409, thông báo đúng tên người giữ khoá và khoảng chờ, chữ đang gõ vẫn còn
+   nguyên trong trường sửa.
+9. ✅ Gộp vào mục 7. So giá trị đang hiển thị với giá trị đang lưu không làm
+   được: render đã chạy kses, entity và markup của block lên giá trị, nên hai
+   bên khác nhau cả khi không có gì thay đổi, sẽ báo xung đột sai liên tục. Phiên
+   bản nội dung của mục 7 chính xác tới từng byte, nên bao luôn trường hợp hai
    tab cùng sửa một trường.
-10. ⬜ Toolbar xử lý 409: thông báo "trang đã thay đổi, tải lại để sửa tiếp", giữ
-    nguyên chữ người dùng vừa gõ để họ copy, không tự ghi đè.
+10. ✅ Khi lưu bị từ chối (409 hay bất kỳ lỗi nào), toolbar giữ nguyên chế độ sửa
+    và chữ người dùng vừa gõ, hiện thông báo của server (nội dung đã đổi: copy
+    chữ rồi tải lại trang; có người đang mở editor: thử lại sau).
+    Kiểm trên site (trang 2914): không gửi version vẫn lưu được; sửa trường thứ
+    hai bằng version lần trước trả về: lưu được; dùng lại version cũ, version
+    bịa, hoặc sau khi trang bị sửa qua REST: 409, không ghi gì.
 
 ## Giai đoạn 3 · Hỏi trước khi rời đi khi còn thay đổi chưa lưu
 
@@ -116,47 +135,155 @@ Những chỗ cần sửa, theo mức độ nghiêm trọng:
 lúc bắt đầu sửa (so sau khi chuẩn hoá khoảng trắng, để click vào rồi click ra
 không bị tính là đã sửa), hoặc một lần lưu đang chạy dở.
 
-11. ⬜ Theo dõi trạng thái `dirty` trong `inline-editor.ts`: hàm `isDirty()` so
+> **Đã nghiệm thu mục 11–15** (2026-11-19): chạy tay trên site thật (Chrome,
+> Firefox, mobile) và chạy tự động 14 kiểm tra trên Chromium, Firefox, WebKit
+> (chuyển trường, link, form, Escape, dấu `*`, link/Huỷ khi đang lưu). Lúc kiểm
+> sửa ba lỗi: bấm vào chữ đang sửa nằm trong thẻ link làm rời trang; bấm link
+> hay Escape khi đang lưu dở khôi phục chữ cũ dưới một request vẫn có thể thành
+> công (nay chờ request xong, `inflight`); chữ gõ sau dấu `*` của field bắt buộc
+> bị `currentValue()` bỏ mất (nay dấu `*` không sửa được, và `beforeinput` đưa
+> con trỏ ra sau nó vì Firefox nhốt con trỏ trong đó). Chưa kiểm Safari thật.
+
+11. ✅ Theo dõi trạng thái `dirty` trong `inline-editor.ts`: hàm `isDirty()` so
     `currentValue()` với giá trị gốc. Lưu thành công hoặc bấm Huỷ thì hết dirty.
-12. ⬜ **Bấm sang trường khác khi đang dirty**: không bỏ bản đang sửa nữa, mà hiện
+12. ✅ **Bấm sang trường khác khi đang dirty**: không bỏ bản đang sửa nữa, mà hiện
     hộp hỏi ngay trên toolbar với ba nút: **Lưu** (lưu rồi chuyển sang trường
     mới), **Bỏ thay đổi** (khôi phục rồi chuyển), **Tiếp tục sửa** (ở lại trường
     cũ). Không dùng `window.confirm()` vì nó chỉ có hai nút và không dịch được
     theo plugin. Lưu thất bại (ví dụ 409 ở giai đoạn 2) thì ở lại trường cũ, giữ
     nguyên chữ.
-13. ⬜ **Bấm link trong trang khi đang dirty** (menu, nút, link bất kỳ không phải
+13. ✅ **Bấm link trong trang khi đang dirty** (menu, nút, link bất kỳ không phải
     trường đang sửa): bắt sự kiện `click` ở pha capture trên `document`, chặn điều
     hướng, hiện cùng hộp hỏi ở mục 12. Chọn Lưu hoặc Bỏ thay đổi thì mới đi tới
     `href` đã chặn (giữ `target="_blank"` và phím Ctrl/Cmd như trình duyệt). Áp
     dụng cả cho `submit` của form trên trang.
-14. ⬜ **Reload, đóng tab, gõ địa chỉ mới, nút Back** khi đang dirty hoặc đang lưu:
+14. ✅ **Reload, đóng tab, gõ địa chỉ mới, nút Back** khi đang dirty hoặc đang lưu:
     gắn `beforeunload` (`event.preventDefault()` + `returnValue`). Trình duyệt chỉ
     cho hiện **hộp thoại mặc định của nó** ("Rời khỏi trang? Thay đổi có thể không
     được lưu"), không cho đổi chữ và không cho thêm nút Lưu; đây là giới hạn của
     trình duyệt, không làm khác được. Chỉ gắn listener khi dirty và gỡ ngay khi hết
     dirty, để không cản bfcache và không hỏi vô cớ.
-15. ⬜ Phím **Escape** khi đang dirty: hỏi "Bỏ thay đổi?" thay vì khôi phục ngay.
+15. ✅ Phím **Escape** khi đang dirty: hỏi "Bỏ thay đổi?" thay vì khôi phục ngay.
     Không dirty thì thoát ngay như hiện tại. Thêm chuỗi dịch mới vào `boot.i18n`
     (`Inline_Editor::enqueue()`), kiểm tra bằng tay trên Chrome, Firefox, Safari:
     bấm trường khác, bấm link menu, reload, đóng tab, Back, Escape.
+    Đạt trên Chrome, Firefox, mobile (tay) và Chromium/Firefox/WebKit (tự động):
+    dirty guard, chuyển trường với đủ ba lựa chọn, link, submit form, Escape,
+    lưu rồi reload, xung đột 409 giữ nguyên chữ và không có lỗi console ngoài
+    response 409 có chủ đích.
 
 ## Giai đoạn 4 · Lịch sử gọn và hoàn tác
 
-16. ⬜ **Gộp revision theo phiên sửa.** Các lần lưu của cùng một user trên cùng một
-    bài trong một khoảng ngắn (ví dụ 10 phút, cho qua filter) chỉ để lại một
-    revision: lần lưu đầu tạo revision như bình thường, các lần sau tắt tạo
-    revision (`wp_revisions_to_keep` / `wp_save_post_revision_check_for_changes`
-    theo request) và cập nhật revision của phiên. Mục tiêu: sửa 20 chỗ liền nhau
-    thì lịch sử có một mốc "trước khi sửa ngoài front-end".
-17. ⬜ **Ghi log ra khỏi comment.** Thay comment "note" của `log_edit()` bằng một
-    nơi lưu riêng (post meta có giới hạn số dòng, hoặc dùng chung cơ chế với
-    activity log của module MCP), hiển thị trong một panel ở block editor. Giữ
-    filter để site nào vẫn muốn comment thì bật lại. Có bước dọn các comment
-    "note" cũ (tuỳ chọn, không tự xoá).
-18. ⬜ **Hoàn tác ngay sau khi lưu.** Lưu xong toolbar hiện "Đã lưu · Hoàn tác"
-    trong vài giây. Hoàn tác gửi lại giá trị cũ của đúng trường đó (server trả về
-    `before` khi lưu), đi qua cùng các kiểm tra của giai đoạn 1–2, nên không hoàn
-    tác đè lên thay đổi của người khác.
+16. ✅ **Gộp revision theo phiên sửa.**
+    `Inline_Revision_Session` giữ phiên theo
+    đúng nơi lưu + user trong transient, cửa sổ trượt mặc định 10 phút và đổi được
+    qua `flexa_block_inline_revision_session_window`. Lần lưu đầu ép core tạo một
+    revision bất biến **trước khi sửa**, kể cả revision mới nhất đang giống nội
+    dung hiện tại; các lần lưu tiếp theo dùng lại mốc đó. Trong đúng lần gọi
+    `wp_update_post()` của inline editor, cả filter revision chung và theo post
+    type chỉ trả 0 cho đúng nơi đang lưu, rồi luôn được tháo trong `finally`, nên
+    Block Editor và bài khác không bị ảnh hưởng. Revision được gắn meta nguồn để
+    mục 17 có thể nhận diện; revisions bị tắt thì giữ nguyên hành vi core. Request
+    không đổi nội dung không tạo revision, không ghi log. Có 6 unit test cho mốc
+    đầu phiên, lưu lặp, tách user, hết hạn, revisions bị tắt và đường lưu lỗi;
+    toàn bộ 1.520 test / 4.327 assertion qua. Đã kiểm live: lần lưu đầu tăng đúng
+    một revision (nội dung trước khi sửa), nhiều lần lưu trong 10 phút không tăng
+    thêm, hết phiên tạo mốc mới, lưu từ Block Editor vẫn tạo revision bình thường,
+    bài khác và filter không bị ảnh hưởng. Lúc kiểm sửa một lỗi: meta nguồn bị
+    `add_post_meta()` chuyển sang bài cha thay vì gắn vào revision; nay dùng
+    `add_metadata()` (stub test cũng đã cập nhật). Đổi user và revisions bị tắt
+    mới có unit test, chưa chạy live.
+17. ✅ **Log sửa ngoài front-end, có tab riêng.** Thay comment "note" của
+    `log_edit()` (chỉ một dòng chữ, mỗi giá trị cắt còn 80 ký tự) bằng bản ghi
+    có cấu trúc, và thêm một panel/tab **Lịch sử sửa ngoài front-end** trong block
+    editor để xem lại. Mỗi bản ghi gồm:
+    - **Ai, lúc nào:** user ID, tên hiển thị lúc sửa (giữ lại cả khi tài khoản bị
+      xoá), thời điểm theo GMT.
+    - **Sửa gì, ở đâu:** tên và `blockId` của block, trường (`attr`, kèm
+      `index`/`subindex`/`key` nếu là repeater, object hay ô bảng), và nơi lưu
+      (trang, template part hay pattern, kèm `targetId`).
+    - **Trước và sau:** giá trị cũ và giá trị mới, giữ nguyên HTML đã qua allowlist.
+      Giá trị quá dài thì cắt ở một ngưỡng lớn (không phải 80 ký tự) và gắn cờ
+      "đã cắt". Dùng làm dữ liệu cho mục 18, nên không được rút gọn thành chuỗi
+      hiển thị.
+    - **Liên kết revision:** ID revision mốc của phiên (mục 16), để panel có nút
+      "Xem bản trước khi sửa" trỏ thẳng vào màn so sánh revision.
+
+    Nơi lưu: post meta của nơi chứa (trang, template part hoặc pattern) có giới
+    hạn số dòng, dòng cũ nhất bị bỏ trước; hoặc dùng chung cơ chế activity log của
+    module MCP nếu nó đã có sẵn các trường trên. Panel hiển thị theo thứ tự mới
+    nhất trước, lọc được theo người sửa và theo block, chỉ cho người có quyền sửa
+    nơi đó xem. Log của block trong template part hay pattern nằm ở chính nơi đó
+    chứ không chỉ ở trang đang xem, vì người mở pattern trong editor cần thấy ai đã
+    sửa nó. Giữ filter để site nào vẫn muốn comment thì bật lại, và có bước dọn các
+    comment "note" cũ (tuỳ chọn, không tự xoá).
+
+    **Đã làm:** `Inline_Edit_Log` (`includes/class-inline-edit-log.php`) ghi một
+    bản ghi mỗi lần lưu vào post meta `_flexa_block_inline_edit_log` của nơi chứa
+    (tối đa 200 dòng, đổi qua `flexa_block_inline_edit_log_limit`; giá trị giữ
+    nguyên đến 20.000 ký tự rồi cắt kèm cờ `truncated`, đổi qua
+    `flexa_block_inline_edit_log_value_limit`). Bản ghi có id, thời điểm GMT, user
+    ID và tên lúc sửa, block, `blockId`, `attr`/`index`/`subindex`/`key`, nơi lưu,
+    trang đang xem, giá trị trước/sau và ID revision mốc của phiên
+    (`Inline_Revision_Session::baseline_id()`). Route `GET
+    flexa-block/v1/inline-edit-log?postId=` chỉ cho người có `edit_post` trên bài
+    đó. Panel **Front-end edits** (`src/editor/inline-edit-log.tsx`, nạp cho mọi
+    bài sửa được): mới nhất trước, lọc theo người và theo block, "Show more",
+    liên kết "See the version from before" tới màn so sánh revision. Comment
+    "note" cũ nay tắt mặc định, bật lại bằng filter
+    `flexa_block_inline_edit_log_as_comment`. Có 8 unit test (1.528 test / 4.350
+    assertion qua). Kiểm trên site qua `handle_save()`: hai lần sửa tạo hai bản
+    ghi đúng trước/sau và cùng revision mốc, lưu không đổi không tạo bản ghi,
+    không tạo comment, meta không lộ qua REST, khách và subscriber bị từ chối.
+    **Tab Edit log trong admin (Flexa Block → Edit log):** xem nhanh mọi lần sửa
+    của cả site (ai, lúc nào, ở đâu, trước/sau, liên kết sửa/xem trang và bản
+    revision), lọc theo người và block, phân trang 20 dòng. Route `GET
+    flexa-block/v1/inline-edit-log/all` chỉ cho `manage_options`. **Tự xoá sau 30
+    ngày** (đổi bằng filter `flexa_block_inline_edit_log_retention_days`, 0 là không
+    hết hạn): dọn ngay khi ghi một bản ghi mới, và bằng cron hằng ngày
+    `flexa_block_inline_edit_log_sweep` (xoá cả log rỗng, tự gỡ lịch khi không còn
+    log nào, gỡ khi tắt plugin; gỡ plugin thì xoá hết meta). Kiểm trên site: route
+    trả 200 cho admin, 403 cho subscriber, 401 cho khách; lọc người/block và phân
+    trang đúng; bản ghi 45 ngày tuổi bị sweep xoá, bản mới còn; lịch cron gỡ khi
+    hết log. Tab này chưa xem trên trình duyệt. Sau lần xem đầu: giờ hiển thị theo
+    múi giờ và định dạng ngày của site (`time_display`, không theo trình duyệt);
+    Trước/Sau tách thành hai cột (cả bảng admin và panel trong editor); tiêu đề
+    trang giải mã `&#8211;`; tab Edit log và panel trong editor chỉ hiện khi sửa
+    ngoài front-end đang bật (Editing → master switch).
+    Cột Sau in đậm các từ mới thêm so với cột Trước (so sánh theo từ,
+    `src/shared/text-diff.tsx`, dùng ở cả tab admin và panel editor): từ thêm vào
+    in đậm trên nền xanh, từ bị bỏ ở cột Trước gạch ngang trên nền đỏ. Tab admin
+    dạng thẻ (mỗi lần sửa một thẻ: avatar, người, giờ, block · trường, trang, hai
+    khung Trước/Sau mỗi bên nửa chiều rộng, liên kết so sánh revision) thay cho
+    bảng; dưới 960px hai khung xếp dọc. Có ảnh đại diện (`get_avatar_url`, rơi về
+    chữ cái), nhãn vai trò tô màu theo role (vai trò lúc sửa, lưu trong bản ghi),
+    bộ lọc người/block dạng nút + menu, và ô tìm kiếm (server tìm không phân biệt
+    hoa thường trong chữ Trước/Sau không tính HTML, tên trang, người, block,
+    trường; chờ 400 ms sau khi gõ; chữ khớp tô vàng).
+
+    **Chưa làm / chưa kiểm:** panel chưa xem trong block editor thật; bước dọn
+    comment "note" cũ chưa có (comment cũ không có dấu nhận diện nên không tự xoá
+    được an toàn); chưa dùng chung activity log của MCP (chọn post meta).
+18. ✅ **Hoàn tác ngay sau khi lưu.** Lưu xong toolbar hiện "Đã lưu · Hoàn tác"
+    trong vài giây. Hoàn tác gửi lại giá trị cũ của đúng trường đó (lấy từ bản ghi
+    log ở mục 17, server trả về `before` khi lưu), đi qua cùng các kiểm tra của
+    giai đoạn 1–2, nên không hoàn tác đè lên thay đổi của người khác. Bản hoàn tác
+    cũng là một dòng log mới, không xoá dòng cũ.
+
+    **Đã làm:** lưu thành công trả thêm `before` (giá trị cũ) và `logId`. Toolbar
+    hiện "Saved · Undo" trong 10 giây (chỉ còn thông báo và nút Undo), hết giờ hoặc
+    bắt đầu sửa chỗ khác thì mất; chỉ hoàn tác được lần lưu gần nhất. Bấm Undo gửi
+    lại `before` kèm `version` hiện tại và `undoOf`: là một lần lưu bình thường nên
+    qua đủ kiểm tra quyền, khoá editor và phiên bản nội dung; nếu nội dung đã đổi
+    thì server từ chối (409) và không ghi gì, toolbar nói lý do. Ghi log thành bản
+    ghi `action: undo` trỏ tới bản ghi bị hoàn tác (nhãn "Undo" trong tab admin);
+    `undoOf` giả hoặc không có trong log thì chỉ coi là lần sửa thường. Trường
+    ghép từ nhiều phần tử (`join`) thì tải lại trang sau khi hoàn tác. Kiểm: 9 kiểm
+    tra giao diện trên Chromium/Firefox/WebKit (hiện nút, gửi đúng giá trị, khôi
+    phục chữ, hết hạn 10 giây, sửa chỗ khác thì mất nút, bị từ chối, không có log
+    thì không có nút); trên site thật: lưu rồi hoàn tác khôi phục đúng thuộc tính,
+    log có hai dòng đúng, sửa xen giữa bởi người khác thì hoàn tác bị từ chối và
+    không ghi đè. Đã thử trên trang thật (2026-11-19).
 
 ## Giai đoạn 5 · Sửa link
 
