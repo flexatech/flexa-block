@@ -17,6 +17,90 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { __, sprintf } from '@wordpress/i18n';
+import { Highlight } from '../shared/text-diff';
+
+/** One front-end edit made in this copy (from the edit log). */
+interface ChangeEntry {
+	id: string;
+	time: string;
+	time_display?: string;
+	user_name: string;
+	role_label?: string;
+	block: string;
+	attr: string;
+	kind?: string;
+	action?: string;
+	before: string;
+	after: string;
+}
+
+/**
+ * Plain text of a stored value.
+ *
+ * @param html Stored value.
+ */
+function plain( html: string ): string {
+	return (
+		new DOMParser().parseFromString( html, 'text/html' ).body.textContent || ''
+	).trim();
+}
+
+/**
+ * The changes made in this copy from the front end, oldest first, so a
+ * reviewer reads them in the order they were made and does not have to look
+ * for them on the page.
+ *
+ * @param props         Component props.
+ * @param props.logPath REST path of this copy's edit log.
+ */
+function ChangeList( { logPath }: { logPath: string } ): JSX.Element | null {
+	const [ entries, setEntries ] = useState< ChangeEntry[] | null >( null );
+
+	useEffect( () => {
+		( apiFetch as ( o: { path: string } ) => Promise< { entries: ChangeEntry[] } > )( {
+			path: logPath,
+		} )
+			.then( ( res ) => setEntries( ( res.entries || [] ).slice().reverse() ) )
+			.catch( () => setEntries( [] ) );
+	}, [ logPath ] );
+
+	if ( ! entries || ! entries.length ) {
+		return null;
+	}
+
+	return (
+		<div style={ { margin: '12px 0' } }>
+			<p style={ { fontWeight: 600, margin: '0 0 6px' } }>
+				{ sprintf(
+					/* translators: %d: number of changes */
+					__( 'Changes to review (%d)', 'flexa-block' ),
+					entries.length
+				) }
+			</p>
+			<ol style={ { margin: 0, paddingLeft: 18, maxHeight: 360, overflowY: 'auto' } }>
+				{ entries.map( ( e ) => (
+					<li key={ e.id } style={ { margin: '0 0 10px', fontSize: 12 } }>
+						<div style={ { color: '#757575' } }>
+							{ e.block } · { e.attr }
+							{ e.action === 'undo' ? ` · ${ __( 'Undo', 'flexa-block' ) }` : '' }
+							{ ' · ' }
+							{ e.user_name }
+							{ e.role_label ? ` (${ e.role_label })` : '' }
+							{ ' · ' }
+							{ e.time_display || e.time }
+						</div>
+						<div style={ { background: '#fff5f5', padding: '2px 6px', borderRadius: 4, margin: '2px 0' } }>
+							<Highlight before={ plain( e.before ) } after={ plain( e.after ) } side="before" />
+						</div>
+						<div style={ { background: '#f1faf3', padding: '2px 6px', borderRadius: 4 } }>
+							<Highlight before={ plain( e.before ) } after={ plain( e.after ) } side="after" />
+						</div>
+					</li>
+				) ) }
+			</ol>
+		</div>
+	);
+}
 
 interface WorkingCopyData {
 	copyId: number;
@@ -30,6 +114,10 @@ interface WorkingCopyData {
 	conflicted: boolean;
 	canApply: boolean;
 	path: string;
+	// Front-end review copies: why this person may not apply it, and the log.
+	blockedReason?: string;
+	isReview?: boolean;
+	logPath?: string;
 }
 
 interface ApplyResult {
@@ -165,6 +253,8 @@ function WorkingCopyPanel(): JSX.Element | null {
 				</a>
 			</p>
 
+			{ data.logPath && <ChangeList logPath={ data.logPath } /> }
+
 			{ conflicted && (
 				<Notice status="warning" isDismissible={ false }>
 					{ __(
@@ -201,10 +291,11 @@ function WorkingCopyPanel(): JSX.Element | null {
 				</Button>
 			) : (
 				<p>
-					{ __(
-						'Someone who can publish the original page has to apply this copy.',
-						'flexa-block'
-					) }
+					{ data.blockedReason ||
+						__(
+							'Someone who can publish the original page has to apply this copy.',
+							'flexa-block'
+						) }
 				</p>
 			) }
 

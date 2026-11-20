@@ -67,6 +67,8 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-form-handler.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-link-url.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-image-source.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-icon-source.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-review.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-block-patcher.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-revision-session.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-edit-log.php';
@@ -92,6 +94,7 @@ function flexa_block_init() {
 	Flexa\Block\Post_Filter_REST::init();
 	Flexa\Block\Inline_Editor::init();
 	Flexa\Block\Inline_Edit_Log::init();
+	Flexa\Block\Inline_Review::init();
 	Flexa\Block\Item_Style_Migration::init(); // TODO(remove in vNEXT): item-style migration.
 	Flexa\Block\Uploads::init();
 	Flexa\Block\Rss_Feed::init();

@@ -1,0 +1,8 @@
+[
+	{ "name": "arrow-right", "paths": [ "M5 12h13M13 6l6 6-6 6" ] },
+	{ "name": "arrow-left", "paths": [ "M19 12H6M11 6l-6 6 6 6" ] },
+	{ "name": "chevron-right", "paths": [ "M9 6l6 6-6 6" ] },
+	{ "name": "external", "paths": [ "M15 4h5v5", "M20 4l-8 8", "M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" ] },
+	{ "name": "download", "paths": [ "M12 4v11m0 0l-4-4m4 4l4-4", "M5 19h14" ] },
+	{ "name": "check", "paths": [ "M5 12l4 4L19 6" ] }
+]

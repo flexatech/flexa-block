@@ -55,12 +55,27 @@ interface ImageDef {
 	host?: string;
 }
 
+// An icon a block keeps: the attribute and the element to click. With `wrap`
+// the element only holds the icon (its contents are replaced); without it the
+// element is the icon itself. An icon in a list item has `repeat` + `key`.
+interface IconDef {
+	attr: string;
+	selector: string;
+	wrap?: boolean;
+	repeat?: boolean;
+	key?: string;
+}
+
 interface Boot {
 	postId: number;
 	nonce: string;
 	endpoint: string;
 	fields: Record< string, FieldDef[] >;
 	images?: Record< string, ImageDef[] >;
+	icons?: Record< string, IconDef[] >;
+	// Review: edits to this published page go to a copy (editLink once one exists).
+	review?: { on: boolean; editLink: string; blocks?: string[] };
+	iconsUrl?: string;
 	// Whether the person may choose from the media library (and so whether the
 	// library was loaded on this page).
 	canPick?: boolean;
@@ -76,6 +91,15 @@ interface Boot {
 		// The image editor.
 		imageEdit?: string;
 		imageBg?: string;
+		iconEdit?: string;
+		reviewNote?: string;
+		reviewSaved?: string;
+		reviewPending?: string;
+		reviewOpen?: string;
+		reviewBadge?: string;
+		iconLoadError?: string;
+		iconNone?: string;
+		iconUpload?: string;
 		imageBefore?: string;
 		imageAfter?: string;
 		imageNoWp?: string;
@@ -169,6 +193,7 @@ let undoBtn: HTMLButtonElement | null = null;
 let linkBtn: HTMLButtonElement | null = null;
 let linkDialog: HTMLElement | null = null;
 let imageDialog: HTMLElement | null = null;
+let iconDialog: HTMLElement | null = null;
 let undoing = false;
 
 const UNDO_WINDOW_MS = 10000;
@@ -537,7 +562,10 @@ function startEdit(
 	// Text stored in a template part or synced pattern is shared: say so before
 	// the person types, not after they have saved a change to every page.
 	const scope = root.getAttribute( 'data-flexa-edit-scope' ) || '';
-	setMessage( ( scope && boot?.i18n.scope?.[ scope ] ) || '' );
+	setMessage(
+		( scope && boot?.i18n.scope?.[ scope ] ) ||
+			( ! scope && boot?.review?.on ? boot.i18n.reviewNote || '' : '' )
+	);
 	toggleToolbar( true );
 	updateLinkButton();
 	el.focus();
@@ -591,6 +619,8 @@ interface EditResult {
 	after?: string;
 	// False when the change cannot be undone (an image that was not from the library).
 	undo?: boolean;
+	// Set when the edit went to a review copy.
+	review?: { copyId: number; editLink: string; created: boolean };
 }
 
 /**
@@ -626,6 +656,18 @@ async function postEdit(
 	}
 
 	const result = ( await resp.json().catch( () => ( {} ) ) ) as EditResult;
+	if ( result.review?.editLink ) {
+		showReviewLink( result.review.editLink );
+		const id = payload.blockId;
+		if ( typeof id === 'string' && boot.review ) {
+			const blocks = boot.review.blocks || [];
+			if ( ! blocks.includes( id ) ) {
+				blocks.push( id );
+			}
+			boot.review.blocks = blocks;
+			paintPending();
+		}
+	}
 	if ( result.version ) {
 		const next = result.version;
 		rootsInStore( targetId ).forEach( ( r ) =>
@@ -821,7 +863,10 @@ async function doSave(): Promise< boolean > {
 				  }
 				: null;
 
-		setMessage( boot.i18n.saved, 'success' );
+		setMessage(
+			result.review ? boot.i18n.reviewSaved || boot.i18n.saved : boot.i18n.saved,
+			'success'
+		);
 		endEdit( false );
 		if ( undo ) {
 			offerUndo( undo );
@@ -1639,6 +1684,515 @@ function openImageDialog( ctx: ImageCtx ): void {
 	altInput.select();
 }
 
+interface IconChoice {
+	source: string;
+	name: string;
+	id: number | null;
+}
+
+interface CatalogEntry {
+	name: string;
+	markup: string;
+}
+
+// The picker's icons, fetched once on the first click and kept for the page.
+let iconCatalog: Promise< Record< string, CatalogEntry[] > > | null = null;
+
+/**
+ * The icon catalog from the server (the only icons a save accepts).
+ */
+function loadIconCatalog(): Promise< Record< string, CatalogEntry[] > > {
+	if ( ! iconCatalog && boot?.iconsUrl ) {
+		iconCatalog = fetch( boot.iconsUrl, {
+			headers: { 'X-WP-Nonce': boot.nonce },
+			credentials: 'same-origin',
+		} ).then( ( resp ) => {
+			if ( ! resp.ok ) {
+				throw new Error( `HTTP ${ resp.status }` );
+			}
+			return resp.json() as Promise< Record< string, CatalogEntry[] > >;
+		} );
+		// A failed load may be tried again on the next click.
+		iconCatalog.catch( () => {
+			iconCatalog = null;
+		} );
+	}
+	return iconCatalog || Promise.reject( new Error( '' ) );
+}
+
+/**
+ * Make a block's icons editable.
+ *
+ * One listener on the block root, in the capture phase, so the icon inside a
+ * link or a button opens the editor instead of following or pressing it. The
+ * target is matched by selector on every click rather than bound per element,
+ * because saving an icon replaces its element.
+ *
+ * @param root Block root.
+ * @param name Block name.
+ * @param def  Icon declaration from the registry.
+ */
+function bindIcon( root: HTMLElement, name: string, def: IconDef ): void {
+	root.querySelectorAll< HTMLElement >( def.selector ).forEach( ( el ) => {
+		if ( el.closest( '[data-flexa-edit-id]' ) === root ) {
+			el.classList.add( 'flexa-fee-icon-hit' );
+			if ( ! el.getAttribute( 'title' ) ) {
+				el.setAttribute( 'title', boot?.i18n.iconEdit || '' );
+			}
+		}
+	} );
+
+	root.addEventListener(
+		'click',
+		( e ) => {
+			const target = e.target instanceof Element ? e.target : null;
+			const el = target?.closest< HTMLElement >( def.selector );
+			if ( ! el || ! root.contains( el ) || el.closest( '[data-flexa-edit-id]' ) !== root ) {
+				return;
+			}
+			let index: number | undefined;
+			if ( def.repeat ) {
+				const item = el.closest< HTMLElement >( '[data-flexa-item]' );
+				index = item
+					? parseInt( item.getAttribute( 'data-flexa-item' ) || '', 10 )
+					: NaN;
+				if ( Number.isNaN( index ) ) {
+					return;
+				}
+			}
+			e.preventDefault();
+			e.stopPropagation();
+			void startIconEdit( root, name, def, el, index );
+		},
+		true
+	);
+}
+
+/**
+ * Open the icon editor, after settling any text that has unsaved changes.
+ *
+ * @param root  Block root.
+ * @param name  Block name.
+ * @param def   Icon declaration.
+ * @param el    The clicked icon (or its holder).
+ * @param index List item index, for an icon in a list.
+ */
+async function startIconEdit(
+	root: HTMLElement,
+	name: string,
+	def: IconDef,
+	el: HTMLElement,
+	index?: number
+): Promise< void > {
+	if ( ! boot || undoing ) {
+		return;
+	}
+	if ( active ) {
+		if ( isDirty() && ! ( await settle( boot.i18n.unsaved || '' ) ) ) {
+			return;
+		}
+		if ( active ) {
+			endEdit( true );
+		}
+	}
+	openIconDialog( root, name, def, el, index );
+}
+
+/**
+ * Build the element for an icon as the server described it.
+ *
+ * @param after The stored state: catalog markup, or an upload's address.
+ */
+function iconNode( after: { source?: string; markup?: string; url?: string } ): Node | null {
+	if ( after.source === 'upload' && after.url ) {
+		const img = document.createElement( 'img' );
+		img.className = 'flexa-icon';
+		img.src = after.url;
+		img.alt = '';
+		img.width = 24;
+		img.height = 24;
+		return img;
+	}
+	if ( after.markup ) {
+		const tpl = document.createElement( 'template' );
+		tpl.innerHTML = after.markup.trim();
+		return tpl.content.firstElementChild;
+	}
+	return null;
+}
+
+/**
+ * The icon dialog, and what Apply does.
+ *
+ * @param root  Block root.
+ * @param name  Block name.
+ * @param def   Icon declaration.
+ * @param el    The clicked icon (or its holder).
+ * @param index List item index, for an icon in a list.
+ */
+function openIconDialog(
+	root: HTMLElement,
+	name: string,
+	def: IconDef,
+	el: HTMLElement,
+	index?: number
+): void {
+	const dialog = iconDialog;
+	if ( ! dialog || ! boot ) {
+		return;
+	}
+	const form = dialog.querySelector< HTMLFormElement >( 'form' );
+	const grid = dialog.querySelector< HTMLElement >( '.flexa-fee-icondialog__grid' );
+	const search = dialog.querySelector< HTMLInputElement >( '.flexa-fee-icondialog__search' );
+	const current = dialog.querySelector< HTMLElement >( '.flexa-fee-icondialog__current' );
+	const error = dialog.querySelector< HTMLElement >( '.flexa-fee-linkdialog__error' );
+	const apply = dialog.querySelector< HTMLButtonElement >( '[data-icon="apply"]' );
+	const upload = dialog.querySelector< HTMLButtonElement >( '[data-icon="upload"]' );
+	if ( ! form || ! grid || ! search || ! current || ! error || ! apply || ! upload ) {
+		return;
+	}
+
+	let tab = 'builtin';
+	let choice: IconChoice | null = null;
+	let picking = false;
+	let catalog: Record< string, CatalogEntry[] > = {};
+
+	const blockId = root.getAttribute( 'data-flexa-edit-id' ) || '';
+	const targetId =
+		parseInt( root.getAttribute( 'data-flexa-edit-target' ) || '0', 10 ) || 0;
+
+	search.value = '';
+	error.hidden = true;
+	error.textContent = '';
+	apply.disabled = false;
+	upload.hidden = ! boot.canPick;
+	// What the page shows now, as the "current" preview.
+	current.innerHTML = '';
+	const shown = def.wrap ? el.firstElementChild : el;
+	if ( shown ) {
+		current.appendChild( shown.cloneNode( true ) );
+	}
+
+	const fail = ( message: string ) => {
+		error.textContent = message;
+		error.hidden = false;
+		apply.disabled = false;
+	};
+
+	const preview = ( node: Node | null ) => {
+		current.innerHTML = '';
+		if ( node ) {
+			current.appendChild( node );
+		}
+	};
+
+	const render = () => {
+		const q = search.value.trim().toLowerCase();
+		const list = ( catalog[ tab ] || [] ).filter(
+			( icon ) =>
+				! q ||
+				icon.name.toLowerCase().replace( /^wp-/, '' ).includes( q.replace( /\s+/g, '' ) )
+		);
+		grid.innerHTML = '';
+		if ( ! list.length ) {
+			const empty = document.createElement( 'p' );
+			empty.className = 'flexa-fee-icondialog__empty';
+			empty.textContent = boot?.i18n.iconNone || '';
+			grid.appendChild( empty );
+			return;
+		}
+		list.forEach( ( icon ) => {
+			const btn = document.createElement( 'button' );
+			btn.type = 'button';
+			btn.className = 'flexa-fee-icondialog__item';
+			btn.title = icon.name.replace( /^wp-/, '' );
+			btn.setAttribute( 'role', 'option' );
+			btn.setAttribute( 'data-icon-name', icon.name );
+			btn.innerHTML = icon.markup;
+			if ( choice && choice.source === tab && choice.name === icon.name ) {
+				btn.classList.add( 'is-selected' );
+				btn.setAttribute( 'aria-selected', 'true' );
+			}
+			grid.appendChild( btn );
+		} );
+	};
+
+	const setTab = ( next: string ) => {
+		tab = next;
+		dialog.querySelectorAll< HTMLElement >( '[data-icon-tab]' ).forEach( ( t ) => {
+			const on = t.getAttribute( 'data-icon-tab' ) === tab;
+			t.classList.toggle( 'is-active', on );
+			t.setAttribute( 'aria-selected', on ? 'true' : 'false' );
+		} );
+		render();
+	};
+
+	grid.innerHTML = '<span class="flexa-fee-icondialog__loading"></span>';
+	loadIconCatalog()
+		.then( ( data ) => {
+			catalog = data;
+			setTab( 'builtin' );
+		} )
+		.catch( () => {
+			grid.innerHTML = '';
+			fail( boot?.i18n.iconLoadError || '' );
+		} );
+
+	const close = () => {
+		dialog.setAttribute( 'hidden', '' );
+		document.body.classList.remove( 'flexa-fee-modal-open' );
+		form.removeEventListener( 'submit', onSubmit );
+		dialog.removeEventListener( 'click', onClick );
+		search.removeEventListener( 'input', render );
+		document.removeEventListener( 'keydown', onKey, true );
+	};
+
+	const chooseFile = () => {
+		const media = (
+			window as unknown as {
+				wp?: { media?: ( o: Record< string, unknown > ) => MediaFrame };
+			}
+		 ).wp?.media;
+		if ( ! media ) {
+			fail( boot?.i18n.imageNoWp || '' );
+			return;
+		}
+		const frame = media( {
+			title: boot?.i18n.iconUpload || '',
+			button: { text: boot?.i18n.imageUse || '' },
+			library: { type: 'image' },
+			multiple: false,
+		} );
+		picking = true;
+		frame.on( 'select', () => {
+			const att = frame.state().get( 'selection' ).first().toJSON();
+			choice = { source: 'upload', name: '', id: att.id };
+			preview( iconNode( { source: 'upload', url: att.url } ) );
+			render();
+			error.hidden = true;
+		} );
+		frame.on( 'close', () => {
+			window.setTimeout( () => {
+				picking = false;
+			}, 0 );
+		} );
+		frame.open();
+	};
+
+	const onSubmit = ( e: Event ) => {
+		e.preventDefault();
+		if ( ! choice ) {
+			close();
+			return;
+		}
+		apply.disabled = true;
+		error.hidden = true;
+
+		const payload: Record< string, unknown > = {
+			postId: boot?.postId,
+			blockId,
+			blockName: name,
+			attr: def.attr,
+			icon: true,
+			value: JSON.stringify( choice ),
+		};
+		if ( def.repeat ) {
+			payload.index = index;
+			payload.key = def.key;
+		}
+		if ( targetId > 0 ) {
+			payload.targetId = targetId;
+		}
+		const version = root.getAttribute( 'data-flexa-edit-version' ) || '';
+		if ( version ) {
+			payload.version = version;
+		}
+
+		// How to put the page back on Undo: the holder's contents, or the element
+		// itself (which a save replaces, so the current one is tracked).
+		const previousInner = el.innerHTML;
+		const previousEl = el;
+		let shownEl: Element = el;
+		const restore = () => {
+			if ( def.wrap ) {
+				el.innerHTML = previousInner;
+			} else if ( shownEl !== previousEl ) {
+				shownEl.replaceWith( previousEl );
+				shownEl = previousEl;
+			}
+			previousEl.hidden = false;
+		};
+
+		postEdit( payload, targetId )
+			.then( ( result ) => {
+				close();
+				try {
+					const after = JSON.parse( result.after || '{}' ) as {
+						source?: string;
+						markup?: string;
+						url?: string;
+					};
+					const node = iconNode( after );
+					if ( def.wrap ) {
+						el.innerHTML = '';
+						if ( node ) {
+							el.appendChild( node );
+						}
+					} else if ( node instanceof Element ) {
+						node.classList.add( 'flexa-fee-icon-hit' );
+						el.replaceWith( node );
+						shownEl = node;
+					} else {
+						// No icon any more: keep the element (Undo needs it) but hide it.
+						el.hidden = true;
+					}
+				} catch ( _e ) {
+					// The save succeeded; the page catches up on reload.
+				}
+				setMessage( boot?.i18n.saved || '', 'success' );
+
+				if ( result.logId && typeof result.before === 'string' && result.undo !== false ) {
+					offerUndo( {
+						payload: {
+							postId: payload.postId,
+							blockId,
+							blockName: name,
+							attr: def.attr,
+							icon: true,
+							...( def.repeat && { index, key: def.key } ),
+							...( targetId > 0 && { targetId } ),
+						},
+						before: result.before,
+						logId: result.logId,
+						el,
+						root,
+						originalHTML: '',
+						targetId,
+						timer: 0,
+						restore,
+					} );
+				}
+			} )
+			.catch( ( err: unknown ) => {
+				fail( err instanceof Error && err.message ? err.message : boot?.i18n.error || '' );
+			} );
+	};
+
+	const onClick = ( e: Event ) => {
+		const target = e.target as HTMLElement;
+		const item = target.closest< HTMLElement >( '.flexa-fee-icondialog__item' );
+		if ( item ) {
+			choice = { source: tab, name: item.getAttribute( 'data-icon-name' ) || '', id: null };
+			preview( item.firstElementChild ? item.firstElementChild.cloneNode( true ) : null );
+			render();
+			return;
+		}
+		const tabBtn = target.closest< HTMLElement >( '[data-icon-tab]' );
+		if ( tabBtn ) {
+			setTab( tabBtn.getAttribute( 'data-icon-tab' ) || 'builtin' );
+			return;
+		}
+		if ( target.closest( '[data-icon="upload"]' ) ) {
+			chooseFile();
+			return;
+		}
+		if ( target.closest( '[data-icon="none"]' ) ) {
+			choice = { source: 'none', name: '', id: null };
+			preview( null );
+			render();
+			return;
+		}
+		if ( target === dialog || target.closest( '[data-icon="cancel"]' ) ) {
+			close();
+		}
+	};
+
+	const onKey = ( e: KeyboardEvent ) => {
+		if ( picking ) {
+			return;
+		}
+		if ( e.key === 'Escape' ) {
+			e.preventDefault();
+			e.stopPropagation();
+			close();
+		}
+	};
+
+	form.addEventListener( 'submit', onSubmit );
+	dialog.addEventListener( 'click', onClick );
+	search.addEventListener( 'input', render );
+	document.addEventListener( 'keydown', onKey, true );
+	dialog.removeAttribute( 'hidden' );
+	document.body.classList.add( 'flexa-fee-modal-open' );
+	search.focus();
+}
+
+/**
+ * Show the link to the review copy in the toolbar.
+ *
+ * @param href The copy's edit link.
+ */
+function showReviewLink( href: string ): void {
+	if ( boot?.review ) {
+		boot.review.editLink = href;
+	}
+	const link = toolbar?.querySelector< HTMLAnchorElement >( '.flexa-fee-toolbar__review' );
+	if ( link && href ) {
+		link.href = href;
+		link.hidden = false;
+	}
+}
+
+/**
+ * Mark the blocks changed in the review copy, and say how many there are.
+ *
+ * The page shows the copy to the person editing it, so without this nothing
+ * would tell them which parts are not live yet. A small bar in the corner
+ * stays up while there are changes waiting, with the way to the copy.
+ */
+function paintPending(): void {
+	const review = boot?.review;
+	const blocks = review?.blocks || [];
+	if ( ! review?.on || ! blocks.length ) {
+		return;
+	}
+	const badge = boot?.i18n.reviewBadge || '';
+	document
+		.querySelectorAll< HTMLElement >( '[data-flexa-edit-id]' )
+		.forEach( ( root ) => {
+			if ( blocks.includes( root.getAttribute( 'data-flexa-edit-id' ) || '' ) ) {
+				root.classList.add( 'flexa-fee-pending' );
+				root.setAttribute( 'data-flexa-pending-label', badge );
+				// The label is placed against the block; give it a frame only where
+				// the block has none, so a block's own positioning is never changed.
+				if ( getComputedStyle( root ).position === 'static' ) {
+					root.classList.add( 'flexa-fee-pending-host' );
+				}
+			}
+		} );
+
+	let bar = document.querySelector< HTMLElement >( '.flexa-fee-pendingbar' );
+	if ( ! bar ) {
+		bar = document.createElement( 'div' );
+		bar.className = 'flexa-fee-pendingbar';
+		bar.setAttribute( 'role', 'status' );
+		document.body.appendChild( bar );
+	}
+	bar.textContent = ( boot?.i18n.reviewPending || '%d' ).replace(
+		'%d',
+		String( blocks.length )
+	);
+	if ( review.editLink ) {
+		const link = document.createElement( 'a' );
+		link.href = review.editLink;
+		link.target = '_blank';
+		link.rel = 'noopener';
+		link.textContent = boot?.i18n.reviewOpen || '';
+		bar.appendChild( document.createTextNode( ' · ' ) );
+		bar.appendChild( link );
+	}
+}
+
 /**
  * Wire the toolbar buttons once.
  */
@@ -1671,9 +2225,10 @@ function initToolbar(): void {
 		void startLinkEdit();
 	} );
 	linkDialog = document.querySelector(
-		'.flexa-fee-linkdialog:not(.flexa-fee-imagedialog)'
+		'.flexa-fee-linkdialog:not(.flexa-fee-imagedialog):not(.flexa-fee-icondialog)'
 	);
 	imageDialog = document.querySelector( '.flexa-fee-imagedialog' );
+	iconDialog = document.querySelector( '.flexa-fee-icondialog' );
 	undoBtn = toolbar.querySelector( '.flexa-fee-toolbar__inner > .flexa-fee-btn--undo' );
 	undoBtn?.addEventListener( 'click', () => {
 		void runUndo();
@@ -1752,6 +2307,10 @@ function init(): void {
 	}
 
 	initToolbar();
+	if ( boot.review?.editLink ) {
+		showReviewLink( boot.review.editLink );
+	}
+	paintPending();
 
 	const roots = document.querySelectorAll< HTMLElement >(
 		'[data-flexa-edit-id]'
@@ -1765,6 +2324,10 @@ function init(): void {
 		const images = boot.images?.[ name ];
 		if ( images ) {
 			images.forEach( ( def ) => bindImage( root, name, def ) );
+		}
+		const icons = boot.icons?.[ name ];
+		if ( icons ) {
+			icons.forEach( ( def ) => bindIcon( root, name, def ) );
 		}
 	} );
 

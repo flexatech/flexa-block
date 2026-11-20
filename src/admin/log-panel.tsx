@@ -27,6 +27,13 @@ interface Entry {
 	role_slug?: string;
 	/** "undo" when this entry reversed an earlier one. */
 	action?: string;
+	/** True while the edit sits in a review copy that has not been applied. */
+	pending?: boolean;
+	/** The decision about a reviewed edit, and who made it when. */
+	review?: 'approved' | 'discarded';
+	reviewed_name?: string;
+	reviewed_role?: string;
+	reviewed_time?: string;
 	user_name: string;
 	block: string;
 	attr: string;
@@ -49,6 +56,7 @@ interface Result {
 	users: string[];
 	blocks: string[];
 	retentionDays: number;
+	pendingCount?: number;
 }
 
 interface Props {
@@ -181,7 +189,7 @@ function roleColors( slug: string, label: string ): [ string, string ] {
  * @param slug  Role slug.
  * @param label Role label.
  */
-function roleStyle( slug: string, label: string ): any {
+export function roleStyle( slug: string, label: string ): any {
 	const [ fg, bg ] = roleColors( slug, label );
 	return { '--role-fg': fg, '--role-bg': bg };
 }
@@ -208,7 +216,7 @@ function avatarColor( name: string ): string {
  * @param root0.name Display name.
  * @param root0.src  Avatar URL, may be empty.
  */
-function Avatar( { name, src }: { name: string; src?: string } ) {
+export function Avatar( { name, src }: { name: string; src?: string } ) {
 	const [ broken, setBroken ] = useState( false );
 	if ( src && ! broken ) {
 		return (
@@ -290,6 +298,7 @@ export function LogPanel( { url, days }: Props ): JSX.Element {
 	const [ page, setPage ] = useState( 1 );
 	const [ user, setUser ] = useState( '' );
 	const [ block, setBlock ] = useState( '' );
+	const [ pending, setPending ] = useState( false );
 	// What is typed, and what has been searched for: the second follows the
 	// first after a short pause, so each keystroke is not a request.
 	const [ typed, setTyped ] = useState( '' );
@@ -313,6 +322,10 @@ export function LogPanel( { url, days }: Props ): JSX.Element {
 			block,
 			search: term,
 		} );
+		// Sent only when on: an empty value is not a boolean, and the route says so.
+		if ( pending ) {
+			query.set( 'pending', '1' );
+		}
 		( apiFetch as ( o: { url: string } ) => Promise< Result > )( {
 			url: `${ url }${ url.includes( '?' ) ? '&' : '?' }${ query }`,
 		} )
@@ -321,7 +334,7 @@ export function LogPanel( { url, days }: Props ): JSX.Element {
 				setError( e?.message || __( 'Could not load the log.', 'flexa-block' ) )
 			)
 			.finally( () => setLoading( false ) );
-	}, [ url, page, user, block, term ] );
+	}, [ url, page, user, block, term, pending ] );
 
 	useEffect( load, [ load ] );
 
@@ -401,6 +414,21 @@ export function LogPanel( { url, days }: Props ): JSX.Element {
 						} }
 					/>
 				</div>
+				<button
+					type="button"
+					className={ `flexa-log__pill${ pending ? ' is-active' : '' }` }
+					aria-pressed={ pending }
+					onClick={ () => {
+						setPending( ! pending );
+						setPage( 1 );
+					} }
+				>
+					<span className="dashicons dashicons-clock" aria-hidden="true" />
+					<strong className="flexa-log__pill-value">
+						{ __( 'Waiting for review', 'flexa-block' ) }
+						{ data?.pendingCount ? ` (${ data.pendingCount })` : '' }
+					</strong>
+				</button>
 				<div className="flexa-log__summary">
 					{ data && (
 						<span className="flexa-log__count">
@@ -467,6 +495,12 @@ export function LogPanel( { url, days }: Props ): JSX.Element {
 										{ e.time_display || e.time }
 									</span>
 								</div>
+								{ e.pending && (
+									<span className="flexa-log__undo flexa-log__pending">
+										<span className="dashicons dashicons-clock" aria-hidden="true" />
+										{ __( 'Waiting for review', 'flexa-block' ) }
+									</span>
+								) }
 								{ e.action === 'undo' && (
 									<span className="flexa-log__undo">
 										<span className="dashicons dashicons-undo" aria-hidden="true" />
@@ -509,6 +543,22 @@ export function LogPanel( { url, days }: Props ): JSX.Element {
 								<Pane side="after" entry={ e } query={ term } />
 							</div>
 
+							{ e.review && (
+								<div className={ `flexa-log__decision is-${ e.review }` }>
+									<span
+										className={ `dashicons dashicons-${ e.review === 'approved' ? 'yes-alt' : 'dismiss' }` }
+										aria-hidden="true"
+									/>
+									{ sprintf(
+										/* translators: 1: person's name (and role), 2: date and time */
+										e.review === 'approved'
+											? __( 'Approved by %1$s · %2$s', 'flexa-block' )
+											: __( 'Discarded by %1$s · %2$s', 'flexa-block' ),
+										e.reviewed_role ? `${ e.reviewed_name } (${ e.reviewed_role })` : e.reviewed_name || '',
+										e.reviewed_time || ''
+									) }
+								</div>
+							) }
 							{ ( e.revisionUrl || e.truncated ) && (
 								<footer className="flexa-log__foot">
 									{ e.revisionUrl && (

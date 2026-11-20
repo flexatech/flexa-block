@@ -478,6 +478,207 @@ body:not(.admin-bar) .flexa-fee-toolbar {
 	right: 12px;
 }
 
+/* Icon editor. */
+.flexa-fee-icon-hit {
+	cursor: pointer;
+}
+
+.flexa-fee-icon-hit:hover {
+	outline: 2px dashed #3858e9;
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+.flexa-fee-icondialog .flexa-fee-toolbar__prompt-dialog {
+	width: min(560px, 100%);
+}
+
+.flexa-fee-icondialog__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.flexa-fee-icondialog__current {
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	background: #f6f7f7;
+	color: #1d2327;
+	font-size: 24px;
+}
+
+.flexa-fee-icondialog__current svg,
+.flexa-fee-icondialog__current img {
+	width: 24px;
+	height: 24px;
+}
+
+.flexa-fee-icondialog__search {
+	margin: 12px 0 10px;
+}
+
+.flexa-fee-icondialog__tabs {
+	display: flex;
+	gap: 4px;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.flexa-fee-icondialog__tabs button {
+	margin: 0 0 -1px;
+	padding: 8px 12px;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	background: none;
+	color: #50575e;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.flexa-fee-icondialog__tabs button.is-active {
+	border-bottom-color: #3858e9;
+	color: #1d2327;
+}
+
+.flexa-fee-icondialog__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+	gap: 6px;
+	max-height: 240px;
+	overflow-y: auto;
+	margin: 10px 0;
+	padding: 2px;
+}
+
+.flexa-fee-icondialog__item {
+	display: grid;
+	place-items: center;
+	height: 44px;
+	padding: 0;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	background: #fff;
+	color: #1d2327;
+	font-size: 22px;
+	cursor: pointer;
+}
+
+.flexa-fee-icondialog__item svg {
+	width: 22px;
+	height: 22px;
+}
+
+.flexa-fee-icondialog__item:hover {
+	border-color: #3858e9;
+}
+
+.flexa-fee-icondialog__item.is-selected {
+	border-color: #3858e9;
+	background: #eef2fe;
+	box-shadow: 0 0 0 1px #3858e9;
+}
+
+.flexa-fee-icondialog__empty {
+	grid-column: 1 / -1;
+	margin: 12px 0;
+	color: #646970;
+	font-size: 13px;
+	text-align: center;
+}
+
+.flexa-fee-icondialog__loading {
+	grid-column: 1 / -1;
+	justify-self: center;
+	width: 22px;
+	height: 22px;
+	margin: 20px;
+	border: 2px solid #dcdcde;
+	border-top-color: #3858e9;
+	border-radius: 50%;
+	animation: flexa-fee-spin 0.8s linear infinite;
+}
+
+@keyframes flexa-fee-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.flexa-fee-icondialog__more {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.flexa-fee-icondialog [hidden] {
+	display: none;
+}
+
+.flexa-fee-toolbar__review {
+	margin-left: 8px;
+	color: #93c5fd;
+	font-size: 13px;
+	font-weight: 600;
+	text-decoration: underline;
+}
+
+.flexa-fee-toolbar__review[hidden] {
+	display: none;
+}
+
+/*
+ * Blocks changed in a review copy, and the bar that counts them. Drawn inside
+ * the block, so a full-width block (a banner, a hero) still shows both the
+ * frame and the label instead of pushing them off screen or under the toolbar.
+ */
+.flexa-fee-pending {
+	outline: 3px solid #f59e0b;
+	outline-offset: -3px;
+}
+
+.flexa-fee-pending.flexa-fee-pending-host {
+	position: relative;
+}
+
+.flexa-fee-pending::before {
+	content: attr(data-flexa-pending-label);
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	z-index: 21;
+	padding: 1px 8px;
+	border-radius: 999px;
+	background: #f59e0b;
+	color: #1f1300;
+	font: 600 11px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	pointer-events: none;
+}
+
+.flexa-fee-pendingbar {
+	position: fixed;
+	left: 16px;
+	bottom: 16px;
+	z-index: 99998;
+	max-width: calc(100vw - 32px);
+	padding: 8px 14px;
+	border-radius: 999px;
+	background: #1f2937;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+	color: #fde68a;
+	font: 600 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.flexa-fee-pendingbar a {
+	color: #fff;
+	text-decoration: underline;
+}
+
 body.flexa-fee-modal-open {
 	overflow: hidden;
 }

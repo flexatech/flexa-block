@@ -21,12 +21,13 @@ import { EditingSettings } from './settings-editing';
 import { SamplesPanel } from './samples-panel';
 import { McpPanel } from './mcp-panel';
 import { LogPanel } from './log-panel';
+import { ReviewPanel } from './review-panel';
 import { FormFlowBanner } from './formflow-banner';
 import './admin.scss';
 
 type Settings = Record< string, any >;
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
-type View = 'general' | 'blocks' | 'samples' | 'editing' | 'log' | 'mcp';
+type View = 'general' | 'blocks' | 'samples' | 'editing' | 'review' | 'log' | 'mcp';
 
 const SAVE_DEBOUNCE_MS = 700;
 
@@ -124,6 +125,14 @@ function App(): JSX.Element {
 
 	// Front-end editing on or off (on unless saved as off); the edit log follows it.
 	const inlineOn = settings.inline_editor?.enabled !== false;
+	// Copies waiting for review; kept current by the Review panel itself.
+	const [ reviewCount, setReviewCount ] = useState( boot.review?.count || 0 ) as [
+		number,
+		( n: number ) => void,
+	];
+	// The tab shows while review is on, and while anything still waits.
+	const reviewTab =
+		inlineOn && !! boot.review && ( settings.inline_editor?.review === true || reviewCount > 0 );
 
 	const setInline = ( key: string, value: unknown ) =>
 		setSettings( ( s: Settings ) => ( {
@@ -229,6 +238,16 @@ function App(): JSX.Element {
 							active={ view === 'editing' }
 							onClick={ () => setView( 'editing' ) }
 						/>
+						{ reviewTab && (
+							<NavItem
+								icon="yes-alt"
+								label={ __( 'Review', 'flexa-block' ) }
+								desc={ __( 'Front-end changes to approve', 'flexa-block' ) }
+								badge={ reviewCount }
+								active={ view === 'review' }
+								onClick={ () => setView( 'review' ) }
+							/>
+						) }
 						{ /* The history belongs to front-end editing: no tab while it is off. */ }
 						{ inlineOn && boot.editLog && (
 						<NavItem
@@ -287,9 +306,16 @@ function App(): JSX.Element {
 							onSetEnabled={ ( v: boolean ) =>
 								setInline( 'enabled', v )
 							}
+							onSetReview={ ( v: boolean ) =>
+								setInline( 'review', v )
+							}
+							onSetInline={ setInline }
 							onToggleRole={ toggleRole }
 							onToggleBlock={ toggleEditableBlock }
 						/>
+					) }
+					{ view === 'review' && reviewTab && boot.review && (
+						<ReviewPanel url={ boot.review.url } onCount={ setReviewCount } />
 					) }
 					{ view === 'log' && inlineOn && boot.editLog && (
 						<LogPanel url={ boot.editLog.url } days={ boot.editLog.days } />
@@ -333,12 +359,14 @@ function NavItem( {
 	desc,
 	active,
 	onClick,
+	badge = 0,
 }: {
 	icon: string;
 	label: string;
 	desc: string;
 	active: boolean;
 	onClick: () => void;
+	badge?: number;
 } ): JSX.Element {
 	return (
 		<button
@@ -352,7 +380,10 @@ function NavItem( {
 				aria-hidden="true"
 			/>
 			<span className="flexa-nav-item__text">
-				<span className="flexa-nav-item__label">{ label }</span>
+				<span className="flexa-nav-item__label">
+					{ label }
+					{ badge > 0 && <span className="flexa-nav-item__badge">{ badge }</span> }
+				</span>
 				<span className="flexa-nav-item__desc">{ desc }</span>
 			</span>
 		</button>

@@ -58,15 +58,14 @@ final class Inline_Editor {
 				[ 'attr' => 'subheadingContent', 'selector' => '.flexa-heading__subheading', 'allowed' => 'inline' ],
 			],
 		],
-		'flexa/button'  => [
-			'fields' => [
-				[ 'attr' => 'text', 'selector' => '.flexa-button__text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'url', 'target' => 'linkTarget', 'anchor' => '.flexa-button__link' ] ],
-			],
-		],
 		// Composite blocks — several top-level string attributes each. The two
 		// promo button labels share a class, so they are scoped by the button
 		// modifier class.
 		'flexa/banner'  => [
+			'icons'  => [
+				[ 'attr' => 'primaryIcon', 'selector' => '.flexa-promo__button--primary > .flexa-icon' ],
+				[ 'attr' => 'secondaryIcon', 'selector' => '.flexa-promo__button--secondary > .flexa-icon' ],
+			],
 			'fields' => [
 				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
 				[ 'attr' => 'description', 'selector' => '.flexa-promo__description', 'allowed' => 'minimal-link' ],
@@ -75,6 +74,10 @@ final class Inline_Editor {
 			],
 		],
 		'flexa/cta'     => [
+			'icons'  => [
+				[ 'attr' => 'primaryIcon', 'selector' => '.flexa-promo__button--primary > .flexa-icon' ],
+				[ 'attr' => 'secondaryIcon', 'selector' => '.flexa-promo__button--secondary > .flexa-icon' ],
+			],
 			'fields' => [
 				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
 				[ 'attr' => 'description', 'selector' => '.flexa-promo__description', 'allowed' => 'minimal-link' ],
@@ -106,14 +109,37 @@ final class Inline_Editor {
 				[ 'attr' => 'image', 'selector' => '.flexa-image__img', 'hit' => '.flexa-image__frame', 'shape' => 'full', 'alt' => 'altText', 'size' => 'imageSize' ],
 			],
 		],
+		// An icon is chosen from the icon catalog (or the media library), never typed:
+		// `icons` lists where a block keeps one. `selector` is either the icon
+		// element itself, or (with `wrap`) an element holding nothing but the icon.
+		'flexa/icon' => [
+			'icons' => [
+				[ 'attr' => 'icon', 'selector' => '.flexa-icon__inner', 'wrap' => true ],
+			],
+		],
+		'flexa/button' => [
+			'icons' => [
+				[ 'attr' => 'icon', 'selector' => '.flexa-button__link > .flexa-icon' ],
+			],
+			'fields' => [
+				[ 'attr' => 'text', 'selector' => '.flexa-button__text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'url', 'target' => 'linkTarget', 'anchor' => '.flexa-button__link' ] ],
+			],
+		],
 		'flexa/video-popup' => [
 			'images' => [
 				[ 'attr' => 'thumbnailImage', 'selector' => '.flexa-video-popup__image', 'shape' => 'full' ],
+			],
+			'icons'  => [
+				[ 'attr' => 'playIcon', 'selector' => '.flexa-video-popup__play', 'wrap' => true ],
 			],
 		],
 		'flexa/info-box' => [
 			'images' => [
 				[ 'attr' => 'image', 'selector' => '.flexa-info-box__image', 'shape' => 'basic' ],
+			],
+			'icons'  => [
+				[ 'attr' => 'icon', 'selector' => '.flexa-info-box__icon', 'wrap' => true ],
+				[ 'attr' => 'buttonIcon', 'selector' => '.flexa-info-box__button > .flexa-icon' ],
 			],
 			'fields' => [
 				[ 'attr' => 'prefix', 'selector' => '.flexa-info-box__prefix', 'allowed' => 'minimal' ],
@@ -214,6 +240,10 @@ final class Inline_Editor {
 			'images' => [
 				[ 'attr' => 'items', 'key' => 'image', 'repeat' => true, 'selector' => '.flexa-timeline__image', 'shape' => 'basic' ],
 			],
+			// The marker is printed even without an icon, so one can be added here.
+			'icons'  => [
+				[ 'attr' => 'items', 'key' => 'icon', 'repeat' => true, 'selector' => '.flexa-timeline__marker', 'wrap' => true ],
+			],
 			'fields' => [
 				[ 'attr' => 'items', 'key' => 'date', 'repeat' => true, 'selector' => '.flexa-timeline__date', 'allowed' => 'minimal' ],
 				[ 'attr' => 'items', 'key' => 'title', 'repeat' => true, 'selector' => '.flexa-timeline__title', 'allowed' => 'minimal' ],
@@ -233,11 +263,17 @@ final class Inline_Editor {
 			],
 		],
 		'flexa/counter' => [
+			'icons'  => [
+				[ 'attr' => 'items', 'key' => 'icon', 'repeat' => true, 'selector' => '.flexa-counter__icon', 'wrap' => true ],
+			],
 			'fields' => [
 				[ 'attr' => 'items', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-counter__label', 'allowed' => 'minimal' ],
 			],
 		],
 		'flexa/icon-list' => [
+			'icons'  => [
+				[ 'attr' => 'items', 'key' => 'icon', 'repeat' => true, 'selector' => '.flexa-icon-list__icon', 'wrap' => true ],
+			],
 			'fields' => [
 				[ 'attr' => 'items', 'key' => 'text', 'repeat' => true, 'selector' => '.flexa-icon-list__text', 'allowed' => 'minimal' ],
 			],
@@ -253,6 +289,9 @@ final class Inline_Editor {
 		'flexa/modal' => [
 			'images' => [
 				[ 'attr' => 'triggerImage', 'selector' => '.flexa-modal__trigger-image', 'shape' => 'full' ],
+			],
+			'icons'  => [
+				[ 'attr' => 'triggerIcon', 'selector' => '.flexa-modal__trigger > .flexa-icon' ],
 			],
 			'fields' => [
 				[ 'attr' => 'triggerText', 'selector' => '.flexa-modal__trigger-text', 'allowed' => 'plain' ],
@@ -298,6 +337,9 @@ final class Inline_Editor {
 		'enabled'         => true,
 		'disabled_blocks' => [],
 		'roles'           => [ 'editor' ],
+		'review'          => false,
+		'review_approver' => 'admin',
+		'review_no_self'  => false,
 	];
 
 	/**
@@ -306,6 +348,13 @@ final class Inline_Editor {
 	 * @var bool|null
 	 */
 	private static $should = null;
+
+	/**
+	 * Review copy per original, for this request.
+	 *
+	 * @var array<int, int>
+	 */
+	private static $review_copies = [];
 
 	/**
 	 * Memoized blockIds of the queried post's own content.
@@ -386,10 +435,12 @@ final class Inline_Editor {
 				}
 				$fields = self::valid_fields( $def );
 				$images = self::valid_images( $def );
-				if ( $fields || $images ) {
+				$icons  = self::valid_icons( $def );
+				if ( $fields || $images || $icons ) {
 					$registry[ $name ] = [
 						'fields' => $fields,
 						'images' => $images,
+						'icons'  => $icons,
 					];
 				}
 			}
@@ -474,6 +525,34 @@ final class Inline_Editor {
 	}
 
 	/**
+	 * The well-formed icon declarations of a registry entry.
+	 *
+	 * An icon needs the attribute that holds it and the element to click; one in
+	 * a list item also needs the item key.
+	 *
+	 * @param mixed $def Registry entry.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function valid_icons( $def ): array {
+		if ( ! is_array( $def ) || ! isset( $def['icons'] ) || ! is_array( $def['icons'] ) ) {
+			return [];
+		}
+
+		$out = [];
+		foreach ( $def['icons'] as $icon ) {
+			if ( ! is_array( $icon ) || empty( $icon['attr'] ) || ! is_string( $icon['attr'] ) || empty( $icon['selector'] ) || ! is_string( $icon['selector'] ) ) {
+				continue;
+			}
+			if ( ! empty( $icon['repeat'] ) && ( empty( $icon['key'] ) || ! is_string( $icon['key'] ) ) ) {
+				continue;
+			}
+			$out[] = $icon;
+		}
+
+		return $out;
+	}
+
+	/**
 	 * The settings slug for a block name — the part after the namespace.
 	 *
 	 * `flexa/faq` and `flexa-pro/flip-box` both reduce to their bare slug, which
@@ -500,6 +579,10 @@ final class Inline_Editor {
 		add_filter( 'render_block', [ __CLASS__, 'leave_scope' ], 1, 2 );
 		add_filter( 'render_block', [ __CLASS__, 'annotate' ], 20, 2 );
 		add_filter( 'body_class', [ __CLASS__, 'body_class' ] );
+		// Before do_blocks (priority 9), so the copy's blocks are the ones rendered.
+		add_filter( 'the_content', [ __CLASS__, 'review_content' ], 1 );
+		add_filter( 'flexa_block_working_copy_can_apply', [ __CLASS__, 'filter_can_apply' ], 10, 2 );
+		add_filter( 'flexa_block_working_copy_panel_data', [ __CLASS__, 'filter_panel_data' ], 10, 2 );
 		add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue' ], 25 );
 		add_action( 'wp_footer', [ __CLASS__, 'render_toolbar' ] );
 		add_action( 'rest_api_init', [ __CLASS__, 'register_routes' ] );
@@ -551,7 +634,141 @@ final class Inline_Editor {
 			'roles'           => isset( $ie['roles'] ) && is_array( $ie['roles'] )
 				? array_values( array_map( 'strval', $ie['roles'] ) )
 				: self::DEFAULTS['roles'],
+			'review'          => isset( $ie['review'] ) ? (bool) $ie['review'] : self::DEFAULTS['review'],
+			'review_approver' => 'publish' === ( $ie['review_approver'] ?? '' ) ? 'publish' : 'admin',
+			'review_no_self'  => ! empty( $ie['review_no_self'] ),
 		];
+	}
+
+	/** Post meta on a working copy made by front-end review (not by an agent). */
+	const REVIEW_META = '_flexa_review_copy';
+
+	/**
+	 * Why the current user may not apply a front-end review copy ('' when they may).
+	 *
+	 * Front-end review exists so that someone checks a change before it goes
+	 * live, so its copies follow the review settings rather than the plain
+	 * "may publish the page" rule of an agent's copy: by default only an
+	 * administrator applies them, and optionally nobody applies their own.
+	 *
+	 * @param \WP_Post $copy Working copy.
+	 * @return string Reason, for the editor panel.
+	 */
+	public static function review_block_reason( \WP_Post $copy ): string {
+		if ( ! get_post_meta( $copy->ID, self::REVIEW_META, true ) ) {
+			return '';
+		}
+		$settings = self::settings();
+		if ( 'publish' !== $settings['review_approver'] && ! current_user_can( 'manage_options' ) ) {
+			return __( 'An administrator has to review and apply these changes.', 'flexa-block' );
+		}
+		if ( $settings['review_no_self'] && in_array( get_current_user_id(), self::review_authors( $copy ), true ) ) {
+			return __( 'You made changes in this copy, so someone else has to review and apply it.', 'flexa-block' );
+		}
+		return '';
+	}
+
+	/**
+	 * Everyone who changed a review copy: its author and the people in its log.
+	 *
+	 * @param \WP_Post $copy Working copy.
+	 * @return list<int>
+	 */
+	private static function review_authors( \WP_Post $copy ): array {
+		$ids = [ (int) $copy->post_author ];
+		foreach ( Inline_Edit_Log::entries( (int) $copy->ID ) as $entry ) {
+			$ids[] = (int) ( $entry['user_id'] ?? 0 );
+		}
+		return array_values( array_unique( array_filter( $ids ) ) );
+	}
+
+	/**
+	 * Apply the review rules to "may this person apply this copy?".
+	 *
+	 * @param bool     $allowed  What the working copy decided.
+	 * @param \WP_Post $copy     Working copy.
+	 * @return bool
+	 */
+	public static function filter_can_apply( $allowed, $copy ) {
+		if ( ! $allowed || ! $copy instanceof \WP_Post ) {
+			return $allowed;
+		}
+		return '' === self::review_block_reason( $copy );
+	}
+
+	/**
+	 * Tell the editor panel why a review copy cannot be applied by this person.
+	 *
+	 * @param array<string,mixed> $data Panel data.
+	 * @param \WP_Post            $copy Working copy.
+	 * @return array<string,mixed>
+	 */
+	public static function filter_panel_data( $data, $copy ) {
+		if ( is_array( $data ) && $copy instanceof \WP_Post ) {
+			$data['blockedReason'] = self::review_block_reason( $copy );
+			$data['isReview']      = (bool) get_post_meta( $copy->ID, self::REVIEW_META, true );
+			$data['logPath']       = '/' . self::REST_NS . '/inline-edit-log?postId=' . (int) $copy->ID;
+		}
+		return $data;
+	}
+
+	/**
+	 * Whether edits to a published page go to a working copy for review.
+	 */
+	public static function review_enabled(): bool {
+		return ! empty( self::settings()['review'] );
+	}
+
+	/**
+	 * Load the working-copy class, which lives with the MCP module and is not
+	 * loaded on every request.
+	 */
+	private static function load_working_copy(): bool {
+		if ( ! class_exists( '\Flexa\Block\MCP\Working_Copy' ) && defined( 'FLEXA_BLOCK_DIR' ) ) {
+			require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-working-copy.php';
+		}
+		return class_exists( '\Flexa\Block\MCP\Working_Copy' );
+	}
+
+	/**
+	 * The open review copy of a published post, or 0.
+	 *
+	 * Only when review is switched on and the post is published: a draft is
+	 * nobody's live page, so it is edited directly.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public static function review_copy_id( int $post_id ): int {
+		if ( $post_id < 1 || ! self::review_enabled() || 'publish' !== get_post_status( $post_id ) ) {
+			return 0;
+		}
+		if ( ! array_key_exists( $post_id, self::$review_copies ) ) {
+			self::$review_copies[ $post_id ] = self::load_working_copy() ? \Flexa\Block\MCP\Working_Copy::find( $post_id ) : 0;
+		}
+		return self::$review_copies[ $post_id ];
+	}
+
+	/**
+	 * Show an editor the review copy's content in place of the page's own.
+	 *
+	 * Once edits on a published page go to a copy, the page as stored no longer
+	 * shows them, and the next edit would be made against text the person has
+	 * already changed. So for someone who can edit here, and only for the page
+	 * being viewed, the copy is rendered instead. Visitors keep seeing the page.
+	 *
+	 * @param string $content Post content about to be rendered.
+	 * @return string
+	 */
+	public static function review_content( $content ) {
+		if ( ! is_string( $content ) || ! self::should_render() ) {
+			return $content;
+		}
+		$viewed = (int) get_queried_object_id();
+		if ( (int) get_the_ID() !== $viewed ) {
+			return $content;
+		}
+		$copy = get_post( self::review_copy_id( $viewed ) );
+		return $copy instanceof \WP_Post ? (string) $copy->post_content : $content;
 	}
 
 	/**
@@ -590,6 +807,17 @@ final class Inline_Editor {
 	private static function images_for( string $name ): array {
 		$registry = self::registry();
 		return isset( $registry[ $name ]['images'] ) ? $registry[ $name ]['images'] : [];
+	}
+
+	/**
+	 * The editable icons for a block (empty if none).
+	 *
+	 * @param string $name Block name.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function icons_for( string $name ): array {
+		$registry = self::registry();
+		return isset( $registry[ $name ]['icons'] ) ? $registry[ $name ]['icons'] : [];
 	}
 
 	/**
@@ -643,7 +871,9 @@ final class Inline_Editor {
 	 */
 	private static function own_block_ids(): array {
 		if ( null === self::$own_ids ) {
-			$post          = get_post( get_queried_object_id() );
+			$viewed        = (int) get_queried_object_id();
+			$copy          = self::review_copy_id( $viewed );
+			$post          = get_post( $copy > 0 ? $copy : $viewed );
 			self::$own_ids = $post instanceof \WP_Post ? Block_Patcher::block_ids( (string) $post->post_content ) : [];
 		}
 		return self::$own_ids;
@@ -746,7 +976,9 @@ final class Inline_Editor {
 		// The version of the store this block was read from, sent back with a
 		// save so a change made since (in the editor, another tab, by another
 		// person) is refused instead of silently overwritten.
-		$store_id = $target['post'] > 0 ? $target['post'] : (int) get_queried_object_id();
+		$viewed   = (int) get_queried_object_id();
+		$copy     = self::review_copy_id( $viewed );
+		$store_id = $target['post'] > 0 ? $target['post'] : ( $copy > 0 ? $copy : $viewed );
 		$processor->set_attribute( 'data-flexa-edit-version', self::store_version( $store_id ) );
 
 		return $processor->get_updated_html();
@@ -949,7 +1181,7 @@ final class Inline_Editor {
 		// The media library (Backbone, the media views and their templates) for the
 		// people who may use it, and only on pages that have an image to change.
 		// It is never loaded for a visitor: this whole method returns for them.
-		if ( current_user_can( 'upload_files' ) && self::has_images() ) {
+		if ( current_user_can( 'upload_files' ) && ( self::has_images() || [] !== self::js_icons() ) ) {
 			wp_enqueue_media( [ 'post' => (int) get_queried_object_id() ] );
 		}
 
@@ -962,12 +1194,26 @@ final class Inline_Editor {
 				'endpoint' => esc_url_raw( rest_url( self::REST_NS . '/inline-edit' ) ),
 				'fields'   => self::js_fields(),
 				'images'   => self::js_images(),
+				'icons'    => self::js_icons(),
+				'iconsUrl' => esc_url_raw( rest_url( self::REST_NS . '/inline-icons' ) ),
 				// Choosing a different picture needs the media library; changing only
 				// the alt text does not.
 				'canPick'  => current_user_can( 'upload_files' ),
+				// Review: edits to this (published) page go to a copy.
+				'review'   => self::review_payload(),
 				'i18n'     => [
 					'imageEdit'  => __( 'Edit image', 'flexa-block' ),
 					'imageBg'    => __( 'Change background', 'flexa-block' ),
+					'iconEdit'   => __( 'Edit icon', 'flexa-block' ),
+					'reviewNote'  => __( 'Changes to this page go to a copy for review. Visitors keep seeing the page as it is.', 'flexa-block' ),
+					'reviewSaved' => __( 'Saved to the copy for review', 'flexa-block' ),
+					/* translators: %d: number of blocks changed */
+					'reviewPending' => __( 'Changes waiting for review on this page: %d', 'flexa-block' ),
+					'reviewOpen'    => __( 'Open the copy', 'flexa-block' ),
+					'reviewBadge'   => __( 'Waiting for review', 'flexa-block' ),
+					'iconLoadError' => __( 'The icons could not be loaded. Reload the page and try again.', 'flexa-block' ),
+					'iconNone'   => __( 'No icons match.', 'flexa-block' ),
+					'iconUpload' => __( 'Choose file', 'flexa-block' ),
 					'imageBefore' => __( 'Edit “before” image', 'flexa-block' ),
 					'imageAfter'  => __( 'Edit “after” image', 'flexa-block' ),
 					'imageNoWp'  => __( 'The media library could not be loaded on this page. Reload and try again.', 'flexa-block' ),
@@ -1085,6 +1331,60 @@ final class Inline_Editor {
 	}
 
 	/**
+	 * The JS-facing list of editable icons, by block.
+	 *
+	 * @return array<string, list<array<string, mixed>>>
+	 */
+	private static function js_icons(): array {
+		$out = [];
+		foreach ( self::registry() as $name => $def ) {
+			if ( self::is_block_disabled( $name ) || empty( $def['icons'] ) ) {
+				continue;
+			}
+			$list = [];
+			foreach ( $def['icons'] as $icon ) {
+				$entry = [
+					'attr'     => (string) $icon['attr'],
+					'selector' => (string) $icon['selector'],
+				];
+				if ( ! empty( $icon['wrap'] ) ) {
+					$entry['wrap'] = true;
+				}
+				if ( ! empty( $icon['repeat'] ) ) {
+					$entry['repeat'] = true;
+					$entry['key']    = (string) $icon['key'];
+				}
+				$list[] = $entry;
+			}
+			$out[ $name ] = $list;
+		}
+		return $out;
+	}
+
+	/**
+	 * What the toolbar needs to know about review on the page being viewed.
+	 *
+	 * @return array{on: bool, editLink: string, blocks: list<string>}
+	 */
+	private static function review_payload(): array {
+		$viewed = (int) get_queried_object_id();
+		$on     = self::review_enabled() && 'publish' === get_post_status( $viewed );
+		$copy   = $on ? self::review_copy_id( $viewed ) : 0;
+		$blocks = [];
+		if ( $copy > 0 ) {
+			foreach ( Inline_Edit_Log::entries( $copy ) as $entry ) {
+				$blocks[] = (string) ( $entry['block_id'] ?? '' );
+			}
+		}
+		return [
+			'on'       => $on,
+			'editLink' => $copy > 0 ? (string) get_edit_post_link( $copy, 'raw' ) : '',
+			// Blocks changed in the copy, to mark on the page.
+			'blocks'   => array_values( array_unique( array_filter( $blocks ) ) ),
+		];
+	}
+
+	/**
 	 * Whether any block on the site declares an editable image.
 	 */
 	private static function has_images(): bool {
@@ -1105,6 +1405,7 @@ final class Inline_Editor {
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--save"><?php echo esc_html__( 'Save', 'flexa-block' ); ?></button>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
 				<span class="flexa-fee-toolbar__msg" aria-live="polite"></span>
+				<a class="flexa-fee-toolbar__review" target="_blank" rel="noopener" hidden><?php echo esc_html__( 'Open the copy for review', 'flexa-block' ); ?></a>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--undo" hidden><?php echo esc_html__( 'Undo', 'flexa-block' ); ?></button>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--link" hidden><?php echo esc_html__( 'Edit link', 'flexa-block' ); ?></button>
 			</div>
@@ -1205,6 +1506,46 @@ final class Inline_Editor {
 			</form>
 		</div>
 		<?php
+		/*
+		 * The icon editor: an icon from the catalog (two tabs, a search), a file
+		 * from the media library, or no icon. The grid is filled the first time it
+		 * opens, from the inline-icons route.
+		 */
+		?>
+		<div
+			class="flexa-fee-toolbar__prompt flexa-fee-linkdialog flexa-fee-icondialog"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="flexa-fee-icon-title"
+			hidden
+		>
+			<form class="flexa-fee-toolbar__prompt-dialog" novalidate>
+				<div class="flexa-fee-toolbar__prompt-content">
+					<div class="flexa-fee-linkdialog__body">
+						<div class="flexa-fee-icondialog__head">
+							<h2 id="flexa-fee-icon-title" class="flexa-fee-toolbar__prompt-title"><?php echo esc_html__( 'Edit icon', 'flexa-block' ); ?></h2>
+							<span class="flexa-fee-icondialog__current" aria-hidden="true"></span>
+						</div>
+						<input class="flexa-fee-linkdialog__input flexa-fee-icondialog__search" type="search" placeholder="<?php echo esc_attr__( 'Search icons…', 'flexa-block' ); ?>" aria-label="<?php echo esc_attr__( 'Search icons', 'flexa-block' ); ?>" />
+						<div class="flexa-fee-icondialog__tabs" role="tablist">
+							<button type="button" role="tab" class="is-active" data-icon-tab="builtin"><?php echo esc_html__( 'Basic', 'flexa-block' ); ?></button>
+							<button type="button" role="tab" data-icon-tab="library"><?php echo esc_html__( 'WordPress', 'flexa-block' ); ?></button>
+						</div>
+						<div class="flexa-fee-icondialog__grid" role="listbox" aria-label="<?php echo esc_attr__( 'Icons', 'flexa-block' ); ?>"></div>
+						<div class="flexa-fee-icondialog__more">
+							<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-icon="upload"><?php echo esc_html__( 'Choose file', 'flexa-block' ); ?></button>
+							<button type="button" class="flexa-fee-btn flexa-fee-btn--discard" data-icon="none"><?php echo esc_html__( 'Remove icon', 'flexa-block' ); ?></button>
+						</div>
+						<p class="flexa-fee-linkdialog__error" role="alert" hidden></p>
+					</div>
+				</div>
+				<div class="flexa-fee-toolbar__prompt-actions">
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-icon="cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
+					<button type="submit" class="flexa-fee-btn flexa-fee-btn--save" data-icon="apply"><?php echo esc_html__( 'Apply', 'flexa-block' ); ?></button>
+				</div>
+			</form>
+		</div>
+		<?php
 	}
 
 	/* ---------------------------------------------------------------------
@@ -1215,6 +1556,20 @@ final class Inline_Editor {
 	 * Register the inline-edit route.
 	 */
 	public static function register_routes(): void {
+		// The icon picker's list, fetched the first time an icon is clicked, so a
+		// page does not carry hundreds of icons for every view.
+		register_rest_route(
+			self::REST_NS,
+			'/inline-icons',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ __CLASS__, 'handle_icons' ],
+				'permission_callback' => static function () {
+					return current_user_can( 'edit_posts' ) && self::user_can_edit_inline();
+				},
+			]
+		);
+
 		register_rest_route(
 			self::REST_NS,
 			'/inline-edit',
@@ -1284,6 +1639,13 @@ final class Inline_Editor {
 					// JSON {"id": attachment ID or null to keep it, "alt": text}.
 					// Only the ID is trusted. See with_image() and Image_Source.
 					'image'     => [
+						'type'    => 'boolean',
+						'default' => false,
+					],
+					// An icon edit: `attr` names the icon attribute and `value` is
+					// JSON {"source", "name", "id"}. The markup is looked up on the
+					// server, never taken from the request. See Icon_Source.
+					'icon'      => [
 						'type'    => 'boolean',
 						'default' => false,
 					],
@@ -1392,11 +1754,21 @@ final class Inline_Editor {
 
 		$is_link  = (bool) rest_sanitize_boolean( $request->get_param( 'link' ) );
 		$is_image = (bool) rest_sanitize_boolean( $request->get_param( 'image' ) );
+		$is_icon  = (bool) rest_sanitize_boolean( $request->get_param( 'icon' ) );
 		$image    = null;
-		if ( $is_link && $is_image ) {
+		$icon     = null;
+		if ( (int) $is_link + (int) $is_image + (int) $is_icon > 1 ) {
 			return new \WP_Error( 'flexa_invalid_field', __( 'That edit could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
 		}
-		if ( $is_image ) {
+		if ( $is_icon ) {
+			// An icon goes through Icon_Source: only a catalog name or a library ID.
+			$icon  = self::find_icon( $name, $attr, $key, null !== $index_raw );
+			$link  = null;
+			$field = [];
+			if ( null === $icon ) {
+				return new \WP_Error( 'flexa_invalid_field', __( 'This icon cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+		} elseif ( $is_image ) {
 			// An image goes through Image_Source, never through kses or the browser's
 			// idea of its address: only an attachment ID is accepted.
 			$image = self::find_image( $name, $attr, $key, null !== $index_raw );
@@ -1440,6 +1812,24 @@ final class Inline_Editor {
 			}
 		}
 
+		// Review: an edit to a published page goes to its working copy. An open
+		// copy is the store from the start; without one the edit is checked
+		// against the page (whose content the copy will start from) and the copy
+		// is made only once there is a real change to write into it.
+		$make_copy = false;
+		if ( 0 === $target_id && self::review_enabled() && 'publish' === $post->post_status && self::load_working_copy() ) {
+			$copy_id = \Flexa\Block\MCP\Working_Copy::find( (int) $post->ID );
+			$copy    = $copy_id > 0 ? get_post( $copy_id ) : null;
+			if ( $copy instanceof \WP_Post ) {
+				if ( ! current_user_can( 'edit_post', $copy->ID ) ) {
+					return new \WP_Error( 'flexa_review_forbidden', __( 'Changes to this page are waiting for review in a copy you cannot edit.', 'flexa-block' ), [ 'status' => 403 ] );
+				}
+				$store = $copy;
+			} else {
+				$make_copy = true;
+			}
+		}
+
 		// Someone has this post open in the block editor. Their next save would
 		// overwrite this edit (the editor holds its own copy of the content), so
 		// say so now instead. The editor's lock is the signal WordPress itself
@@ -1448,7 +1838,9 @@ final class Inline_Editor {
 		if ( ! function_exists( 'wp_check_post_lock' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/post.php';
 		}
-		$holder = wp_check_post_lock( (int) $store->ID );
+		// Someone editing the page itself in the block editor does not collide with
+		// an edit that goes to a new review copy.
+		$holder = $make_copy ? false : wp_check_post_lock( (int) $store->ID );
 		if ( $holder ) {
 			$user = get_userdata( (int) $holder );
 
@@ -1523,7 +1915,17 @@ final class Inline_Editor {
 		$after_json = null;
 		$undoable   = true;
 
-		if ( $is_image ) {
+		if ( $is_icon ) {
+			$changed = self::with_icon( $attrs, $name, (array) $icon, null === $index_raw ? null : absint( $index_raw ), $value );
+			if ( is_wp_error( $changed ) ) {
+				return $changed;
+			}
+			$old        = $changed['old'];
+			$clean      = $changed['summary'];
+			$log_before = $changed['old_summary'];
+			$after_json = $changed['after'];
+			$undoable   = $changed['undoable'];
+		} elseif ( $is_image ) {
 			$changed = self::with_image( $attrs, $name, (array) $image, null === $index_raw ? null : absint( $index_raw ), $value );
 			if ( is_wp_error( $changed ) ) {
 				return $changed;
@@ -1587,6 +1989,29 @@ final class Inline_Editor {
 		//
 		// wp_slash: wp_update_post runs wp_unslash on the content, so pre-slash it
 		// to keep backslashes/quotes in the serialized block markup intact.
+		$review = null;
+		if ( $make_copy ) {
+			$copy_id = \Flexa\Block\MCP\Working_Copy::create( $post );
+			if ( is_wp_error( $copy_id ) ) {
+				return $copy_id;
+			}
+			update_post_meta( (int) $copy_id, self::REVIEW_META, 1 );
+			$copy = get_post( (int) $copy_id );
+			if ( ! $copy instanceof \WP_Post ) {
+				return new \WP_Error( 'flexa_review_failed', __( 'The copy for review could not be made.', 'flexa-block' ), [ 'status' => 500 ] );
+			}
+			// The copy starts as the page's content byte for byte, which is what
+			// $updated was computed from.
+			$store = $copy;
+		}
+		if ( 0 === $target_id && self::review_enabled() && (int) $store->ID !== (int) $post->ID ) {
+			$review = [
+				'copyId'   => (int) $store->ID,
+				'editLink' => (string) get_edit_post_link( (int) $store->ID, 'raw' ),
+				'created'  => $make_copy,
+			];
+		}
+
 		kses_remove_filters();
 		try {
 			$result = Inline_Revision_Session::update_post(
@@ -1632,7 +2057,7 @@ final class Inline_Editor {
 				'store_id'    => (int) $store->ID,
 				'store_type'  => (string) $store->post_type,
 				'post_id'     => $post_id,
-				'kind'        => $is_image ? 'image' : ( $is_link ? 'link' : 'text' ),
+				'kind'        => $is_icon ? 'icon' : ( $is_image ? 'image' : ( $is_link ? 'link' : 'text' ) ),
 				'before'      => $log_before,
 				'after'       => $clean,
 				'revision_id' => Inline_Revision_Session::baseline_id( (int) $store->ID ),
@@ -1665,6 +2090,10 @@ final class Inline_Editor {
 			'before'  => (string) $old,
 			'logId'   => $entry_id,
 		];
+		if ( null !== $review ) {
+			$response['review'] = $review;
+		}
+
 		// For a link or an image, the state as stored (cleaned or read from the
 		// library), so the page shows what was saved and not what was asked for.
 		if ( null !== $after_json ) {
@@ -1676,6 +2105,158 @@ final class Inline_Editor {
 		}
 
 		return rest_ensure_response( $response );
+	}
+
+	/**
+	 * The declaration of an editable icon, by attribute (and item key).
+	 *
+	 * @param string      $name      Block name.
+	 * @param string      $attr      Icon attribute (the list attribute for one in a list item).
+	 * @param string|null $key       Item key, for an icon in a list item.
+	 * @param bool        $has_index Whether the request names a list item.
+	 * @return array<string, mixed>|null
+	 */
+	private static function find_icon( string $name, string $attr, ?string $key, bool $has_index ): ?array {
+		$key = ( null === $key || '' === $key ) ? null : $key;
+
+		foreach ( self::icons_for( $name ) as $icon ) {
+			if ( (string) $icon['attr'] !== $attr ) {
+				continue;
+			}
+			if ( ! empty( $icon['repeat'] ) ) {
+				if ( $has_index && (string) $icon['key'] === $key ) {
+					return $icon;
+				}
+			} elseif ( ! $has_index && null === $key ) {
+				return $icon;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Apply an icon edit to a block's attributes.
+	 *
+	 * Writes source, name, markup, url and id from Icon_Source; every other key of
+	 * the icon object (its position before or after the text, say) is kept.
+	 *
+	 * @param \stdClass           $attrs Block attributes, changed in place.
+	 * @param string              $name  Block name.
+	 * @param array<string,mixed> $icon  Declaration from find_icon().
+	 * @param int|null            $index List item index, for an icon in a list item.
+	 * @param string              $value JSON: {"source", "name", "id"}.
+	 * @return array{old:string,after:string,old_summary:string,summary:string,undoable:bool}|\WP_Error
+	 */
+	private static function with_icon( \stdClass $attrs, string $name, array $icon, ?int $index, string $value ) {
+		$parsed = json_decode( $value, true );
+		if ( ! is_array( $parsed ) ) {
+			return new \WP_Error( 'flexa_icon_invalid', __( 'That icon could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+		}
+
+		$info = Icon_Source::describe(
+			is_string( $parsed['source'] ?? null ) ? $parsed['source'] : '',
+			is_string( $parsed['name'] ?? null ) ? $parsed['name'] : '',
+			isset( $parsed['id'] ) && is_numeric( $parsed['id'] ) ? (int) $parsed['id'] : 0
+		);
+		if ( is_wp_error( $info ) ) {
+			return $info;
+		}
+
+		$attr = (string) $icon['attr'];
+		$list = null;
+		$item = null;
+
+		if ( ! empty( $icon['repeat'] ) ) {
+			$list = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			if ( null === $index || ! is_array( $list ) || ! isset( $list[ $index ] ) || ! $list[ $index ] instanceof \stdClass ) {
+				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+			$item    = clone $list[ $index ];
+			$ikey    = (string) $icon['key'];
+			$current = isset( $item->{$ikey} ) && $item->{$ikey} instanceof \stdClass ? clone $item->{$ikey} : new \stdClass();
+		} else {
+			$stored  = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			$current = $stored instanceof \stdClass ? clone $stored : new \stdClass();
+		}
+
+		$str    = static function ( $v ): string {
+			return is_string( $v ) ? $v : '';
+		};
+		$before = [
+			'source' => '' !== $str( $current->source ?? '' ) ? $str( $current->source ) : 'none',
+			'name'   => $str( $current->name ?? '' ),
+			'id'     => isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : null,
+		];
+		$old_url = $str( $current->url ?? '' );
+
+		$current->source = $info['source'];
+		$current->name   = $info['name'];
+		$current->markup = $info['markup'];
+		$current->url    = $info['url'];
+		$current->id     = $info['id'];
+
+		if ( null !== $list && null !== $item ) {
+			$item->{(string) $icon['key']} = $current;
+			$list[ $index ]                = $item;
+			$attrs->{$attr}                = $list;
+		} else {
+			$attrs->{$attr} = $current;
+		}
+
+		return [
+			'old'         => (string) wp_json_encode( $before ),
+			'after'       => (string) wp_json_encode(
+				[
+					'source' => $info['source'],
+					'markup' => '' !== $info['markup'] ? HTML_Helpers::svg_kses( $info['markup'] ) : '',
+					'url'    => $info['url'],
+				]
+			),
+			'old_summary' => self::icon_summary( $before['source'], $before['name'], $old_url ),
+			'summary'     => self::icon_summary( $info['source'], $info['name'], $info['url'] ),
+			'undoable'    => Icon_Source::can_restore( $before['source'], $before['name'], (int) $before['id'] ),
+		];
+	}
+
+	/**
+	 * An icon as one line of text, for the edit log.
+	 *
+	 * @param string $source Icon source.
+	 * @param string $name   Icon name.
+	 * @param string $url    Upload address.
+	 */
+	private static function icon_summary( string $source, string $name, string $url ): string {
+		if ( 'none' === $source || '' === $source ) {
+			return '(no icon)';
+		}
+		if ( 'upload' === $source ) {
+			$path = (string) wp_parse_url( $url, PHP_URL_PATH );
+			return 'upload: ' . ( '' !== $path ? basename( $path ) : '?' );
+		}
+		return $source . ': ' . $name;
+	}
+
+	/**
+	 * The icon picker's catalog: what the picker shows, and the only icons a save accepts.
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public static function handle_icons() {
+		$out = [];
+		foreach ( Icon_Source::catalog() as $source => $icons ) {
+			$list = [];
+			foreach ( $icons as $icon_name => $markup ) {
+				$list[] = [
+					'name'   => (string) $icon_name,
+					'markup' => HTML_Helpers::svg_kses( (string) $markup ),
+				];
+			}
+			$out[ $source ] = $list;
+		}
+
+		$response = rest_ensure_response( $out );
+		$response->header( 'Cache-Control', 'private, max-age=3600' );
+		return $response;
 	}
 
 	/**

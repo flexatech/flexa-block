@@ -158,6 +158,12 @@ function flexa_test_unslash( $value ) {
 	return is_string( $value ) ? stripslashes( $value ) : $value;
 }
 
+if ( ! function_exists( 'get_post_mime_type' ) ) {
+	function get_post_mime_type( $post = null ) {
+		return $GLOBALS['flexa_test_mime'][ (int) $post ] ?? false;
+	}
+}
+
 if ( ! function_exists( 'wp_get_attachment_url' ) ) {
 	function wp_get_attachment_url( $id ) {
 		return $GLOBALS['flexa_test_attachment_urls'][ (int) $id ] ?? false;
@@ -809,6 +815,7 @@ require_once $flexa_inc . 'import/class-preset-slots.php';
  */
 require_once $flexa_inc . 'class-link-url.php';
 require_once $flexa_inc . 'class-image-source.php';
+require_once $flexa_inc . 'class-icon-source.php';
 require_once $flexa_inc . 'class-block-patcher.php';
 require_once $flexa_inc . 'class-inline-revision-session.php';
 require_once $flexa_inc . 'class-inline-edit-log.php';

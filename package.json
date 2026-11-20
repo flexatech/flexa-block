@@ -12,7 +12,8 @@
 	],
 	"scripts": {
 		"prepare": "git config core.hooksPath .githooks || true",
-		"build": "wp-scripts build",
+		"build": "npm run icons && wp-scripts build",
+		"icons": "node scripts/build-icon-catalog.cjs",
 		"start": "wp-scripts start",
 		"format": "wp-scripts format",
 		"lint:js": "wp-scripts lint-js",

@@ -1634,3 +1634,182 @@ $addon: #4f46e5;
 		display: none;
 	}
 }
+
+.flexa-log__undo.flexa-log__pending {
+	background: #fef3c7;
+	color: #92400e;
+}
+
+/* -------- Review tab -------- */
+.flexa-nav-item__badge {
+	display: inline-block;
+	min-width: 18px;
+	margin-left: 6px;
+	padding: 0 6px;
+	border-radius: 9px;
+	background: #d63638;
+	color: #fff;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 18px;
+	text-align: center;
+	vertical-align: 1px;
+}
+
+.flexa-review__people {
+	display: flex;
+	flex: none;
+
+	.flexa-log__avatar + .flexa-log__avatar {
+		margin-left: -10px;
+	}
+}
+
+.flexa-review__changes {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	margin: 14px 0 0;
+	padding: 14px 0 0;
+	border-top: 1px dashed #dcdcde;
+	list-style: none;
+
+	> li {
+		margin: 0;
+	}
+
+	.flexa-log__field {
+		margin-bottom: 6px;
+	}
+}
+
+.flexa-review__warn {
+	margin-top: 14px;
+	padding: 10px 14px;
+	border-left: 4px solid #dba617;
+	background: #fcf9e8;
+
+	p {
+		margin: 0 0 6px;
+	}
+}
+
+.flexa-review__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px;
+	margin-top: 16px;
+	padding-top: 14px;
+	border-top: 1px solid #f0f0f1;
+}
+
+.flexa-review__reason {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	color: #646970;
+	font-size: 13px;
+}
+
+.flexa-log__decision {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 12px;
+	padding: 8px 12px;
+	border-radius: 8px;
+	font-size: 13px;
+	font-weight: 600;
+
+	&.is-approved {
+		background: #edfaef;
+		color: #1a7f37;
+	}
+
+	&.is-discarded {
+		background: #f0f0f1;
+		color: #50575e;
+	}
+}
+
+.flexa-review__title {
+	font-size: 15px;
+}
+
+.flexa-review__who {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 14px;
+	margin-top: 8px;
+}
+
+.flexa-review__person {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+
+	.flexa-log__avatar {
+		width: 28px;
+		height: 28px;
+		font-size: 12px;
+	}
+}
+
+.flexa-review__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 10px;
+	margin-bottom: 8px;
+
+	.flexa-log__avatar {
+		width: 26px;
+		height: 26px;
+		font-size: 11px;
+	}
+
+	.flexa-log__chip {
+		margin-left: auto;
+	}
+}
+
+.flexa-review__bar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 18px 0 14px;
+	padding: 10px 14px;
+	border: 1px solid #e3e8ec;
+	border-radius: 10px;
+	background: #f6f8fa;
+}
+
+.flexa-review__fresh {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: #92400e;
+	font-weight: 600;
+}
+
+/*
+ * Buttons in the Review and Edit log panels: the focus ring WordPress adds is
+ * for keyboard users, so after a mouse click the button keeps its own single
+ * outline instead of showing a second ring around it.
+ */
+.flexa-log {
+	.components-button.is-secondary:focus:not(:focus-visible) {
+		box-shadow: inset 0 0 0 1px var(--wp-components-color-accent, var(--wp-admin-theme-color, #0891b2));
+		outline: none;
+	}
+
+	.components-button.is-primary:focus:not(:focus-visible),
+	.components-button.is-tertiary:focus:not(:focus-visible) {
+		box-shadow: none;
+		outline: none;
+	}
+}

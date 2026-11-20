@@ -68,6 +68,9 @@ class Working_Copy {
 		'_flexa_slot_contract',
 		'_flexa_slot_keys',
 		'_flexa_slot_values',
+		// The front-end edit log and review marker belong to one post, not to a copy of it.
+		'_flexa_block_inline_edit_log',
+		'_flexa_review_copy',
 		self::ORIGINAL_META,
 		self::BASE_META,
 	];
@@ -283,6 +286,17 @@ class Working_Copy {
 			}
 		}
 
+		/**
+		 * Fires after a working copy has been applied, before it is deleted.
+		 *
+		 * Lets data kept on the copy (the front-end edit log, say) move to the
+		 * original.
+		 *
+		 * @param int $original_id Original post ID.
+		 * @param int $copy_id     Working copy ID, about to be deleted.
+		 */
+		do_action( 'flexa_block_working_copy_applied', $original_id, $copy_id );
+
 		wp_delete_post( $copy_id, true );
 
 		return [
@@ -290,6 +304,15 @@ class Working_Copy {
 			'edit_link'   => (string) get_edit_post_link( $original_id, 'raw' ),
 			'view_link'   => (string) get_permalink( $original_id ),
 		];
+	}
+
+	/**
+	 * What a copy holds right now, as a short string to compare later.
+	 *
+	 * @param \WP_Post $copy Working copy.
+	 */
+	public static function fingerprint( \WP_Post $copy ): string {
+		return md5( $copy->post_title . "\n" . $copy->post_content );
 	}
 
 	/**
@@ -316,9 +339,21 @@ class Working_Copy {
 		$type    = get_post_type_object( $original->post_type );
 		$publish = $type instanceof \WP_Post_Type ? (string) $type->cap->publish_posts : 'publish_pages';
 
-		return current_user_can( 'edit_post', $copy->ID )
+		$allowed = current_user_can( 'edit_post', $copy->ID )
 			&& current_user_can( 'edit_post', $original->ID )
 			&& current_user_can( $publish );
+
+		/**
+		 * Filters whether the current user may apply a working copy.
+		 *
+		 * Can only narrow the rule above in practice: front-end review uses it to
+		 * leave applying to administrators, or to someone other than the editor.
+		 *
+		 * @param bool     $allowed  Whether they may.
+		 * @param \WP_Post $copy     Working copy.
+		 * @param \WP_Post $original Original.
+		 */
+		return (bool) apply_filters( 'flexa_block_working_copy_can_apply', $allowed, $copy, $original );
 	}
 
 	/**
@@ -340,6 +375,14 @@ class Working_Copy {
 						'required'          => false,
 						'sanitize_callback' => 'rest_sanitize_boolean',
 					],
+					// The copy's content as the person saw it when deciding (from
+					// the review list). Applying is refused if it has changed since,
+					// so nothing goes live that nobody looked at.
+					'seen'  => [
+						'type'              => 'string',
+						'required'          => false,
+						'sanitize_callback' => 'sanitize_key',
+					],
 				],
 			]
 		);
@@ -358,6 +401,16 @@ class Working_Copy {
 				'flexa_working_copy_not_copy',
 				__( 'This page is not a working copy.', 'flexa-block' ),
 				[ 'status' => 400 ]
+			);
+		}
+
+		$seen = (string) $request->get_param( 'seen' );
+		$copy = get_post( $copy_id );
+		if ( '' !== $seen && $copy instanceof \WP_Post && ! hash_equals( self::fingerprint( $copy ), $seen ) ) {
+			return new \WP_Error(
+				'flexa_working_copy_changed',
+				__( 'This copy has new changes since you opened the list. Look at them before applying.', 'flexa-block' ),
+				[ 'status' => 409 ]
 			);
 		}
 
@@ -425,19 +478,29 @@ class Working_Copy {
 		wp_localize_script(
 			self::SCRIPT,
 			'flexaBlockWorkingCopy',
-			[
-				'copyId'     => (int) $post->ID,
-				'original'   => [
-					'id'       => $original_id,
-					'title'    => get_the_title( $original ),
-					'status'   => (string) $original->post_status,
-					'editLink' => (string) get_edit_post_link( $original_id, 'raw' ),
-					'viewLink' => (string) get_permalink( $original ),
+			/**
+			 * Filters what the working-copy panel in the editor receives.
+			 *
+			 * @param array<string,mixed> $data Panel data.
+			 * @param \WP_Post            $post Working copy.
+			 */
+			apply_filters(
+				'flexa_block_working_copy_panel_data',
+				[
+					'copyId'     => (int) $post->ID,
+					'original'   => [
+						'id'       => $original_id,
+						'title'    => get_the_title( $original ),
+						'status'   => (string) $original->post_status,
+						'editLink' => (string) get_edit_post_link( $original_id, 'raw' ),
+						'viewLink' => (string) get_permalink( $original ),
+					],
+					'conflicted' => self::conflicted( (int) $post->ID ),
+					'canApply'   => self::can_apply( $post, $original ),
+					'path'       => '/' . self::REST_NS . '/working-copy/' . (int) $post->ID . '/apply',
 				],
-				'conflicted' => self::conflicted( (int) $post->ID ),
-				'canApply'   => self::can_apply( $post, $original ),
-				'path'       => '/' . self::REST_NS . '/working-copy/' . (int) $post->ID . '/apply',
-			]
+				$post
+			)
 		);
 	}
 }

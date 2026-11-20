@@ -42,6 +42,45 @@ final class Inline_Edit_Log {
 	}
 
 	/**
+	 * Move a post's entries onto another post (a review copy onto its page).
+	 *
+	 * @param int                 $to    Post that keeps the entries.
+	 * @param int                 $from  Post the entries were recorded on.
+	 * @param array<string,mixed> $stamp Fields added to every moved entry (a review decision).
+	 */
+	public static function move( $to, $from, array $stamp = [] ): void {
+		$to   = (int) $to;
+		$from = (int) $from;
+		if ( $to < 1 || $from < 1 || $to === $from ) {
+			return;
+		}
+		$moving = get_post_meta( $from, self::META, true );
+		if ( ! is_array( $moving ) || ! $moving ) {
+			return;
+		}
+		$kept = get_post_meta( $to, self::META, true );
+		$kept = is_array( $kept ) ? array_values( $kept ) : [];
+		foreach ( $moving as $entry ) {
+			if ( is_array( $entry ) ) {
+				$entry             = array_merge( $entry, $stamp );
+				$entry['store_id'] = $to;
+				$kept[]            = $entry;
+			}
+		}
+		usort(
+			$kept,
+			static function ( $a, $b ) {
+				return strcmp( (string) ( $a['time'] ?? '' ), (string) ( $b['time'] ?? '' ) );
+			}
+		);
+		/** This filter is documented in record(). */
+		$limit = max( 1, (int) apply_filters( 'flexa_block_inline_edit_log_limit', self::DEFAULT_LIMIT, $to ) );
+		$kept  = self::prune( array_slice( $kept, -$limit ), self::cutoff() );
+		update_post_meta( $to, self::META, wp_slash( $kept ) );
+		delete_post_meta( $from, self::META );
+	}
+
+	/**
 	 * Record one saved edit against the post that stores the block.
 	 *
 	 * @param int                 $store_id Post the content is stored in.
@@ -266,7 +305,7 @@ final class Inline_Edit_Log {
 			'user_name'   => (string) ( $f['user_name'] ?? '' ),
 			'user_role'   => (string) ( $f['user_role'] ?? '' ),
 			'action'      => 'undo' === ( $f['action'] ?? '' ) ? 'undo' : 'edit',
-			'kind'        => in_array( $f['kind'] ?? '', [ 'link', 'image' ], true ) ? (string) $f['kind'] : 'text',
+			'kind'        => in_array( $f['kind'] ?? '', [ 'link', 'image', 'icon' ], true ) ? (string) $f['kind'] : 'text',
 			'undo_of'     => (string) ( $f['undo_of'] ?? '' ),
 			'block_name'  => (string) ( $f['block_name'] ?? '' ),
 			'block_id'    => (string) ( $f['block_id'] ?? '' ),
@@ -366,7 +405,7 @@ final class Inline_Edit_Log {
 	 * @param \WP_User|false $user Current account, if it still exists.
 	 * @return string Slug, or ''.
 	 */
-	private static function role_slug( string $slug, $user ): string {
+	public static function role_slug( string $slug, $user ): string {
 		if ( '' === $slug && $user instanceof \WP_User && ! empty( $user->roles ) ) {
 			$slug = (string) reset( $user->roles );
 		}
@@ -384,7 +423,7 @@ final class Inline_Edit_Log {
 	 * @param \WP_User|false $user Current account, if it still exists.
 	 * @return string Label, or '' when nothing is known.
 	 */
-	private static function role_label( string $slug, $user ): string {
+	public static function role_label( string $slug, $user ): string {
 		$slug = self::role_slug( $slug, $user );
 		if ( '' === $slug ) {
 			return '';
@@ -471,6 +510,11 @@ final class Inline_Edit_Log {
 						'type'              => 'string',
 						'default'           => '',
 						'sanitize_callback' => 'sanitize_text_field',
+					],
+					// Only edits sitting in a review copy, not yet applied.
+					'pending'  => [
+						'type'    => 'boolean',
+						'default' => false,
 					],
 					'search'   => [
 						'type'              => 'string',
@@ -581,7 +625,27 @@ final class Inline_Edit_Log {
 			}
 		}
 
-		$rows     = self::merge( $by_post, (string) $request->get_param( 'user' ), (string) $request->get_param( 'block' ), $search, $titles );
+		// Which stores are review copies (and of what), for the "waiting for review" view.
+		$copy_of = [];
+		foreach ( array_keys( $by_post ) as $store_id ) {
+			$of = (int) get_post_meta( (int) $store_id, '_flexa_working_copy_of', true );
+			// Only an open copy waits; a trashed one was discarded.
+			if ( $of > 0 && in_array( get_post_status( (int) $store_id ), [ 'draft', 'pending' ], true ) ) {
+				$copy_of[ (int) $store_id ] = $of;
+			}
+		}
+
+		$rows = self::merge( $by_post, (string) $request->get_param( 'user' ), (string) $request->get_param( 'block' ), $search, $titles );
+		if ( rest_sanitize_boolean( $request->get_param( 'pending' ) ) ) {
+			$rows = array_values(
+				array_filter(
+					$rows,
+					static function ( $entry ) use ( $copy_of ) {
+						return isset( $copy_of[ (int) $entry['store_id'] ] );
+					}
+				)
+			);
+		}
 		$per_page = max( 1, min( 100, (int) $request->get_param( 'per_page' ) ) );
 		$page     = max( 1, (int) $request->get_param( 'page' ) );
 		$total    = count( $rows );
@@ -598,6 +662,17 @@ final class Inline_Edit_Log {
 			$entry['role_label']  = self::role_label( (string) ( $entry['user_role'] ?? '' ), $role_user );
 			$entry['role_slug']   = self::role_slug( (string) ( $entry['user_role'] ?? '' ), $role_user );
 			$entry['store_title'] = self::plain_title( $store_id );
+			// Who decided about this edit, if anyone has.
+			if ( ! empty( $entry['review'] ) ) {
+				$reviewer               = get_userdata( (int) ( $entry['reviewed_by'] ?? 0 ) );
+				$entry['reviewed_time'] = self::display_time( (string) ( $entry['reviewed_at'] ?? '' ) );
+				$entry['reviewed_role'] = self::role_label( (string) ( $entry['reviewed_role'] ?? '' ), $reviewer );
+			}
+			// An edit in a review copy: name the page it is for, and say it waits.
+			if ( isset( $copy_of[ $store_id ] ) ) {
+				$entry['pending']     = true;
+				$entry['store_title'] = self::plain_title( $copy_of[ $store_id ] );
+			}
 			$entry['time_display'] = self::display_time( (string) ( $entry['time'] ?? '' ) );
 			$entry['editUrl']     = (string) get_edit_post_link( $store_id, 'raw' );
 			$entry['viewUrl']     = $viewed > 0 ? (string) get_permalink( $viewed ) : '';
@@ -615,6 +690,14 @@ final class Inline_Edit_Log {
 				'users'         => $users,
 				'blocks'        => $blocks,
 				'retentionDays' => self::retention_days(),
+				'pendingCount'  => count(
+					array_filter(
+						self::merge( $by_post ),
+						static function ( $entry ) use ( $copy_of ) {
+							return isset( $copy_of[ (int) $entry['store_id'] ] );
+						}
+					)
+				),
 			]
 		);
 	}

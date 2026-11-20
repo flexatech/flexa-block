@@ -1,6 +1,6 @@
 # Sửa ngoài Front-End: nâng cấp
 
-> ✅ xong (24) · 🧪 cần kiểm tra lại (0) · ⬜ chưa bắt đầu (7)
+> ✅ xong (28) · 🧪 cần kiểm tra lại (0) · ⬜ chưa bắt đầu (3)
 > · Cập nhật: 2026-11-19 · Nhánh: `feat/frontend-editing` (tách từ `feat/mcp-module-phase-0`)
 >
 > Phạm vi block/trường đang sửa được: [`inline-editing-coverage.md`](inline-editing-coverage.md).
@@ -416,25 +416,121 @@ Attribute icon có hình dạng `{ source, name, markup, url, id }` (`source`:
 (`triggerIcon`), Video Popup (`playIcon`), Slides (mũi tên), và trong repeater của
 Icon List, Counter, Team Member, Timeline (`items[].icon`).
 
-24. ⬜ **Chốt cách server có SVG** (mục mở, xem dưới). Nguyên tắc không đổi: server
+24. ✅ **Chốt cách server có SVG** (mục mở, xem dưới). Nguyên tắc không đổi: server
     không bao giờ lưu nguyên SVG client gửi lên. Hướng đề xuất: client gửi
     `source` + `name`; server tra SVG từ một registry icon phía PHP rồi mới ghi
     `markup`. Nếu chưa có registry PHP thì tối thiểu chạy
     `Html_Helpers::svg_kses()` trên markup trước khi ghi, và giới hạn kích thước.
-25. ⬜ Front-end: popover chọn icon dùng lại dữ liệu của `src/components/IconPicker.tsx`,
+25. ✅ Front-end: popover chọn icon dùng lại dữ liệu của `src/components/IconPicker.tsx`,
     nhưng tách phần dữ liệu thư viện ra một module nạp lazy (chỉ khi người dùng
     click vào icon), để trang không phải tải cả thư viện cho mọi lần xem.
-26. ⬜ Icon dạng `upload` đi đường của ảnh (mục 22): chỉ nhận ID attachment, kiểm
+26. ✅ Icon dạng `upload` đi đường của ảnh (mục 22): chỉ nhận ID attachment, kiểm
     là SVG/ảnh hợp lệ, server dựng `url`.
+
+    **Đã làm (mục 24–26, đã thử trên trình duyệt 2026-11-20):** chốt cách đầu ở mục mở bên
+    dưới. `scripts/build-icon-catalog.cjs` (chạy trong `npm run build`, hoặc
+    `npm run icons`) sinh `includes/icons/catalog.php` bằng đúng cách IconPicker
+    dựng SVG: 6 icon builtin (đường nét tách ra `src/shared/builtin-icons.json`,
+    IconPicker đọc cùng file) và 336 icon của `@wordpress/icons` qua `<Icon>` +
+    `normalizeLibrary()`. File sinh ra được commit để checkout chạy được không cần
+    build. `Icon_Source` (`includes/class-icon-source.php`) chỉ nhận `{source,
+    name}` có trong catalog, hoặc `{source: upload, id}` là attachment ảnh (kể cả
+    SVG) mà user có `upload_files` + `read_post`, hoặc `none` (bỏ icon); markup gửi
+    kèm bị bỏ qua. Filter `flexa_block_inline_icon_catalog` để add-on thêm icon.
+    Registry có khoá `icons` (`selector` là icon, hoặc `wrap` khi là phần tử chỉ
+    chứa icon; `repeat` + `key`): Icon, Button, Banner/CTA (nút chính/phụ), Info
+    Box (icon và icon nút), Modal (trigger icon), Video Popup (nút play), Icon
+    List, Counter, Timeline (marker, kể cả marker chưa có icon). Lưu qua
+    `handle_save()` với `icon: true`, giữ các khoá khác (vị trí trước/sau chữ),
+    log `kind: icon` dạng `library: wp-arrowRight`; icon cũ không tra lại được
+    (ví dụ tên không có trong catalog) thì không Undo được. Route
+    `GET flexa-block/v1/inline-icons` trả catalog (đã `svg_kses`) cho người sửa
+    được, chỉ tải ở lần bấm icon đầu tiên. Hộp thoại **Edit icon**: icon hiện tại,
+    ô tìm, hai tab Basic / WordPress, lưới icon, "Choose file" (thư viện media),
+    "Remove icon"; bấm icon (cả trong link/nút) mở hộp thoại thay vì bấm link.
+    **Chưa làm:** mũi tên Slides, icon của Tabs, Notice và mạng xã hội của Team
+    Member; thêm icon vào chỗ chưa có phần tử icon (trừ marker Timeline).
 
 ## Giai đoạn 8 · Tuỳ chọn: lưu thành bản sao chờ duyệt
 
-27. ⬜ Cài đặt mới trong tab **Editing**: "Sửa trên trang đã publish thì lưu thành
+27. ✅ Cài đặt mới trong tab **Editing**: "Sửa trên trang đã publish thì lưu thành
     bản sao chờ duyệt". Bật thì lần lưu đầu trên trang publish tạo working copy
     (`Working_Copy` của module MCP, cũng cần đưa ra khỏi `includes/mcp/` như mục 1),
     các lần sau ghi vào bản sao đó, toolbar báo "thay đổi đang chờ duyệt" và đưa
     link mở bản sao. Áp dụng vẫn bằng nút "Apply to original" trong block editor.
     Tắt (mặc định) thì giữ hành vi hiện tại: ghi thẳng.
+
+
+    **Đã làm (đã thử trên trình duyệt 2026-11-20):** công tắc "Send changes to published pages
+    for review" (`inline_editor.review`, mặc định tắt) dưới công tắc chính ở tab
+    Editing. Khi bật, `handle_save()` ghi thay đổi trên trang đã publish vào bản sao
+    của `Working_Copy` (nạp file khi cần, không phụ thuộc module MCP đang bật): bản
+    sao đang mở thì là nơi lưu ngay từ đầu; chưa có thì kiểm phiên bản trên trang,
+    và chỉ tạo bản sao khi thật sự có thay đổi để ghi (lưu không đổi gì không sinh
+    bản sao). Khoá editor của trang gốc không chặn lần tạo bản sao. Template part,
+    synced pattern và trang chưa publish vẫn ghi thẳng. Người sửa xem trang sẽ thấy
+    nội dung bản sao (`the_content` ưu tiên 1, chỉ cho người được sửa và chỉ trang
+    đang xem; `blockId`, phiên bản nội dung tính theo bản sao), khách vẫn thấy trang
+    gốc. Toolbar báo "Changes to this page go to a copy for review", lưu xong báo
+    "Saved to the copy for review" và hiện link mở bản sao. Duyệt bằng nút "Apply
+    to original" có sẵn; `Working_Copy::apply()` phát action
+    `flexa_block_working_copy_applied` trước khi xoá bản sao để log sửa ngoài
+    front-end chuyển sang trang gốc. Kiểm trên site thật qua `handle_save()`: tắt
+    thì ghi thẳng; bật thì trang giữ nguyên, bản sao nháp nhận thay đổi, lần sau
+    dùng lại bản sao, phiên bản cũ của trang bị từ chối, Hoàn tác trên bản sao,
+    trang nháp vẫn ghi thẳng, apply đưa nội dung lên trang và chuyển log, sửa tiếp
+    sau apply tạo bản sao mới. **Chưa làm:** CSS sinh theo block (ví dụ ảnh nền
+    slide) của bản sao chưa hiện khi xem trang, vì trang dùng CSS của trang gốc.
+
+    **Bổ sung sau góp ý (ai duyệt, nhớ chỗ đã sửa):** hai tuỳ chọn khi bật duyệt:
+    "Who can apply the changes" (`review_approver`: mặc định **Administrators
+    only**, hoặc "Anyone who can publish", tức cả Editor) và "Nobody applies their
+    own changes" (`review_no_self`, mặc định tắt: ai đã sửa trong bản sao, kể cả
+    admin, không tự apply được). Bản sao do front-end tạo có meta
+    `_flexa_review_copy`; `Working_Copy::can_apply()` qua filter mới
+    `flexa_block_working_copy_can_apply` áp các luật này (bản sao của AI agent không
+    bị ảnh hưởng), panel trong editor nhận lý do qua
+    `flexa_block_working_copy_panel_data` và hiện thay cho nút Apply. Bản sao không
+    còn chép log và cờ review của trang gốc (`SKIP_META`). Để nhớ chỗ đã sửa: panel
+    "Changes for a published page" liệt kê mọi thay đổi trong bản sao (cũ nhất trước,
+    Trước/Sau tô đậm/gạch ngang, ai, lúc nào); ngoài front-end các block đã sửa có
+    viền cam và nhãn "Waiting for review", góc trái dưới có thanh "Changes waiting
+    for review on this page: N · Open the copy"; tab Edit log có nút lọc "Waiting
+    for review (N)" và nhãn trên từng thẻ, tên trang là trang gốc. Kiểm trên site
+    thật: Editor lưu vào bản sao, Editor bị từ chối apply khi chỉ admin duyệt,
+    được apply khi chọn "publish", bị chặn khi bật "không tự duyệt"; admin chưa sửa
+    thì apply được, đã sửa thì bị chặn; bản sao của agent không đổi luật; danh sách
+    chờ duyệt đúng.
+
+    **Tab Review (chỗ riêng để duyệt):** Flexa Block → **Review** (hiện khi bật duyệt
+    hoặc còn bản sao chờ), số đếm trên tab và trên menu Flexa Block của WordPress.
+    Mỗi trang có bản sao là một thẻ: tên trang, người sửa (ảnh đại diện), lần sửa
+    cuối, số thay đổi, danh sách Trước/Sau; nút **Apply to the live page** (đi qua
+    đúng route `working-copy/{id}/apply`, nên vẫn kiểm quyền, khoá, xung đột; xung
+    đột thì cần tick "ghi đè"), **Discard** (có hộp xác nhận, bản sao vào thùng rác),
+    **Open in editor**, **View live page**; người không được duyệt thấy lý do thay
+    cho nút Apply. `Inline_Review` (`includes/class-inline-review.php`): route
+    `GET flexa-block/v1/inline-review` và `POST …/inline-review/{id}/discard` (chỉ
+    `manage_options`). Khi apply (từ tab hay từ nút trong editor) hoặc discard, log
+    của bản sao chuyển sang trang gốc và mỗi dòng được đóng dấu quyết định:
+    `review` (`approved` / `discarded`), người quyết định (tên, vai trò) và thời
+    điểm; tab Edit log hiện dòng "Approved by … · giờ" (xanh) hoặc "Discarded by …"
+    (xám). Kiểm trên site thật: hàng đợi liệt kê đúng, apply đóng dấu approved kèm
+    tên và giờ, discard đóng dấu discarded và trang giữ nguyên, số đếm giảm, Editor
+    không xem được hàng đợi (403).
+
+    **Báo gần thời gian thực:** dùng Heartbeat có sẵn của WordPress (không thêm kết
+    nối hay dịch vụ ngoài). `Inline_Review::heartbeat()` trả số bản sao chờ và một
+    chữ ký hàng đợi (đổi khi có bản sao mới, sửa thêm, apply, discard); một đoạn
+    script nhỏ trên mọi trang admin (chỉ cho `manage_options`, chỉ khi bật duyệt
+    hoặc còn bản sao chờ) cập nhật số đỏ trên menu. Tab Review đặt Heartbeat khoảng
+    15 giây, khi chữ ký đổi thì hiện "There are new changes waiting for review" và
+    nút "Show them", không tự tải lại danh sách. **Vá lỗ hổng Apply:** danh sách gửi
+    kèm dấu nội dung bản sao (`Working_Copy::fingerprint()`), nút Apply gửi lại dấu
+    đó (`seen`); nếu bản sao đã có sửa mới từ lúc mở danh sách, route apply trả 409
+    `flexa_working_copy_changed` và không ghi gì. Kiểm trên site thật: Heartbeat
+    tăng số đếm và đổi chữ ký khi có sửa mới; apply với dấu cũ bị từ chối, trang
+    giữ nguyên; tải lại rồi apply thì thành công.
 
 ## Giai đoạn 9 · Trải nghiệm và tương thích
 
@@ -487,7 +583,7 @@ Icon List, Counter, Team Member, Timeline (`items[].icon`).
   `handle_save()` nên có phiên bản nội dung, log và Hoàn tác. Còn chốt: có cho
   dán URL MP4 ngoài thư viện không, và có làm cho block khác có video không.
 
-- **Nguồn SVG cho icon thư viện (mục 24).** Thư viện icon hiện chỉ có ở phía JS
+- **Nguồn SVG cho icon thư viện (mục 24) — đã chốt cách đầu, xem mục 24.** Thư viện icon hiện chỉ có ở phía JS
   (`IconPicker.tsx`); markup được client ghi vào attribute lúc chọn trong editor,
   server chỉ lọc bằng `svg_kses()` khi render. Có hai lựa chọn: sinh một file
   registry PHP từ cùng nguồn dữ liệu lúc build (server tự tra theo `name`, an toàn
