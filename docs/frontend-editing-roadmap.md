@@ -1,6 +1,6 @@
 # Sửa ngoài Front-End: nâng cấp
 
-> ✅ xong (28) · 🧪 cần kiểm tra lại (0) · ⬜ chưa bắt đầu (3)
+> ✅ xong (29) · 🧪 cần kiểm tra lại (2) · ⬜ chưa bắt đầu (0)
 > · Cập nhật: 2026-11-19 · Nhánh: `feat/frontend-editing` (tách từ `feat/mcp-module-phase-0`)
 >
 > Phạm vi block/trường đang sửa được: [`inline-editing-coverage.md`](inline-editing-coverage.md).
@@ -313,7 +313,18 @@ không bị tính là đã sửa), hoặc một lần lưu đang chạy dở.
     nếu có thay đổi chưa lưu) rồi mở hộp thoại (địa chỉ, "Open in a new tab", gợi ý
     để trống là gỡ link; Esc/Huỷ/bấm nền để đóng). Lưu xong thẻ `<a>` trên trang
     đổi ngay và có "Saved · Undo". Server từ chối thì hộp thoại ở lại và nêu lý do.
-    **Chưa làm:** Icon List (`items[i].link.url`, cần hỗ trợ đường dẫn lồng nhau);
+    **Icon List (bổ sung):** khai báo `link` có khoá `item` (link nằm trong chính
+    mục: `items[i].link.url` / `.target`, giữ nguyên `rel`), request gửi kèm `index`
+    và `key: link`; nút Edit link chỉ bám vào thẻ `<a>` của đúng dòng đang sửa.
+    Kiểm trên site thật: đổi link dòng 1 (bật tab mới, giữ `rel`), dòng 2 nguyên,
+    Hoàn tác, thêm link cho dòng trước đó không có link qua server, từ chối
+    `javascript:`, thiếu/sai chỉ số. **Thêm link / thêm icon ở chỗ chưa có:** khi
+    sửa chữ có thể có link mà chưa có thẻ `<a>` (Heading, dòng Icon List), nút trên
+    toolbar thành **Add link**; khi sửa chữ đi kèm một icon chưa có (khai báo icon có
+    `with`: Button, nút Banner/CTA/Info Box, dòng Icon List) toolbar có **Add icon**.
+    Lưu xong trang tự tải lại để block tự vẽ link/icon mới. Kiểm trên site thật: thêm
+    link và icon cho dòng chưa có gì, thêm link cho heading, thêm icon cho button;
+    render ra đúng thẻ `<a>` và icon. **Chưa làm:**
     heading chưa có link thì chưa thêm được (trang không có thẻ `<a>` để bám vào).
     Kiểm: 1.569 test PHP (gồm ~35 ca cho `Link_Url`); trên site thật qua
     `handle_save()` đổi URL, bật/tắt tab mới, gỡ link, hoàn tác, từ chối 5 kiểu
@@ -534,20 +545,62 @@ Icon List, Counter, Team Member, Timeline (`items[].icon`).
 
 ## Giai đoạn 9 · Trải nghiệm và tương thích
 
-28. ⬜ **Dán chữ.** Khi dán vào trường đang sửa, chặn sự kiện `paste` và chỉ chèn
+28. ✅ **Dán chữ.** Khi dán vào trường đang sửa, chặn sự kiện `paste` và chỉ chèn
     phần HTML nằm trong allowlist của trường đó (hoặc chữ thường với trường
     `minimal`), để người dùng không thấy định dạng lạ từ Word / Google Docs trước
     khi lưu. Server vẫn kses như cũ; đây chỉ là để thứ người dùng thấy khớp với
     thứ sẽ được lưu.
-29. ⬜ **Cache trang.** Kiểm với Flexa Cache, WP Fastest Cache và một plugin cache
+    **Đã làm (đã thử trên trình duyệt 2026-11-20):** mỗi trường gửi kèm tên allowlist
+    (`allowed`) xuống trình duyệt; sự kiện `paste` trong chữ đang sửa bị chặn và
+    thay bằng nội dung đã lọc theo đúng danh sách thẻ server giữ cho trường đó
+    (`plain` chỉ chữ; `minimal` đậm/nghiêng/xuống dòng; thêm link với
+    `minimal-link`, `rich`; `post` giữ cả đoạn, danh sách). Mọi thuộc tính bị bỏ
+    (trừ `href` của link đã qua kiểm scheme), đậm/nghiêng viết bằng style (Word,
+    Docs) thành `<strong>` / `<em>` (thẻ `<b style="font-weight:normal">` bọc ngoài
+    của Docs không tính), khối không giữ được thành xuống dòng hoặc khoảng trắng,
+    comment/ảnh/script/style của Word bị bỏ; trường ghép (`join`) coi như chữ thuần.
+    Không đổi server. Kiểm bằng HTML mẫu kiểu Word và Google Docs cho cả năm mức.
+
+29. 🧪 **Cache trang.** Kiểm với Flexa Cache, WP Fastest Cache và một plugin cache
     phổ biến khác: sau khi lưu ngoài front-end, khách có thấy nội dung mới ngay
     không. `wp_update_post()` chạy `save_post` nên phần lớn plugin cache tự xoá;
     chỗ nào không thì gọi hook xoá cache của bài (`clean_post_cache` và action
     riêng của plugin cache nếu có).
-30. ⬜ **Điện thoại và bàn phím.** Chạm để sửa trên màn hình nhỏ (toolbar không che
+
+    **Kết quả kiểm (Flexa Cache):** sửa trang thì file cache của trang bị xoá đúng
+    (Flexa Cache nghe `transition_post_status`); Apply bản sao cũng vậy; sửa vào bản
+    sao không cần xoá. **Lỗi:** sửa synced pattern hoặc template part không xoá cache
+    của các trang dùng nó (không phải bài công khai, plugin cache không biết trang
+    nào nhúng). **Đã sửa:** `Inline_Cache::purge_all()` (`includes/class-inline-cache.php`)
+    gọi sau khi lưu vào nơi dùng chung (`targetId`): Flexa Cache (`flexa_cache/purge`),
+    WP Fastest Cache, WP Rocket, LiteSpeed, W3 Total Cache, WP Super Cache,
+    SiteGround, Cache Enabler, Breeze nếu đang chạy, cùng action
+    `flexa_block_inline_purge_all`. Kiểm lại trên site: sửa pattern xoá file cache
+    của trang chứa nó. Ghi chú: máy dev chạy nginx với `WP_CACHE` tắt nên Flexa Cache
+    ghi file mà không phục vụ; kiểm bằng việc file cache có bị xoá. Chưa thử các
+    plugin cache khác (chỉ cài, chưa bật).
+30. 🧪 **Điện thoại và bàn phím.** Chạm để sửa trên màn hình nhỏ (toolbar không che
     trường đang sửa, không bị bàn phím ảo che), phím Tab chuyển giữa các trường
     sửa được, nhãn `aria-label` và vai trò cho toolbar, thông báo lưu
     thành công/thất bại đọc được bằng trình đọc màn hình (`aria-live`).
+
+    **Đã làm:** chữ, ảnh, icon sửa được có `tabindex="0"`, `role="button"` và
+    `aria-label` ("Edit text: …", "Edit image", "Edit icon"); Enter/Space mở sửa
+    (chạy đúng handler click; khi đang gõ thì không chặn phím); lúc đang sửa bỏ
+    `role` (là ô chữ), sửa xong gắn lại. Hộp thoại ảnh và icon giữ Tab bên trong
+    (`trapTab()`). Toolbar `role="toolbar"` + `aria-label`, thông báo đã có
+    `aria-live`. Toolbar xuống dòng (`flex-wrap`); dưới 600px bám đỉnh màn hình
+    (thanh admin cuộn đi), thông báo một dòng riêng, nút to hơn. Màn hình cảm ứng
+    (`hover: none`) có viền nét đứt mờ cố định ở chỗ sửa được; `:focus-visible` có
+    viền rõ. **Hai lỗi tìm ra khi kiểm, đã sửa:** (1) Safari: mở sửa bằng bàn phím
+    thì ô có focus nhưng không có con trỏ, gõ không vào; nay `startEdit()` đặt con
+    trỏ ở cuối chữ khi chưa có. (2) Đang có chữ chưa lưu mà bấm ảnh/icon nằm trong
+    link: bộ chặn rời trang coi là bấm link, chọn "Discard" thì trang đi theo link
+    thay vì mở hộp thoại; nay bộ chặn bỏ qua ảnh, icon và nút sửa ảnh. Kiểm tự động
+    bằng bản build cuối trên Chromium / WebKit / Firefox: bàn phím + điện thoại
+    16/16 / 16/16 / 12/12 (Firefox không giả lập điện thoại), cùng các bộ cũ: chữ
+    chưa lưu 14/14, Hoàn tác 9/9, link 19/19, ảnh 23/23 trên cả ba. Chưa thử trên
+    điện thoại thật và với trình đọc màn hình thật.
 31. ✅ **Lưu block ngoài bài vào đúng nơi** (làm sớm, sau mục 6). Lúc render,
     `enter_scope()` / `leave_scope()` (trên `pre_render_block` ưu tiên cuối và
     `render_block`) giữ một stack nơi lưu của block đang render: `core/post-content`

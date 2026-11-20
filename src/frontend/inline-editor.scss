@@ -28,6 +28,28 @@
 	outline: 2px solid #3858e9;
 }
 
+/* Reached with the keyboard: a clear ring, like the active one. */
+.flexa-fee-editable:focus-visible,
+.flexa-fee-image-hit:focus-visible,
+.flexa-fee-icon-hit:focus-visible {
+	outline: 2px solid #3858e9;
+	outline-offset: 3px;
+}
+
+/*
+ * A touch screen has no hover, so the hint that something can be edited is
+ * shown all the time, quietly.
+ */
+@media (hover: none) {
+
+	.flexa-fee-editable:not(.flexa-fee-active),
+	.flexa-fee-image-hit,
+	.flexa-fee-icon-hit {
+		outline: 1px dashed rgba(56, 88, 233, 0.45);
+		outline-offset: 3px;
+	}
+}
+
 /* Toolbar — fixed bar under the WP admin bar while editing. */
 .flexa-fee-toolbar {
 	position: fixed;
@@ -64,8 +86,37 @@ body:not(.admin-bar) .flexa-fee-toolbar {
 	margin: 0 auto;
 	padding: 8px 24px;
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 10px;
+}
+
+/*
+ * Phones: the admin bar scrolls away below 600px, so the toolbar sits at the
+ * very top; buttons wrap onto a second line instead of running off screen, and
+ * the message takes a line of its own.
+ */
+@media screen and (max-width: 600px) {
+
+	.flexa-fee-toolbar,
+	body:not(.admin-bar) .flexa-fee-toolbar {
+		top: 0;
+	}
+
+	.flexa-fee-toolbar__inner {
+		padding: 8px 12px;
+		gap: 8px;
+	}
+
+	.flexa-fee-toolbar__msg {
+		flex-basis: 100%;
+		order: 10;
+		margin-left: 0;
+	}
+
+	.flexa-fee-toolbar .flexa-fee-btn {
+		padding: 8px 14px;
+	}
 }
 
 .flexa-fee-toolbar__label {

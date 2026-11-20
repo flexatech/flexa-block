@@ -63,8 +63,8 @@ final class Inline_Editor {
 		// modifier class.
 		'flexa/banner'  => [
 			'icons'  => [
-				[ 'attr' => 'primaryIcon', 'selector' => '.flexa-promo__button--primary > .flexa-icon' ],
-				[ 'attr' => 'secondaryIcon', 'selector' => '.flexa-promo__button--secondary > .flexa-icon' ],
+				[ 'attr' => 'primaryIcon', 'selector' => '.flexa-promo__button--primary > .flexa-icon', 'with' => 'primaryText' ],
+				[ 'attr' => 'secondaryIcon', 'selector' => '.flexa-promo__button--secondary > .flexa-icon', 'with' => 'secondaryText' ],
 			],
 			'fields' => [
 				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
@@ -75,8 +75,8 @@ final class Inline_Editor {
 		],
 		'flexa/cta'     => [
 			'icons'  => [
-				[ 'attr' => 'primaryIcon', 'selector' => '.flexa-promo__button--primary > .flexa-icon' ],
-				[ 'attr' => 'secondaryIcon', 'selector' => '.flexa-promo__button--secondary > .flexa-icon' ],
+				[ 'attr' => 'primaryIcon', 'selector' => '.flexa-promo__button--primary > .flexa-icon', 'with' => 'primaryText' ],
+				[ 'attr' => 'secondaryIcon', 'selector' => '.flexa-promo__button--secondary > .flexa-icon', 'with' => 'secondaryText' ],
 			],
 			'fields' => [
 				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
@@ -119,7 +119,9 @@ final class Inline_Editor {
 		],
 		'flexa/button' => [
 			'icons' => [
-				[ 'attr' => 'icon', 'selector' => '.flexa-button__link > .flexa-icon' ],
+				// `with`: the text this icon goes with, so editing that text can offer
+				// "Add icon" when there is none yet.
+				[ 'attr' => 'icon', 'selector' => '.flexa-button__link > .flexa-icon', 'with' => 'text' ],
 			],
 			'fields' => [
 				[ 'attr' => 'text', 'selector' => '.flexa-button__text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'url', 'target' => 'linkTarget', 'anchor' => '.flexa-button__link' ] ],
@@ -139,7 +141,7 @@ final class Inline_Editor {
 			],
 			'icons'  => [
 				[ 'attr' => 'icon', 'selector' => '.flexa-info-box__icon', 'wrap' => true ],
-				[ 'attr' => 'buttonIcon', 'selector' => '.flexa-info-box__button > .flexa-icon' ],
+				[ 'attr' => 'buttonIcon', 'selector' => '.flexa-info-box__button > .flexa-icon', 'with' => 'buttonText' ],
 			],
 			'fields' => [
 				[ 'attr' => 'prefix', 'selector' => '.flexa-info-box__prefix', 'allowed' => 'minimal' ],
@@ -272,10 +274,12 @@ final class Inline_Editor {
 		],
 		'flexa/icon-list' => [
 			'icons'  => [
-				[ 'attr' => 'items', 'key' => 'icon', 'repeat' => true, 'selector' => '.flexa-icon-list__icon', 'wrap' => true ],
+				[ 'attr' => 'items', 'key' => 'icon', 'repeat' => true, 'selector' => '.flexa-icon-list__icon', 'wrap' => true, 'with' => 'text' ],
 			],
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'text', 'repeat' => true, 'selector' => '.flexa-icon-list__text', 'allowed' => 'minimal' ],
+				// A row's link lives in the row itself (items[i].link.url / .target):
+				// `item` names that object, and the row is the <a>.
+				[ 'attr' => 'items', 'key' => 'text', 'repeat' => true, 'selector' => '.flexa-icon-list__text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'items', 'item' => 'link', 'target' => 'target', 'anchor' => 'a.flexa-icon-list__item' ] ],
 			],
 		],
 		'flexa/star-rating' => [
@@ -1205,6 +1209,7 @@ final class Inline_Editor {
 					'imageEdit'  => __( 'Edit image', 'flexa-block' ),
 					'imageBg'    => __( 'Change background', 'flexa-block' ),
 					'iconEdit'   => __( 'Edit icon', 'flexa-block' ),
+					'textEdit'   => __( 'Edit text', 'flexa-block' ),
 					'reviewNote'  => __( 'Changes to this page go to a copy for review. Visitors keep seeing the page as it is.', 'flexa-block' ),
 					'reviewSaved' => __( 'Saved to the copy for review', 'flexa-block' ),
 					/* translators: %d: number of blocks changed */
@@ -1226,6 +1231,9 @@ final class Inline_Editor {
 					'undo'    => __( 'Undo', 'flexa-block' ),
 					'undone'  => __( 'Change undone', 'flexa-block' ),
 					'linkEdit'    => __( 'Edit link', 'flexa-block' ),
+					'linkAdd'     => __( 'Add link', 'flexa-block' ),
+					'iconAdd'     => __( 'Add icon', 'flexa-block' ),
+					'reloading'   => __( 'Saved. Reloading the page to show it…', 'flexa-block' ),
 					'linkApply'   => __( 'Apply', 'flexa-block' ),
 					'linkInvalid' => __( 'Links can start with http://, https://, mailto: or tel:, or be a path such as /contact.', 'flexa-block' ),
 					'saving'  => __( 'Saving…', 'flexa-block' ),
@@ -1257,6 +1265,10 @@ final class Inline_Editor {
 				$entry = [
 					'selector' => $field['selector'],
 					'attr'     => $field['attr'],
+					// The field's allowlist, so pasted text can be cut down to what
+					// will be saved (the server still filters; this keeps the two
+					// the same).
+					'allowed'  => (string) ( $field['allowed'] ?? 'inline' ),
 				];
 				if ( ! empty( $field['repeat'] ) ) {
 					$entry['repeat'] = true;
@@ -1277,6 +1289,7 @@ final class Inline_Editor {
 						'attr'   => (string) $field['link']['attr'],
 						'target' => (string) ( $field['link']['target'] ?? '' ),
 						'anchor' => (string) $field['link']['anchor'],
+						'item'   => (string) ( $field['link']['item'] ?? '' ),
 					];
 				}
 				$fields[] = $entry;
@@ -1350,6 +1363,9 @@ final class Inline_Editor {
 				if ( ! empty( $icon['wrap'] ) ) {
 					$entry['wrap'] = true;
 				}
+				if ( ! empty( $icon['with'] ) ) {
+					$entry['with'] = (string) $icon['with'];
+				}
 				if ( ! empty( $icon['repeat'] ) ) {
 					$entry['repeat'] = true;
 					$entry['key']    = (string) $icon['key'];
@@ -1399,7 +1415,7 @@ final class Inline_Editor {
 			return;
 		}
 		?>
-		<div class="flexa-fee-toolbar" hidden>
+		<div class="flexa-fee-toolbar" role="toolbar" aria-label="<?php echo esc_attr__( 'Front-end editing', 'flexa-block' ); ?>" hidden>
 			<div class="flexa-fee-toolbar__inner">
 				<span class="flexa-fee-toolbar__label"><?php echo esc_html__( 'Editing', 'flexa-block' ); ?></span>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--save"><?php echo esc_html__( 'Save', 'flexa-block' ); ?></button>
@@ -1408,6 +1424,7 @@ final class Inline_Editor {
 				<a class="flexa-fee-toolbar__review" target="_blank" rel="noopener" hidden><?php echo esc_html__( 'Open the copy for review', 'flexa-block' ); ?></a>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--undo" hidden><?php echo esc_html__( 'Undo', 'flexa-block' ); ?></button>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--link" hidden><?php echo esc_html__( 'Edit link', 'flexa-block' ); ?></button>
+				<button type="button" class="flexa-fee-btn flexa-fee-btn--link flexa-fee-btn--addicon" hidden><?php echo esc_html__( 'Add icon', 'flexa-block' ); ?></button>
 			</div>
 		</div>
 		<?php
@@ -1780,7 +1797,7 @@ final class Inline_Editor {
 		} elseif ( $is_link ) {
 			// A link is not a text field and never goes through kses: its value is
 			// checked by Link_Url and only ever lands in the URL attribute.
-			$link  = self::find_link( $name, $attr );
+			$link  = self::find_link( $name, $attr, $key, null !== $index_raw );
 			$field = [];
 			if ( null === $link ) {
 				return new \WP_Error( 'flexa_invalid_field', __( 'This link cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
@@ -1936,7 +1953,7 @@ final class Inline_Editor {
 			$after_json = $changed['after'];
 			$undoable   = $changed['undoable'];
 		} elseif ( $is_link ) {
-			$changed = self::with_link( $attrs, $name, (array) $link, $value );
+			$changed = self::with_link( $attrs, $name, (array) $link, $value, null === $index_raw ? null : absint( $index_raw ) );
 			if ( is_wp_error( $changed ) ) {
 				return $changed;
 			}
@@ -2030,6 +2047,13 @@ final class Inline_Editor {
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
+		}
+
+		// A template part or synced pattern shows on pages no cache plugin can
+		// name, so its change empties the page cache (a page's own save is left
+		// to the cache plugin, which clears that page itself).
+		if ( $target_id > 0 ) {
+			Inline_Cache::purge_all( $store );
 		}
 
 		// Logged on the post that stores the text (a pattern's history shows who
@@ -2484,9 +2508,16 @@ final class Inline_Editor {
 	 * @param string $attr URL attribute name.
 	 * @return array<string, mixed>|null
 	 */
-	private static function find_link( string $name, string $attr ): ?array {
+	private static function find_link( string $name, string $attr, ?string $key = null, bool $has_index = false ): ?array {
+		$key = ( null === $key || '' === $key ) ? null : $key;
 		foreach ( self::fields_for( $name ) as $field ) {
-			if ( isset( $field['link']['attr'] ) && (string) $field['link']['attr'] === $attr ) {
+			if ( ! isset( $field['link']['attr'] ) || (string) $field['link']['attr'] !== $attr ) {
+				continue;
+			}
+			$item = (string) ( $field['link']['item'] ?? '' );
+			// A link inside a list item (items[i][item]) needs the item; a block
+			// attribute must come without one.
+			if ( '' !== $item ? ( $has_index && $item === $key ) : ( ! $has_index && null === $key ) ) {
 				return (array) $field['link'];
 			}
 		}
@@ -2507,7 +2538,7 @@ final class Inline_Editor {
 	 * @param string             $value JSON: {"url": "...", "newTab": bool}.
 	 * @return array{old:string,after:string,old_summary:string,summary:string}|\WP_Error
 	 */
-	private static function with_link( \stdClass $attrs, string $name, array $link, string $value ) {
+	private static function with_link( \stdClass $attrs, string $name, array $link, string $value, ?int $index = null ) {
 		$parsed = json_decode( $value, true );
 		if ( ! is_array( $parsed ) ) {
 			return new \WP_Error( 'flexa_invalid_link', __( 'The link could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
@@ -2521,6 +2552,42 @@ final class Inline_Editor {
 		$url_attr    = (string) $link['attr'];
 		$target_attr = (string) ( $link['target'] ?? '' );
 		$new_tab     = ! empty( $parsed['newTab'] ) && '' !== $target_attr;
+
+		// A link inside a list item: items[index][item] = { url, target, rel… }.
+		// Only url and target change; the rest of the object (rel) is kept.
+		$item_key = (string) ( $link['item'] ?? '' );
+		if ( '' !== $item_key ) {
+			$list = property_exists( $attrs, $url_attr ) ? $attrs->{$url_attr} : self::default_attr( $name, $url_attr );
+			if ( null === $index || ! is_array( $list ) || ! isset( $list[ $index ] ) || ! $list[ $index ] instanceof \stdClass ) {
+				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+			$row = clone $list[ $index ];
+			$obj = isset( $row->{$item_key} ) && $row->{$item_key} instanceof \stdClass ? clone $row->{$item_key} : new \stdClass();
+
+			$before = [
+				'url'    => is_string( $obj->url ?? null ) ? $obj->url : '',
+				'newTab' => '_blank' === ( $obj->{$target_attr} ?? '' ),
+			];
+			$after  = [
+				'url'    => $url,
+				'newTab' => $new_tab,
+			];
+
+			$obj->url = $url;
+			if ( '' !== $target_attr ) {
+				$obj->{$target_attr} = $new_tab ? '_blank' : '';
+			}
+			$row->{$item_key} = $obj;
+			$list[ $index ]   = $row;
+			$attrs->{$url_attr} = $list;
+
+			return [
+				'old'         => (string) wp_json_encode( $before ),
+				'after'       => (string) wp_json_encode( $after ),
+				'old_summary' => self::link_summary( $before ),
+				'summary'     => self::link_summary( $after ),
+			];
+		}
 
 		$read = static function ( string $attr ) use ( $attrs, $name ): string {
 			$value = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );

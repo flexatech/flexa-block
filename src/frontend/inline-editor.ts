@@ -27,6 +27,8 @@ interface FieldDef {
 	// joined by this string (e.g. a `\n`-separated feature list stored as one
 	// string attribute). Editing any one line rewrites the whole field.
 	join?: string;
+	// The field's allowlist name (plain, minimal, minimal-link, inline, rich, post).
+	allowed?: string;
 	// The link that wraps this text, when it can be edited: the URL attribute,
 	// its target attribute, and a selector (within the block root) for the <a>.
 	link?: LinkDef;
@@ -36,6 +38,9 @@ interface LinkDef {
 	attr: string;
 	target: string;
 	anchor: string;
+	// Set when the link lives inside the list item (items[i][item]); the
+	// item's own element is then the <a>.
+	item?: string;
 }
 
 // A picture a block keeps: the attribute, the <img>, and (optionally) the
@@ -62,6 +67,9 @@ interface IconDef {
 	attr: string;
 	selector: string;
 	wrap?: boolean;
+	// The text attribute (or list key) this icon goes with: editing that text
+	// offers "Add icon" when the icon is not there yet.
+	with?: string;
 	repeat?: boolean;
 	key?: string;
 }
@@ -92,6 +100,7 @@ interface Boot {
 		imageEdit?: string;
 		imageBg?: string;
 		iconEdit?: string;
+		textEdit?: string;
 		reviewNote?: string;
 		reviewSaved?: string;
 		reviewPending?: string;
@@ -107,6 +116,9 @@ interface Boot {
 		imageUse?: string;
 		// The link editor.
 		linkEdit?: string;
+		linkAdd?: string;
+		iconAdd?: string;
+		reloading?: string;
 		linkApply?: string;
 		linkInvalid?: string;
 		error: string;
@@ -138,6 +150,7 @@ interface ActiveEdit {
 	// viewed post itself.
 	targetId: number;
 	link?: LinkDef;
+	allowed?: string;
 	// The value as it was when editing started, in the same form currentValue()
 	// returns, so "has anything changed" compares like with like.
 	originalValue: string;
@@ -191,6 +204,7 @@ interface UndoState {
 let undoState: UndoState | null = null;
 let undoBtn: HTMLButtonElement | null = null;
 let linkBtn: HTMLButtonElement | null = null;
+let addIconBtn: HTMLButtonElement | null = null;
 let linkDialog: HTMLElement | null = null;
 let imageDialog: HTMLElement | null = null;
 let iconDialog: HTMLElement | null = null;
@@ -350,7 +364,11 @@ function endEdit( restore: boolean ): void {
 	if ( linkBtn ) {
 		linkBtn.hidden = true;
 	}
+	if ( addIconBtn ) {
+		addIconBtn.hidden = true;
+	}
 	active.el.contentEditable = 'false';
+	active.el.setAttribute( 'role', 'button' );
 	active.el.classList.remove( ACTIVE_CLASS );
 	active.root.classList.remove( ACTIVE_CLASS );
 	active = null;
@@ -549,6 +567,7 @@ function startEdit(
 				10
 			) || 0,
 		link: field.link,
+		allowed: field.join !== undefined ? 'plain' : field.allowed,
 		originalValue: '',
 	};
 	active.originalValue = currentValue();
@@ -557,6 +576,8 @@ function startEdit(
 	// typing into it, or what is typed there is dropped by currentValue().
 	lockMarkers( el, true );
 	el.contentEditable = 'true';
+	// While edited it is a text box, not a button to press.
+	el.removeAttribute( 'role' );
 	el.classList.add( ACTIVE_CLASS );
 	root.classList.add( ACTIVE_CLASS );
 	// Text stored in a template part or synced pattern is shared: say so before
@@ -569,6 +590,17 @@ function startEdit(
 	toggleToolbar( true );
 	updateLinkButton();
 	el.focus();
+	// Opened from the keyboard (or by script), there is no caret yet, and
+	// Safari then ignores typing. A click has put one where it landed; in
+	// every other case it goes at the end of the text.
+	const sel = window.getSelection();
+	if ( sel && ( ! sel.rangeCount || ! el.contains( sel.anchorNode ) ) ) {
+		const range = document.createRange();
+		range.selectNodeContents( el );
+		range.collapse( false );
+		sel.removeAllRanges();
+		sel.addRange( range );
+	}
 }
 
 /**
@@ -895,7 +927,20 @@ interface LinkState {
  * @param root Block root.
  * @param link Link descriptor from the registry.
  */
-function anchorOf( root: HTMLElement, link: LinkDef ): HTMLAnchorElement | null {
+function anchorOf(
+	root: HTMLElement,
+	link: LinkDef,
+	itemEl?: HTMLElement | null
+): HTMLAnchorElement | null {
+	if ( link.item ) {
+		// A row's link: the row itself, or an <a> inside it. Never another row's.
+		if ( ! itemEl ) {
+			return null;
+		}
+		return itemEl.matches( link.anchor )
+			? ( itemEl as HTMLAnchorElement )
+			: itemEl.querySelector< HTMLAnchorElement >( link.anchor );
+	}
 	return root.querySelector< HTMLAnchorElement >( link.anchor );
 }
 
@@ -906,14 +951,74 @@ function updateLinkButton(): void {
 	if ( ! linkBtn ) {
 		return;
 	}
-	linkBtn.hidden = ! (
-		active &&
-		active.link &&
-		anchorOf( active.root, active.link )
-	);
-	if ( boot?.i18n.linkEdit ) {
-		linkBtn.textContent = boot.i18n.linkEdit;
+	// "Edit link" where the text sits in a link; "Add link" where it could but
+	// does not (a heading without one, a list row without one).
+	const has =
+		!! active && !! active.link && !! anchorOf( active.root, active.link, active.itemEl );
+	linkBtn.hidden = ! ( active && active.link );
+	linkBtn.textContent =
+		( has ? boot?.i18n.linkEdit : boot?.i18n.linkAdd || boot?.i18n.linkEdit ) || '';
+	updateAddIcon();
+}
+
+/**
+ * The icon declaration that goes with the text being edited, if that text has
+ * no icon yet (so "Add icon" makes sense).
+ */
+function missingIcon(): { def: IconDef; name: string } | null {
+	if ( ! active || ! boot?.icons ) {
+		return null;
 	}
+	const name = active.root.getAttribute( 'data-flexa-edit-name' ) || '';
+	const field = active.key ?? active.attr;
+	const def = ( boot.icons[ name ] || [] ).find(
+		( d ) => d.with === field && ( d.repeat ? d.attr === active?.attr : true )
+	);
+	if ( ! def ) {
+		return null;
+	}
+	const scope = def.repeat ? active.itemEl : active.root;
+	if ( ! scope ) {
+		return null;
+	}
+	const present = Array.from( scope.querySelectorAll< HTMLElement >( def.selector ) ).some(
+		( el ) => el.closest( '[data-flexa-edit-id]' ) === active?.root && ( ! def.wrap || el.childElementCount > 0 )
+	);
+	return present ? null : { def, name };
+}
+
+/**
+ * Show "Add icon" while editing text that could have an icon but has none.
+ */
+function updateAddIcon(): void {
+	if ( ! addIconBtn ) {
+		return;
+	}
+	addIconBtn.hidden = ! missingIcon();
+	addIconBtn.textContent = boot?.i18n.iconAdd || addIconBtn.textContent;
+}
+
+/**
+ * Open the icon editor to add an icon to the text being edited.
+ *
+ * There is no icon element on the page to update in place (where it goes,
+ * before or after the text, is the block's to decide), so the page reloads
+ * once it is saved.
+ */
+async function startAddIcon(): Promise< void > {
+	const found = missingIcon();
+	if ( ! active || ! found || ! boot ) {
+		return;
+	}
+	const root = active.root;
+	const index = active.index;
+	if ( isDirty() && ! ( await settle( boot.i18n.unsaved || '' ) ) ) {
+		return;
+	}
+	if ( active ) {
+		endEdit( true );
+	}
+	openIconDialog( root, found.name, found.def, document.createElement( 'span' ), index, true );
 }
 
 /**
@@ -982,7 +1087,9 @@ async function startLinkEdit(): Promise< void > {
 		blockId: active.blockId,
 		blockName: active.blockName,
 		targetId: active.targetId,
+		index: active.index,
 	};
+	const itemEl = active.itemEl;
 
 	if ( isDirty() ) {
 		if ( ! ( await settle( boot.i18n.unsaved || '' ) ) ) {
@@ -994,10 +1101,8 @@ async function startLinkEdit(): Promise< void > {
 		endEdit( true );
 	}
 
-	const anchor = anchorOf( ctx.root, ctx.link );
-	if ( anchor ) {
-		openLinkDialog( { ...ctx, anchor } );
-	}
+	// No <a> yet: the dialog adds the link and the page reloads to show it.
+	openLinkDialog( { ...ctx, anchor: anchorOf( ctx.root, ctx.link, itemEl ) } );
 }
 
 /**
@@ -1008,10 +1113,11 @@ async function startLinkEdit(): Promise< void > {
 function openLinkDialog( ctx: {
 	root: HTMLElement;
 	link: LinkDef;
-	anchor: HTMLAnchorElement;
+	anchor: HTMLAnchorElement | null;
 	blockId: string;
 	blockName: string;
 	targetId: number;
+	index?: number;
 } ): void {
 	const dialog = linkDialog;
 	if ( ! dialog || ! boot ) {
@@ -1026,7 +1132,9 @@ function openLinkDialog( ctx: {
 		return;
 	}
 
-	const current = linkStateOf( ctx.anchor );
+	const current: LinkState = ctx.anchor
+		? linkStateOf( ctx.anchor )
+		: { url: '', newTab: false };
 	input.value = current.url;
 	tab.checked = current.newTab;
 	error.hidden = true;
@@ -1066,6 +1174,11 @@ function openLinkDialog( ctx: {
 			link: true,
 			value: JSON.stringify( { url, newTab: tab.checked } ),
 		};
+		// A row's link names its row.
+		if ( ctx.link.item ) {
+			payload.index = ctx.index;
+			payload.key = ctx.link.item;
+		}
 		if ( ctx.targetId > 0 ) {
 			payload.targetId = ctx.targetId;
 		}
@@ -1086,7 +1199,15 @@ function openLinkDialog( ctx: {
 				} catch ( _e ) {
 					// Keep what was typed.
 				}
-				paintLink( ctx.anchor, saved );
+				if ( ! ctx.anchor ) {
+					// The block draws the new link itself; show it by reloading.
+					setMessage( boot?.i18n.reloading || boot?.i18n.saved || '', 'success' );
+					toggleToolbar( true );
+					window.location.reload();
+					return;
+				}
+				const anchor = ctx.anchor;
+				paintLink( anchor, saved );
 				setMessage( boot?.i18n.saved || '', 'success' );
 
 				if ( result.logId && typeof result.before === 'string' ) {
@@ -1103,16 +1224,17 @@ function openLinkDialog( ctx: {
 							blockName: ctx.blockName,
 							attr: ctx.link.attr,
 							link: true,
+							...( ctx.link.item && { index: ctx.index, key: ctx.link.item } ),
 							...( ctx.targetId > 0 && { targetId: ctx.targetId } ),
 						},
 						before: result.before,
 						logId: result.logId,
-						el: ctx.anchor,
+						el: anchor,
 						root: ctx.root,
 						originalHTML: '',
 						targetId: ctx.targetId,
 						timer: 0,
-						restore: () => paintLink( ctx.anchor, previous ),
+						restore: () => paintLink( anchor, previous ),
 					} );
 				}
 			} )
@@ -1309,6 +1431,7 @@ function bindImage( root: HTMLElement, name: string, def: ImageDef ): void {
 		if ( ! hit.getAttribute( 'title' ) ) {
 			hit.setAttribute( 'title', boot?.i18n.imageEdit || '' );
 		}
+		makeOperable( hit, boot?.i18n.imageEdit || '' );
 
 		root.addEventListener(
 			'click',
@@ -1739,6 +1862,7 @@ function bindIcon( root: HTMLElement, name: string, def: IconDef ): void {
 			if ( ! el.getAttribute( 'title' ) ) {
 				el.setAttribute( 'title', boot?.i18n.iconEdit || '' );
 			}
+			makeOperable( el, boot?.i18n.iconEdit || '' );
 		}
 	} );
 
@@ -1835,7 +1959,8 @@ function openIconDialog(
 	name: string,
 	def: IconDef,
 	el: HTMLElement,
-	index?: number
+	index?: number,
+	reload = false
 ): void {
 	const dialog = iconDialog;
 	if ( ! dialog || ! boot ) {
@@ -2026,6 +2151,13 @@ function openIconDialog(
 		postEdit( payload, targetId )
 			.then( ( result ) => {
 				close();
+				if ( reload ) {
+					// A new icon: the block decides where it goes; reload to show it.
+					setMessage( boot?.i18n.reloading || boot?.i18n.saved || '', 'success' );
+					toggleToolbar( true );
+					window.location.reload();
+					return;
+				}
 				try {
 					const after = JSON.parse( result.after || '{}' ) as {
 						source?: string;
@@ -2040,6 +2172,7 @@ function openIconDialog(
 						}
 					} else if ( node instanceof Element ) {
 						node.classList.add( 'flexa-fee-icon-hit' );
+						makeOperable( node as HTMLElement, boot?.i18n.iconEdit || '' );
 						el.replaceWith( node );
 						shownEl = node;
 					} else {
@@ -2115,6 +2248,10 @@ function openIconDialog(
 			e.preventDefault();
 			e.stopPropagation();
 			close();
+			return;
+		}
+		if ( e.key === 'Tab' ) {
+			trapTab( e, dialog );
 		}
 	};
 
@@ -2193,6 +2330,273 @@ function paintPending(): void {
 	}
 }
 
+// What pasting may keep, per allowlist: the tags the server keeps for that
+// field, without the attributes (pasted styles and classes are always junk).
+const PASTE_TAGS: Record< string, string[] > = {
+	plain: [],
+	minimal: [ 'strong', 'em', 'b', 'i', 'br' ],
+	'minimal-link': [ 'strong', 'em', 'b', 'i', 'br', 'a' ],
+	inline: [ 'strong', 'em', 'b', 'i', 'br', 'sub', 'sup' ],
+	rich: [ 'strong', 'em', 'b', 'i', 'br', 'sub', 'sup', 'a' ],
+	post: [ 'strong', 'em', 'b', 'i', 'br', 'sub', 'sup', 'a', 'p', 'ul', 'ol', 'li', 'blockquote' ],
+};
+
+const BLOCK_TAGS = /^(P|DIV|LI|UL|OL|H[1-6]|BLOCKQUOTE|TR|TABLE|SECTION|ARTICLE|HEADER|FOOTER|PRE)$/;
+
+/**
+ * Turn pasted HTML into what this field keeps.
+ *
+ * Word and Google Docs paste fonts, colours, sizes, classes and wrappers; the
+ * server would strip them on save, so what the person saw would not be what
+ * was saved. Here the same cut is made at paste time: allowed tags stay (with
+ * no attributes, except a link's checked address), bold and italic written as
+ * styles become <strong> / <em>, block breaks become line breaks where the
+ * field has them and spaces where it does not, and everything else keeps
+ * only its text.
+ *
+ * @param html    Pasted HTML.
+ * @param allowed Field allowlist name.
+ */
+function cleanPaste( html: string, allowed: string ): DocumentFragment {
+	const keep = PASTE_TAGS[ allowed ] ?? PASTE_TAGS.inline;
+	const canBreak = keep.includes( 'br' );
+	const doc = new DOMParser().parseFromString( html, 'text/html' );
+	const out = document.createDocumentFragment();
+
+	const breakOrSpace = ( target: Node ) => {
+		const last = target.lastChild;
+		if ( ! last ) {
+			return;
+		}
+		if ( canBreak ) {
+			if ( last.nodeName !== 'BR' ) {
+				target.appendChild( document.createElement( 'br' ) );
+			}
+		} else if ( ! /\s$/.test( last.textContent || '' ) ) {
+			target.appendChild( document.createTextNode( ' ' ) );
+		}
+	};
+
+	const walk = ( node: Node, target: Node ) => {
+		node.childNodes.forEach( ( child ) => {
+			if ( child.nodeType === Node.TEXT_NODE ) {
+				const text = ( child.textContent || '' ).replace( /\s+/g, ' ' );
+				if ( text ) {
+					target.appendChild( document.createTextNode( text ) );
+				}
+				return;
+			}
+			if ( child.nodeType !== Node.ELEMENT_NODE ) {
+				return; // Comments (Word's conditional markup) and the rest.
+			}
+			const el = child as HTMLElement;
+			const tag = el.tagName.toLowerCase();
+			if ( /^(script|style|meta|link|title|img|svg|video|audio|iframe|object|picture)$/.test( tag ) ) {
+				return;
+			}
+			if ( tag === 'br' ) {
+				if ( canBreak ) {
+					target.appendChild( document.createElement( 'br' ) );
+				} else {
+					target.appendChild( document.createTextNode( ' ' ) );
+				}
+				return;
+			}
+
+			// Bold / italic written as styles (Word, Docs) count as the real thing;
+			// Docs' outer <b style="font-weight:normal"> does not.
+			const weight = el.style.fontWeight;
+			const isBold =
+				( tag === 'b' || tag === 'strong' || /^(bold|[6-9]00)$/.test( weight ) ) &&
+				! /^(normal|[1-4]00)$/.test( weight );
+			const isItalic = tag === 'i' || tag === 'em' || el.style.fontStyle === 'italic';
+
+			let wrapTag = '';
+			if ( tag === 'a' && keep.includes( 'a' ) ) {
+				const href = el.getAttribute( 'href' ) || '';
+				wrapTag = href && ! badScheme( href ) && ! /^\s*(data|vbscript):/i.test( href ) ? 'a' : '';
+			} else if ( keep.includes( tag ) && ! [ 'b', 'strong', 'i', 'em' ].includes( tag ) ) {
+				wrapTag = tag;
+			}
+
+			let inner: Node = target;
+			if ( wrapTag ) {
+				const copy = document.createElement( wrapTag );
+				if ( wrapTag === 'a' ) {
+					copy.setAttribute( 'href', el.getAttribute( 'href' ) || '' );
+				}
+				target.appendChild( copy );
+				inner = copy;
+			}
+			if ( isBold && keep.includes( 'strong' ) ) {
+				const strong = document.createElement( 'strong' );
+				inner.appendChild( strong );
+				inner = strong;
+			}
+			if ( isItalic && keep.includes( 'em' ) ) {
+				const em = document.createElement( 'em' );
+				inner.appendChild( em );
+				inner = em;
+			}
+
+			walk( el, inner );
+
+			// A block that is not kept still ends a line.
+			if ( BLOCK_TAGS.test( el.tagName ) && ! wrapTag ) {
+				breakOrSpace( target );
+			}
+		} );
+	};
+
+	walk( doc.body, out );
+
+	// No leading/trailing breaks or spaces from the pasted document's wrappers.
+	while ( out.lastChild && ( out.lastChild.nodeName === 'BR' || ! ( out.lastChild.textContent || '' ).trim() ) ) {
+		out.removeChild( out.lastChild );
+	}
+	while ( out.firstChild && ( out.firstChild.nodeName === 'BR' || ! ( out.firstChild.textContent || '' ).trim() ) ) {
+		out.removeChild( out.firstChild );
+	}
+	return out;
+}
+
+/**
+ * Plain pasted text as this field keeps it: line breaks where it has them.
+ *
+ * @param text    Pasted text.
+ * @param allowed Field allowlist name.
+ */
+function plainPaste( text: string, allowed: string ): DocumentFragment {
+	const out = document.createDocumentFragment();
+	const canBreak = ( PASTE_TAGS[ allowed ] ?? PASTE_TAGS.inline ).includes( 'br' );
+	const lines = text.replace( /\r\n?/g, '\n' ).replace( /[ \t]+/g, ' ' ).trim().split( '\n' );
+	lines.forEach( ( line, i ) => {
+		if ( i > 0 ) {
+			out.appendChild( canBreak ? document.createElement( 'br' ) : document.createTextNode( ' ' ) );
+		}
+		out.appendChild( document.createTextNode( line.trim() ) );
+	} );
+	return out;
+}
+
+/**
+ * Paste into the text being edited, cut down to what it keeps.
+ *
+ * @param e The paste.
+ */
+function onPaste( e: ClipboardEvent ): void {
+	if ( ! active || ! e.clipboardData || ! ( e.target instanceof Node ) || ! active.el.contains( e.target ) ) {
+		return;
+	}
+	const allowed = active.allowed || 'inline';
+	const html = e.clipboardData.getData( 'text/html' );
+	const text = e.clipboardData.getData( 'text/plain' );
+	if ( ! html && ! text ) {
+		return; // A file or an image: nothing a text field can take.
+	}
+	e.preventDefault();
+
+	const frag = html && allowed !== 'plain' ? cleanPaste( html, allowed ) : plainPaste( text || '', allowed );
+	const sel = window.getSelection();
+	if ( ! sel || ! sel.rangeCount ) {
+		return;
+	}
+	let range = sel.getRangeAt( 0 );
+	if ( ! active.el.contains( range.commonAncestorContainer ) ) {
+		return;
+	}
+	// Never inside the "*" of a required field (see the beforeinput handler).
+	const marker = ( range.startContainer instanceof Element
+		? range.startContainer
+		: range.startContainer.parentElement
+	)?.closest( '.flexa-field__required' );
+	if ( marker && active.el.contains( marker ) ) {
+		range = document.createRange();
+		range.setStartAfter( marker );
+		range.collapse( true );
+	}
+
+	range.deleteContents();
+	const last = frag.lastChild;
+	range.insertNode( frag );
+	if ( last ) {
+		range.setStartAfter( last );
+		range.collapse( true );
+		sel.removeAllRanges();
+		sel.addRange( range );
+	}
+	updateGuard();
+}
+
+/**
+ * Make something that opens an editor reachable and usable from the keyboard.
+ *
+ * Tab reaches it, a screen reader names it ("Edit text", "Edit image"), and
+ * Enter or Space presses it, which runs the same click handler a mouse does.
+ * Elements already focusable (a link, a button) keep their own behaviour.
+ *
+ * @param el    The text, image or icon.
+ * @param label What pressing it does.
+ */
+function makeOperable( el: HTMLElement, label: string ): void {
+	if ( el.dataset.feeOperable ) {
+		return;
+	}
+	el.dataset.feeOperable = '1';
+	const native = el.matches( 'a[href], button, input, select, textarea' );
+	if ( ! native ) {
+		if ( ! el.hasAttribute( 'tabindex' ) ) {
+			el.tabIndex = 0;
+		}
+		el.setAttribute( 'role', 'button' );
+	}
+	if ( label && ! el.hasAttribute( 'aria-label' ) ) {
+		// The visible text stays readable to a screen reader after the action.
+		const text = ( el.textContent || '' ).trim().slice( 0, 60 );
+		el.setAttribute( 'aria-label', text ? `${ label }: ${ text }` : label );
+	}
+	el.addEventListener( 'keydown', ( e: KeyboardEvent ) => {
+		// While the text is being edited, Enter and Space are typing.
+		if ( el.isContentEditable || ( e.key !== 'Enter' && e.key !== ' ' ) ) {
+			return;
+		}
+		if ( e.target !== el ) {
+			return;
+		}
+		e.preventDefault();
+		el.click();
+	} );
+}
+
+/**
+ * Keep Tab and Shift+Tab inside a dialog.
+ *
+ * @param e      The key press.
+ * @param dialog The dialog.
+ */
+function trapTab( e: KeyboardEvent, dialog: HTMLElement ): void {
+	const stops = Array.from(
+		dialog.querySelectorAll< HTMLElement >( 'input, button, [tabindex="0"]' )
+	).filter(
+		( el ) =>
+			! ( el as HTMLButtonElement ).disabled &&
+			! el.hidden &&
+			el.offsetParent !== null
+	);
+	const first = stops[ 0 ];
+	const last = stops[ stops.length - 1 ];
+	if ( ! first || ! last ) {
+		return;
+	}
+	if ( e.shiftKey && dialog.ownerDocument.activeElement === first ) {
+		e.preventDefault();
+		last.focus();
+	} else if ( ! e.shiftKey && dialog.ownerDocument.activeElement === last ) {
+		e.preventDefault();
+		first.focus();
+	}
+}
+
 /**
  * Wire the toolbar buttons once.
  */
@@ -2219,10 +2623,16 @@ function initToolbar(): void {
 		void save();
 	} );
 	linkBtn = toolbar.querySelector(
-		'.flexa-fee-toolbar__inner > .flexa-fee-btn--link'
+		'.flexa-fee-toolbar__inner > .flexa-fee-btn--link:not(.flexa-fee-btn--addicon)'
 	);
 	linkBtn?.addEventListener( 'click', () => {
 		void startLinkEdit();
+	} );
+	addIconBtn = toolbar.querySelector(
+		'.flexa-fee-toolbar__inner > .flexa-fee-btn--addicon'
+	);
+	addIconBtn?.addEventListener( 'click', () => {
+		void startAddIcon();
 	} );
 	linkDialog = document.querySelector(
 		'.flexa-fee-linkdialog:not(.flexa-fee-imagedialog):not(.flexa-fee-icondialog)'
@@ -2272,6 +2682,7 @@ function bindField( root: HTMLElement, field: FieldDef ): void {
 			}
 		}
 		el.classList.add( EDITABLE_CLASS );
+		makeOperable( el, boot?.i18n.textEdit || '' );
 		el.addEventListener( 'click', ( e ) => {
 			// While editing this very element, let the caret move normally.
 			if ( active && active.el === el ) {
@@ -2330,6 +2741,9 @@ function init(): void {
 			icons.forEach( ( def ) => bindIcon( root, name, def ) );
 		}
 	} );
+
+	// Pasting keeps only what the field keeps (see onPaste()).
+	document.addEventListener( 'paste', onPaste, true );
 
 	// Image buttons: opened from a click, and kept from starting what a press on
 	// their host does (dragging a before/after slider, swiping a slider).
@@ -2417,10 +2831,15 @@ function init(): void {
 				return;
 			}
 			const target = e.target;
-			// The toolbar, and editable text (bindField asks for those itself).
+			// The toolbar, editable text, and images and icons that open an editor:
+			// those ask about unsaved changes themselves, then open their editor.
+			// Treating a click on an image inside a link as "leaving the page"
+			// would follow the link after "Discard" instead of editing the image.
 			if (
 				toolbar?.contains( target ) ||
-				target.closest( `.${ EDITABLE_CLASS }` )
+				target.closest(
+					`.${ EDITABLE_CLASS }, .flexa-fee-image-hit, .flexa-fee-icon-hit, .flexa-fee-imgbtn`
+				)
 			) {
 				return;
 			}
