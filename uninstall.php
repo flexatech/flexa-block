@@ -10,6 +10,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 delete_option( 'flexa_block_settings' );
+delete_option( 'flexa_block_defaults_version' );
 delete_option( 'flexa_block_formflow_notice_dismissed' );
 // The shared 'flexa_formflow_promo_dismissed' flag is left in place on purpose:
 // other Flexa plugins read it, and removing this one must not bring back a

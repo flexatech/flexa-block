@@ -86,6 +86,9 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-formflow-promo.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-formflow-notice.php';
 
+	// Once per site: settle defaults that changed between versions (dark mode).
+	Flexa\Block\Dark_Mode_Settings::apply_install_defaults();
+
 	Flexa\Block\Block_Manager::init();
 	Flexa\Block\Addon_Blocks::init();
 	Flexa\Block\Animations::init();
@@ -221,6 +224,16 @@ function flexa_block_deactivate() {
 	Flexa\Block\Inline_Edit_Log::unschedule();
 }
 register_deactivation_hook( __FILE__, 'flexa_block_deactivate' );
+
+/**
+ * On activation: a site where the plugin has never run starts with the new
+ * defaults (dark mode off). Sites that update are settled on their next load.
+ */
+function flexa_block_activate() {
+	require_once FLEXA_BLOCK_DIR . 'includes/class-dark-mode-settings.php';
+	Flexa\Block\Dark_Mode_Settings::on_activate();
+}
+register_activation_hook( __FILE__, 'flexa_block_activate' );
 
 /**
  * Admin notice for unsupported WordPress version.
