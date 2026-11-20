@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * Inline Editor — front-end, click-to-edit text for Flexa blocks.
  *
@@ -21,6 +20,8 @@ declare(strict_types=1);
  *
  * @package Flexa\Block
  */
+
+declare(strict_types=1);
 
 namespace Flexa\Block;
 
@@ -47,42 +48,127 @@ final class Inline_Editor {
 	 * @var array<string, array{fields: list<array<string, mixed>>}>
 	 */
 	const EDITABLE = [
-		'flexa/text'    => [
+		'flexa/text'                    => [
 			'fields' => [
-				[ 'attr' => 'content', 'selector' => '.flexa-text__content', 'allowed' => 'rich' ],
+				[
+					'attr'     => 'content',
+					'selector' => '.flexa-text__content',
+					'allowed'  => 'rich',
+				],
 			],
 		],
-		'flexa/heading' => [
+		'flexa/heading'                 => [
 			'fields' => [
-				[ 'attr' => 'content', 'selector' => '.flexa-heading__title', 'allowed' => 'inline', 'link' => [ 'attr' => 'url', 'target' => 'linkTarget', 'anchor' => '.flexa-heading__link' ] ],
-				[ 'attr' => 'subheadingContent', 'selector' => '.flexa-heading__subheading', 'allowed' => 'inline' ],
+				[
+					'attr'     => 'content',
+					'selector' => '.flexa-heading__title',
+					'allowed'  => 'inline',
+					'link'     => [
+						'attr'   => 'url',
+						'target' => 'linkTarget',
+						'anchor' => '.flexa-heading__link',
+					],
+				],
+				[
+					'attr'     => 'subheadingContent',
+					'selector' => '.flexa-heading__subheading',
+					'allowed'  => 'inline',
+				],
 			],
 		],
 		// Composite blocks — several top-level string attributes each. The two
 		// promo button labels share a class, so they are scoped by the button
 		// modifier class.
-		'flexa/banner'  => [
+		'flexa/banner'                  => [
 			'icons'  => [
-				[ 'attr' => 'primaryIcon', 'selector' => '.flexa-promo__button--primary > .flexa-icon', 'with' => 'primaryText' ],
-				[ 'attr' => 'secondaryIcon', 'selector' => '.flexa-promo__button--secondary > .flexa-icon', 'with' => 'secondaryText' ],
+				[
+					'attr'     => 'primaryIcon',
+					'selector' => '.flexa-promo__button--primary > .flexa-icon',
+					'with'     => 'primaryText',
+				],
+				[
+					'attr'     => 'secondaryIcon',
+					'selector' => '.flexa-promo__button--secondary > .flexa-icon',
+					'with'     => 'secondaryText',
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
-				[ 'attr' => 'description', 'selector' => '.flexa-promo__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'primaryText', 'selector' => '.flexa-promo__button--primary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'primaryUrl', 'target' => 'primaryTarget', 'anchor' => '.flexa-promo__button--primary' ] ],
-				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'secondaryUrl', 'target' => 'secondaryTarget', 'anchor' => '.flexa-promo__button--secondary' ] ],
+				[
+					'attr'     => 'heading',
+					'selector' => '.flexa-promo__heading',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'description',
+					'selector' => '.flexa-promo__description',
+					'allowed'  => 'minimal-link',
+				],
+				[
+					'attr'     => 'primaryText',
+					'selector' => '.flexa-promo__button--primary .flexa-promo__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'primaryUrl',
+						'target' => 'primaryTarget',
+						'anchor' => '.flexa-promo__button--primary',
+					],
+				],
+				[
+					'attr'     => 'secondaryText',
+					'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'secondaryUrl',
+						'target' => 'secondaryTarget',
+						'anchor' => '.flexa-promo__button--secondary',
+					],
+				],
 			],
 		],
-		'flexa/cta'     => [
+		'flexa/cta'                     => [
 			'icons'  => [
-				[ 'attr' => 'primaryIcon', 'selector' => '.flexa-promo__button--primary > .flexa-icon', 'with' => 'primaryText' ],
-				[ 'attr' => 'secondaryIcon', 'selector' => '.flexa-promo__button--secondary > .flexa-icon', 'with' => 'secondaryText' ],
+				[
+					'attr'     => 'primaryIcon',
+					'selector' => '.flexa-promo__button--primary > .flexa-icon',
+					'with'     => 'primaryText',
+				],
+				[
+					'attr'     => 'secondaryIcon',
+					'selector' => '.flexa-promo__button--secondary > .flexa-icon',
+					'with'     => 'secondaryText',
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
-				[ 'attr' => 'description', 'selector' => '.flexa-promo__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'primaryText', 'selector' => '.flexa-promo__button--primary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'primaryUrl', 'target' => 'primaryTarget', 'anchor' => '.flexa-promo__button--primary' ] ],
-				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'secondaryUrl', 'target' => 'secondaryTarget', 'anchor' => '.flexa-promo__button--secondary' ] ],
+				[
+					'attr'     => 'heading',
+					'selector' => '.flexa-promo__heading',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'description',
+					'selector' => '.flexa-promo__description',
+					'allowed'  => 'minimal-link',
+				],
+				[
+					'attr'     => 'primaryText',
+					'selector' => '.flexa-promo__button--primary .flexa-promo__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'primaryUrl',
+						'target' => 'primaryTarget',
+						'anchor' => '.flexa-promo__button--primary',
+					],
+				],
+				[
+					'attr'     => 'secondaryText',
+					'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'secondaryUrl',
+						'target' => 'secondaryTarget',
+						'anchor' => '.flexa-promo__button--secondary',
+					],
+				],
 			],
 		],
 		// An image is a media-library picture, not text: `images` lists where a block
@@ -92,242 +178,714 @@ final class Inline_Editor {
 		// wins over the image's own; `size` names the attribute holding the size
 		// the block renders at; `repeat` + `key` is an image inside a list item.
 		// A gallery's pictures are the list items themselves (`repeat` with no `key`).
-		'flexa/images-gallery' => [
+		'flexa/images-gallery'          => [
 			'images' => [
-				[ 'attr' => 'images', 'repeat' => true, 'selector' => '.flexa-images-gallery__image', 'hit' => '.flexa-images-gallery__media', 'shape' => 'full', 'size' => 'imageSize', 'caption' => true ],
+				[
+					'attr'     => 'images',
+					'repeat'   => true,
+					'selector' => '.flexa-images-gallery__image',
+					'hit'      => '.flexa-images-gallery__media',
+					'shape'    => 'full',
+					'size'     => 'imageSize',
+					'caption'  => true,
+				],
 			],
 		],
 		// A slide's picture is a CSS background: there is no <img> to click, so a
 		// button is placed on the slide instead (`button`).
-		'flexa/slide' => [
+		'flexa/slide'                   => [
 			'images' => [
-				[ 'attr' => 'background', 'background' => true, 'button' => 'top-right' ],
+				[
+					'attr'       => 'background',
+					'background' => true,
+					'button'     => 'top-right',
+				],
 			],
 		],
-		'flexa/image' => [
+		'flexa/image'                   => [
 			'images' => [
-				[ 'attr' => 'image', 'selector' => '.flexa-image__img', 'hit' => '.flexa-image__frame', 'shape' => 'full', 'alt' => 'altText', 'size' => 'imageSize' ],
+				[
+					'attr'     => 'image',
+					'selector' => '.flexa-image__img',
+					'hit'      => '.flexa-image__frame',
+					'shape'    => 'full',
+					'alt'      => 'altText',
+					'size'     => 'imageSize',
+				],
 			],
 		],
 		// An icon is chosen from the icon catalog (or the media library), never typed:
 		// `icons` lists where a block keeps one. `selector` is either the icon
 		// element itself, or (with `wrap`) an element holding nothing but the icon.
-		'flexa/icon' => [
+		'flexa/icon'                    => [
 			'icons' => [
-				[ 'attr' => 'icon', 'selector' => '.flexa-icon__inner', 'wrap' => true ],
+				[
+					'attr'     => 'icon',
+					'selector' => '.flexa-icon__inner',
+					'wrap'     => true,
+				],
 			],
 		],
-		'flexa/button' => [
-			'icons' => [
+		'flexa/button'                  => [
+			'icons'  => [
 				// `with`: the text this icon goes with, so editing that text can offer
 				// "Add icon" when there is none yet.
-				[ 'attr' => 'icon', 'selector' => '.flexa-button__link > .flexa-icon', 'with' => 'text' ],
+				[
+					'attr'     => 'icon',
+					'selector' => '.flexa-button__link > .flexa-icon',
+					'with'     => 'text',
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'text', 'selector' => '.flexa-button__text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'url', 'target' => 'linkTarget', 'anchor' => '.flexa-button__link' ] ],
+				[
+					'attr'     => 'text',
+					'selector' => '.flexa-button__text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'url',
+						'target' => 'linkTarget',
+						'anchor' => '.flexa-button__link',
+					],
+				],
 			],
 		],
-		'flexa/video-popup' => [
+		'flexa/video-popup'             => [
 			'images' => [
-				[ 'attr' => 'thumbnailImage', 'selector' => '.flexa-video-popup__image', 'shape' => 'full' ],
+				[
+					'attr'     => 'thumbnailImage',
+					'selector' => '.flexa-video-popup__image',
+					'shape'    => 'full',
+				],
 			],
 			'icons'  => [
-				[ 'attr' => 'playIcon', 'selector' => '.flexa-video-popup__play', 'wrap' => true ],
+				[
+					'attr'     => 'playIcon',
+					'selector' => '.flexa-video-popup__play',
+					'wrap'     => true,
+				],
 			],
 		],
-		'flexa/info-box' => [
+		'flexa/info-box'                => [
 			'images' => [
-				[ 'attr' => 'image', 'selector' => '.flexa-info-box__image', 'shape' => 'basic' ],
+				[
+					'attr'     => 'image',
+					'selector' => '.flexa-info-box__image',
+					'shape'    => 'basic',
+				],
 			],
 			'icons'  => [
-				[ 'attr' => 'icon', 'selector' => '.flexa-info-box__icon', 'wrap' => true ],
-				[ 'attr' => 'buttonIcon', 'selector' => '.flexa-info-box__button > .flexa-icon', 'with' => 'buttonText' ],
+				[
+					'attr'     => 'icon',
+					'selector' => '.flexa-info-box__icon',
+					'wrap'     => true,
+				],
+				[
+					'attr'     => 'buttonIcon',
+					'selector' => '.flexa-info-box__button > .flexa-icon',
+					'with'     => 'buttonText',
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'prefix', 'selector' => '.flexa-info-box__prefix', 'allowed' => 'minimal' ],
-				[ 'attr' => 'title', 'selector' => '.flexa-info-box__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'description', 'selector' => '.flexa-info-box__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'buttonText', 'selector' => '.flexa-info-box__button-text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'buttonUrl', 'target' => 'buttonTarget', 'anchor' => '.flexa-info-box__button' ] ],
+				[
+					'attr'     => 'prefix',
+					'selector' => '.flexa-info-box__prefix',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-info-box__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'description',
+					'selector' => '.flexa-info-box__description',
+					'allowed'  => 'minimal-link',
+				],
+				[
+					'attr'     => 'buttonText',
+					'selector' => '.flexa-info-box__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'buttonUrl',
+						'target' => 'buttonTarget',
+						'anchor' => '.flexa-info-box__button',
+					],
+				],
 			],
 		],
-		'flexa/testimonial' => [
+		'flexa/testimonial'             => [
 			'images' => [
-				[ 'attr' => 'authorImage', 'selector' => '.flexa-testimonial__avatar', 'shape' => 'basic' ],
+				[
+					'attr'     => 'authorImage',
+					'selector' => '.flexa-testimonial__avatar',
+					'shape'    => 'basic',
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-testimonial__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'quote', 'selector' => '.flexa-testimonial__quote', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'authorName', 'selector' => '.flexa-testimonial__name', 'allowed' => 'minimal' ],
-				[ 'attr' => 'authorJob', 'selector' => '.flexa-testimonial__job', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-testimonial__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'quote',
+					'selector' => '.flexa-testimonial__quote',
+					'allowed'  => 'minimal-link',
+				],
+				[
+					'attr'     => 'authorName',
+					'selector' => '.flexa-testimonial__name',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'authorJob',
+					'selector' => '.flexa-testimonial__job',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
-		'flexa/team-member' => [
+		'flexa/team-member'             => [
 			'images' => [
-				[ 'attr' => 'image', 'selector' => '.flexa-team-member__image', 'shape' => 'basic' ],
+				[
+					'attr'     => 'image',
+					'selector' => '.flexa-team-member__image',
+					'shape'    => 'basic',
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'name', 'selector' => '.flexa-team-member__name', 'allowed' => 'minimal' ],
-				[ 'attr' => 'role', 'selector' => '.flexa-team-member__role', 'allowed' => 'minimal' ],
-				[ 'attr' => 'bio', 'selector' => '.flexa-team-member__bio', 'allowed' => 'minimal-link' ],
+				[
+					'attr'     => 'name',
+					'selector' => '.flexa-team-member__name',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'role',
+					'selector' => '.flexa-team-member__role',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'bio',
+					'selector' => '.flexa-team-member__bio',
+					'allowed'  => 'minimal-link',
+				],
 			],
 		],
 		// Simple single-string blocks (plain text).
-		'flexa/table-of-content' => [
+		'flexa/table-of-content'        => [
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-toc__title', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-toc__title',
+					'allowed'  => 'plain',
+				],
 			],
 		],
-		'flexa/process-bar' => [
+		'flexa/process-bar'             => [
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-process-bar__title', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-process-bar__title',
+					'allowed'  => 'plain',
+				],
 			],
 		],
-		'flexa/before-after' => [
+		'flexa/before-after'            => [
 			'images' => [
 				// Pressing anywhere on the frame drags the slider, so these open from a
 				// button of their own rather than from a click on the picture.
-				[ 'attr' => 'beforeImage', 'selector' => '.flexa-before-after__img-wrap--before .flexa-before-after__img', 'shape' => 'full', 'button' => 'bottom-left', 'host' => '.flexa-before-after__frame' ],
-				[ 'attr' => 'afterImage', 'selector' => '.flexa-before-after__img-wrap--after .flexa-before-after__img', 'shape' => 'full', 'button' => 'bottom-right', 'host' => '.flexa-before-after__frame' ],
+				[
+					'attr'     => 'beforeImage',
+					'selector' => '.flexa-before-after__img-wrap--before .flexa-before-after__img',
+					'shape'    => 'full',
+					'button'   => 'bottom-left',
+					'host'     => '.flexa-before-after__frame',
+				],
+				[
+					'attr'     => 'afterImage',
+					'selector' => '.flexa-before-after__img-wrap--after .flexa-before-after__img',
+					'shape'    => 'full',
+					'button'   => 'bottom-right',
+					'host'     => '.flexa-before-after__frame',
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'beforeLabel', 'selector' => '.flexa-before-after__label--before', 'allowed' => 'plain' ],
-				[ 'attr' => 'afterLabel', 'selector' => '.flexa-before-after__label--after', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'beforeLabel',
+					'selector' => '.flexa-before-after__label--before',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'afterLabel',
+					'selector' => '.flexa-before-after__label--after',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 		// Countdown unit labels live in a `labels` object attribute; each label
 		// element is scoped by its unit modifier class.
-		'flexa/countdown' => [
+		'flexa/countdown'               => [
 			'fields' => [
-				[ 'attr' => 'labels', 'key' => 'days', 'object' => true, 'selector' => '.flexa-countdown__unit--days .flexa-countdown__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'labels', 'key' => 'hours', 'object' => true, 'selector' => '.flexa-countdown__unit--hours .flexa-countdown__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'labels', 'key' => 'minutes', 'object' => true, 'selector' => '.flexa-countdown__unit--minutes .flexa-countdown__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'labels', 'key' => 'seconds', 'object' => true, 'selector' => '.flexa-countdown__unit--seconds .flexa-countdown__label', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'labels',
+					'key'      => 'days',
+					'object'   => true,
+					'selector' => '.flexa-countdown__unit--days .flexa-countdown__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'labels',
+					'key'      => 'hours',
+					'object'   => true,
+					'selector' => '.flexa-countdown__unit--hours .flexa-countdown__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'labels',
+					'key'      => 'minutes',
+					'object'   => true,
+					'selector' => '.flexa-countdown__unit--minutes .flexa-countdown__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'labels',
+					'key'      => 'seconds',
+					'object'   => true,
+					'selector' => '.flexa-countdown__unit--seconds .flexa-countdown__label',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 		// Subscribe-form field labels (each field is its own block). The trailing
 		// required-marker span is stripped client-side before saving.
-		'flexa/subscribe-form-name'     => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-email'    => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-phone'    => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-textarea' => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-url'      => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-date'     => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-select'   => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-radio'    => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-checkbox' => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-toggle'   => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-upload'   => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
+		'flexa/subscribe-form-name'     => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-email'    => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-phone'    => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-textarea' => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-url'      => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-date'     => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-select'   => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-radio'    => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-checkbox' => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-toggle'   => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-upload'   => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
 		// Repeater blocks — text inside an array attribute. The Nth rendered item
 		// carries `data-flexa-item="<source index>"` (stamped in render.php), so
 		// the front-end maps it back to the exact array entry.
-		'flexa/faq' => [
+		'flexa/faq'                     => [
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'question', 'repeat' => true, 'selector' => '.flexa-faq__question-text', 'allowed' => 'minimal' ],
-				[ 'attr' => 'items', 'key' => 'answer', 'repeat' => true, 'selector' => '.flexa-faq__answer-content', 'allowed' => 'post' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'question',
+					'repeat'   => true,
+					'selector' => '.flexa-faq__question-text',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'answer',
+					'repeat'   => true,
+					'selector' => '.flexa-faq__answer-content',
+					'allowed'  => 'post',
+				],
 			],
 		],
-		'flexa/tabs' => [
+		'flexa/tabs'                    => [
 			'fields' => [
-				[ 'attr' => 'tabs', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-tabs__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'tabs', 'key' => 'content', 'repeat' => true, 'selector' => '.flexa-tabs__panel', 'allowed' => 'post' ],
+				[
+					'attr'     => 'tabs',
+					'key'      => 'label',
+					'repeat'   => true,
+					'selector' => '.flexa-tabs__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'tabs',
+					'key'      => 'content',
+					'repeat'   => true,
+					'selector' => '.flexa-tabs__panel',
+					'allowed'  => 'post',
+				],
 			],
 		],
-		'flexa/steps' => [
+		'flexa/steps'                   => [
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'title', 'repeat' => true, 'selector' => '.flexa-steps__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'items', 'key' => 'description', 'repeat' => true, 'selector' => '.flexa-steps__description', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'title',
+					'repeat'   => true,
+					'selector' => '.flexa-steps__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'description',
+					'repeat'   => true,
+					'selector' => '.flexa-steps__description',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
-		'flexa/timeline' => [
+		'flexa/timeline'                => [
 			'images' => [
-				[ 'attr' => 'items', 'key' => 'image', 'repeat' => true, 'selector' => '.flexa-timeline__image', 'shape' => 'basic' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'image',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__image',
+					'shape'    => 'basic',
+				],
 			],
 			// The marker is printed even without an icon, so one can be added here.
 			'icons'  => [
-				[ 'attr' => 'items', 'key' => 'icon', 'repeat' => true, 'selector' => '.flexa-timeline__marker', 'wrap' => true ],
+				[
+					'attr'     => 'items',
+					'key'      => 'icon',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__marker',
+					'wrap'     => true,
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'date', 'repeat' => true, 'selector' => '.flexa-timeline__date', 'allowed' => 'minimal' ],
-				[ 'attr' => 'items', 'key' => 'title', 'repeat' => true, 'selector' => '.flexa-timeline__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'items', 'key' => 'description', 'repeat' => true, 'selector' => '.flexa-timeline__description', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'date',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__date',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'title',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'description',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__description',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
-		'flexa/pricing-table' => [
+		'flexa/pricing-table'           => [
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'name', 'repeat' => true, 'selector' => '.flexa-pricing-table__name', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'badge', 'repeat' => true, 'selector' => '.flexa-pricing-table__badge', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'priceMonthly', 'repeat' => true, 'selector' => '.flexa-pricing-table__price-group--monthly .flexa-pricing-table__amount', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'periodMonthly', 'repeat' => true, 'selector' => '.flexa-pricing-table__price-group--monthly .flexa-pricing-table__period', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'priceYearly', 'repeat' => true, 'selector' => '.flexa-pricing-table__price-group--yearly .flexa-pricing-table__amount', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'periodYearly', 'repeat' => true, 'selector' => '.flexa-pricing-table__price-group--yearly .flexa-pricing-table__period', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'features', 'repeat' => true, 'join' => "\n", 'selector' => '.flexa-pricing-table__feature', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'ctaText', 'repeat' => true, 'selector' => '.flexa-pricing-table__cta', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'name',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__name',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'badge',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__badge',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'priceMonthly',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__price-group--monthly .flexa-pricing-table__amount',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'periodMonthly',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__price-group--monthly .flexa-pricing-table__period',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'priceYearly',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__price-group--yearly .flexa-pricing-table__amount',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'periodYearly',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__price-group--yearly .flexa-pricing-table__period',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'features',
+					'repeat'   => true,
+					'join'     => "\n",
+					'selector' => '.flexa-pricing-table__feature',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'ctaText',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__cta',
+					'allowed'  => 'plain',
+				],
 			],
 		],
-		'flexa/counter' => [
+		'flexa/counter'                 => [
 			'icons'  => [
-				[ 'attr' => 'items', 'key' => 'icon', 'repeat' => true, 'selector' => '.flexa-counter__icon', 'wrap' => true ],
+				[
+					'attr'     => 'items',
+					'key'      => 'icon',
+					'repeat'   => true,
+					'selector' => '.flexa-counter__icon',
+					'wrap'     => true,
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-counter__label', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'label',
+					'repeat'   => true,
+					'selector' => '.flexa-counter__label',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
-		'flexa/icon-list' => [
+		'flexa/icon-list'               => [
 			'icons'  => [
-				[ 'attr' => 'items', 'key' => 'icon', 'repeat' => true, 'selector' => '.flexa-icon-list__icon', 'wrap' => true, 'with' => 'text' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'icon',
+					'repeat'   => true,
+					'selector' => '.flexa-icon-list__icon',
+					'wrap'     => true,
+					'with'     => 'text',
+				],
 			],
 			'fields' => [
 				// A row's link lives in the row itself (items[i].link.url / .target):
 				// `item` names that object, and the row is the <a>.
-				[ 'attr' => 'items', 'key' => 'text', 'repeat' => true, 'selector' => '.flexa-icon-list__text', 'allowed' => 'minimal', 'link' => [ 'attr' => 'items', 'item' => 'link', 'target' => 'target', 'anchor' => 'a.flexa-icon-list__item' ] ],
+				[
+					'attr'     => 'items',
+					'key'      => 'text',
+					'repeat'   => true,
+					'selector' => '.flexa-icon-list__text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'items',
+						'item'   => 'link',
+						'target' => 'target',
+						'anchor' => 'a.flexa-icon-list__item',
+					],
+				],
 			],
 		],
-		'flexa/star-rating' => [
+		'flexa/star-rating'             => [
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-star-rating__title', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-star-rating__title',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
 		// The trigger text lives inside the trigger <button>; only the button/text
 		// trigger types render it (icon/image triggers have no text element). The
 		// label is plain text (esc_html in render.php).
-		'flexa/modal' => [
+		'flexa/modal'                   => [
 			'images' => [
-				[ 'attr' => 'triggerImage', 'selector' => '.flexa-modal__trigger-image', 'shape' => 'full' ],
+				[
+					'attr'     => 'triggerImage',
+					'selector' => '.flexa-modal__trigger-image',
+					'shape'    => 'full',
+				],
 			],
 			'icons'  => [
-				[ 'attr' => 'triggerIcon', 'selector' => '.flexa-modal__trigger > .flexa-icon' ],
+				[
+					'attr'     => 'triggerIcon',
+					'selector' => '.flexa-modal__trigger > .flexa-icon',
+				],
 			],
 			'fields' => [
-				[ 'attr' => 'triggerText', 'selector' => '.flexa-modal__trigger-text', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'triggerText',
+					'selector' => '.flexa-modal__trigger-text',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 		// Comparison table — 2-axis. Columns + row labels are single-axis
 		// repeaters; feature cells write rows[row].values[col] (the `cell` flag),
 		// with the column index carried on each editable cell's data-flexa-cell.
-		'flexa/comparison-table' => [
+		'flexa/comparison-table'        => [
 			'fields' => [
-				[ 'attr' => 'columns', 'key' => 'title', 'repeat' => true, 'selector' => '.flexa-comparison-table__col-title', 'allowed' => 'plain' ],
-				[ 'attr' => 'columns', 'key' => 'subtitle', 'repeat' => true, 'selector' => '.flexa-comparison-table__col-subtitle', 'allowed' => 'plain' ],
-				[ 'attr' => 'columns', 'key' => 'badge', 'repeat' => true, 'selector' => '.flexa-comparison-table__badge', 'allowed' => 'plain' ],
-				[ 'attr' => 'columns', 'key' => 'ctaText', 'repeat' => true, 'selector' => '.flexa-comparison-table__cta', 'allowed' => 'plain' ],
-				[ 'attr' => 'rows', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-comparison-table__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'rows', 'key' => 'values', 'repeat' => true, 'cell' => true, 'selector' => '.flexa-comparison-table__cell', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'columns',
+					'key'      => 'title',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__col-title',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'columns',
+					'key'      => 'subtitle',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__col-subtitle',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'columns',
+					'key'      => 'badge',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__badge',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'columns',
+					'key'      => 'ctaText',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__cta',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'rows',
+					'key'      => 'label',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'rows',
+					'key'      => 'values',
+					'repeat'   => true,
+					'cell'     => true,
+					'selector' => '.flexa-comparison-table__cell',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 		// Notice — a title + message the user types (single-string attributes).
-		'flexa/notice' => [
+		'flexa/notice'                  => [
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-notice__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'content', 'selector' => '.flexa-notice__content', 'allowed' => 'rich' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-notice__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'content',
+					'selector' => '.flexa-notice__content',
+					'allowed'  => 'rich',
+				],
 			],
 		],
 		// Data Table — 2-axis like the comparison table: column header labels are a
 		// single-axis repeater; body cells write rows[row].values[col] (the `cell`
 		// flag), with the column index carried on each cell's data-flexa-cell.
-		'flexa/data-table' => [
+		'flexa/data-table'              => [
 			'fields' => [
-				[ 'attr' => 'columns', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-data-table__col-label', 'allowed' => 'plain' ],
-				[ 'attr' => 'rows', 'key' => 'values', 'repeat' => true, 'cell' => true, 'selector' => '.flexa-data-table__cell', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'columns',
+					'key'      => 'label',
+					'repeat'   => true,
+					'selector' => '.flexa-data-table__col-label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'rows',
+					'key'      => 'values',
+					'repeat'   => true,
+					'cell'     => true,
+					'selector' => '.flexa-data-table__cell',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 	];
@@ -615,9 +1173,11 @@ final class Inline_Editor {
 		return $classes;
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	 * ---------------------------------------------------------------------
 	 * Settings + gating
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Inline-editor settings merged over defaults.
@@ -920,14 +1480,18 @@ final class Inline_Editor {
 
 	/**
 	 * Whether a block slug has been disabled in settings.
+	 *
+	 * @param string $block_name Block name.
 	 */
 	private static function is_block_disabled( string $block_name ): bool {
 		return in_array( self::slug_for( $block_name ), self::settings()['disabled_blocks'], true );
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	 * ---------------------------------------------------------------------
 	 * Render-time annotation
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Mark an editable block's root element with its blockId + name.
@@ -1146,9 +1710,11 @@ final class Inline_Editor {
 		return $post instanceof \WP_Post && 'wp_template_part' === $post->post_type ? $post : null;
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	 * ---------------------------------------------------------------------
 	 * Front-end assets
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Enqueue the front-end module + styles and expose the bootstrap object.
@@ -1164,7 +1730,10 @@ final class Inline_Editor {
 		}
 
 		$asset_path = FLEXA_BLOCK_DIR . 'build/frontend/inline-editor.asset.php';
-		$asset      = file_exists( $asset_path ) ? require $asset_path : [ 'dependencies' => [], 'version' => FLEXA_BLOCK_VER ];
+		$asset      = file_exists( $asset_path ) ? require $asset_path : [
+			'dependencies' => [],
+			'version'      => FLEXA_BLOCK_VER,
+		];
 		$version    = $asset['version'] ?? FLEXA_BLOCK_VER;
 
 		wp_enqueue_script(
@@ -1206,41 +1775,41 @@ final class Inline_Editor {
 				// Review: edits to this (published) page go to a copy.
 				'review'   => self::review_payload(),
 				'i18n'     => [
-					'imageEdit'  => __( 'Edit image', 'flexa-block' ),
-					'imageBg'    => __( 'Change background', 'flexa-block' ),
-					'iconEdit'   => __( 'Edit icon', 'flexa-block' ),
-					'textEdit'   => __( 'Edit text', 'flexa-block' ),
-					'reviewNote'  => __( 'Changes to this page go to a copy for review. Visitors keep seeing the page as it is.', 'flexa-block' ),
-					'reviewSaved' => __( 'Saved to the copy for review', 'flexa-block' ),
+					'imageEdit'     => __( 'Edit image', 'flexa-block' ),
+					'imageBg'       => __( 'Change background', 'flexa-block' ),
+					'iconEdit'      => __( 'Edit icon', 'flexa-block' ),
+					'textEdit'      => __( 'Edit text', 'flexa-block' ),
+					'reviewNote'    => __( 'Changes to this page go to a copy for review. Visitors keep seeing the page as it is.', 'flexa-block' ),
+					'reviewSaved'   => __( 'Saved to the copy for review', 'flexa-block' ),
 					/* translators: %d: number of blocks changed */
 					'reviewPending' => __( 'Changes waiting for review on this page: %d', 'flexa-block' ),
 					'reviewOpen'    => __( 'Open the copy', 'flexa-block' ),
 					'reviewBadge'   => __( 'Waiting for review', 'flexa-block' ),
 					'iconLoadError' => __( 'The icons could not be loaded. Reload the page and try again.', 'flexa-block' ),
-					'iconNone'   => __( 'No icons match.', 'flexa-block' ),
-					'iconUpload' => __( 'Choose file', 'flexa-block' ),
-					'imageBefore' => __( 'Edit “before” image', 'flexa-block' ),
-					'imageAfter'  => __( 'Edit “after” image', 'flexa-block' ),
-					'imageNoWp'  => __( 'The media library could not be loaded on this page. Reload and try again.', 'flexa-block' ),
-					'imageTitle' => __( 'Choose image', 'flexa-block' ),
-					'imageUse'   => __( 'Use this image', 'flexa-block' ),
-					'editing' => __( 'Editing', 'flexa-block' ),
-					'save'    => __( 'Save', 'flexa-block' ),
-					'cancel'  => __( 'Cancel', 'flexa-block' ),
-					'saved'   => __( 'Saved', 'flexa-block' ),
-					'undo'    => __( 'Undo', 'flexa-block' ),
-					'undone'  => __( 'Change undone', 'flexa-block' ),
-					'linkEdit'    => __( 'Edit link', 'flexa-block' ),
-					'linkAdd'     => __( 'Add link', 'flexa-block' ),
-					'iconAdd'     => __( 'Add icon', 'flexa-block' ),
-					'reloading'   => __( 'Saved. Reloading the page to show it…', 'flexa-block' ),
-					'linkApply'   => __( 'Apply', 'flexa-block' ),
-					'linkInvalid' => __( 'Links can start with http://, https://, mailto: or tel:, or be a path such as /contact.', 'flexa-block' ),
-					'saving'  => __( 'Saving…', 'flexa-block' ),
-					'error'   => __( 'Could not save', 'flexa-block' ),
-					'unsaved' => __( 'You have unsaved changes. Save them before you go?', 'flexa-block' ),
-					'discard' => __( 'Discard the changes you made to this text?', 'flexa-block' ),
-					'scope'   => [
+					'iconNone'      => __( 'No icons match.', 'flexa-block' ),
+					'iconUpload'    => __( 'Choose file', 'flexa-block' ),
+					'imageBefore'   => __( 'Edit “before” image', 'flexa-block' ),
+					'imageAfter'    => __( 'Edit “after” image', 'flexa-block' ),
+					'imageNoWp'     => __( 'The media library could not be loaded on this page. Reload and try again.', 'flexa-block' ),
+					'imageTitle'    => __( 'Choose image', 'flexa-block' ),
+					'imageUse'      => __( 'Use this image', 'flexa-block' ),
+					'editing'       => __( 'Editing', 'flexa-block' ),
+					'save'          => __( 'Save', 'flexa-block' ),
+					'cancel'        => __( 'Cancel', 'flexa-block' ),
+					'saved'         => __( 'Saved', 'flexa-block' ),
+					'undo'          => __( 'Undo', 'flexa-block' ),
+					'undone'        => __( 'Change undone', 'flexa-block' ),
+					'linkEdit'      => __( 'Edit link', 'flexa-block' ),
+					'linkAdd'       => __( 'Add link', 'flexa-block' ),
+					'iconAdd'       => __( 'Add icon', 'flexa-block' ),
+					'reloading'     => __( 'Saved. Reloading the page to show it…', 'flexa-block' ),
+					'linkApply'     => __( 'Apply', 'flexa-block' ),
+					'linkInvalid'   => __( 'Links can start with http://, https://, mailto: or tel:, or be a path such as /contact.', 'flexa-block' ),
+					'saving'        => __( 'Saving…', 'flexa-block' ),
+					'error'         => __( 'Could not save', 'flexa-block' ),
+					'unsaved'       => __( 'You have unsaved changes. Save them before you go?', 'flexa-block' ),
+					'discard'       => __( 'Discard the changes you made to this text?', 'flexa-block' ),
+					'scope'         => [
 						'template-part' => __( 'This text is part of the site template (header, footer…). Saving changes it on every page that uses this part.', 'flexa-block' ),
 						'pattern'       => __( 'This text is part of a synced pattern. Saving changes it everywhere the pattern is used.', 'flexa-block' ),
 					],
@@ -1565,9 +2134,11 @@ final class Inline_Editor {
 		<?php
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	 * ---------------------------------------------------------------------
 	 * REST
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Register the inline-edit route.
@@ -1866,6 +2437,7 @@ final class Inline_Editor {
 			// heartbeat (150 seconds by default, so "2–3 minutes"); while the
 			// editor stays open the heartbeat keeps renewing it, which is why
 			// this is phrased as "once they close it" and not as a countdown.
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core's own filter, read so the wait matches core's lock.
 			$window = max( 60, (int) apply_filters( 'wp_check_post_lock_window', 150 ) );
 			$low    = (int) floor( $window / MINUTE_IN_SECONDS );
 			$high   = (int) ceil( $window / MINUTE_IN_SECONDS );
@@ -2203,10 +2775,10 @@ final class Inline_Editor {
 			$current = $stored instanceof \stdClass ? clone $stored : new \stdClass();
 		}
 
-		$str    = static function ( $v ): string {
+		$str     = static function ( $v ): string {
 			return is_string( $v ) ? $v : '';
 		};
-		$before = [
+		$before  = [
 			'source' => '' !== $str( $current->source ?? '' ) ? $str( $current->source ) : 'none',
 			'name'   => $str( $current->name ?? '' ),
 			'id'     => isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : null,
@@ -2220,9 +2792,9 @@ final class Inline_Editor {
 		$current->id     = $info['id'];
 
 		if ( null !== $list && null !== $item ) {
-			$item->{(string) $icon['key']} = $current;
-			$list[ $index ]                = $item;
-			$attrs->{$attr}                = $list;
+			$item->{ (string) $icon['key']} = $current;
+			$list[ $index ]                 = $item;
+			$attrs->{$attr}                 = $list;
 		} else {
 			$attrs->{$attr} = $current;
 		}
@@ -2341,8 +2913,8 @@ final class Inline_Editor {
 		$list = null;
 		$item = null;
 
-		$bg    = null;
-		$ikey  = isset( $image['key'] ) && '' !== $image['key'] ? (string) $image['key'] : '';
+		$bg   = null;
+		$ikey = isset( $image['key'] ) && '' !== $image['key'] ? (string) $image['key'] : '';
 
 		if ( ! empty( $image['repeat'] ) ) {
 			$list = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
@@ -2377,9 +2949,9 @@ final class Inline_Editor {
 			return is_string( $v ) ? $v : '';
 		};
 
-		$old_id  = isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : null;
-		$old_url = $read_str( $current->url ?? '' );
-		$old_alt = $read_str( $current->alt ?? '' );
+		$old_id   = isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : null;
+		$old_url  = $read_str( $current->url ?? '' );
+		$old_alt  = $read_str( $current->alt ?? '' );
 		$override = '';
 		if ( '' !== $alt_attr ) {
 			$override = $read_str( property_exists( $attrs, $alt_attr ) ? $attrs->{$alt_attr} : self::default_attr( $name, $alt_attr ) );
@@ -2504,8 +3076,10 @@ final class Inline_Editor {
 	/**
 	 * The link descriptor of a text field, by the name of its URL attribute.
 	 *
-	 * @param string $name Block name.
-	 * @param string $attr URL attribute name.
+	 * @param string      $name      Block name.
+	 * @param string      $attr      URL attribute name (the list attribute for a link in a list item).
+	 * @param string|null $key       Item key, for a link inside a list item.
+	 * @param bool        $has_index Whether the request names a list item.
 	 * @return array<string, mixed>|null
 	 */
 	private static function find_link( string $name, string $attr, ?string $key = null, bool $has_index = false ): ?array {
@@ -2532,10 +3106,11 @@ final class Inline_Editor {
 	 * save, a single log entry and a single Undo. An attribute that ends up equal
 	 * to its block.json default is removed rather than stored, as Gutenberg does.
 	 *
-	 * @param \stdClass          $attrs Block attributes, changed in place.
-	 * @param string             $name  Block name.
+	 * @param \stdClass           $attrs Block attributes, changed in place.
+	 * @param string              $name  Block name.
 	 * @param array<string,mixed> $link  Descriptor from find_link().
-	 * @param string             $value JSON: {"url": "...", "newTab": bool}.
+	 * @param string              $value JSON: {"url": "...", "newTab": bool}.
+	 * @param int|null            $index List item index, for a link inside a list item.
 	 * @return array{old:string,after:string,old_summary:string,summary:string}|\WP_Error
 	 */
 	private static function with_link( \stdClass $attrs, string $name, array $link, string $value, ?int $index = null ) {
@@ -2577,8 +3152,8 @@ final class Inline_Editor {
 			if ( '' !== $target_attr ) {
 				$obj->{$target_attr} = $new_tab ? '_blank' : '';
 			}
-			$row->{$item_key} = $obj;
-			$list[ $index ]   = $row;
+			$row->{$item_key}   = $obj;
+			$list[ $index ]     = $row;
 			$attrs->{$url_attr} = $list;
 
 			return [
@@ -2620,13 +3195,13 @@ final class Inline_Editor {
 	 * Set a string attribute, or drop it when it equals its default.
 	 *
 	 * @param \stdClass $attrs Attributes.
-	 * @param string   $name  Block name.
-	 * @param string   $attr  Attribute.
-	 * @param string   $value New value.
+	 * @param string    $name  Block name.
+	 * @param string    $attr  Attribute.
+	 * @param string    $value New value.
 	 */
 	private static function put_link_attr( \stdClass $attrs, string $name, string $attr, string $value ): void {
 		$default = self::default_attr( $name, $attr );
-		if ( $value === ( is_string( $default ) ? $default : '' ) ) {
+		if ( ( is_string( $default ) ? $default : '' ) === $value ) {
 			unset( $attrs->{$attr} );
 			return;
 		}
@@ -2642,9 +3217,11 @@ final class Inline_Editor {
 		return $state['url'] . ( $state['newTab'] ? ' (new tab)' : '' );
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	 * ---------------------------------------------------------------------
 	 * Helpers
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Resolve a registry field for a block by attribute (+ repeater key).
@@ -2652,6 +3229,7 @@ final class Inline_Editor {
 	 * @param string      $name Block name.
 	 * @param string      $attr Attribute name.
 	 * @param string|null $key  Repeater item key, or null for a top-level field.
+	 * @param bool        $has_index Whether the request names a list item.
 	 * @return array<string, mixed>|null
 	 */
 	private static function find_field( string $name, string $attr, ?string $key, bool $has_index ): ?array {
@@ -2814,8 +3392,14 @@ final class Inline_Editor {
 			'b'      => [],
 			'i'      => [],
 			'br'     => [],
-			'span'   => [ 'style' => true, 'class' => true ],
-			'mark'   => [ 'style' => true, 'class' => true ],
+			'span'   => [
+				'style' => true,
+				'class' => true,
+			],
+			'mark'   => [
+				'style' => true,
+				'class' => true,
+			],
 			'sub'    => [],
 			'sup'    => [],
 		];
@@ -2837,12 +3421,20 @@ final class Inline_Editor {
 				// The full post allowlist (e.g. FAQ answers use wp_kses_post).
 				return wp_kses_allowed_html( 'post' );
 			case 'rich':
-				$inline['a'] = [ 'href' => [], 'target' => [], 'rel' => [] ];
+				$inline['a'] = [
+					'href'   => [],
+					'target' => [],
+					'rel'    => [],
+				];
 				return $inline;
 			case 'minimal':
 				return $minimal;
 			case 'minimal-link':
-				$minimal['a'] = [ 'href' => [], 'target' => [], 'rel' => [] ];
+				$minimal['a'] = [
+					'href'   => [],
+					'target' => [],
+					'rel'    => [],
+				];
 				return $minimal;
 			case 'inline':
 			default:
@@ -2855,14 +3447,14 @@ final class Inline_Editor {
 	 *
 	 * @param int    $post_id Post ID.
 	 * @param string $name    Block name.
-	 * @param string $old     Previous value.
-	 * @param string $new     New value.
+	 * @param string $old       Previous value.
+	 * @param string $new_value New value.
 	 */
-	private static function log_edit( int $post_id, string $name, string $old, string $new ): void {
+	private static function log_edit( int $post_id, string $name, string $old, string $new_value ): void {
 		$user  = wp_get_current_user();
 		$type  = self::slug_for( $name );
 		$old_s = mb_strimwidth( wp_strip_all_tags( $old ), 0, 80, '…' );
-		$new_s = mb_strimwidth( wp_strip_all_tags( $new ), 0, 80, '…' );
+		$new_s = mb_strimwidth( wp_strip_all_tags( $new_value ), 0, 80, '…' );
 
 		$note = sprintf(
 			/* translators: 1: block type, 2: old text, 3: new text. */

@@ -233,10 +233,11 @@ final class Inline_Edit_Log {
 	 */
 	public static function merge( array $by_post, string $user = '', string $block = '', string $search = '', array $titles = [] ): array {
 		$search = trim( $search );
-		$all = [];
+		$all    = [];
 		foreach ( $by_post as $post_id => $items ) {
 			foreach ( $items as $entry ) {
-				$entry['store_id'] = (int) ( $entry['store_id'] ?? 0 ) ?: (int) $post_id;
+				$store_id          = (int) ( $entry['store_id'] ?? 0 );
+				$entry['store_id'] = $store_id > 0 ? $store_id : (int) $post_id;
 				$entry['block']    = self::slug( (string) ( $entry['block_name'] ?? '' ) );
 				if ( '' !== $user && (string) ( $entry['user_name'] ?? '' ) !== $user ) {
 					continue;
@@ -332,8 +333,8 @@ final class Inline_Edit_Log {
 	 */
 	private static function matches( array $entry, string $needle, string $title ): bool {
 		$haystack = [
-			strip_tags( (string) ( $entry['before'] ?? '' ) ),
-			strip_tags( (string) ( $entry['after'] ?? '' ) ),
+			wp_strip_all_tags( (string) ( $entry['before'] ?? '' ) ),
+			wp_strip_all_tags( (string) ( $entry['after'] ?? '' ) ),
 			(string) ( $entry['user_name'] ?? '' ),
 			(string) ( $entry['block'] ?? '' ),
 			(string) ( $entry['attr'] ?? '' ),
@@ -358,7 +359,7 @@ final class Inline_Edit_Log {
 	 */
 	public static function append( array $items, array $entry, int $limit ): array {
 		$items[] = $entry;
-		$limit  = max( 1, $limit );
+		$limit   = max( 1, $limit );
 		if ( count( $items ) > $limit ) {
 			$items = array_slice( $items, -$limit );
 		}
@@ -401,7 +402,7 @@ final class Inline_Edit_Log {
 	/**
 	 * The role slug for an entry: the one recorded, else the account's current one.
 	 *
-	 * @param string          $slug Role slug stored with the entry, may be ''.
+	 * @param string         $slug Role slug stored with the entry, may be ''.
 	 * @param \WP_User|false $user Current account, if it still exists.
 	 * @return string Slug, or ''.
 	 */
@@ -419,7 +420,7 @@ final class Inline_Edit_Log {
 	 * person changes role or the account is deleted; entries from before roles
 	 * were recorded fall back to the account's current role.
 	 *
-	 * @param string          $slug Role slug stored with the entry, may be ''.
+	 * @param string         $slug Role slug stored with the entry, may be ''.
 	 * @param \WP_User|false $user Current account, if it still exists.
 	 * @return string Label, or '' when nothing is known.
 	 */
@@ -582,11 +583,11 @@ final class Inline_Edit_Log {
 			// current display name is only used when the entry predates it.
 			$user = get_userdata( (int) ( $entry['user_id'] ?? 0 ) );
 
-			$entry['block']       = Inline_Editor::slug_for( (string) ( $entry['block_name'] ?? '' ) );
-			$entry['role_label']  = self::role_label( (string) ( $entry['user_role'] ?? '' ), $user );
-			$entry['role_slug']   = self::role_slug( (string) ( $entry['user_role'] ?? '' ), $user );
+			$entry['block']        = Inline_Editor::slug_for( (string) ( $entry['block_name'] ?? '' ) );
+			$entry['role_label']   = self::role_label( (string) ( $entry['user_role'] ?? '' ), $user );
+			$entry['role_slug']    = self::role_slug( (string) ( $entry['user_role'] ?? '' ), $user );
 			$entry['time_display'] = self::display_time( (string) ( $entry['time'] ?? '' ) );
-			$entry['revisionUrl'] = $can_view ? admin_url( 'revision.php?revision=' . $revision_id ) : '';
+			$entry['revisionUrl']  = $can_view ? admin_url( 'revision.php?revision=' . $revision_id ) : '';
 			if ( '' === (string) ( $entry['user_name'] ?? '' ) && $user ) {
 				$entry['user_name'] = $user->display_name;
 			}
@@ -674,12 +675,12 @@ final class Inline_Edit_Log {
 				$entry['store_title'] = self::plain_title( $copy_of[ $store_id ] );
 			}
 			$entry['time_display'] = self::display_time( (string) ( $entry['time'] ?? '' ) );
-			$entry['editUrl']     = (string) get_edit_post_link( $store_id, 'raw' );
-			$entry['viewUrl']     = $viewed > 0 ? (string) get_permalink( $viewed ) : '';
-			$entry['revisionUrl'] = ( $revision instanceof \WP_Post && 'revision' === $revision->post_type )
+			$entry['editUrl']      = (string) get_edit_post_link( $store_id, 'raw' );
+			$entry['viewUrl']      = $viewed > 0 ? (string) get_permalink( $viewed ) : '';
+			$entry['revisionUrl']  = ( $revision instanceof \WP_Post && 'revision' === $revision->post_type )
 				? admin_url( 'revision.php?revision=' . $revision_id )
 				: '';
-			$items[]              = $entry;
+			$items[]               = $entry;
 		}
 
 		return rest_ensure_response(

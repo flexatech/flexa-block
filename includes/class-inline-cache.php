@@ -33,7 +33,7 @@ final class Inline_Cache {
 	public static function purge_all( \WP_Post $store ): void {
 		// Flexa Cache.
 		if ( has_action( 'flexa_cache/purge' ) ) {
-			do_action( 'flexa_cache/purge', 'all', null );
+			do_action( 'flexa_cache/purge', 'all', null ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, WordPress.NamingConventions.ValidHookName.UseUnderscores -- The cache plugin's own hook.
 		}
 		// WP Fastest Cache.
 		if ( function_exists( 'wpfc_clear_all_cache' ) ) {
@@ -45,7 +45,7 @@ final class Inline_Cache {
 		}
 		// LiteSpeed Cache.
 		if ( has_action( 'litespeed_purge_all' ) ) {
-			do_action( 'litespeed_purge_all' );
+			do_action( 'litespeed_purge_all' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, WordPress.NamingConventions.ValidHookName.UseUnderscores -- The cache plugin's own hook.
 		}
 		// W3 Total Cache.
 		if ( function_exists( 'w3tc_flush_all' ) ) {
@@ -61,11 +61,11 @@ final class Inline_Cache {
 		}
 		// Cache Enabler.
 		if ( has_action( 'cache_enabler_clear_complete_cache' ) ) {
-			do_action( 'cache_enabler_clear_complete_cache' );
+			do_action( 'cache_enabler_clear_complete_cache' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, WordPress.NamingConventions.ValidHookName.UseUnderscores -- The cache plugin's own hook.
 		}
 		// Breeze.
 		if ( has_action( 'breeze_clear_all_cache' ) ) {
-			do_action( 'breeze_clear_all_cache' );
+			do_action( 'breeze_clear_all_cache' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, WordPress.NamingConventions.ValidHookName.UseUnderscores -- The cache plugin's own hook.
 		}
 
 		/**

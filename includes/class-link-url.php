@@ -45,7 +45,7 @@ final class Link_Url {
 
 		// Look at it the way a browser would. Browsers drop tabs and newlines
 		// inside a scheme and read character references, so `java&#x0A;script:`
-		// and `jav	ascript:` are `javascript:` to them. Decode first (twice: an
+		// and `jav ascript:` are `javascript:` to them. Decode first (twice: an
 		// entity can encode another), then judge what is left.
 		$seen = html_entity_decode( html_entity_decode( $raw, ENT_QUOTES | ENT_HTML5, 'UTF-8' ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 

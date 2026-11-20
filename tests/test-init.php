@@ -158,6 +158,12 @@ function flexa_test_unslash( $value ) {
 	return is_string( $value ) ? stripslashes( $value ) : $value;
 }
 
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	function wp_strip_all_tags( $text ) {
+		return trim( strip_tags( (string) preg_replace( '@<(script|style)[^>]*?>.*?</\1>@si', '', (string) $text ) ) );
+	}
+}
+
 if ( ! function_exists( 'get_post_mime_type' ) ) {
 	function get_post_mime_type( $post = null ) {
 		return $GLOBALS['flexa_test_mime'][ (int) $post ] ?? false;

@@ -55,7 +55,11 @@ $inline_allowed = [
 	'i'      => [],
 	'br'     => [],
 	'span'   => [],
-	'a'      => [ 'href' => true, 'target' => true, 'rel' => true ],
+	'a'      => [
+		'href'   => true,
+		'target' => true,
+		'rel'    => true,
+	],
 ];
 
 // Wrapper classes.
@@ -172,7 +176,7 @@ foreach ( $images as $image_index => $image ) {
 	$media_classes = array_merge( [ 'flexa-images-gallery__media' ], HTML_Helpers::hover_effect_classes( $hover_effect ) );
 	// data-flexa-item (editors only): the picture's index in `images`, so the
 	// front-end editor can change this one even when earlier ones were skipped.
-	$items_html   .= '<div class="flexa-images-gallery__item"' . $item_data . \Flexa\Block\Inline_Editor::item_attr( (int) $image_index ) . '>'
+	$items_html .= '<div class="flexa-images-gallery__item"' . $item_data . \Flexa\Block\Inline_Editor::item_attr( (int) $image_index ) . '>'
 		. '<figure class="' . esc_attr( implode( ' ', $media_classes ) ) . '">' . $img_html . $overlay_html . $overlay_caption . '</figure>'
 		. $below_caption
 		. '</div>';
