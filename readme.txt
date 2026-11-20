@@ -5,7 +5,7 @@ Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -192,6 +192,16 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 * Some images were generated with ChatGPT (OpenAI); under OpenAI's Terms of Use, ownership of the generated images is assigned to the user.
 
 == Changelog ==
+
+= 2.0.1 =
+* Front-end editing grows up. Besides text, people allowed to edit a page can now change link addresses, pictures and their alt text (including gallery images and slide backgrounds), and icons, right on the page. Where a heading or a list row has no link yet, or a button has no icon, the toolbar offers to add one.
+* Nothing is lost by accident: moving to another text, following a link or closing the tab with unsaved changes asks first, and every save can be undone for a few seconds. A save is refused, with an explanation, if someone changed the page in the meantime or has it open in the editor.
+* Pasting from Word or Google Docs keeps only what the field can hold (bold, italic, line breaks, links where allowed), so what you see while editing is what gets saved.
+* Edit history: every change is logged with who made it, when, and the text before and after, in a "Front-end edits" panel in the block editor and on the new **Flexa Block → Edit log** tab. Entries are kept for 30 days. Saves made in one sitting share a single restore point instead of one revision each.
+* New, optional (off by default): send changes to published pages for review. Changes then go to a draft copy that visitors do not see until it is applied on the new **Flexa Block → Review** tab, which shows who changed what and updates on its own. You choose whether only administrators or anyone who can publish may apply changes, and whether people may apply their own. The edit log records who approved each change and when.
+* Changing a header, footer or synced pattern from the front end now clears the page cache of Flexa Cache, WP Fastest Cache, WP Rocket, LiteSpeed Cache, W3 Total Cache, WP Super Cache, SiteGround Optimizer, Cache Enabler and Breeze, so every page shows the new version.
+* Front-end editing works from the keyboard (Tab, Enter, Escape), is labelled for screen readers, and fits on phones.
+* Dark mode is now off by default on new sites. Sites updating to this version keep their dark mode exactly as it was.
 
 = 2.0.0 =
 * New: an optional MCP module, so an AI client you connect can read how your site is designed, draft a page from one of your presets, and edit the text of existing pages. Off by default. Turning it on takes a confirmation, and separate toggles cover reading, drafting and editing (editing is off even after the module is on).

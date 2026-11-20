@@ -2,16 +2,16 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Flexa Block – Blocks & Page Builder 2.0.0\n"
+"Project-Id-Version: Flexa Block – Blocks & Page Builder 2.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/flexa-block\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-09T10:56:00+00:00\n"
+"POT-Creation-Date: 2026-11-20T09:35:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.10.0\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: flexa-block\n"
 
 #. Plugin Name of the plugin
@@ -48,6 +48,7 @@ msgstr ""
 #. translators: %s: search query.
 #: build/blocks/breadcrumb/render.php:131
 #: src/blocks/breadcrumb/render.php:131
+#, php-format
 msgid "Search: %s"
 msgstr ""
 
@@ -327,12 +328,14 @@ msgstr ""
 #. translators: %s: average product rating out of 5.
 #: build/blocks/product-detail/render.php:137
 #: src/blocks/product-detail/render.php:137
+#, php-format
 msgid "Average rating: %s out of 5"
 msgstr ""
 
 #. translators: %s: number of product reviews.
 #: build/blocks/product-detail/render.php:143
 #: src/blocks/product-detail/render.php:143
+#, php-format
 msgid "%s review"
 msgid_plural "%s reviews"
 msgstr[0] ""
@@ -354,6 +357,7 @@ msgstr ""
 #: build/blocks/product-image/render.php:143
 #: src/blocks/product-image/render.php:102
 #: src/blocks/product-image/render.php:143
+#: build/admin/index.js:17
 #: build/blocks/product-image/index.js:1
 msgid "Previous"
 msgstr ""
@@ -362,6 +366,7 @@ msgstr ""
 #: build/blocks/product-image/render.php:144
 #: src/blocks/product-image/render.php:103
 #: src/blocks/product-image/render.php:144
+#: build/admin/index.js:18
 #: build/blocks/product-image/index.js:1
 msgid "Next"
 msgstr ""
@@ -373,12 +378,14 @@ msgstr ""
 #: src/blocks/product-rating/render.php:66
 #: src/blocks/product-related/render.php:138
 #: src/blocks/star-rating/render.php:76
+#, php-format
 msgid "Rated %1$s out of %2$s"
 msgstr ""
 
 #. translators: %s: number of reviews.
 #: build/blocks/product-rating/render.php:87
 #: src/blocks/product-rating/render.php:87
+#, php-format
 msgid "(%s review)"
 msgid_plural "(%s reviews)"
 msgstr[0] ""
@@ -394,6 +401,7 @@ msgstr ""
 #: build/blocks/rss/render.php:160
 #: includes/class-post-query.php:843
 #: src/blocks/rss/render.php:160
+#, php-format
 msgid "%1$s: %2$s"
 msgstr ""
 
@@ -428,6 +436,7 @@ msgstr ""
 #. translators: %s: social network name.
 #: build/blocks/social-share/render.php:139
 #: src/blocks/social-share/render.php:139
+#, php-format
 msgid "Share on %s"
 msgstr ""
 
@@ -474,6 +483,7 @@ msgstr ""
 #. translators: %d: star rating out of five.
 #: build/blocks/testimonial/render.php:68
 #: src/blocks/testimonial/render.php:68
+#, php-format
 msgid "Rated %d out of 5"
 msgstr ""
 
@@ -489,11 +499,12 @@ msgid "Video"
 msgstr ""
 
 #. translators: %s: minimum WordPress version
-#: flexa-block.php:213
+#: flexa-block.php:249
+#, php-format
 msgid "Flexa Block requires WordPress %s or higher."
 msgstr ""
 
-#: includes/admin/class-admin.php:90
+#: includes/admin/class-admin.php:98
 #: build/blocks/countdown/index.js:1
 #: build/blocks/product-add-to-cart/index.js:1
 #: build/blocks/product-description/index.js:1
@@ -507,11 +518,11 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-admin.php:385
-#: includes/admin/class-admin.php:386
-#: includes/admin/class-admin.php:404
+#: includes/admin/class-admin.php:400
+#: includes/admin/class-admin.php:406
+#: includes/admin/class-admin.php:425
 #: includes/mcp/class-mcp-manager.php:100
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Flexa Block"
 msgstr ""
 
@@ -524,12 +535,12 @@ msgid "Flexa FormFlow is our free form builder, with a visual email designer and
 msgstr ""
 
 #: includes/admin/class-formflow-notice.php:79
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Not interested"
 msgstr ""
 
 #: includes/admin/class-formflow-notice.php:82
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Learn more"
 msgstr ""
 
@@ -537,12 +548,13 @@ msgstr ""
 msgid "Install Now"
 msgstr ""
 
-#: includes/admin/class-mcp-settings.php:370
+#: includes/admin/class-mcp-settings.php:386
 msgid "Signed out"
 msgstr ""
 
 #. translators: %s: minimum WordPress version
-#: includes/admin/class-mcp-settings.php:529
+#: includes/admin/class-mcp-settings.php:551
+#, php-format
 msgid "The MCP module needs WordPress %s or newer, which provides the Abilities API."
 msgstr ""
 
@@ -553,6 +565,26 @@ msgstr ""
 #: includes/class-block-manager.php:679
 #: build/admin/index.js:1
 msgid "WooCommerce"
+msgstr ""
+
+#. translators: %s: block id
+#: includes/class-block-patcher.php:134
+#, php-format
+msgid "No block with the id %s on this page. It may have been moved or removed since the page was read."
+msgstr ""
+
+#. translators: %s: block id
+#: includes/class-block-patcher.php:146
+#, php-format
+msgid "More than one block on this page has the id %s, so it is not clear which one to change. Opening the page in the editor and saving it once gives each block its own id."
+msgstr ""
+
+#: includes/class-block-patcher.php:293
+msgid "That field does not exist on this block."
+msgstr ""
+
+#: includes/class-block-patcher.php:306
+msgid "This change could not be made without risking the rest of the page, so nothing was written. Make it in the editor instead."
 msgstr ""
 
 #: includes/class-feed-tokens.php:151
@@ -566,6 +598,7 @@ msgstr ""
 
 #. translators: %s: site name.
 #: includes/class-form-handler.php:341
+#, php-format
 msgid "A new subscription was submitted on %s."
 msgstr ""
 
@@ -573,19 +606,148 @@ msgstr ""
 msgid "Please enter a valid phone number (digits, spaces, + ( ) - . )."
 msgstr ""
 
-#: includes/class-inline-editor.php:636
-#: includes/class-inline-editor.php:694
-#: build/admin/index.js:13
+#: includes/class-icon-source.php:110
+msgid "That icon is not in the icon library."
+msgstr ""
+
+#: includes/class-icon-source.php:125
+#: includes/class-image-source.php:39
+msgid "That is not an image in the media library."
+msgstr ""
+
+#: includes/class-icon-source.php:128
+msgid "You are not allowed to choose files from the media library."
+msgstr ""
+
+#: includes/class-icon-source.php:131
+msgid "You are not allowed to use that file."
+msgstr ""
+
+#: includes/class-icon-source.php:135
+msgid "That file has no address."
+msgstr ""
+
+#: includes/class-icon-source.php:146
+#: includes/class-inline-editor.php:2749
+msgid "That icon could not be read. Reload the page and try again."
+msgstr ""
+
+#: includes/class-image-source.php:45
+msgid "You are not allowed to choose images from the media library."
+msgstr ""
+
+#: includes/class-image-source.php:49
+msgid "You are not allowed to use that image."
+msgstr ""
+
+#: includes/class-image-source.php:54
+msgid "That image has no file."
+msgstr ""
+
+#: includes/class-inline-edit-log.php:560
+msgid "You cannot view the edit history of this content."
+msgstr ""
+
+#: includes/class-inline-editor.php:1227
+msgid "An administrator has to review and apply these changes."
+msgstr ""
+
+#: includes/class-inline-editor.php:1230
+msgid "You made changes in this copy, so someone else has to review and apply it."
+msgstr ""
+
+#: includes/class-inline-editor.php:1778
+#: includes/class-inline-editor.php:2079
+msgid "Edit image"
+msgstr ""
+
+#: includes/class-inline-editor.php:1779
+msgid "Change background"
+msgstr ""
+
+#: includes/class-inline-editor.php:1780
+#: includes/class-inline-editor.php:2112
+msgid "Edit icon"
+msgstr ""
+
+#: includes/class-inline-editor.php:1781
+msgid "Edit text"
+msgstr ""
+
+#: includes/class-inline-editor.php:1782
+msgid "Changes to this page go to a copy for review. Visitors keep seeing the page as it is."
+msgstr ""
+
+#: includes/class-inline-editor.php:1783
+msgid "Saved to the copy for review"
+msgstr ""
+
+#. translators: %d: number of blocks changed
+#: includes/class-inline-editor.php:1785
+#, php-format
+msgid "Changes waiting for review on this page: %d"
+msgstr ""
+
+#: includes/class-inline-editor.php:1786
+msgid "Open the copy"
+msgstr ""
+
+#: includes/class-inline-editor.php:1787
+#: build/admin/index.js:14
+#: build/admin/index.js:16
+msgid "Waiting for review"
+msgstr ""
+
+#: includes/class-inline-editor.php:1788
+msgid "The icons could not be loaded. Reload the page and try again."
+msgstr ""
+
+#: includes/class-inline-editor.php:1789
+msgid "No icons match."
+msgstr ""
+
+#: includes/class-inline-editor.php:1790
+#: includes/class-inline-editor.php:2122
+msgid "Choose file"
+msgstr ""
+
+#: includes/class-inline-editor.php:1791
+msgid "Edit “before” image"
+msgstr ""
+
+#: includes/class-inline-editor.php:1792
+msgid "Edit “after” image"
+msgstr ""
+
+#: includes/class-inline-editor.php:1793
+msgid "The media library could not be loaded on this page. Reload and try again."
+msgstr ""
+
+#: includes/class-inline-editor.php:1794
+msgid "Choose image"
+msgstr ""
+
+#: includes/class-inline-editor.php:1795
+msgid "Use this image"
+msgstr ""
+
+#: includes/class-inline-editor.php:1796
+#: includes/class-inline-editor.php:1989
+#: build/admin/index.js:20
 msgid "Editing"
 msgstr ""
 
-#: includes/class-inline-editor.php:637
-#: includes/class-inline-editor.php:695
+#: includes/class-inline-editor.php:1797
+#: includes/class-inline-editor.php:1990
+#: includes/class-inline-editor.php:2024
 msgid "Save"
 msgstr ""
 
-#: includes/class-inline-editor.php:638
-#: includes/class-inline-editor.php:696
+#: includes/class-inline-editor.php:1798
+#: includes/class-inline-editor.php:1991
+#: includes/class-inline-editor.php:2057
+#: includes/class-inline-editor.php:2089
+#: includes/class-inline-editor.php:2129
 #: libraries/deactivation-intelligence/src/class-deactivation-intelligence.php:339
 #: build/admin/index.js:9
 #: build/admin/index.js:10
@@ -593,56 +755,325 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: includes/class-inline-editor.php:639
+#: includes/class-inline-editor.php:1799
 msgid "Saved"
 msgstr ""
 
-#: includes/class-inline-editor.php:640
+#: includes/class-inline-editor.php:1800
+#: includes/class-inline-editor.php:1994
+#: build/admin/index.js:16
+#: build/admin/index.js:20
+#: build/editor/inline-edit-log.js:1
+#: build/editor/working-copy.js:2
+msgid "Undo"
+msgstr ""
+
+#: includes/class-inline-editor.php:1801
+msgid "Change undone"
+msgstr ""
+
+#: includes/class-inline-editor.php:1802
+#: includes/class-inline-editor.php:1995
+#: includes/class-inline-editor.php:2045
+msgid "Edit link"
+msgstr ""
+
+#: includes/class-inline-editor.php:1803
+#: build/blocks/team-member/index.js:1
+msgid "Add link"
+msgstr ""
+
+#: includes/class-inline-editor.php:1804
+#: includes/class-inline-editor.php:1996
+#: build/blocks/social-icon/index.js:1
+msgid "Add icon"
+msgstr ""
+
+#: includes/class-inline-editor.php:1805
+msgid "Saved. Reloading the page to show it…"
+msgstr ""
+
+#: includes/class-inline-editor.php:1806
+#: includes/class-inline-editor.php:2058
+#: includes/class-inline-editor.php:2090
+#: includes/class-inline-editor.php:2130
+msgid "Apply"
+msgstr ""
+
+#: includes/class-inline-editor.php:1807
+#: includes/class-link-url.php:63
+msgid "Links can start with http://, https://, mailto: or tel:, or be a path such as /contact."
+msgstr ""
+
+#: includes/class-inline-editor.php:1808
 #: build/admin/index.js:13
+#: build/admin/index.js:21
 msgid "Saving…"
 msgstr ""
 
-#: includes/class-inline-editor.php:641
+#: includes/class-inline-editor.php:1809
 msgid "Could not save"
 msgstr ""
 
-#: includes/class-inline-editor.php:772
+#: includes/class-inline-editor.php:1810
+msgid "You have unsaved changes. Save them before you go?"
+msgstr ""
+
+#: includes/class-inline-editor.php:1811
+msgid "Discard the changes you made to this text?"
+msgstr ""
+
+#: includes/class-inline-editor.php:1813
+msgid "This text is part of the site template (header, footer…). Saving changes it on every page that uses this part."
+msgstr ""
+
+#: includes/class-inline-editor.php:1814
+msgid "This text is part of a synced pattern. Saving changes it everywhere the pattern is used."
+msgstr ""
+
+#: includes/class-inline-editor.php:1987
+msgid "Front-end editing"
+msgstr ""
+
+#: includes/class-inline-editor.php:1993
+msgid "Open the copy for review"
+msgstr ""
+
+#: includes/class-inline-editor.php:2017
+msgid "Unsaved changes"
+msgstr ""
+
+#: includes/class-inline-editor.php:2022
+msgid "Keep editing"
+msgstr ""
+
+#: includes/class-inline-editor.php:2023
+msgid "Discard changes"
+msgstr ""
+
+#: includes/class-inline-editor.php:2046
+msgid "Web address"
+msgstr ""
+
+#: includes/class-inline-editor.php:2050
+msgid "Open in a new tab"
+msgstr ""
+
+#: includes/class-inline-editor.php:2052
+msgid "Leave the address empty to remove the link."
+msgstr ""
+
+#: includes/class-inline-editor.php:2081
+msgid "Choose another image"
+msgstr ""
+
+#: includes/class-inline-editor.php:2082
+msgid "Alt text"
+msgstr ""
+
+#: includes/class-inline-editor.php:2084
+msgid "Describes the image for people who cannot see it. Leave it empty for a purely decorative image."
+msgstr ""
+
+#: includes/class-inline-editor.php:2115
+#: build/blocks/banner/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Search icons…"
+msgstr ""
+
+#: includes/class-inline-editor.php:2115
+msgid "Search icons"
+msgstr ""
+
+#: includes/class-inline-editor.php:2117
+msgid "Basic"
+msgstr ""
+
+#: includes/class-inline-editor.php:2118
+msgid "WordPress"
+msgstr ""
+
+#: includes/class-inline-editor.php:2120
+#: build/blocks/banner/index.js:1
+#: build/blocks/breadcrumb/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/counter/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/icon/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/modal/index.js:1
+#: build/blocks/notice/index.js:1
+#: build/blocks/slides/index.js:1
+#: build/blocks/social-icon/index.js:1
+#: build/blocks/steps/index.js:1
+#: build/blocks/tab/index.js:1
+#: build/blocks/taxonomy/index.js:1
+#: build/blocks/team-member/index.js:1
+#: build/blocks/timeline/index.js:1
+#: build/blocks/video-popup/index.js:1
+msgid "Icons"
+msgstr ""
+
+#: includes/class-inline-editor.php:2123
+msgid "Remove icon"
+msgstr ""
+
+#: includes/class-inline-editor.php:2261
 msgid "Front-end editing is turned off. Enable it under Flexa Block → Editing."
 msgstr ""
 
-#: includes/class-inline-editor.php:776
+#: includes/class-inline-editor.php:2265
 msgid "You do not have permission to edit this content."
 msgstr ""
 
-#: includes/class-inline-editor.php:779
+#: includes/class-inline-editor.php:2268
 msgid "Your user role is not allowed to edit on the front end."
 msgstr ""
 
+#: includes/class-inline-editor.php:2294
+msgid "This part of the page could not be found. Reload the page and try again."
+msgstr ""
+
+#: includes/class-inline-editor.php:2305
+msgid "This text is part of the site template, and your account cannot edit templates."
+msgstr ""
+
+#: includes/class-inline-editor.php:2306
+msgid "This text is part of a synced pattern you do not have permission to edit."
+msgstr ""
+
 #. translators: %s: block type slug.
-#: includes/class-inline-editor.php:806
+#: includes/class-inline-editor.php:2336
+#, php-format
 msgid "Front-end editing is turned off for the “%s” block. Turn it on under Flexa Block → Editing."
 msgstr ""
 
-#: includes/class-inline-editor.php:816
+#: includes/class-inline-editor.php:2349
+msgid "That edit could not be read. Reload the page and try again."
+msgstr ""
+
+#: includes/class-inline-editor.php:2357
+msgid "This icon cannot be edited from the front end."
+msgstr ""
+
+#: includes/class-inline-editor.php:2366
+msgid "This image cannot be edited from the front end."
+msgstr ""
+
+#: includes/class-inline-editor.php:2374
+msgid "This link cannot be edited from the front end."
+msgstr ""
+
+#: includes/class-inline-editor.php:2381
 msgid "This text cannot be edited from the front end."
 msgstr ""
 
-#: includes/class-inline-editor.php:821
+#: includes/class-inline-editor.php:2387
 msgid "The post could not be found. Try reloading the page."
 msgstr ""
 
-#: includes/class-inline-editor.php:839
+#: includes/class-inline-editor.php:2413
+msgid "Changes to this page are waiting for review in a copy you cannot edit."
+msgstr ""
+
+#. translators: %s: number of minutes
+#: includes/class-inline-editor.php:2447
+#, php-format
+msgid "about %s minute"
+msgid_plural "about %s minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: lower number of minutes, 2: upper number of minutes
+#: includes/class-inline-editor.php:2452
+#, php-format
+msgid "about %1$s–%2$s minutes"
+msgstr ""
+
+#. translators: 1: display name of the person editing, 2: how long to wait, for example "about 2–3 minutes"
+#: includes/class-inline-editor.php:2461
+#, php-format
+msgid "%1$s is editing this in the block editor right now, and their next save would overwrite yours. Once they close the editor, you can save again in %2$s. Your text stays here until then."
+msgstr ""
+
+#: includes/class-inline-editor.php:2462
+#: includes/mcp/class-page-editor.php:641
+#: includes/mcp/class-working-copy.php:244
+msgid "Someone"
+msgstr ""
+
+#: includes/class-inline-editor.php:2476
+msgid "This content has changed since the page was loaded, so your edit was not saved. Copy your text if you need it, reload the page, and edit again."
+msgstr ""
+
+#: includes/class-inline-editor.php:2490
+msgid "Two blocks on this page share the same id, so this edit could not be matched to one of them. Open the page in the block editor and save it once, then try again."
+msgstr ""
+
+#: includes/class-inline-editor.php:2493
 msgid "This block is no longer in the post — it may have been moved or removed in the editor. Reload the page and try again."
 msgstr ""
 
-#: includes/class-inline-editor.php:852
-#: includes/class-inline-editor.php:869
+#: includes/class-inline-editor.php:2590
+msgid "The copy for review could not be made."
+msgstr ""
+
+#: includes/class-inline-editor.php:2768
+#: includes/class-inline-editor.php:2922
+#: includes/class-inline-editor.php:3137
+#: includes/class-inline-editor.php:3308
 msgid "This list item could not be matched. Reload the page and try again."
 msgstr ""
 
+#: includes/class-inline-editor.php:2905
+msgid "The image could not be read. Reload the page and try again."
+msgstr ""
+
+#: includes/class-inline-editor.php:2938
+msgid "This block has no background image to replace. Set one in the block editor first."
+msgstr ""
+
+#: includes/class-inline-editor.php:3119
+msgid "The link could not be read. Reload the page and try again."
+msgstr ""
+
 #. translators: 1: block type, 2: old text, 3: new text.
-#: includes/class-inline-editor.php:1049
+#: includes/class-inline-editor.php:3461
+#, php-format
 msgid "Edited %1$s from front end: \"%2$s\" → \"%3$s\""
+msgstr ""
+
+#: includes/class-inline-review.php:302
+msgid "That copy is not waiting for review any more."
+msgstr ""
+
+#: includes/class-link-url.php:43
+msgid "That web address is too long."
+msgstr ""
+
+#: includes/class-link-url.php:53
+msgid "That web address contains characters that are not allowed."
+msgstr ""
+
+#: includes/class-link-url.php:69
+msgid "That does not look like a web address."
 msgstr ""
 
 #: includes/class-post-filter-rest.php:125
@@ -663,6 +1094,7 @@ msgstr ""
 
 #. translators: %d: estimated minutes to read the post.
 #: includes/class-post-query.php:718
+#, php-format
 msgid "%d min read"
 msgid_plural "%d min read"
 msgstr[0] ""
@@ -670,6 +1102,7 @@ msgstr[1] ""
 
 #. translators: %d: number of comments on the post.
 #: includes/class-post-query.php:725
+#, php-format
 msgid "%d comment"
 msgid_plural "%d comments"
 msgstr[0] ""
@@ -686,6 +1119,7 @@ msgstr ""
 #. translators: %s: number of posts found.
 #: includes/class-post-query.php:968
 #: build/blocks/post-grid/index.js:1
+#, php-format,js-format
 msgid "%s posts found"
 msgstr ""
 
@@ -706,12 +1140,13 @@ msgstr ""
 msgid "&hellip;"
 msgstr ""
 
-#: includes/import/class-content-importer.php:66
+#: includes/import/class-content-importer.php:78
 msgid "Import item is missing an id."
 msgstr ""
 
 #. translators: %s: media file name
-#: includes/import/class-content-importer.php:242
+#: includes/import/class-content-importer.php:374
+#, php-format
 msgid "Could not import media: %s"
 msgstr ""
 
@@ -735,106 +1170,179 @@ msgstr ""
 msgid "Could not stage the media file for import."
 msgstr ""
 
-#: includes/import/class-preset-slots.php:219
+#: includes/import/class-preset-slots.php:229
 msgid "This preset takes no slot values; the ones supplied were ignored."
 msgstr ""
 
-#: includes/import/class-preset-slots.php:230
+#: includes/import/class-preset-slots.php:240
 msgid "This preset was built for a newer version of Flexa Block, so its fields were skipped and its own wording kept."
 msgstr ""
 
+#: includes/import/class-preset-slots.php:383
+msgid "this field cannot be set"
+msgstr ""
+
 #. translators: %s: size limit in bytes
-#: includes/import/class-preset-slots.php:320
+#: includes/import/class-preset-slots.php:413
+#, php-format
 msgid "Those slot values are too large; the limit is %s bytes in total."
 msgstr ""
 
 #. translators: %s: comma-separated slot keys
-#: includes/import/class-preset-slots.php:333
+#: includes/import/class-preset-slots.php:426
+#, php-format
 msgid "This preset has no slot named %s."
 msgstr ""
 
-#: includes/import/class-preset-slots.php:350
+#: includes/import/class-preset-slots.php:443
 msgid "that is not a value this slot can take"
 msgstr ""
 
 #. translators: %s: character limit
-#: includes/import/class-preset-slots.php:396
+#: includes/import/class-preset-slots.php:489
+#, php-format
 msgid "keep it to %s characters or fewer"
 msgstr ""
 
-#: includes/import/class-preset-slots.php:403
+#: includes/import/class-preset-slots.php:496
 msgid "that is not an email address"
 msgstr ""
 
-#: includes/import/class-preset-slots.php:409
+#: includes/import/class-preset-slots.php:503
 msgid "that is not a web address"
 msgstr ""
 
-#: includes/import/class-preset-slots.php:415
+#: includes/import/class-preset-slots.php:509
 msgid "a phone number needs at least one digit"
 msgstr ""
 
-#: includes/import/class-preset-slots.php:436
+#: includes/import/class-preset-slots.php:530
 msgid "that is not a media ID"
 msgstr ""
 
-#: includes/import/class-preset-slots.php:440
+#: includes/import/class-preset-slots.php:534
 msgid "that media ID is not an image in this library"
 msgstr ""
 
-#: includes/import/class-preset-slots.php:444
+#: includes/import/class-preset-slots.php:538
 msgid "that media ID is not one you can use"
 msgstr ""
 
 #. translators: 1: slot label, 2: reason the value was refused
-#: includes/import/class-preset-slots.php:462
+#: includes/import/class-preset-slots.php:556
+#, php-format
 msgid "%1$s: %2$s."
 msgstr ""
 
 #. translators: %s: slot key found in the preset markup
-#: includes/import/class-preset-slots.php:541
+#: includes/import/class-preset-slots.php:635
+#, php-format
 msgid "The preset refers to a slot it does not declare: %s."
 msgstr ""
 
 #. translators: 1: variant name, 2: slot key
-#: includes/import/class-preset-slots.php:557
+#: includes/import/class-preset-slots.php:651
+#, php-format
 msgid "The preset asks for an unsupported %1$s form of slot %2$s."
 msgstr ""
 
-#: includes/import/class-preset-slots.php:610
+#: includes/import/class-preset-slots.php:704
 msgid "The preset puts a slot in its markup instead of a block attribute; that spot was left empty."
 msgstr ""
 
 #: includes/import/class-sample-source.php:48
 #: build/admin/index.js:7
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Sample Data"
 msgstr ""
 
-#: includes/mcp/class-draft-writer.php:138
+#: includes/mcp/class-draft-writer.php:144
 msgid "Creating content over MCP is switched off for this site."
 msgstr ""
 
-#. translators: %s: size limit in bytes
-#: includes/mcp/class-draft-writer.php:149
-msgid "That request is too large; the limit is %s bytes."
-msgstr ""
-
-#: includes/mcp/class-draft-writer.php:160
+#: includes/mcp/class-draft-writer.php:158
 msgid "This only creates drafts. Publishing a page is left to a person, so ask for a draft and have someone review it."
 msgstr ""
 
-#: includes/mcp/class-draft-writer.php:174
-#: includes/mcp/class-write-abilities.php:272
+#: includes/mcp/class-draft-writer.php:172
+#: includes/mcp/class-write-abilities.php:320
 msgid "No preset source with that key. Call flexa/list-presets to see what this site has."
 msgstr ""
 
-#: includes/mcp/class-draft-writer.php:184
-#: includes/mcp/class-write-abilities.php:281
+#: includes/mcp/class-draft-writer.php:182
+#: includes/mcp/class-write-abilities.php:329
 msgid "No preset with that id in this source. Call flexa/list-presets to see what this site has."
 msgstr ""
 
-#: includes/mcp/class-draft-writer.php:204
+#: includes/mcp/class-draft-writer.php:224
+msgid "An identical request is already being processed. Wait for its answer rather than sending it again."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:234
+msgid "This request was already handled, so the page it created is being returned rather than a second copy."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:302
+msgid "Changing content over MCP is switched off for this site."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:320
+msgid "No page with that ID. Use the post_id that flexa/create-page-draft returned."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:328
+#: includes/mcp/class-page-editor.php:601
+msgid "You do not have permission to edit this page."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:338
+msgid "This page was not built from a preset, so there are no fields to change. Only drafts made with flexa/create-page-draft, or imported from a preset, can be updated here."
+msgstr ""
+
+#. translators: %s: post status, for example publish
+#: includes/mcp/class-draft-writer.php:348
+#, php-format
+msgid "Only drafts can be changed here, and this page is %s. To change a published page, use flexa/edit-page-blocks if it is available: it puts the change on a draft copy for a person to review."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:366
+msgid "This draft was built before Flexa Block could tell whether a draft had been edited by hand, so its fields cannot be rebuilt from the preset. To change its text, use flexa/edit-page-blocks if it is available; to change only its title, send the title without slots."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:374
+msgid "This draft has been changed in the editor since it was built, and rebuilding it would throw those changes away. To change its text, use flexa/edit-page-blocks if it is available, which changes single fields and keeps the rest; to change only its title, send the title without slots."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:384
+msgid "The preset this draft was built from is no longer available on this site, so it cannot be rebuilt."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:429
+msgid "Those values are what the draft already has, so nothing was changed."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:436
+msgid "This draft is already being updated. Wait for that answer before sending another change."
+msgstr ""
+
+#. translators: 1: version the draft was built from, 2: current preset version
+#: includes/mcp/class-draft-writer.php:448
+#, php-format
+msgid "This draft was built from version %1$s of its preset and has been rebuilt from version %2$s, so parts of its layout may have changed too."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:489
+msgid "The draft already has that title, so nothing was changed."
+msgstr ""
+
+#. translators: %s: size limit in bytes
+#: includes/mcp/class-draft-writer.php:568
+#: includes/mcp/class-page-editor.php:213
+#, php-format
+msgid "That request is too large; the limit is %s bytes."
+msgstr ""
+
+#: includes/mcp/class-draft-writer.php:587
 #: build/blocks/comparison-table/index.js:1
 #: build/blocks/info-box/index.js:1
 #: build/blocks/notice/index.js:1
@@ -853,48 +1361,239 @@ msgid "Title"
 msgstr ""
 
 #. translators: %s: character limit
-#: includes/mcp/class-draft-writer.php:215
+#: includes/mcp/class-draft-writer.php:598
+#, php-format
 msgid "Keep the title to %s characters or fewer."
 msgstr ""
 
-#: includes/mcp/class-draft-writer.php:242
-msgid "An identical request is already being processed. Wait for its answer rather than sending it again."
-msgstr ""
-
-#: includes/mcp/class-draft-writer.php:252
-msgid "This request was already handled, so the page it created is being returned rather than a second copy."
-msgstr ""
-
-#: includes/mcp/class-draft-writer.php:312
+#: includes/mcp/class-draft-writer.php:629
 msgid "You do not have permission to create this kind of content on this site."
 msgstr ""
 
 #. translators: %s: slot key
-#: includes/mcp/class-draft-writer.php:352
+#: includes/mcp/class-draft-writer.php:669
+#, php-format
 msgid "The value for %s has to be a single piece of text or a number."
 msgstr ""
 
 #. translators: %s: field or slot name
-#: includes/mcp/class-draft-writer.php:384
+#: includes/mcp/class-draft-writer.php:701
+#, php-format
 msgid "The value for %s has to be plain text. Remove the angle brackets: these fields hold words, and nothing sent here is treated as markup."
 msgstr ""
 
 #. translators: %s: character limit
-#: includes/mcp/class-draft-writer.php:412
+#: includes/mcp/class-draft-writer.php:729
+#, php-format
 msgid "An idempotency key may be up to %s characters of letters, digits, and the marks _ . : and -."
 msgstr ""
 
-#: includes/mcp/class-draft-writer.php:509
+#: includes/mcp/class-draft-writer.php:826
 msgid "Something else on this site changed the new page's status while it was being created; it was set back to draft."
 msgstr ""
 
 #. translators: %s: the status the page ended up with, for example publish
-#: includes/mcp/class-draft-writer.php:515
+#: includes/mcp/class-draft-writer.php:832
+#, php-format
 msgid "Something else on this site is forcing a status of %s on new pages, and would not let this one stay a draft. The page exists and may be publicly visible. Someone should look at it."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:53
+msgid "The page or post, by ID."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:58
+msgid "Get editable fields"
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:59
+msgid "List the text, link and email fields of each block on a page that can be changed with flexa/edit-page-blocks, with their current values, and the page's modified_gmt to send back with the change. Says whether the page can be edited right now and, if not, why. For a published page, note explains that changes go onto a draft copy for review, and if a copy already exists its fields and modified_gmt are the ones returned."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:73
+msgid "Edit page blocks"
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:74
+msgid "Change the title, and text, link and email fields of blocks, on a page, including one a person built or edited by hand. Drafts and pending pages are changed directly. A published page is never changed: the edit goes onto a draft copy (working_copy_id in the answer) that a person reviews and applies in the editor, so tell them that and give them the edit link. Read the page with flexa/get-editable-fields first and send its modified_gmt back; a page changed since is refused. Plain text only. Layout, styling and blocks themselves cannot be changed, added or removed. All changes in one request apply together or not at all, and the previous version is kept as a revision."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:81
+msgid "The modified_gmt flexa/get-editable-fields returned, or the one the previous edit returned."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:86
+msgid "Optional. A new title for the page. Plain text."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:91
+msgid "The block fields to change. May be left out when only the title changes."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:97
+msgid "The block's block_id, as flexa/get-editable-fields lists it."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:101
+msgid "The field's path, as flexa/get-editable-fields lists it, for example content or items.2.text."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:105
+msgid "The new value. Plain text: a value containing < or > is refused."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:109
+msgid "Optional. The value you read for this field; the change is refused if the field holds something else now."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:176
+msgid "Send this back as expected_modified_gmt."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:180
+msgid "Whether flexa/edit-page-blocks would accept changes to this page right now."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:184
+msgid "Why not, when editable is false."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:188
+msgid "For a published page that already has a draft copy waiting for review: its ID. The fields and modified_gmt are those of the copy. Otherwise 0."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:192
+msgid "Where changes to this page will go, when that is not the page itself."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:203
+msgid "Editable fields keyed by path."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:238
+msgid "The page's new modified_gmt. Send it with the next edit."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:242
+msgid "False when every field already had the value sent, so nothing was written."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:246
+msgid "The draft copy the changes were made on, when the page is published. Otherwise 0."
+msgstr ""
+
+#: includes/mcp/class-edit-abilities.php:250
+msgid "What to tell the person, when the changes are waiting on a copy for their review."
 msgstr ""
 
 #: includes/mcp/class-mcp-manager.php:101
 msgid "Read the design context of a Flexa Block site and create pages from its presets."
+msgstr ""
+
+#. translators: %d: ID of the working copy
+#: includes/mcp/class-page-editor.php:185
+#, php-format
+msgid "This page is published. It already has a draft copy with changes waiting for review (ID %d); further changes go onto that copy, and visitors keep seeing the published page until a person applies the copy."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:190
+msgid "This page is published, so changes are not made to it directly. They go onto a draft copy, and visitors keep seeing the published page until a person reviews the copy and applies it in the editor."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:203
+msgid "Editing existing content over MCP is switched off for this site."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:235
+msgid "This page has changed since you read it. Read it again with flexa/get-editable-fields and make your changes against what it has now."
+msgstr ""
+
+#. translators: %s: maximum number of changes
+#: includes/mcp/class-page-editor.php:254
+#, php-format
+msgid "Send a new title, or between 1 and %s field changes, or both."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:297
+msgid "Those fields already have those values, so nothing was changed."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:316
+msgid "The draft copy could not be created."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:325
+msgid "This page is already being changed. Wait for that answer before sending another change."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:375
+msgid "each change has to be an object"
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:383
+msgid "the value has to be a single piece of text or a number"
+msgstr ""
+
+#. translators: 1: field path, 2: block name
+#: includes/mcp/class-page-editor.php:398
+#, php-format
+msgid "%1$s is not a field that can be changed on %2$s. Only the fields flexa/get-editable-fields lists can be."
+msgstr ""
+
+#. translators: %s: field label
+#: includes/mcp/class-page-editor.php:411
+#, php-format
+msgid "The value for %s has to be plain text. Remove the angle brackets: nothing sent here is treated as markup."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:428
+msgid "that field holds something other than text on this block"
+msgstr ""
+
+#. translators: %s: field label
+#: includes/mcp/class-page-editor.php:437
+#, php-format
+msgid "%s no longer has the value you expected. Read the page again before changing it."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:445
+msgid "the same field appears twice in one request"
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:519
+msgid "Read the page again with flexa/get-editable-fields."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:585
+msgid "No page or post with that ID."
+msgstr ""
+
+#: includes/mcp/class-page-editor.php:593
+msgid "Only pages and posts can be edited here."
+msgstr ""
+
+#. translators: %s: post status, for example future
+#: includes/mcp/class-page-editor.php:621
+#, php-format
+msgid "Pages with the status %s cannot be edited here. Drafts, pending pages and published pages can."
+msgstr ""
+
+#. translators: %s: display name of the person editing
+#: includes/mcp/class-page-editor.php:640
+#, php-format
+msgid "%s has this page open in the editor right now. Changing it at the same time would overwrite one of you, so try again once they have closed it."
+msgstr ""
+
+#. translators: 1: change number, starting at 1, 2: reason
+#: includes/mcp/class-page-editor.php:662
+#, php-format
+msgid "Change %1$s: %2$s."
+msgstr ""
+
+#. translators: %d: ID of the working copy
+#: includes/mcp/class-page-editor.php:704
+#, php-format
+msgid "The page is published, so these changes were made on a draft copy (ID %d), not on the live page. Visitors keep seeing the published page until a person opens the copy in the editor and presses \"Apply to original\". Tell the person that, and give them the edit link."
 msgstr ""
 
 #: includes/mcp/class-read-abilities.php:78
@@ -982,148 +1681,230 @@ msgid "True when the tree was cut at a size or depth limit, so what came back is
 msgstr ""
 
 #. translators: 1: number of calls allowed, 2: number of minutes to wait
-#: includes/mcp/class-request-limits.php:91
+#: includes/mcp/class-request-limits.php:112
+#, php-format
 msgid "This has reached its limit of %1$s calls an hour. Try again in %2$s minutes."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:85
-msgid "Which preset source to read. Omit it for the presets this plugin ships."
+#: includes/mcp/class-working-copy.php:219
+msgid "The page this copy was made from no longer exists, so there is nothing to apply it to."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:90
-msgid "List presets"
+#: includes/mcp/class-working-copy.php:227
+msgid "You need permission to edit and publish the original page to apply this copy."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:91
-msgid "List the ready-made pages this site can create: their ids, what each one is for, how many fields it takes, and whether one has been created from it already."
+#. translators: %s: display name of the person editing
+#: includes/mcp/class-working-copy.php:243
+#, php-format
+msgid "%s has the original page open in the editor. Apply this copy once they have closed it."
+msgstr ""
+
+#: includes/mcp/class-working-copy.php:253
+msgid "The original page has been changed since this copy was made. Applying the copy would undo those changes."
+msgstr ""
+
+#: includes/mcp/class-working-copy.php:402
+msgid "This page is not a working copy."
+msgstr ""
+
+#: includes/mcp/class-working-copy.php:412
+msgid "This copy has new changes since you opened the list. Look at them before applying."
+msgstr ""
+
+#. translators: %s: title of the original page
+#: includes/mcp/class-working-copy.php:438
+#, php-format
+msgid "Copy with changes for: %s"
+msgstr ""
+
+#: includes/mcp/class-working-copy.php:442
+msgid "Changes waiting for review"
 msgstr ""
 
 #: includes/mcp/class-write-abilities.php:95
+msgid "Which preset source to read. Omit it for the presets this plugin ships."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:100
+msgid "List presets"
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:101
+msgid "List the ready-made pages this site can create: their ids, what each one is for, how many fields it takes, and whether one has been created from it already."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:105
 msgid "Limit the listing to one preset source. Omit it to list every source."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:107
+#: includes/mcp/class-write-abilities.php:117
 msgid "Get preset schema"
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:108
+#: includes/mcp/class-write-abilities.php:118
 msgid "Read the fields one preset accepts: each field's type, what it is called, the text the preset ships with, and how long a value may be. Call this before creating a draft from it."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:115
-#: includes/mcp/class-write-abilities.php:136
+#: includes/mcp/class-write-abilities.php:125
+#: includes/mcp/class-write-abilities.php:146
 msgid "Preset id, as flexa/list-presets reports it."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:128
+#: includes/mcp/class-write-abilities.php:138
 msgid "Create page draft"
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:129
+#: includes/mcp/class-write-abilities.php:139
 msgid "Create a new draft page from one preset, with your own text in its fields. Always a draft: this never publishes, and a person has to review the page and publish it."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:141
+#: includes/mcp/class-write-abilities.php:151
 msgid "Values for the preset's fields, keyed by field name as flexa/get-preset-schema reports them. A field left out keeps the text the preset ships with. Plain text only: a value containing < or > is refused rather than stripped. A media field takes an existing attachment ID."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:147
+#: includes/mcp/class-write-abilities.php:157
 msgid "Title for the new page. Omit it to use the preset's own title."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:153
+#: includes/mcp/class-write-abilities.php:163
 msgid "Only draft. The field exists so that asking for anything else is refused plainly rather than ignored."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:158
+#: includes/mcp/class-write-abilities.php:168
 msgid "Your own id for this request. Send the same key again and the same page comes back instead of a second one. Without a key, an identical request repeated within five minutes is still treated as a retry."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:239
+#: includes/mcp/class-write-abilities.php:181
+msgid "Update page draft"
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:182
+msgid "Change the fields of a draft page that was built from a preset, such as one flexa/create-page-draft returned. Send only the fields to change; the others keep their current values, and a field sent as an empty string goes back to the preset's own text. Works only on drafts, and only while nobody has edited the draft in the editor since it was built; otherwise it is refused, so that a person's work is never overwritten. Send no fields to read the values the draft has now."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:189
+msgid "The draft to change, as flexa/create-page-draft returned it."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:194
+msgid "New values for the fields to change, keyed by field name as flexa/get-preset-schema reports them. Plain text only: a value containing < or > is refused. An empty string resets that field to the preset's own text."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:200
+msgid "New title for the page. Omit it to keep the current one."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:287
 msgid "No preset source with that key. Omit source to list every one this site has."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:308
+#: includes/mcp/class-write-abilities.php:356
 msgid "This preset was written for a newer version of Flexa Block, so its fields are not offered here. Creating a draft from it still works and produces the page as the preset ships it."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:385
+#: includes/mcp/class-write-abilities.php:445
 msgid "The ceilings this site applies, so a client can stay inside them instead of discovering them by being refused."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:390
+#: includes/mcp/class-write-abilities.php:450
 msgid "Drafts you may still create in the current hour."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:395
+#: includes/mcp/class-write-abilities.php:455
+msgid "Draft updates you may still make in the current hour."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:460
 msgid "Total size of all field values in one request, in bytes."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:426
+#: includes/mcp/class-write-abilities.php:491
 msgid "Blocks this preset is built from."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:431
+#: includes/mcp/class-write-abilities.php:496
 msgid "Names of the fields this preset accepts. Call flexa/get-preset-schema for what each one takes."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:436
+#: includes/mcp/class-write-abilities.php:501
 msgid "A page already created from this preset, or 0. Information, not a restriction: creating another is allowed."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:443
+#: includes/mcp/class-write-abilities.php:508
 msgid "True when there were more presets than one listing reports, so this one is incomplete. Ask again for a single source."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:466
+#: includes/mcp/class-write-abilities.php:531
 msgid "Which version of the field contract this preset was written against."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:470
+#: includes/mcp/class-write-abilities.php:535
 msgid "The highest contract version this site understands. A preset above it keeps its own wording and offers no fields."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:474
+#: includes/mcp/class-write-abilities.php:539
 msgid "The fields this preset accepts, keyed by the name to send in slots. Every field is optional: one left out keeps the text the preset ships with."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:481
+#: includes/mcp/class-write-abilities.php:546
 msgid "What the field holds. A media field takes the ID of an image already in this site's library."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:486
+#: includes/mcp/class-write-abilities.php:551
 msgid "What the preset uses when the field is left out."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:490
+#: includes/mcp/class-write-abilities.php:555
 msgid "Longest value accepted, in characters."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:501
+#: includes/mcp/class-write-abilities.php:566
 msgid "Anything about this preset a client should know before sending values."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:521
+#: includes/mcp/class-write-abilities.php:586
+#: includes/mcp/class-write-abilities.php:631
 msgid "Always draft."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:526
+#: includes/mcp/class-write-abilities.php:592
+msgid "Preview link. Works only for someone who can edit the page."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:596
+msgid "Every field that now has a value of its own, after this call. A field absent here shows the preset's own text."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:601
+msgid "Fields this call changed, and title if the title changed."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:606
+msgid "False when the values sent were what the draft already had, so nothing was written."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:611
+msgid "Things that went less than perfectly but did not stop the update."
+msgstr ""
+
+#: includes/mcp/class-write-abilities.php:636
 msgid "Where a person opens the new page in the editor."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:530
+#: includes/mcp/class-write-abilities.php:640
 msgid "Preview link. A draft has no public address, so this is a preview URL and works only for someone who can edit the page."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:534
+#: includes/mcp/class-write-abilities.php:644
 msgid "Which fields took a value from this request. Anything absent kept the preset's own text."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:539
+#: includes/mcp/class-write-abilities.php:649
 msgid "True when this request had already been handled, so the page reported is the one it created the first time."
 msgstr ""
 
-#: includes/mcp/class-write-abilities.php:545
+#: includes/mcp/class-write-abilities.php:655
 msgid "Things that went less than perfectly but did not stop the page being created."
 msgstr ""
 
@@ -1693,12 +2474,13 @@ msgid "Forms"
 msgstr ""
 
 #: build/admin/index.js:1
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Blocks"
 msgstr ""
 
 #. translators: 1: enabled block count, 2: total block count.
 #: build/admin/index.js:2
+#, js-format
 msgid "%1$d of %2$d blocks enabled"
 msgstr ""
 
@@ -1730,6 +2512,7 @@ msgstr ""
 
 #. translators: %s: origin label, e.g. "Pro".
 #: build/admin/index.js:3
+#, js-format
 msgid "Available in %s"
 msgstr ""
 
@@ -1739,6 +2522,7 @@ msgstr ""
 
 #. translators: %s: block title.
 #: build/admin/index.js:4
+#, js-format
 msgid "Enable %s block"
 msgstr ""
 
@@ -1811,6 +2595,34 @@ msgid "Master switch. Off = no inline editing UI is loaded on the site."
 msgstr ""
 
 #: build/admin/index.js:4
+msgid "Send changes to published pages for review"
+msgstr ""
+
+#: build/admin/index.js:4
+msgid "On: the first change to a published page creates a draft copy, and later changes go to that copy. Visitors keep seeing the page as it is until someone who can publish it opens the copy in the editor and clicks \"Apply to original\". Off (default): changes go straight to the page. Header, footer and synced patterns are always changed directly."
+msgstr ""
+
+#: build/admin/index.js:4
+msgid "Who can apply the changes"
+msgstr ""
+
+#: build/admin/index.js:4
+msgid "Administrators only"
+msgstr ""
+
+#: build/admin/index.js:4
+msgid "Anyone who can publish the page (Editors too)"
+msgstr ""
+
+#: build/admin/index.js:4
+msgid "Nobody applies their own changes"
+msgstr ""
+
+#: build/admin/index.js:4
+msgid "Someone who changed the copy cannot apply it, even an administrator: a second person always checks."
+msgstr ""
+
+#: build/admin/index.js:4
 msgid "Allowed roles"
 msgstr ""
 
@@ -1849,16 +2661,19 @@ msgstr ""
 
 #. translators: %s: role name.
 #: build/admin/index.js:5
+#, js-format
 msgid "Allow %s to edit on the front end"
 msgstr ""
 
 #. translators: %s: block title.
 #: build/admin/index.js:6
+#, js-format
 msgid "Allow editing %s"
 msgstr ""
 
 #. translators: %s: sample title
 #: build/admin/index.js:7
+#, js-format
 msgid "“%s” imported as a draft."
 msgstr ""
 
@@ -1879,7 +2694,7 @@ msgid "Could not load the sample catalog."
 msgstr ""
 
 #: build/admin/index.js:7
-#: build/admin/index.js:13
+#: build/admin/index.js:21
 msgid "Retry"
 msgstr ""
 
@@ -1893,6 +2708,7 @@ msgstr ""
 
 #. translators: %s: sample title
 #: build/admin/index.js:8
+#, js-format
 msgid "“%s” moved to Trash."
 msgstr ""
 
@@ -1902,6 +2718,7 @@ msgstr ""
 
 #. translators: %s: sample title
 #: build/admin/index.js:9
+#, js-format
 msgid "Import “%s”"
 msgstr ""
 
@@ -1924,6 +2741,7 @@ msgstr ""
 
 #. translators: %s: sample title
 #: build/admin/index.js:10
+#, js-format
 msgid "The imported “%s” content will be moved to Trash. You can import it again afterwards."
 msgstr ""
 
@@ -1940,6 +2758,7 @@ msgid "Imported"
 msgstr ""
 
 #: build/admin/index.js:10
+#: build/admin/index.js:20
 msgid "Open in editor"
 msgstr ""
 
@@ -2065,7 +2884,7 @@ msgid "Allow agents to create content?"
 msgstr ""
 
 #: build/admin/index.js:10
-msgid "A connected agent will be able to create pages on this site. Everything it creates arrives as a draft for you to review, and it can never publish."
+msgid "A connected agent will be able to create pages on this site, and change the fields of drafts made from a preset. Everything it creates arrives as a draft for you to review, it can never publish, and it cannot change a draft once you have edited it yourself."
 msgstr ""
 
 #: build/admin/index.js:10
@@ -2077,11 +2896,24 @@ msgid "Agents can no longer create content."
 msgstr ""
 
 #: build/admin/index.js:10
+msgid "Allow agents to edit existing pages?"
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "A connected agent will be able to change the title, text, links and email addresses in blocks on your pages, including pages you built or edited yourself. Drafts are changed directly. A published page is never changed: the agent works on a draft copy, and nothing goes live until you open the copy and apply it. It cannot change layout or styling, or edit a page while someone has it open, and every change is saved as a revision."
+msgstr ""
+
+#: build/admin/index.js:10
+msgid "Agents can no longer edit existing pages."
+msgstr ""
+
+#: build/admin/index.js:10
 msgid "Saved."
 msgstr ""
 
 #. translators: %s: minimum WordPress version
 #: build/admin/index.js:11
+#, js-format
 msgid "Needs WordPress %s or newer, which is where the Abilities API this is built on lives."
 msgstr ""
 
@@ -2111,6 +2943,7 @@ msgstr ""
 
 #. translators: %s: MCP Adapter version
 #: build/admin/index.js:12
+#, js-format
 msgid "Served by MCP Adapter %s."
 msgstr ""
 
@@ -2127,11 +2960,19 @@ msgid "Site design settings, the list of presets, and the block structure of a p
 msgstr ""
 
 #: build/admin/index.js:12
-msgid "Create drafts"
+msgid "Create and update drafts"
 msgstr ""
 
 #: build/admin/index.js:12
-msgid "Create a page from one of your presets. Drafts only, never published, never an existing page overwritten."
+msgid "Create a page from one of your presets, and change the fields of a draft made that way. Drafts only: never published, and a page someone has edited by hand is never overwritten."
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Edit existing pages"
+msgstr ""
+
+#: build/admin/index.js:12
+msgid "Change the title, text, links and email addresses in blocks, including on pages you edited by hand. Published pages are never changed directly: edits go onto a draft copy that you review and apply. Never layout or styling, never while the page is open in the editor. Each change is kept as a revision."
 msgstr ""
 
 #: build/admin/index.js:12
@@ -2177,6 +3018,7 @@ msgstr ""
 
 #. translators: %d: number of days a row is kept
 #: build/admin/index.js:13
+#, js-format
 msgid "Calls to this plugin’s tools, kept for %d day."
 msgid_plural "Calls to this plugin’s tools, kept for %d days."
 msgstr[0] ""
@@ -2211,6 +3053,9 @@ msgid "Refreshing…"
 msgstr ""
 
 #: build/admin/index.js:13
+#: build/admin/index.js:15
+#: build/admin/index.js:20
+#: build/editor/inline-edit-log.js:2
 msgid "Refresh"
 msgstr ""
 
@@ -2219,67 +3064,297 @@ msgid "The log keeps the user, the tool, the page and the outcome. It keeps no p
 msgstr ""
 
 #: build/admin/index.js:13
+#: build/admin/index.js:20
+#: build/blocks/banner/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/product-add-to-cart/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/editor/inline-edit-log.js:2
+msgid "Before"
+msgstr ""
+
+#: build/admin/index.js:13
+#: build/admin/index.js:20
+#: build/blocks/banner/index.js:1
+#: build/blocks/button/index.js:1
+#: build/blocks/cta/index.js:1
+#: build/blocks/icon-list/index.js:1
+#: build/blocks/info-box/index.js:1
+#: build/blocks/product-add-to-cart/index.js:1
+#: build/blocks/star-rating/index.js:1
+#: build/editor/inline-edit-log.js:2
+msgid "After"
+msgstr ""
+
+#: build/admin/index.js:13
+#: build/editor/inline-edit-log.js:2
+msgid "(empty)"
+msgstr ""
+
+#: build/admin/index.js:13
+msgid "Could not load the log."
+msgstr ""
+
+#. translators: %d: number of days
+#: build/admin/index.js:14
+#, js-format
+msgid "Changes made from the front end. Entries are removed after %d days."
+msgstr ""
+
+#: build/admin/index.js:14
+msgid "Changes made from the front end."
+msgstr ""
+
+#: build/admin/index.js:14
+#: build/admin/index.js:20
+msgid "Edit log"
+msgstr ""
+
+#: build/admin/index.js:14
+msgid "Search text, page or person…"
+msgstr ""
+
+#: build/admin/index.js:14
+msgid "Search the edit log"
+msgstr ""
+
+#: build/admin/index.js:14
+msgid "Clear search"
+msgstr ""
+
+#: build/admin/index.js:14
+#: build/editor/inline-edit-log.js:1
+msgid "Edited by"
+msgstr ""
+
+#: build/admin/index.js:14
+#: build/editor/inline-edit-log.js:1
+msgid "Everyone"
+msgstr ""
+
+#: build/admin/index.js:14
+#: build/blocks/container/index.js:1
+#: build/editor/inline-edit-log.js:1
+msgid "Block"
+msgstr ""
+
+#: build/admin/index.js:14
+#: build/editor/inline-edit-log.js:1
+msgid "All blocks"
+msgstr ""
+
+#. translators: %d: number of edits
+#: build/admin/index.js:15
+#, js-format
+msgid "%d edit"
+msgid_plural "%d edits"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: the search text
+#: build/admin/index.js:16
+#, js-format
+msgid "No edits match “%s”."
+msgstr ""
+
+#: build/admin/index.js:16
+msgid "No front-end edits to show."
+msgstr ""
+
+#: build/admin/index.js:16
+#: build/blocks/post-grid/index.js:1
+msgid "(no title)"
+msgstr ""
+
+#: build/admin/index.js:16
+msgid "View page"
+msgstr ""
+
+#. translators: 1: person's name (and role), 2: date and time
+#: build/admin/index.js:17
+#, js-format
+msgid "Approved by %1$s · %2$s"
+msgstr ""
+
+#: build/admin/index.js:17
+#, js-format
+msgid "Discarded by %1$s · %2$s"
+msgstr ""
+
+#: build/admin/index.js:17
+msgid "Compare with the version before"
+msgstr ""
+
+#: build/admin/index.js:17
+msgid "Very long text; only the start is kept."
+msgstr ""
+
+#. translators: 1: current page, 2: number of pages
+#: build/admin/index.js:18
+#, js-format
+msgid "Page %1$d of %2$d"
+msgstr ""
+
+#: build/admin/index.js:18
+msgid "Discard these changes? The copy goes to the trash; the live page stays as it is."
+msgstr ""
+
+#: build/admin/index.js:18
+msgid "That did not work. Reload and try again."
+msgstr ""
+
+#. translators: %s: date and time
+#: build/admin/index.js:19
+#, js-format
+msgid "Last change %s"
+msgstr ""
+
+#: build/admin/index.js:19
+msgid "Changed by"
+msgstr ""
+
+#. translators: %d: number of changes
+#: build/admin/index.js:20
+#, js-format
+msgid "%d change"
+msgid_plural "%d changes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/admin/index.js:20
+msgid "The live page was changed after this copy was made. Applying the copy replaces those changes."
+msgstr ""
+
+#: build/admin/index.js:20
+#: build/editor/working-copy.js:4
+msgid "Apply anyway and replace those changes"
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "Apply to the live page"
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "You cannot apply this copy."
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "Discard"
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "View live page"
+msgstr ""
+
+#: build/admin/index.js:20
+#: build/editor/inline-edit-log.js:1
+msgid "Could not load."
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "Review"
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "Changes made from the front end to published pages. Visitors see none of them until they are applied."
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "There are new changes waiting for review."
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "Checked for new changes about every 15 seconds."
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "Show them"
+msgstr ""
+
+#: build/admin/index.js:20
+msgid "Nothing is waiting for review."
+msgstr ""
+
+#: build/admin/index.js:20
 msgid "Need a form on the pages you build?"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Free plugin"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Flexa FormFlow is our free form builder, with a visual email designer and a workflow engine built in. Drag fields onto the canvas, design the emails each submission sends, then drop the finished form into any Flexa Block layout."
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Install FormFlow"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Hide this suggestion"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Settings sections"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 #: build/blocks/taxonomy/index.js:1
 msgid "General"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Dark mode & performance"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Enable or disable blocks"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Import block examples"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
 msgid "Front-end inline editing"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:20
+msgid "Front-end changes to approve"
+msgstr ""
+
+#. translators: %d: number of days
+#: build/admin/index.js:21
+#, js-format
+msgid "Front-end edits, kept %d days"
+msgstr ""
+
+#: build/admin/index.js:21
+#: build/editor/inline-edit-log.js:1
+msgid "Front-end edits"
+msgstr ""
+
+#: build/admin/index.js:21
 msgid "AI agents"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:21
 msgid "MCP access for AI clients"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:21
 msgid "Reload this page to load the MCP settings."
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:21
 msgid "All changes saved"
 msgstr ""
 
-#: build/admin/index.js:13
+#: build/admin/index.js:21
 msgid "Could not save."
 msgstr ""
 
@@ -9932,49 +11007,7 @@ msgstr ""
 #: build/blocks/team-member/index.js:1
 #: build/blocks/timeline/index.js:1
 #: build/blocks/video-popup/index.js:1
-msgid "Icons"
-msgstr ""
-
-#: build/blocks/banner/index.js:1
-#: build/blocks/breadcrumb/index.js:1
-#: build/blocks/button/index.js:1
-#: build/blocks/counter/index.js:1
-#: build/blocks/cta/index.js:1
-#: build/blocks/icon-list/index.js:1
-#: build/blocks/icon/index.js:1
-#: build/blocks/info-box/index.js:1
-#: build/blocks/modal/index.js:1
-#: build/blocks/notice/index.js:1
-#: build/blocks/slides/index.js:1
-#: build/blocks/social-icon/index.js:1
-#: build/blocks/steps/index.js:1
-#: build/blocks/tab/index.js:1
-#: build/blocks/taxonomy/index.js:1
-#: build/blocks/team-member/index.js:1
-#: build/blocks/timeline/index.js:1
-#: build/blocks/video-popup/index.js:1
 msgid "Upload SVG"
-msgstr ""
-
-#: build/blocks/banner/index.js:1
-#: build/blocks/breadcrumb/index.js:1
-#: build/blocks/button/index.js:1
-#: build/blocks/counter/index.js:1
-#: build/blocks/cta/index.js:1
-#: build/blocks/icon-list/index.js:1
-#: build/blocks/icon/index.js:1
-#: build/blocks/info-box/index.js:1
-#: build/blocks/modal/index.js:1
-#: build/blocks/notice/index.js:1
-#: build/blocks/slides/index.js:1
-#: build/blocks/social-icon/index.js:1
-#: build/blocks/steps/index.js:1
-#: build/blocks/tab/index.js:1
-#: build/blocks/taxonomy/index.js:1
-#: build/blocks/team-member/index.js:1
-#: build/blocks/timeline/index.js:1
-#: build/blocks/video-popup/index.js:1
-msgid "Search icons…"
 msgstr ""
 
 #: build/blocks/banner/index.js:1
@@ -10226,26 +11259,6 @@ msgstr ""
 #: build/blocks/notice/index.js:1
 #: build/blocks/product-add-to-cart/index.js:1
 msgid "Icon position"
-msgstr ""
-
-#: build/blocks/banner/index.js:1
-#: build/blocks/button/index.js:1
-#: build/blocks/cta/index.js:1
-#: build/blocks/icon-list/index.js:1
-#: build/blocks/info-box/index.js:1
-#: build/blocks/product-add-to-cart/index.js:1
-#: build/blocks/star-rating/index.js:1
-msgid "Before"
-msgstr ""
-
-#: build/blocks/banner/index.js:1
-#: build/blocks/button/index.js:1
-#: build/blocks/cta/index.js:1
-#: build/blocks/icon-list/index.js:1
-#: build/blocks/info-box/index.js:1
-#: build/blocks/product-add-to-cart/index.js:1
-#: build/blocks/star-rating/index.js:1
-msgid "After"
 msgstr ""
 
 #: build/blocks/banner/index.js:1
@@ -11285,10 +12298,6 @@ msgstr ""
 
 #: build/blocks/container/index.js:1
 msgid "Flex"
-msgstr ""
-
-#: build/blocks/container/index.js:1
-msgid "Block"
 msgstr ""
 
 #: build/blocks/container/index.js:1
@@ -12372,6 +13381,7 @@ msgstr ""
 
 #. translators: %s: comma-separated term names the target grid is limited to.
 #: build/blocks/filter-taxonomy/index.js:2
+#, js-format
 msgid "The target grid only shows: %s. Visitors can filter within those terms, not outside them."
 msgstr ""
 
@@ -13443,6 +14453,7 @@ msgstr ""
 
 #. translators: %s: the blockId the filter bar is pointing at.
 #: build/blocks/post-filter/index.js:4
+#, js-format
 msgid "No Post Grid on this page has the id \"%s\". If the grid lives in a template this is fine — otherwise the filters will do nothing. Pick a grid below, or choose Auto."
 msgstr ""
 
@@ -13459,6 +14470,7 @@ msgid "Auto — first Post Grid on the page"
 msgstr ""
 
 #: build/blocks/post-filter/index.js:4
+#, js-format
 msgid "Not on this page — %s"
 msgstr ""
 
@@ -13600,6 +14612,7 @@ msgid "Result count text"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
+#, js-format
 msgid "%s is the number of posts. Leave empty for \"%s posts found\"."
 msgstr ""
 
@@ -13740,10 +14753,6 @@ msgstr ""
 
 #: build/blocks/post-grid/index.js:1
 msgid "Inherit"
-msgstr ""
-
-#: build/blocks/post-grid/index.js:1
-msgid "(no title)"
 msgstr ""
 
 #: build/blocks/post-grid/index.js:1
@@ -14851,6 +15860,7 @@ msgstr ""
 
 #. translators: %d: number of entries the feed offers.
 #: build/blocks/rss/index.js:1
+#, js-format
 msgid "This feed offers %d entries."
 msgstr ""
 
@@ -15014,6 +16024,7 @@ msgstr ""
 
 #. translators: %d: slide number.
 #: build/blocks/slides/index.js:1
+#, js-format
 msgid "Slide %d"
 msgstr ""
 
@@ -15028,10 +16039,6 @@ msgstr ""
 
 #: build/blocks/social-icon/index.js:1
 msgid "Custom icon"
-msgstr ""
-
-#: build/blocks/social-icon/index.js:1
-msgid "Add icon"
 msgstr ""
 
 #: build/blocks/social-icon/index.js:1
@@ -15707,10 +16714,6 @@ msgid "Social links"
 msgstr ""
 
 #: build/blocks/team-member/index.js:1
-msgid "Add link"
-msgstr ""
-
-#: build/blocks/team-member/index.js:1
 msgid "Hover color"
 msgstr ""
 
@@ -15916,6 +16919,78 @@ msgstr ""
 
 #: build/blocks/video-popup/index.js:1
 msgid "Backdrop Opacity"
+msgstr ""
+
+#: build/editor/inline-edit-log.js:1
+msgid "Nothing has been edited from the front end yet."
+msgstr ""
+
+#. translators: 1: block type, 2: field name
+#: build/editor/inline-edit-log.js:2
+#, js-format
+msgid "%1$s · %2$s"
+msgstr ""
+
+#: build/editor/inline-edit-log.js:2
+msgid "Very long text; the log keeps only the start."
+msgstr ""
+
+#: build/editor/inline-edit-log.js:2
+msgid "See the version from before"
+msgstr ""
+
+#: build/editor/inline-edit-log.js:2
+msgid "Show more"
+msgstr ""
+
+#. translators: %d: number of changes
+#: build/editor/working-copy.js:2
+#, js-format
+msgid "Changes to review (%d)"
+msgstr ""
+
+#. translators: %s: title of the original page
+#: build/editor/working-copy.js:3
+#, js-format
+msgid "This is a draft copy with changes for the published page “%s”. Visitors still see the published page. Review the changes, then use “Apply to original” in the sidebar; do not publish this copy on its own."
+msgstr ""
+
+#: build/editor/working-copy.js:3
+msgid "Changes for a published page"
+msgstr ""
+
+#. translators: %s: title of the original page
+#: build/editor/working-copy.js:4
+#, js-format
+msgid "This draft holds changes for “%s”, which is published. Nothing on the live page changes until you apply this copy."
+msgstr ""
+
+#: build/editor/working-copy.js:4
+msgid "View the live page"
+msgstr ""
+
+#: build/editor/working-copy.js:4
+msgid "Open the original"
+msgstr ""
+
+#: build/editor/working-copy.js:4
+msgid "The published page has been changed since this copy was made. Applying the copy replaces those changes."
+msgstr ""
+
+#: build/editor/working-copy.js:4
+msgid "The copy could not be applied."
+msgstr ""
+
+#: build/editor/working-copy.js:4
+msgid "Apply to original"
+msgstr ""
+
+#: build/editor/working-copy.js:4
+msgid "Someone who can publish the original page has to apply this copy."
+msgstr ""
+
+#: build/editor/working-copy.js:4
+msgid "Applying copies this draft’s title and content onto the published page, keeps the old version as a revision, and deletes this draft. To discard the changes instead, move this draft to the trash."
 msgstr ""
 
 #: build/blocks/banner/block.json

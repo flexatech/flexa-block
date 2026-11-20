@@ -2,7 +2,8 @@
  * Front-end inline editor — toolbar + editable-state affordances.
  *
  * Namespaced `flexa-fee-*` (Flexa Front-End Editor) so nothing collides with
- * block styles or the theme. Only loaded for authorized users on singular views.
+ * block styles or the theme. Only loaded for authorized users on singular
+ * views.
  */
 
 /* Editable region: subtle hint on hover, solid ring while active. */
@@ -27,6 +28,28 @@
 	outline: 2px solid #3858e9;
 }
 
+/* Reached with the keyboard: a clear ring, like the active one. */
+.flexa-fee-editable:focus-visible,
+.flexa-fee-image-hit:focus-visible,
+.flexa-fee-icon-hit:focus-visible {
+	outline: 2px solid #3858e9;
+	outline-offset: 3px;
+}
+
+/*
+ * A touch screen has no hover, so the hint that something can be edited is
+ * shown all the time, quietly.
+ */
+@media (hover: none) {
+
+	.flexa-fee-editable:not(.flexa-fee-active),
+	.flexa-fee-image-hit,
+	.flexa-fee-icon-hit {
+		outline: 1px dashed rgba(56, 88, 233, 0.45);
+		outline-offset: 3px;
+	}
+}
+
 /* Toolbar — fixed bar under the WP admin bar while editing. */
 .flexa-fee-toolbar {
 	position: fixed;
@@ -48,6 +71,7 @@ body:not(.admin-bar) .flexa-fee-toolbar {
 }
 
 @media screen and (max-width: 782px) {
+
 	.flexa-fee-toolbar {
 		top: 46px;
 	}
@@ -62,8 +86,37 @@ body:not(.admin-bar) .flexa-fee-toolbar {
 	margin: 0 auto;
 	padding: 8px 24px;
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 10px;
+}
+
+/*
+ * Phones: the admin bar scrolls away below 600px, so the toolbar sits at the
+ * very top; buttons wrap onto a second line instead of running off screen, and
+ * the message takes a line of its own.
+ */
+@media screen and (max-width: 600px) {
+
+	.flexa-fee-toolbar,
+	body:not(.admin-bar) .flexa-fee-toolbar {
+		top: 0;
+	}
+
+	.flexa-fee-toolbar__inner {
+		padding: 8px 12px;
+		gap: 8px;
+	}
+
+	.flexa-fee-toolbar__msg {
+		flex-basis: 100%;
+		order: 10;
+		margin-left: 0;
+	}
+
+	.flexa-fee-toolbar .flexa-fee-btn {
+		padding: 8px 14px;
+	}
 }
 
 .flexa-fee-toolbar__label {
@@ -113,6 +166,22 @@ body:not(.admin-bar) .flexa-fee-toolbar {
 	background: #2145d4;
 }
 
+.flexa-fee-btn--undo {
+	background: #fff;
+	color: #1e1e1e;
+}
+
+.flexa-fee-btn--undo:hover {
+	background: #e6e6e6;
+}
+
+/* After a save only the message and Undo remain. */
+.flexa-fee-toolbar.is-undo .flexa-fee-toolbar__inner > .flexa-fee-btn--save,
+.flexa-fee-toolbar.is-undo .flexa-fee-toolbar__inner > .flexa-fee-btn--cancel,
+.flexa-fee-toolbar.is-undo .flexa-fee-toolbar__label {
+	display: none;
+}
+
 .flexa-fee-btn--cancel {
 	background: transparent;
 	color: #ccc;
@@ -122,4 +191,570 @@ body:not(.admin-bar) .flexa-fee-toolbar {
 .flexa-fee-btn--cancel:hover {
 	color: #fff;
 	border-color: #888;
+}
+
+.flexa-fee-btn--discard {
+	background: #b32d2e;
+	color: #fff;
+}
+
+.flexa-fee-btn--discard:hover {
+	background: #8a2424;
+}
+
+/* Unsaved-changes modal for navigation that can be intercepted in-page. */
+.flexa-fee-toolbar__prompt {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: grid;
+	place-items: center;
+	padding: 24px;
+	background: rgba(15, 23, 42, 0.72);
+	backdrop-filter: blur(2px);
+}
+
+.flexa-fee-toolbar__prompt-dialog {
+	box-sizing: border-box;
+	width: min(500px, 100%);
+	max-height: calc(100vh - 48px);
+	overflow: auto;
+	border: 1px solid rgba(148, 163, 184, 0.45);
+	border-radius: 12px;
+	background: #fff;
+	box-shadow: 0 24px 70px rgba(15, 23, 42, 0.38);
+	color: #1d2327;
+}
+
+.flexa-fee-toolbar__prompt-content {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	padding: 24px 24px 22px;
+}
+
+.flexa-fee-toolbar__prompt-icon {
+	box-sizing: border-box;
+	display: grid;
+	flex: 0 0 34px;
+	width: 34px;
+	height: 34px;
+	place-items: center;
+	border-radius: 50%;
+	background: #fff4ce;
+	color: #8a4b08;
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.flexa-fee-toolbar__prompt-title {
+	margin: 2px 0 8px;
+	color: #101517;
+	font-size: 20px;
+	font-weight: 650;
+	letter-spacing: -0.01em;
+	line-height: 1.3;
+}
+
+.flexa-fee-toolbar__prompt-msg {
+	margin: 0;
+	color: #50575e;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.flexa-fee-toolbar__prompt-actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+	flex-wrap: wrap;
+	padding: 16px 24px;
+	border-top: 1px solid #e2e4e7;
+	background: #f6f7f7;
+}
+
+.flexa-fee-toolbar__prompt[hidden] {
+	display: none;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn {
+	box-sizing: border-box;
+	min-height: 38px;
+	padding: 8px 16px;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 20px;
+	transition:
+		background-color 120ms ease,
+		border-color 120ms ease,
+		box-shadow 120ms ease,
+		color 120ms ease;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn:focus {
+	outline: none;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn:focus-visible {
+	box-shadow:
+		0 0 0 2px #fff,
+		0 0 0 4px #2271b1;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn--cancel {
+	border-color: #c3c4c7;
+	background: #fff;
+	color: #2c3338;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn--cancel:hover {
+	border-color: #8c8f94;
+	background: #f0f0f1;
+	color: #1d2327;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn--discard {
+	border-color: #d63638;
+	background: #fff;
+	color: #b32d2e;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn--discard:hover {
+	border-color: #b32d2e;
+	background: #b32d2e;
+	color: #fff;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn--save {
+	border-color: #3858e9;
+	background: #3858e9;
+	color: #fff;
+}
+
+.flexa-fee-toolbar__prompt .flexa-fee-btn--save:hover {
+	border-color: #2145d4;
+	background: #2145d4;
+	color: #fff;
+}
+
+.flexa-fee-toolbar.is-asking {
+	display: none;
+}
+
+/* Link editor dialog: the unsaved-changes dialog's frame, with a form inside. */
+.flexa-fee-linkdialog .flexa-fee-toolbar__prompt-dialog {
+	width: min(460px, 100%);
+}
+
+.flexa-fee-linkdialog__body {
+	flex: 1;
+	min-width: 0;
+}
+
+.flexa-fee-linkdialog__label {
+	display: block;
+	margin: 6px 0 6px;
+	color: #1d2327;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.flexa-fee-linkdialog__input {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid #8c8f94;
+	border-radius: 6px;
+	background: #fff;
+	color: #1d2327;
+	font-family: inherit;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.flexa-fee-linkdialog__input:focus {
+	border-color: #3858e9;
+	box-shadow: 0 0 0 1px #3858e9;
+	outline: none;
+}
+
+.flexa-fee-linkdialog__check {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 14px 0 0;
+	color: #1d2327;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.flexa-fee-linkdialog__check input {
+	margin: 0;
+}
+
+.flexa-fee-linkdialog__hint {
+	margin: 12px 0 0;
+	color: #646970;
+	font-size: 12px;
+}
+
+.flexa-fee-linkdialog__error {
+	margin: 12px 0 0;
+	padding: 8px 12px;
+	border-left: 4px solid #d63638;
+	background: #fcf0f1;
+	color: #8a2424;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.flexa-fee-linkdialog__error[hidden] {
+	display: none;
+}
+
+.flexa-fee-btn--link {
+	background: transparent;
+	color: #fff;
+	border: 1px solid #555;
+}
+
+.flexa-fee-btn--link:hover {
+	border-color: #888;
+}
+
+.flexa-fee-toolbar.is-undo .flexa-fee-toolbar__inner > .flexa-fee-btn--link {
+	display: none;
+}
+
+/* Image editor: the link dialog's frame with a preview in it. */
+.flexa-fee-image-hit {
+	cursor: pointer;
+}
+
+.flexa-fee-image-hit:hover {
+	outline: 2px dashed #3858e9;
+	outline-offset: 2px;
+}
+
+.flexa-fee-imagedialog__preview {
+	display: grid;
+	place-items: center;
+	margin: 4px 0 12px;
+	padding: 10px;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	background: #f6f7f7;
+}
+
+.flexa-fee-imagedialog__preview img {
+	display: block;
+	max-width: 100%;
+	max-height: 200px;
+	height: auto;
+	border-radius: 4px;
+	object-fit: contain;
+}
+
+.flexa-fee-imagedialog__pick {
+	margin: 0 0 14px;
+}
+
+.flexa-fee-imagedialog [hidden],
+.flexa-fee-imagedialog__pick[hidden] {
+	display: none;
+}
+
+/* Buttons that open the image editor where a click on the picture cannot. */
+.flexa-fee-imgbtn-host {
+	position: relative;
+}
+
+.flexa-fee-imgbtn {
+	position: absolute;
+	z-index: 20;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	border-radius: 999px;
+	background: rgba(15, 23, 42, 0.82);
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+	color: #fff;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.4;
+	cursor: pointer;
+	transition: background 0.15s;
+}
+
+.flexa-fee-imgbtn::before {
+	content: "";
+	width: 14px;
+	height: 14px;
+	background: currentColor;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 5h16v14H4z M4 15l5-5 4 4 3-3 4 4' fill='none' stroke='black' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.flexa-fee-imgbtn:hover,
+.flexa-fee-imgbtn:focus-visible {
+	background: #3858e9;
+	outline: none;
+}
+
+.flexa-fee-imgbtn--top-right {
+	top: 12px;
+	right: 12px;
+}
+
+.flexa-fee-imgbtn--top-left {
+	top: 12px;
+	left: 12px;
+}
+
+.flexa-fee-imgbtn--bottom-left {
+	bottom: 12px;
+	left: 12px;
+}
+
+.flexa-fee-imgbtn--bottom-right {
+	bottom: 12px;
+	right: 12px;
+}
+
+/* Icon editor. */
+.flexa-fee-icon-hit {
+	cursor: pointer;
+}
+
+.flexa-fee-icon-hit:hover {
+	outline: 2px dashed #3858e9;
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+.flexa-fee-icondialog .flexa-fee-toolbar__prompt-dialog {
+	width: min(560px, 100%);
+}
+
+.flexa-fee-icondialog__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.flexa-fee-icondialog__current {
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	background: #f6f7f7;
+	color: #1d2327;
+	font-size: 24px;
+}
+
+.flexa-fee-icondialog__current svg,
+.flexa-fee-icondialog__current img {
+	width: 24px;
+	height: 24px;
+}
+
+.flexa-fee-icondialog__search {
+	margin: 12px 0 10px;
+}
+
+.flexa-fee-icondialog__tabs {
+	display: flex;
+	gap: 4px;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.flexa-fee-icondialog__tabs button {
+	margin: 0 0 -1px;
+	padding: 8px 12px;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	background: none;
+	color: #50575e;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.flexa-fee-icondialog__tabs button.is-active {
+	border-bottom-color: #3858e9;
+	color: #1d2327;
+}
+
+.flexa-fee-icondialog__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+	gap: 6px;
+	max-height: 240px;
+	overflow-y: auto;
+	margin: 10px 0;
+	padding: 2px;
+}
+
+.flexa-fee-icondialog__item {
+	display: grid;
+	place-items: center;
+	height: 44px;
+	padding: 0;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	background: #fff;
+	color: #1d2327;
+	font-size: 22px;
+	cursor: pointer;
+}
+
+.flexa-fee-icondialog__item svg {
+	width: 22px;
+	height: 22px;
+}
+
+.flexa-fee-icondialog__item:hover {
+	border-color: #3858e9;
+}
+
+.flexa-fee-icondialog__item.is-selected {
+	border-color: #3858e9;
+	background: #eef2fe;
+	box-shadow: 0 0 0 1px #3858e9;
+}
+
+.flexa-fee-icondialog__empty {
+	grid-column: 1 / -1;
+	margin: 12px 0;
+	color: #646970;
+	font-size: 13px;
+	text-align: center;
+}
+
+.flexa-fee-icondialog__loading {
+	grid-column: 1 / -1;
+	justify-self: center;
+	width: 22px;
+	height: 22px;
+	margin: 20px;
+	border: 2px solid #dcdcde;
+	border-top-color: #3858e9;
+	border-radius: 50%;
+	animation: flexa-fee-spin 0.8s linear infinite;
+}
+
+@keyframes flexa-fee-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.flexa-fee-icondialog__more {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.flexa-fee-icondialog [hidden] {
+	display: none;
+}
+
+.flexa-fee-toolbar__review {
+	margin-left: 8px;
+	color: #93c5fd;
+	font-size: 13px;
+	font-weight: 600;
+	text-decoration: underline;
+}
+
+.flexa-fee-toolbar__review[hidden] {
+	display: none;
+}
+
+/*
+ * Blocks changed in a review copy, and the bar that counts them. Drawn inside
+ * the block, so a full-width block (a banner, a hero) still shows both the
+ * frame and the label instead of pushing them off screen or under the toolbar.
+ */
+.flexa-fee-pending {
+	outline: 3px solid #f59e0b;
+	outline-offset: -3px;
+}
+
+.flexa-fee-pending.flexa-fee-pending-host {
+	position: relative;
+}
+
+.flexa-fee-pending::before {
+	content: attr(data-flexa-pending-label);
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	z-index: 21;
+	padding: 1px 8px;
+	border-radius: 999px;
+	background: #f59e0b;
+	color: #1f1300;
+	font: 600 11px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	pointer-events: none;
+}
+
+.flexa-fee-pendingbar {
+	position: fixed;
+	left: 16px;
+	bottom: 16px;
+	z-index: 99998;
+	max-width: calc(100vw - 32px);
+	padding: 8px 14px;
+	border-radius: 999px;
+	background: #1f2937;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+	color: #fde68a;
+	font: 600 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.flexa-fee-pendingbar a {
+	color: #fff;
+	text-decoration: underline;
+}
+
+body.flexa-fee-modal-open {
+	overflow: hidden;
+}
+
+@media screen and (max-width: 600px) {
+
+	.flexa-fee-toolbar__prompt {
+		padding: 16px;
+	}
+
+	.flexa-fee-toolbar__prompt-dialog {
+		max-height: calc(100vh - 32px);
+	}
+
+	.flexa-fee-toolbar__prompt-content {
+		padding: 20px 18px;
+	}
+
+	.flexa-fee-toolbar__prompt-actions {
+		align-items: stretch;
+		flex-direction: column;
+		padding: 14px 18px 18px;
+	}
+
+	.flexa-fee-toolbar__prompt-actions .flexa-fee-btn {
+		width: 100%;
+	}
 }

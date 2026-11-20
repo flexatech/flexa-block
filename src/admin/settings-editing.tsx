@@ -9,7 +9,7 @@
 
 import { useMemo, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import { ToggleControl } from '@wordpress/components';
+import { SelectControl, ToggleControl } from '@wordpress/components';
 import { CardHeader } from './settings-general';
 import { FilterPill } from './blocks-panel';
 import { BlockThumb } from './block-thumb';
@@ -24,6 +24,8 @@ interface Props {
 	blocks: FlexaBlockAdminBlock[];
 	roles: FlexaBlockAdminRole[];
 	onSetEnabled: ( value: boolean ) => void;
+	onSetReview: ( value: boolean ) => void;
+	onSetInline: ( key: string, value: unknown ) => void;
 	onToggleRole: ( slug: string, allowed: boolean ) => void;
 	onToggleBlock: ( slug: string, enabled: boolean ) => void;
 }
@@ -36,6 +38,8 @@ interface Props {
  * @param root0.blocks         Full block catalog (for titles).
  * @param root0.roles          Site roles (excluding administrator).
  * @param root0.onSetEnabled   Toggle the master switch.
+ * @param root0.onSetReview    Toggle review copies for published pages.
+ * @param root0.onSetInline    Set any inline_editor setting.
  * @param root0.onToggleRole   Allow/disallow a role.
  * @param root0.onToggleBlock  Enable/disable a block for inline editing.
  */
@@ -45,6 +49,8 @@ export function EditingSettings( {
 	blocks,
 	roles,
 	onSetEnabled,
+	onSetReview,
+	onSetInline,
 	onToggleRole,
 	onToggleBlock,
 }: Props ): JSX.Element {
@@ -118,6 +124,49 @@ export function EditingSettings( {
 						checked={ enabled }
 						onChange={ onSetEnabled }
 					/>
+					{ enabled && (
+						<div style={ { marginTop: 16 } }>
+							<ToggleControl
+								__nextHasNoMarginBottom
+								label={ __(
+									'Send changes to published pages for review',
+									'flexa-block'
+								) }
+								help={ __(
+									'On: the first change to a published page creates a draft copy, and later changes go to that copy. Visitors keep seeing the page as it is until someone who can publish it opens the copy in the editor and clicks "Apply to original". Off (default): changes go straight to the page. Header, footer and synced patterns are always changed directly.',
+									'flexa-block'
+								) }
+								checked={ ie.review === true }
+								onChange={ onSetReview }
+							/>
+							{ ie.review === true && (
+								<div style={ { marginTop: 12, paddingLeft: 12, borderLeft: '3px solid #e0e0e0' } }>
+									<SelectControl
+										__nextHasNoMarginBottom
+										label={ __( 'Who can apply the changes', 'flexa-block' ) }
+										value={ ie.review_approver === 'publish' ? 'publish' : 'admin' }
+										options={ [
+											{ label: __( 'Administrators only', 'flexa-block' ), value: 'admin' },
+											{ label: __( 'Anyone who can publish the page (Editors too)', 'flexa-block' ), value: 'publish' },
+										] }
+										onChange={ ( v: string ) => onSetInline( 'review_approver', v ) }
+									/>
+									<div style={ { marginTop: 12 } }>
+										<ToggleControl
+											__nextHasNoMarginBottom
+											label={ __( 'Nobody applies their own changes', 'flexa-block' ) }
+											help={ __(
+												'Someone who changed the copy cannot apply it, even an administrator: a second person always checks.',
+												'flexa-block'
+											) }
+											checked={ ie.review_no_self === true }
+											onChange={ ( v: boolean ) => onSetInline( 'review_no_self', v ) }
+										/>
+									</div>
+								</div>
+							) }
+						</div>
+					) }
 				</div>
 			</section>
 

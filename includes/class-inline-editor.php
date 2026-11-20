@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * Inline Editor — front-end, click-to-edit text for Flexa blocks.
  *
@@ -21,6 +20,8 @@ declare(strict_types=1);
  *
  * @package Flexa\Block
  */
+
+declare(strict_types=1);
 
 namespace Flexa\Block;
 
@@ -47,194 +48,844 @@ final class Inline_Editor {
 	 * @var array<string, array{fields: list<array<string, mixed>>}>
 	 */
 	const EDITABLE = [
-		'flexa/text'    => [
+		'flexa/text'                    => [
 			'fields' => [
-				[ 'attr' => 'content', 'selector' => '.flexa-text__content', 'allowed' => 'rich' ],
+				[
+					'attr'     => 'content',
+					'selector' => '.flexa-text__content',
+					'allowed'  => 'rich',
+				],
 			],
 		],
-		'flexa/heading' => [
+		'flexa/heading'                 => [
 			'fields' => [
-				[ 'attr' => 'content', 'selector' => '.flexa-heading__title', 'allowed' => 'inline' ],
-				[ 'attr' => 'subheadingContent', 'selector' => '.flexa-heading__subheading', 'allowed' => 'inline' ],
-			],
-		],
-		'flexa/button'  => [
-			'fields' => [
-				[ 'attr' => 'text', 'selector' => '.flexa-button__text', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'content',
+					'selector' => '.flexa-heading__title',
+					'allowed'  => 'inline',
+					'link'     => [
+						'attr'   => 'url',
+						'target' => 'linkTarget',
+						'anchor' => '.flexa-heading__link',
+					],
+				],
+				[
+					'attr'     => 'subheadingContent',
+					'selector' => '.flexa-heading__subheading',
+					'allowed'  => 'inline',
+				],
 			],
 		],
 		// Composite blocks — several top-level string attributes each. The two
 		// promo button labels share a class, so they are scoped by the button
 		// modifier class.
-		'flexa/banner'  => [
+		'flexa/banner'                  => [
+			'icons'  => [
+				[
+					'attr'     => 'primaryIcon',
+					'selector' => '.flexa-promo__button--primary > .flexa-icon',
+					'with'     => 'primaryText',
+				],
+				[
+					'attr'     => 'secondaryIcon',
+					'selector' => '.flexa-promo__button--secondary > .flexa-icon',
+					'with'     => 'secondaryText',
+				],
+			],
 			'fields' => [
-				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
-				[ 'attr' => 'description', 'selector' => '.flexa-promo__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'primaryText', 'selector' => '.flexa-promo__button--primary .flexa-promo__button-text', 'allowed' => 'minimal' ],
-				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'heading',
+					'selector' => '.flexa-promo__heading',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'description',
+					'selector' => '.flexa-promo__description',
+					'allowed'  => 'minimal-link',
+				],
+				[
+					'attr'     => 'primaryText',
+					'selector' => '.flexa-promo__button--primary .flexa-promo__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'primaryUrl',
+						'target' => 'primaryTarget',
+						'anchor' => '.flexa-promo__button--primary',
+					],
+				],
+				[
+					'attr'     => 'secondaryText',
+					'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'secondaryUrl',
+						'target' => 'secondaryTarget',
+						'anchor' => '.flexa-promo__button--secondary',
+					],
+				],
 			],
 		],
-		'flexa/cta'     => [
+		'flexa/cta'                     => [
+			'icons'  => [
+				[
+					'attr'     => 'primaryIcon',
+					'selector' => '.flexa-promo__button--primary > .flexa-icon',
+					'with'     => 'primaryText',
+				],
+				[
+					'attr'     => 'secondaryIcon',
+					'selector' => '.flexa-promo__button--secondary > .flexa-icon',
+					'with'     => 'secondaryText',
+				],
+			],
 			'fields' => [
-				[ 'attr' => 'heading', 'selector' => '.flexa-promo__heading', 'allowed' => 'minimal' ],
-				[ 'attr' => 'description', 'selector' => '.flexa-promo__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'primaryText', 'selector' => '.flexa-promo__button--primary .flexa-promo__button-text', 'allowed' => 'minimal' ],
-				[ 'attr' => 'secondaryText', 'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'heading',
+					'selector' => '.flexa-promo__heading',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'description',
+					'selector' => '.flexa-promo__description',
+					'allowed'  => 'minimal-link',
+				],
+				[
+					'attr'     => 'primaryText',
+					'selector' => '.flexa-promo__button--primary .flexa-promo__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'primaryUrl',
+						'target' => 'primaryTarget',
+						'anchor' => '.flexa-promo__button--primary',
+					],
+				],
+				[
+					'attr'     => 'secondaryText',
+					'selector' => '.flexa-promo__button--secondary .flexa-promo__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'secondaryUrl',
+						'target' => 'secondaryTarget',
+						'anchor' => '.flexa-promo__button--secondary',
+					],
+				],
 			],
 		],
-		'flexa/info-box' => [
-			'fields' => [
-				[ 'attr' => 'prefix', 'selector' => '.flexa-info-box__prefix', 'allowed' => 'minimal' ],
-				[ 'attr' => 'title', 'selector' => '.flexa-info-box__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'description', 'selector' => '.flexa-info-box__description', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'buttonText', 'selector' => '.flexa-info-box__button-text', 'allowed' => 'minimal' ],
+		// An image is a media-library picture, not text: `images` lists where a block
+		// keeps one. `selector` is the <img>; `hit` (optional) is what is clicked
+		// when overlays sit on top of it; `shape` is "full" for blocks that also
+		// store width and height; `alt` names a separate alt-text attribute that
+		// wins over the image's own; `size` names the attribute holding the size
+		// the block renders at; `repeat` + `key` is an image inside a list item.
+		// A gallery's pictures are the list items themselves (`repeat` with no `key`).
+		'flexa/images-gallery'          => [
+			'images' => [
+				[
+					'attr'     => 'images',
+					'repeat'   => true,
+					'selector' => '.flexa-images-gallery__image',
+					'hit'      => '.flexa-images-gallery__media',
+					'shape'    => 'full',
+					'size'     => 'imageSize',
+					'caption'  => true,
+				],
 			],
 		],
-		'flexa/testimonial' => [
-			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-testimonial__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'quote', 'selector' => '.flexa-testimonial__quote', 'allowed' => 'minimal-link' ],
-				[ 'attr' => 'authorName', 'selector' => '.flexa-testimonial__name', 'allowed' => 'minimal' ],
-				[ 'attr' => 'authorJob', 'selector' => '.flexa-testimonial__job', 'allowed' => 'minimal' ],
+		// A slide's picture is a CSS background: there is no <img> to click, so a
+		// button is placed on the slide instead (`button`).
+		'flexa/slide'                   => [
+			'images' => [
+				[
+					'attr'       => 'background',
+					'background' => true,
+					'button'     => 'top-right',
+				],
 			],
 		],
-		'flexa/team-member' => [
+		'flexa/image'                   => [
+			'images' => [
+				[
+					'attr'     => 'image',
+					'selector' => '.flexa-image__img',
+					'hit'      => '.flexa-image__frame',
+					'shape'    => 'full',
+					'alt'      => 'altText',
+					'size'     => 'imageSize',
+				],
+			],
+		],
+		// An icon is chosen from the icon catalog (or the media library), never typed:
+		// `icons` lists where a block keeps one. `selector` is either the icon
+		// element itself, or (with `wrap`) an element holding nothing but the icon.
+		'flexa/icon'                    => [
+			'icons' => [
+				[
+					'attr'     => 'icon',
+					'selector' => '.flexa-icon__inner',
+					'wrap'     => true,
+				],
+			],
+		],
+		'flexa/button'                  => [
+			'icons'  => [
+				// `with`: the text this icon goes with, so editing that text can offer
+				// "Add icon" when there is none yet.
+				[
+					'attr'     => 'icon',
+					'selector' => '.flexa-button__link > .flexa-icon',
+					'with'     => 'text',
+				],
+			],
 			'fields' => [
-				[ 'attr' => 'name', 'selector' => '.flexa-team-member__name', 'allowed' => 'minimal' ],
-				[ 'attr' => 'role', 'selector' => '.flexa-team-member__role', 'allowed' => 'minimal' ],
-				[ 'attr' => 'bio', 'selector' => '.flexa-team-member__bio', 'allowed' => 'minimal-link' ],
+				[
+					'attr'     => 'text',
+					'selector' => '.flexa-button__text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'url',
+						'target' => 'linkTarget',
+						'anchor' => '.flexa-button__link',
+					],
+				],
+			],
+		],
+		'flexa/video-popup'             => [
+			'images' => [
+				[
+					'attr'     => 'thumbnailImage',
+					'selector' => '.flexa-video-popup__image',
+					'shape'    => 'full',
+				],
+			],
+			'icons'  => [
+				[
+					'attr'     => 'playIcon',
+					'selector' => '.flexa-video-popup__play',
+					'wrap'     => true,
+				],
+			],
+		],
+		'flexa/info-box'                => [
+			'images' => [
+				[
+					'attr'     => 'image',
+					'selector' => '.flexa-info-box__image',
+					'shape'    => 'basic',
+				],
+			],
+			'icons'  => [
+				[
+					'attr'     => 'icon',
+					'selector' => '.flexa-info-box__icon',
+					'wrap'     => true,
+				],
+				[
+					'attr'     => 'buttonIcon',
+					'selector' => '.flexa-info-box__button > .flexa-icon',
+					'with'     => 'buttonText',
+				],
+			],
+			'fields' => [
+				[
+					'attr'     => 'prefix',
+					'selector' => '.flexa-info-box__prefix',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-info-box__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'description',
+					'selector' => '.flexa-info-box__description',
+					'allowed'  => 'minimal-link',
+				],
+				[
+					'attr'     => 'buttonText',
+					'selector' => '.flexa-info-box__button-text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'buttonUrl',
+						'target' => 'buttonTarget',
+						'anchor' => '.flexa-info-box__button',
+					],
+				],
+			],
+		],
+		'flexa/testimonial'             => [
+			'images' => [
+				[
+					'attr'     => 'authorImage',
+					'selector' => '.flexa-testimonial__avatar',
+					'shape'    => 'basic',
+				],
+			],
+			'fields' => [
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-testimonial__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'quote',
+					'selector' => '.flexa-testimonial__quote',
+					'allowed'  => 'minimal-link',
+				],
+				[
+					'attr'     => 'authorName',
+					'selector' => '.flexa-testimonial__name',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'authorJob',
+					'selector' => '.flexa-testimonial__job',
+					'allowed'  => 'minimal',
+				],
+			],
+		],
+		'flexa/team-member'             => [
+			'images' => [
+				[
+					'attr'     => 'image',
+					'selector' => '.flexa-team-member__image',
+					'shape'    => 'basic',
+				],
+			],
+			'fields' => [
+				[
+					'attr'     => 'name',
+					'selector' => '.flexa-team-member__name',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'role',
+					'selector' => '.flexa-team-member__role',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'bio',
+					'selector' => '.flexa-team-member__bio',
+					'allowed'  => 'minimal-link',
+				],
 			],
 		],
 		// Simple single-string blocks (plain text).
-		'flexa/table-of-content' => [
+		'flexa/table-of-content'        => [
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-toc__title', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-toc__title',
+					'allowed'  => 'plain',
+				],
 			],
 		],
-		'flexa/process-bar' => [
+		'flexa/process-bar'             => [
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-process-bar__title', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-process-bar__title',
+					'allowed'  => 'plain',
+				],
 			],
 		],
-		'flexa/before-after' => [
+		'flexa/before-after'            => [
+			'images' => [
+				// Pressing anywhere on the frame drags the slider, so these open from a
+				// button of their own rather than from a click on the picture.
+				[
+					'attr'     => 'beforeImage',
+					'selector' => '.flexa-before-after__img-wrap--before .flexa-before-after__img',
+					'shape'    => 'full',
+					'button'   => 'bottom-left',
+					'host'     => '.flexa-before-after__frame',
+				],
+				[
+					'attr'     => 'afterImage',
+					'selector' => '.flexa-before-after__img-wrap--after .flexa-before-after__img',
+					'shape'    => 'full',
+					'button'   => 'bottom-right',
+					'host'     => '.flexa-before-after__frame',
+				],
+			],
 			'fields' => [
-				[ 'attr' => 'beforeLabel', 'selector' => '.flexa-before-after__label--before', 'allowed' => 'plain' ],
-				[ 'attr' => 'afterLabel', 'selector' => '.flexa-before-after__label--after', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'beforeLabel',
+					'selector' => '.flexa-before-after__label--before',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'afterLabel',
+					'selector' => '.flexa-before-after__label--after',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 		// Countdown unit labels live in a `labels` object attribute; each label
 		// element is scoped by its unit modifier class.
-		'flexa/countdown' => [
+		'flexa/countdown'               => [
 			'fields' => [
-				[ 'attr' => 'labels', 'key' => 'days', 'object' => true, 'selector' => '.flexa-countdown__unit--days .flexa-countdown__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'labels', 'key' => 'hours', 'object' => true, 'selector' => '.flexa-countdown__unit--hours .flexa-countdown__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'labels', 'key' => 'minutes', 'object' => true, 'selector' => '.flexa-countdown__unit--minutes .flexa-countdown__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'labels', 'key' => 'seconds', 'object' => true, 'selector' => '.flexa-countdown__unit--seconds .flexa-countdown__label', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'labels',
+					'key'      => 'days',
+					'object'   => true,
+					'selector' => '.flexa-countdown__unit--days .flexa-countdown__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'labels',
+					'key'      => 'hours',
+					'object'   => true,
+					'selector' => '.flexa-countdown__unit--hours .flexa-countdown__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'labels',
+					'key'      => 'minutes',
+					'object'   => true,
+					'selector' => '.flexa-countdown__unit--minutes .flexa-countdown__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'labels',
+					'key'      => 'seconds',
+					'object'   => true,
+					'selector' => '.flexa-countdown__unit--seconds .flexa-countdown__label',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 		// Subscribe-form field labels (each field is its own block). The trailing
 		// required-marker span is stripped client-side before saving.
-		'flexa/subscribe-form-name'     => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-email'    => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-phone'    => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-textarea' => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-url'      => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-date'     => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-select'   => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-radio'    => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-checkbox' => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-toggle'   => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
-		'flexa/subscribe-form-upload'   => [ 'fields' => [ [ 'attr' => 'label', 'selector' => '.flexa-field__label', 'allowed' => 'plain' ] ] ],
+		'flexa/subscribe-form-name'     => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-email'    => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-phone'    => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-textarea' => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-url'      => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-date'     => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-select'   => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-radio'    => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-checkbox' => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-toggle'   => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
+		'flexa/subscribe-form-upload'   => [
+			'fields' => [
+				[
+					'attr'     => 'label',
+					'selector' => '.flexa-field__label',
+					'allowed'  => 'plain',
+				],
+			],
+		],
 		// Repeater blocks — text inside an array attribute. The Nth rendered item
 		// carries `data-flexa-item="<source index>"` (stamped in render.php), so
 		// the front-end maps it back to the exact array entry.
-		'flexa/faq' => [
+		'flexa/faq'                     => [
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'question', 'repeat' => true, 'selector' => '.flexa-faq__question-text', 'allowed' => 'minimal' ],
-				[ 'attr' => 'items', 'key' => 'answer', 'repeat' => true, 'selector' => '.flexa-faq__answer-content', 'allowed' => 'post' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'question',
+					'repeat'   => true,
+					'selector' => '.flexa-faq__question-text',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'answer',
+					'repeat'   => true,
+					'selector' => '.flexa-faq__answer-content',
+					'allowed'  => 'post',
+				],
 			],
 		],
-		'flexa/tabs' => [
+		'flexa/tabs'                    => [
 			'fields' => [
-				[ 'attr' => 'tabs', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-tabs__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'tabs', 'key' => 'content', 'repeat' => true, 'selector' => '.flexa-tabs__panel', 'allowed' => 'post' ],
+				[
+					'attr'     => 'tabs',
+					'key'      => 'label',
+					'repeat'   => true,
+					'selector' => '.flexa-tabs__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'tabs',
+					'key'      => 'content',
+					'repeat'   => true,
+					'selector' => '.flexa-tabs__panel',
+					'allowed'  => 'post',
+				],
 			],
 		],
-		'flexa/steps' => [
+		'flexa/steps'                   => [
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'title', 'repeat' => true, 'selector' => '.flexa-steps__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'items', 'key' => 'description', 'repeat' => true, 'selector' => '.flexa-steps__description', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'title',
+					'repeat'   => true,
+					'selector' => '.flexa-steps__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'description',
+					'repeat'   => true,
+					'selector' => '.flexa-steps__description',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
-		'flexa/timeline' => [
+		'flexa/timeline'                => [
+			'images' => [
+				[
+					'attr'     => 'items',
+					'key'      => 'image',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__image',
+					'shape'    => 'basic',
+				],
+			],
+			// The marker is printed even without an icon, so one can be added here.
+			'icons'  => [
+				[
+					'attr'     => 'items',
+					'key'      => 'icon',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__marker',
+					'wrap'     => true,
+				],
+			],
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'date', 'repeat' => true, 'selector' => '.flexa-timeline__date', 'allowed' => 'minimal' ],
-				[ 'attr' => 'items', 'key' => 'title', 'repeat' => true, 'selector' => '.flexa-timeline__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'items', 'key' => 'description', 'repeat' => true, 'selector' => '.flexa-timeline__description', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'date',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__date',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'title',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'description',
+					'repeat'   => true,
+					'selector' => '.flexa-timeline__description',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
-		'flexa/pricing-table' => [
+		'flexa/pricing-table'           => [
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'name', 'repeat' => true, 'selector' => '.flexa-pricing-table__name', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'badge', 'repeat' => true, 'selector' => '.flexa-pricing-table__badge', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'priceMonthly', 'repeat' => true, 'selector' => '.flexa-pricing-table__price-group--monthly .flexa-pricing-table__amount', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'periodMonthly', 'repeat' => true, 'selector' => '.flexa-pricing-table__price-group--monthly .flexa-pricing-table__period', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'priceYearly', 'repeat' => true, 'selector' => '.flexa-pricing-table__price-group--yearly .flexa-pricing-table__amount', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'periodYearly', 'repeat' => true, 'selector' => '.flexa-pricing-table__price-group--yearly .flexa-pricing-table__period', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'features', 'repeat' => true, 'join' => "\n", 'selector' => '.flexa-pricing-table__feature', 'allowed' => 'plain' ],
-				[ 'attr' => 'items', 'key' => 'ctaText', 'repeat' => true, 'selector' => '.flexa-pricing-table__cta', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'name',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__name',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'badge',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__badge',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'priceMonthly',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__price-group--monthly .flexa-pricing-table__amount',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'periodMonthly',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__price-group--monthly .flexa-pricing-table__period',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'priceYearly',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__price-group--yearly .flexa-pricing-table__amount',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'periodYearly',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__price-group--yearly .flexa-pricing-table__period',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'features',
+					'repeat'   => true,
+					'join'     => "\n",
+					'selector' => '.flexa-pricing-table__feature',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'items',
+					'key'      => 'ctaText',
+					'repeat'   => true,
+					'selector' => '.flexa-pricing-table__cta',
+					'allowed'  => 'plain',
+				],
 			],
 		],
-		'flexa/counter' => [
+		'flexa/counter'                 => [
+			'icons'  => [
+				[
+					'attr'     => 'items',
+					'key'      => 'icon',
+					'repeat'   => true,
+					'selector' => '.flexa-counter__icon',
+					'wrap'     => true,
+				],
+			],
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-counter__label', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'items',
+					'key'      => 'label',
+					'repeat'   => true,
+					'selector' => '.flexa-counter__label',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
-		'flexa/icon-list' => [
+		'flexa/icon-list'               => [
+			'icons'  => [
+				[
+					'attr'     => 'items',
+					'key'      => 'icon',
+					'repeat'   => true,
+					'selector' => '.flexa-icon-list__icon',
+					'wrap'     => true,
+					'with'     => 'text',
+				],
+			],
 			'fields' => [
-				[ 'attr' => 'items', 'key' => 'text', 'repeat' => true, 'selector' => '.flexa-icon-list__text', 'allowed' => 'minimal' ],
+				// A row's link lives in the row itself (items[i].link.url / .target):
+				// `item` names that object, and the row is the <a>.
+				[
+					'attr'     => 'items',
+					'key'      => 'text',
+					'repeat'   => true,
+					'selector' => '.flexa-icon-list__text',
+					'allowed'  => 'minimal',
+					'link'     => [
+						'attr'   => 'items',
+						'item'   => 'link',
+						'target' => 'target',
+						'anchor' => 'a.flexa-icon-list__item',
+					],
+				],
 			],
 		],
-		'flexa/star-rating' => [
+		'flexa/star-rating'             => [
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-star-rating__title', 'allowed' => 'minimal' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-star-rating__title',
+					'allowed'  => 'minimal',
+				],
 			],
 		],
 		// The trigger text lives inside the trigger <button>; only the button/text
 		// trigger types render it (icon/image triggers have no text element). The
 		// label is plain text (esc_html in render.php).
-		'flexa/modal' => [
+		'flexa/modal'                   => [
+			'images' => [
+				[
+					'attr'     => 'triggerImage',
+					'selector' => '.flexa-modal__trigger-image',
+					'shape'    => 'full',
+				],
+			],
+			'icons'  => [
+				[
+					'attr'     => 'triggerIcon',
+					'selector' => '.flexa-modal__trigger > .flexa-icon',
+				],
+			],
 			'fields' => [
-				[ 'attr' => 'triggerText', 'selector' => '.flexa-modal__trigger-text', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'triggerText',
+					'selector' => '.flexa-modal__trigger-text',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 		// Comparison table — 2-axis. Columns + row labels are single-axis
 		// repeaters; feature cells write rows[row].values[col] (the `cell` flag),
 		// with the column index carried on each editable cell's data-flexa-cell.
-		'flexa/comparison-table' => [
+		'flexa/comparison-table'        => [
 			'fields' => [
-				[ 'attr' => 'columns', 'key' => 'title', 'repeat' => true, 'selector' => '.flexa-comparison-table__col-title', 'allowed' => 'plain' ],
-				[ 'attr' => 'columns', 'key' => 'subtitle', 'repeat' => true, 'selector' => '.flexa-comparison-table__col-subtitle', 'allowed' => 'plain' ],
-				[ 'attr' => 'columns', 'key' => 'badge', 'repeat' => true, 'selector' => '.flexa-comparison-table__badge', 'allowed' => 'plain' ],
-				[ 'attr' => 'columns', 'key' => 'ctaText', 'repeat' => true, 'selector' => '.flexa-comparison-table__cta', 'allowed' => 'plain' ],
-				[ 'attr' => 'rows', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-comparison-table__label', 'allowed' => 'plain' ],
-				[ 'attr' => 'rows', 'key' => 'values', 'repeat' => true, 'cell' => true, 'selector' => '.flexa-comparison-table__cell', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'columns',
+					'key'      => 'title',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__col-title',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'columns',
+					'key'      => 'subtitle',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__col-subtitle',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'columns',
+					'key'      => 'badge',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__badge',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'columns',
+					'key'      => 'ctaText',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__cta',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'rows',
+					'key'      => 'label',
+					'repeat'   => true,
+					'selector' => '.flexa-comparison-table__label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'rows',
+					'key'      => 'values',
+					'repeat'   => true,
+					'cell'     => true,
+					'selector' => '.flexa-comparison-table__cell',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 		// Notice — a title + message the user types (single-string attributes).
-		'flexa/notice' => [
+		'flexa/notice'                  => [
 			'fields' => [
-				[ 'attr' => 'title', 'selector' => '.flexa-notice__title', 'allowed' => 'minimal' ],
-				[ 'attr' => 'content', 'selector' => '.flexa-notice__content', 'allowed' => 'rich' ],
+				[
+					'attr'     => 'title',
+					'selector' => '.flexa-notice__title',
+					'allowed'  => 'minimal',
+				],
+				[
+					'attr'     => 'content',
+					'selector' => '.flexa-notice__content',
+					'allowed'  => 'rich',
+				],
 			],
 		],
 		// Data Table — 2-axis like the comparison table: column header labels are a
 		// single-axis repeater; body cells write rows[row].values[col] (the `cell`
 		// flag), with the column index carried on each cell's data-flexa-cell.
-		'flexa/data-table' => [
+		'flexa/data-table'              => [
 			'fields' => [
-				[ 'attr' => 'columns', 'key' => 'label', 'repeat' => true, 'selector' => '.flexa-data-table__col-label', 'allowed' => 'plain' ],
-				[ 'attr' => 'rows', 'key' => 'values', 'repeat' => true, 'cell' => true, 'selector' => '.flexa-data-table__cell', 'allowed' => 'plain' ],
+				[
+					'attr'     => 'columns',
+					'key'      => 'label',
+					'repeat'   => true,
+					'selector' => '.flexa-data-table__col-label',
+					'allowed'  => 'plain',
+				],
+				[
+					'attr'     => 'rows',
+					'key'      => 'values',
+					'repeat'   => true,
+					'cell'     => true,
+					'selector' => '.flexa-data-table__cell',
+					'allowed'  => 'plain',
+				],
 			],
 		],
 	];
@@ -248,6 +899,9 @@ final class Inline_Editor {
 		'enabled'         => true,
 		'disabled_blocks' => [],
 		'roles'           => [ 'editor' ],
+		'review'          => false,
+		'review_approver' => 'admin',
+		'review_no_self'  => false,
 	];
 
 	/**
@@ -256,6 +910,43 @@ final class Inline_Editor {
 	 * @var bool|null
 	 */
 	private static $should = null;
+
+	/**
+	 * Review copy per original, for this request.
+	 *
+	 * @var array<int, int>
+	 */
+	private static $review_copies = [];
+
+	/**
+	 * Memoized blockIds of the queried post's own content.
+	 *
+	 * @var array<string, true>|null
+	 */
+	private static $own_ids = null;
+
+	/**
+	 * Where the block being rendered right now is stored, innermost last.
+	 *
+	 * A page is assembled from several stores: the post itself, template parts
+	 * (header, footer), synced patterns, other posts in a query loop. Each of
+	 * those arrives through a block whose render wraps the blocks it contains,
+	 * so a stack pushed in `pre_render_block` and popped in `render_block` of
+	 * that wrapper always knows which store an inner block came from.
+	 *
+	 * @var list<array{block: string, type: string, post: int, ids: array<string, true>}>
+	 */
+	private static $scopes = [];
+
+	/**
+	 * Memoized content versions, keyed by post ID. See store_version().
+	 *
+	 * @var array<int, string>
+	 */
+	private static $versions = [];
+
+	/** Wrapper blocks that switch the store their inner blocks come from. */
+	const SCOPE_BLOCKS = [ 'core/template-part', 'core/block', 'core/post-content' ];
 
 	/**
 	 * Memoized registry() result for the current request.
@@ -305,8 +996,14 @@ final class Inline_Editor {
 					continue;
 				}
 				$fields = self::valid_fields( $def );
-				if ( $fields ) {
-					$registry[ $name ] = [ 'fields' => $fields ];
+				$images = self::valid_images( $def );
+				$icons  = self::valid_icons( $def );
+				if ( $fields || $images || $icons ) {
+					$registry[ $name ] = [
+						'fields' => $fields,
+						'images' => $images,
+						'icons'  => $icons,
+					];
 				}
 			}
 		}
@@ -354,6 +1051,70 @@ final class Inline_Editor {
 	}
 
 	/**
+	 * The well-formed image declarations of a registry entry.
+	 *
+	 * An image needs the attribute that holds it and the rendered <img> to click;
+	 * one inside a list item also needs the item key.
+	 *
+	 * @param mixed $def Registry entry.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function valid_images( $def ): array {
+		if ( ! is_array( $def ) || ! isset( $def['images'] ) || ! is_array( $def['images'] ) ) {
+			return [];
+		}
+
+		$out = [];
+		foreach ( $def['images'] as $image ) {
+			if ( ! is_array( $image ) || empty( $image['attr'] ) || ! is_string( $image['attr'] ) ) {
+				continue;
+			}
+			// A background is the block root itself; anything else names its <img>.
+			if ( empty( $image['background'] ) && ( empty( $image['selector'] ) || ! is_string( $image['selector'] ) ) ) {
+				continue;
+			}
+			// A background is one per block, never a list item.
+			if ( ! empty( $image['background'] ) && ! empty( $image['repeat'] ) ) {
+				continue;
+			}
+			if ( isset( $image['key'] ) && ! is_string( $image['key'] ) ) {
+				continue;
+			}
+			$out[] = $image;
+		}
+
+		return $out;
+	}
+
+	/**
+	 * The well-formed icon declarations of a registry entry.
+	 *
+	 * An icon needs the attribute that holds it and the element to click; one in
+	 * a list item also needs the item key.
+	 *
+	 * @param mixed $def Registry entry.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function valid_icons( $def ): array {
+		if ( ! is_array( $def ) || ! isset( $def['icons'] ) || ! is_array( $def['icons'] ) ) {
+			return [];
+		}
+
+		$out = [];
+		foreach ( $def['icons'] as $icon ) {
+			if ( ! is_array( $icon ) || empty( $icon['attr'] ) || ! is_string( $icon['attr'] ) || empty( $icon['selector'] ) || ! is_string( $icon['selector'] ) ) {
+				continue;
+			}
+			if ( ! empty( $icon['repeat'] ) && ( empty( $icon['key'] ) || ! is_string( $icon['key'] ) ) ) {
+				continue;
+			}
+			$out[] = $icon;
+		}
+
+		return $out;
+	}
+
+	/**
 	 * The settings slug for a block name — the part after the namespace.
 	 *
 	 * `flexa/faq` and `flexa-pro/flip-box` both reduce to their bare slug, which
@@ -376,8 +1137,14 @@ final class Inline_Editor {
 	 * Register hooks.
 	 */
 	public static function init(): void {
+		add_filter( 'pre_render_block', [ __CLASS__, 'enter_scope' ], PHP_INT_MAX, 2 );
+		add_filter( 'render_block', [ __CLASS__, 'leave_scope' ], 1, 2 );
 		add_filter( 'render_block', [ __CLASS__, 'annotate' ], 20, 2 );
 		add_filter( 'body_class', [ __CLASS__, 'body_class' ] );
+		// Before do_blocks (priority 9), so the copy's blocks are the ones rendered.
+		add_filter( 'the_content', [ __CLASS__, 'review_content' ], 1 );
+		add_filter( 'flexa_block_working_copy_can_apply', [ __CLASS__, 'filter_can_apply' ], 10, 2 );
+		add_filter( 'flexa_block_working_copy_panel_data', [ __CLASS__, 'filter_panel_data' ], 10, 2 );
 		add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue' ], 25 );
 		add_action( 'wp_footer', [ __CLASS__, 'render_toolbar' ] );
 		add_action( 'rest_api_init', [ __CLASS__, 'register_routes' ] );
@@ -406,9 +1173,11 @@ final class Inline_Editor {
 		return $classes;
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	 * ---------------------------------------------------------------------
 	 * Settings + gating
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Inline-editor settings merged over defaults.
@@ -429,7 +1198,141 @@ final class Inline_Editor {
 			'roles'           => isset( $ie['roles'] ) && is_array( $ie['roles'] )
 				? array_values( array_map( 'strval', $ie['roles'] ) )
 				: self::DEFAULTS['roles'],
+			'review'          => isset( $ie['review'] ) ? (bool) $ie['review'] : self::DEFAULTS['review'],
+			'review_approver' => 'publish' === ( $ie['review_approver'] ?? '' ) ? 'publish' : 'admin',
+			'review_no_self'  => ! empty( $ie['review_no_self'] ),
 		];
+	}
+
+	/** Post meta on a working copy made by front-end review (not by an agent). */
+	const REVIEW_META = '_flexa_review_copy';
+
+	/**
+	 * Why the current user may not apply a front-end review copy ('' when they may).
+	 *
+	 * Front-end review exists so that someone checks a change before it goes
+	 * live, so its copies follow the review settings rather than the plain
+	 * "may publish the page" rule of an agent's copy: by default only an
+	 * administrator applies them, and optionally nobody applies their own.
+	 *
+	 * @param \WP_Post $copy Working copy.
+	 * @return string Reason, for the editor panel.
+	 */
+	public static function review_block_reason( \WP_Post $copy ): string {
+		if ( ! get_post_meta( $copy->ID, self::REVIEW_META, true ) ) {
+			return '';
+		}
+		$settings = self::settings();
+		if ( 'publish' !== $settings['review_approver'] && ! current_user_can( 'manage_options' ) ) {
+			return __( 'An administrator has to review and apply these changes.', 'flexa-block' );
+		}
+		if ( $settings['review_no_self'] && in_array( get_current_user_id(), self::review_authors( $copy ), true ) ) {
+			return __( 'You made changes in this copy, so someone else has to review and apply it.', 'flexa-block' );
+		}
+		return '';
+	}
+
+	/**
+	 * Everyone who changed a review copy: its author and the people in its log.
+	 *
+	 * @param \WP_Post $copy Working copy.
+	 * @return list<int>
+	 */
+	private static function review_authors( \WP_Post $copy ): array {
+		$ids = [ (int) $copy->post_author ];
+		foreach ( Inline_Edit_Log::entries( (int) $copy->ID ) as $entry ) {
+			$ids[] = (int) ( $entry['user_id'] ?? 0 );
+		}
+		return array_values( array_unique( array_filter( $ids ) ) );
+	}
+
+	/**
+	 * Apply the review rules to "may this person apply this copy?".
+	 *
+	 * @param bool     $allowed  What the working copy decided.
+	 * @param \WP_Post $copy     Working copy.
+	 * @return bool
+	 */
+	public static function filter_can_apply( $allowed, $copy ) {
+		if ( ! $allowed || ! $copy instanceof \WP_Post ) {
+			return $allowed;
+		}
+		return '' === self::review_block_reason( $copy );
+	}
+
+	/**
+	 * Tell the editor panel why a review copy cannot be applied by this person.
+	 *
+	 * @param array<string,mixed> $data Panel data.
+	 * @param \WP_Post            $copy Working copy.
+	 * @return array<string,mixed>
+	 */
+	public static function filter_panel_data( $data, $copy ) {
+		if ( is_array( $data ) && $copy instanceof \WP_Post ) {
+			$data['blockedReason'] = self::review_block_reason( $copy );
+			$data['isReview']      = (bool) get_post_meta( $copy->ID, self::REVIEW_META, true );
+			$data['logPath']       = '/' . self::REST_NS . '/inline-edit-log?postId=' . (int) $copy->ID;
+		}
+		return $data;
+	}
+
+	/**
+	 * Whether edits to a published page go to a working copy for review.
+	 */
+	public static function review_enabled(): bool {
+		return ! empty( self::settings()['review'] );
+	}
+
+	/**
+	 * Load the working-copy class, which lives with the MCP module and is not
+	 * loaded on every request.
+	 */
+	private static function load_working_copy(): bool {
+		if ( ! class_exists( '\Flexa\Block\MCP\Working_Copy' ) && defined( 'FLEXA_BLOCK_DIR' ) ) {
+			require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-working-copy.php';
+		}
+		return class_exists( '\Flexa\Block\MCP\Working_Copy' );
+	}
+
+	/**
+	 * The open review copy of a published post, or 0.
+	 *
+	 * Only when review is switched on and the post is published: a draft is
+	 * nobody's live page, so it is edited directly.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public static function review_copy_id( int $post_id ): int {
+		if ( $post_id < 1 || ! self::review_enabled() || 'publish' !== get_post_status( $post_id ) ) {
+			return 0;
+		}
+		if ( ! array_key_exists( $post_id, self::$review_copies ) ) {
+			self::$review_copies[ $post_id ] = self::load_working_copy() ? \Flexa\Block\MCP\Working_Copy::find( $post_id ) : 0;
+		}
+		return self::$review_copies[ $post_id ];
+	}
+
+	/**
+	 * Show an editor the review copy's content in place of the page's own.
+	 *
+	 * Once edits on a published page go to a copy, the page as stored no longer
+	 * shows them, and the next edit would be made against text the person has
+	 * already changed. So for someone who can edit here, and only for the page
+	 * being viewed, the copy is rendered instead. Visitors keep seeing the page.
+	 *
+	 * @param string $content Post content about to be rendered.
+	 * @return string
+	 */
+	public static function review_content( $content ) {
+		if ( ! is_string( $content ) || ! self::should_render() ) {
+			return $content;
+		}
+		$viewed = (int) get_queried_object_id();
+		if ( (int) get_the_ID() !== $viewed ) {
+			return $content;
+		}
+		$copy = get_post( self::review_copy_id( $viewed ) );
+		return $copy instanceof \WP_Post ? (string) $copy->post_content : $content;
 	}
 
 	/**
@@ -457,6 +1360,28 @@ final class Inline_Editor {
 	private static function fields_for( string $name ): array {
 		$registry = self::registry();
 		return isset( $registry[ $name ] ) ? $registry[ $name ]['fields'] : [];
+	}
+
+	/**
+	 * The editable images for a block (empty if none).
+	 *
+	 * @param string $name Block name.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function images_for( string $name ): array {
+		$registry = self::registry();
+		return isset( $registry[ $name ]['images'] ) ? $registry[ $name ]['images'] : [];
+	}
+
+	/**
+	 * The editable icons for a block (empty if none).
+	 *
+	 * @param string $name Block name.
+	 * @return list<array<string, mixed>>
+	 */
+	private static function icons_for( string $name ): array {
+		$registry = self::registry();
+		return isset( $registry[ $name ]['icons'] ) ? $registry[ $name ]['icons'] : [];
 	}
 
 	/**
@@ -502,6 +1427,23 @@ final class Inline_Editor {
 	}
 
 	/**
+	 * The blockIds stored in the queried post's own content.
+	 *
+	 * Read once per request: `annotate()` runs for every block on the page.
+	 *
+	 * @return array<string, true>
+	 */
+	private static function own_block_ids(): array {
+		if ( null === self::$own_ids ) {
+			$viewed        = (int) get_queried_object_id();
+			$copy          = self::review_copy_id( $viewed );
+			$post          = get_post( $copy > 0 ? $copy : $viewed );
+			self::$own_ids = $post instanceof \WP_Post ? Block_Patcher::block_ids( (string) $post->post_content ) : [];
+		}
+		return self::$own_ids;
+	}
+
+	/**
 	 * A `data-flexa-item` marker for a repeater item's wrapper element.
 	 *
 	 * Repeater render.php loops call this with the ORIGINAL array index so the
@@ -538,14 +1480,18 @@ final class Inline_Editor {
 
 	/**
 	 * Whether a block slug has been disabled in settings.
+	 *
+	 * @param string $block_name Block name.
 	 */
 	private static function is_block_disabled( string $block_name ): bool {
 		return in_array( self::slug_for( $block_name ), self::settings()['disabled_blocks'], true );
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	 * ---------------------------------------------------------------------
 	 * Render-time annotation
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Mark an editable block's root element with its blockId + name.
@@ -573,6 +1519,13 @@ final class Inline_Editor {
 			return $content;
 		}
 
+		// A block is only offered for editing when it can be saved back to where
+		// it is stored. See target_for().
+		$target = self::target_for( $block_id );
+		if ( null === $target ) {
+			return $content;
+		}
+
 		if ( ! class_exists( '\WP_HTML_Tag_Processor' ) ) {
 			return $content;
 		}
@@ -584,13 +1537,184 @@ final class Inline_Editor {
 
 		$processor->set_attribute( 'data-flexa-edit-id', $block_id );
 		$processor->set_attribute( 'data-flexa-edit-name', $name );
+		if ( $target['post'] > 0 ) {
+			$processor->set_attribute( 'data-flexa-edit-target', (string) $target['post'] );
+			$processor->set_attribute( 'data-flexa-edit-scope', $target['scope'] );
+		}
+		// The version of the store this block was read from, sent back with a
+		// save so a change made since (in the editor, another tab, by another
+		// person) is refused instead of silently overwritten.
+		$viewed   = (int) get_queried_object_id();
+		$copy     = self::review_copy_id( $viewed );
+		$store_id = $target['post'] > 0 ? $target['post'] : ( $copy > 0 ? $copy : $viewed );
+		$processor->set_attribute( 'data-flexa-edit-version', self::store_version( $store_id ) );
 
 		return $processor->get_updated_html();
 	}
 
-	/* ---------------------------------------------------------------------
+	/**
+	 * Where an edit to this block would be saved, or null when it cannot be.
+	 *
+	 * - Stored in the post being viewed: editable, saved to that post. This is
+	 *   the case `post` 0 stands for, and the only one before shared stores.
+	 * - Stored in a template part (header, footer…) that has been customised,
+	 *   so it lives in the database: editable by someone who may edit the
+	 *   theme's templates, saved to that template part, for every page.
+	 * - Stored in a synced pattern: editable by someone who may edit that
+	 *   pattern, saved to it, for everywhere the pattern is used.
+	 * - Anywhere else: not editable. That covers another post shown by a query
+	 *   loop, blocks written straight into the page template, and a template
+	 *   part that still comes from the theme's own file. Saving that last one
+	 *   would mean creating its database copy, which the Site Editor does and
+	 *   front-end editing does not.
+	 *
+	 * @param string $block_id Block's blockId.
+	 * @return array{post: int, scope: string}|null `post` 0 means the viewed post.
+	 */
+	private static function target_for( string $block_id ): ?array {
+		$scope = self::$scopes ? self::$scopes[ count( self::$scopes ) - 1 ] : null;
+
+		if ( null === $scope || 'post' === $scope['type'] ) {
+			$viewed = get_queried_object_id();
+			if ( null !== $scope && $scope['post'] !== $viewed ) {
+				return null;
+			}
+			return isset( self::own_block_ids()[ $block_id ] ) ? [
+				'post'  => 0,
+				'scope' => '',
+			] : null;
+		}
+
+		if ( $scope['post'] < 1 || ! isset( $scope['ids'][ $block_id ] ) ) {
+			return null;
+		}
+
+		$allowed = 'wp_template_part' === $scope['type']
+			? current_user_can( 'edit_theme_options' )
+			: current_user_can( 'edit_post', $scope['post'] );
+
+		return $allowed ? [
+			'post'  => $scope['post'],
+			'scope' => 'wp_template_part' === $scope['type'] ? 'template-part' : 'pattern',
+		] : null;
+	}
+
+	/**
+	 * A token for the exact stored content of a post: changes when anything in
+	 * it changes, and only then.
+	 *
+	 * Used instead of `post_modified_gmt`, which has one-second resolution (two
+	 * saves inside a second look the same) and moves on writes that never touch
+	 * the content. Comparing what the page shows against what is stored is not
+	 * an option either: rendering runs kses, entities and block markup over the
+	 * stored value, so the two differ even when nothing has changed.
+	 *
+	 * @param int $post_id Post ID of the store.
+	 * @return string
+	 */
+	private static function store_version( int $post_id ): string {
+		if ( ! isset( self::$versions[ $post_id ] ) ) {
+			$post                       = $post_id > 0 ? get_post( $post_id ) : null;
+			self::$versions[ $post_id ] = $post instanceof \WP_Post ? md5( (string) $post->post_content ) : '';
+		}
+		return self::$versions[ $post_id ];
+	}
+
+	/**
+	 * Note which store the blocks about to render come from.
+	 *
+	 * Runs last on `pre_render_block` and only when no other filter has
+	 * short-circuited the render: a block whose render is replaced never
+	 * reaches `render_block`, and a push without its pop would misattribute
+	 * every block after it.
+	 *
+	 * @param string|null $pre          Short-circuit value from earlier filters.
+	 * @param array       $parsed_block Block about to render.
+	 * @return string|null The short-circuit value, untouched.
+	 */
+	public static function enter_scope( $pre, $parsed_block ) {
+		if ( null !== $pre || ! is_array( $parsed_block ) || ! self::should_render() ) {
+			return $pre;
+		}
+
+		$name  = (string) ( $parsed_block['blockName'] ?? '' );
+		$attrs = is_array( $parsed_block['attrs'] ?? null ) ? $parsed_block['attrs'] : [];
+
+		if ( 'core/post-content' === $name ) {
+			self::$scopes[] = [
+				'block' => $name,
+				'type'  => 'post',
+				'post'  => (int) get_the_ID(),
+				'ids'   => [],
+			];
+		} elseif ( 'core/block' === $name ) {
+			$ref            = (int) ( $attrs['ref'] ?? 0 );
+			$pattern        = $ref > 0 ? get_post( $ref ) : null;
+			self::$scopes[] = [
+				'block' => $name,
+				'type'  => 'wp_block',
+				'post'  => $pattern instanceof \WP_Post && 'wp_block' === $pattern->post_type ? $ref : 0,
+				'ids'   => $pattern instanceof \WP_Post ? Block_Patcher::block_ids( (string) $pattern->post_content ) : [],
+			];
+		} elseif ( 'core/template-part' === $name ) {
+			$part           = self::template_part_post( $attrs );
+			self::$scopes[] = [
+				'block' => $name,
+				'type'  => 'wp_template_part',
+				'post'  => $part instanceof \WP_Post ? (int) $part->ID : 0,
+				'ids'   => $part instanceof \WP_Post ? Block_Patcher::block_ids( (string) $part->post_content ) : [],
+			];
+		}
+
+		return $pre;
+	}
+
+	/**
+	 * Leave the store a wrapper block opened, once it has rendered.
+	 *
+	 * @param string $content      Rendered block HTML.
+	 * @param mixed  $parsed_block Block that rendered.
+	 * @return string The HTML, untouched.
+	 */
+	public static function leave_scope( $content, $parsed_block ) {
+		$name = is_array( $parsed_block ) ? (string) ( $parsed_block['blockName'] ?? '' ) : '';
+
+		if ( self::$scopes && in_array( $name, self::SCOPE_BLOCKS, true ) && self::$scopes[ count( self::$scopes ) - 1 ]['block'] === $name ) {
+			array_pop( self::$scopes );
+		}
+
+		return $content;
+	}
+
+	/**
+	 * The database post behind a template-part block, if it has one.
+	 *
+	 * Only a template part that has been customised (in the Site Editor, say)
+	 * has one; until then it is read from the theme's file and there is no post
+	 * to save into.
+	 *
+	 * @param array<string, mixed> $attrs Template-part block attributes.
+	 * @return \WP_Post|null
+	 */
+	private static function template_part_post( array $attrs ): ?\WP_Post {
+		$slug = isset( $attrs['slug'] ) ? sanitize_title( (string) $attrs['slug'] ) : '';
+		if ( '' === $slug || ! function_exists( 'get_block_template' ) ) {
+			return null;
+		}
+
+		$theme    = isset( $attrs['theme'] ) && '' !== $attrs['theme'] ? (string) $attrs['theme'] : get_stylesheet();
+		$template = get_block_template( $theme . '//' . $slug, 'wp_template_part' );
+		$post_id  = $template instanceof \WP_Block_Template && $template->wp_id ? (int) $template->wp_id : 0;
+		$post     = $post_id > 0 ? get_post( $post_id ) : null;
+
+		return $post instanceof \WP_Post && 'wp_template_part' === $post->post_type ? $post : null;
+	}
+
+	/*
+	 * ---------------------------------------------------------------------
 	 * Front-end assets
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Enqueue the front-end module + styles and expose the bootstrap object.
@@ -606,7 +1730,10 @@ final class Inline_Editor {
 		}
 
 		$asset_path = FLEXA_BLOCK_DIR . 'build/frontend/inline-editor.asset.php';
-		$asset      = file_exists( $asset_path ) ? require $asset_path : [ 'dependencies' => [], 'version' => FLEXA_BLOCK_VER ];
+		$asset      = file_exists( $asset_path ) ? require $asset_path : [
+			'dependencies' => [],
+			'version'      => FLEXA_BLOCK_VER,
+		];
 		$version    = $asset['version'] ?? FLEXA_BLOCK_VER;
 
 		wp_enqueue_script(
@@ -624,6 +1751,13 @@ final class Inline_Editor {
 
 		wp_set_script_translations( 'flexa-block-inline-editor', 'flexa-block', FLEXA_BLOCK_DIR . 'languages' );
 
+		// The media library (Backbone, the media views and their templates) for the
+		// people who may use it, and only on pages that have an image to change.
+		// It is never loaded for a visitor: this whole method returns for them.
+		if ( current_user_can( 'upload_files' ) && ( self::has_images() || [] !== self::js_icons() ) ) {
+			wp_enqueue_media( [ 'post' => (int) get_queried_object_id() ] );
+		}
+
 		wp_localize_script(
 			'flexa-block-inline-editor',
 			'flexaBlockInlineEditor',
@@ -632,13 +1766,53 @@ final class Inline_Editor {
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 				'endpoint' => esc_url_raw( rest_url( self::REST_NS . '/inline-edit' ) ),
 				'fields'   => self::js_fields(),
+				'images'   => self::js_images(),
+				'icons'    => self::js_icons(),
+				'iconsUrl' => esc_url_raw( rest_url( self::REST_NS . '/inline-icons' ) ),
+				// Choosing a different picture needs the media library; changing only
+				// the alt text does not.
+				'canPick'  => current_user_can( 'upload_files' ),
+				// Review: edits to this (published) page go to a copy.
+				'review'   => self::review_payload(),
 				'i18n'     => [
-					'editing' => __( 'Editing', 'flexa-block' ),
-					'save'    => __( 'Save', 'flexa-block' ),
-					'cancel'  => __( 'Cancel', 'flexa-block' ),
-					'saved'   => __( 'Saved', 'flexa-block' ),
-					'saving'  => __( 'Saving…', 'flexa-block' ),
-					'error'   => __( 'Could not save', 'flexa-block' ),
+					'imageEdit'     => __( 'Edit image', 'flexa-block' ),
+					'imageBg'       => __( 'Change background', 'flexa-block' ),
+					'iconEdit'      => __( 'Edit icon', 'flexa-block' ),
+					'textEdit'      => __( 'Edit text', 'flexa-block' ),
+					'reviewNote'    => __( 'Changes to this page go to a copy for review. Visitors keep seeing the page as it is.', 'flexa-block' ),
+					'reviewSaved'   => __( 'Saved to the copy for review', 'flexa-block' ),
+					/* translators: %d: number of blocks changed */
+					'reviewPending' => __( 'Changes waiting for review on this page: %d', 'flexa-block' ),
+					'reviewOpen'    => __( 'Open the copy', 'flexa-block' ),
+					'reviewBadge'   => __( 'Waiting for review', 'flexa-block' ),
+					'iconLoadError' => __( 'The icons could not be loaded. Reload the page and try again.', 'flexa-block' ),
+					'iconNone'      => __( 'No icons match.', 'flexa-block' ),
+					'iconUpload'    => __( 'Choose file', 'flexa-block' ),
+					'imageBefore'   => __( 'Edit “before” image', 'flexa-block' ),
+					'imageAfter'    => __( 'Edit “after” image', 'flexa-block' ),
+					'imageNoWp'     => __( 'The media library could not be loaded on this page. Reload and try again.', 'flexa-block' ),
+					'imageTitle'    => __( 'Choose image', 'flexa-block' ),
+					'imageUse'      => __( 'Use this image', 'flexa-block' ),
+					'editing'       => __( 'Editing', 'flexa-block' ),
+					'save'          => __( 'Save', 'flexa-block' ),
+					'cancel'        => __( 'Cancel', 'flexa-block' ),
+					'saved'         => __( 'Saved', 'flexa-block' ),
+					'undo'          => __( 'Undo', 'flexa-block' ),
+					'undone'        => __( 'Change undone', 'flexa-block' ),
+					'linkEdit'      => __( 'Edit link', 'flexa-block' ),
+					'linkAdd'       => __( 'Add link', 'flexa-block' ),
+					'iconAdd'       => __( 'Add icon', 'flexa-block' ),
+					'reloading'     => __( 'Saved. Reloading the page to show it…', 'flexa-block' ),
+					'linkApply'     => __( 'Apply', 'flexa-block' ),
+					'linkInvalid'   => __( 'Links can start with http://, https://, mailto: or tel:, or be a path such as /contact.', 'flexa-block' ),
+					'saving'        => __( 'Saving…', 'flexa-block' ),
+					'error'         => __( 'Could not save', 'flexa-block' ),
+					'unsaved'       => __( 'You have unsaved changes. Save them before you go?', 'flexa-block' ),
+					'discard'       => __( 'Discard the changes you made to this text?', 'flexa-block' ),
+					'scope'         => [
+						'template-part' => __( 'This text is part of the site template (header, footer…). Saving changes it on every page that uses this part.', 'flexa-block' ),
+						'pattern'       => __( 'This text is part of a synced pattern. Saving changes it everywhere the pattern is used.', 'flexa-block' ),
+					],
 				],
 			]
 		);
@@ -660,6 +1834,10 @@ final class Inline_Editor {
 				$entry = [
 					'selector' => $field['selector'],
 					'attr'     => $field['attr'],
+					// The field's allowlist, so pasted text can be cut down to what
+					// will be saved (the server still filters; this keeps the two
+					// the same).
+					'allowed'  => (string) ( $field['allowed'] ?? 'inline' ),
 				];
 				if ( ! empty( $field['repeat'] ) ) {
 					$entry['repeat'] = true;
@@ -674,11 +1852,128 @@ final class Inline_Editor {
 					$entry['object'] = true;
 					$entry['key']    = $field['key'];
 				}
+				// The link that wraps this text, so the toolbar can offer "Edit link".
+				if ( isset( $field['link'] ) && is_array( $field['link'] ) && ! empty( $field['link']['attr'] ) && ! empty( $field['link']['anchor'] ) ) {
+					$entry['link'] = [
+						'attr'   => (string) $field['link']['attr'],
+						'target' => (string) ( $field['link']['target'] ?? '' ),
+						'anchor' => (string) $field['link']['anchor'],
+						'item'   => (string) ( $field['link']['item'] ?? '' ),
+					];
+				}
 				$fields[] = $entry;
 			}
 			$out[ $name ] = $fields;
 		}
 		return $out;
+	}
+
+	/**
+	 * The JS-facing list of editable images, by block.
+	 *
+	 * @return array<string, list<array<string, mixed>>>
+	 */
+	private static function js_images(): array {
+		$out = [];
+		foreach ( self::registry() as $name => $def ) {
+			if ( self::is_block_disabled( $name ) || empty( $def['images'] ) ) {
+				continue;
+			}
+			$list = [];
+			foreach ( $def['images'] as $image ) {
+				$entry = [
+					'attr'     => (string) $image['attr'],
+					'selector' => (string) ( $image['selector'] ?? '' ),
+				];
+				if ( ! empty( $image['hit'] ) ) {
+					$entry['hit'] = (string) $image['hit'];
+				}
+				if ( ! empty( $image['repeat'] ) ) {
+					$entry['repeat'] = true;
+					if ( isset( $image['key'] ) && '' !== $image['key'] ) {
+						$entry['key'] = (string) $image['key'];
+					}
+				}
+				if ( ! empty( $image['background'] ) ) {
+					$entry['background'] = true;
+				}
+				// Where to put a button that opens the editor, when clicking the
+				// picture itself would clash with what the block does on press.
+				if ( ! empty( $image['button'] ) ) {
+					$entry['button'] = (string) $image['button'];
+					if ( ! empty( $image['host'] ) ) {
+						$entry['host'] = (string) $image['host'];
+					}
+				}
+				$list[] = $entry;
+			}
+			$out[ $name ] = $list;
+		}
+		return $out;
+	}
+
+	/**
+	 * The JS-facing list of editable icons, by block.
+	 *
+	 * @return array<string, list<array<string, mixed>>>
+	 */
+	private static function js_icons(): array {
+		$out = [];
+		foreach ( self::registry() as $name => $def ) {
+			if ( self::is_block_disabled( $name ) || empty( $def['icons'] ) ) {
+				continue;
+			}
+			$list = [];
+			foreach ( $def['icons'] as $icon ) {
+				$entry = [
+					'attr'     => (string) $icon['attr'],
+					'selector' => (string) $icon['selector'],
+				];
+				if ( ! empty( $icon['wrap'] ) ) {
+					$entry['wrap'] = true;
+				}
+				if ( ! empty( $icon['with'] ) ) {
+					$entry['with'] = (string) $icon['with'];
+				}
+				if ( ! empty( $icon['repeat'] ) ) {
+					$entry['repeat'] = true;
+					$entry['key']    = (string) $icon['key'];
+				}
+				$list[] = $entry;
+			}
+			$out[ $name ] = $list;
+		}
+		return $out;
+	}
+
+	/**
+	 * What the toolbar needs to know about review on the page being viewed.
+	 *
+	 * @return array{on: bool, editLink: string, blocks: list<string>}
+	 */
+	private static function review_payload(): array {
+		$viewed = (int) get_queried_object_id();
+		$on     = self::review_enabled() && 'publish' === get_post_status( $viewed );
+		$copy   = $on ? self::review_copy_id( $viewed ) : 0;
+		$blocks = [];
+		if ( $copy > 0 ) {
+			foreach ( Inline_Edit_Log::entries( $copy ) as $entry ) {
+				$blocks[] = (string) ( $entry['block_id'] ?? '' );
+			}
+		}
+		return [
+			'on'       => $on,
+			'editLink' => $copy > 0 ? (string) get_edit_post_link( $copy, 'raw' ) : '',
+			// Blocks changed in the copy, to mark on the page.
+			'blocks'   => array_values( array_unique( array_filter( $blocks ) ) ),
+		];
+	}
+
+	/**
+	 * Whether any block on the site declares an editable image.
+	 */
+	private static function has_images(): bool {
+		return [] !== self::js_images();
 	}
 
 	/**
@@ -689,25 +1984,180 @@ final class Inline_Editor {
 			return;
 		}
 		?>
-		<div class="flexa-fee-toolbar" hidden>
+		<div class="flexa-fee-toolbar" role="toolbar" aria-label="<?php echo esc_attr__( 'Front-end editing', 'flexa-block' ); ?>" hidden>
 			<div class="flexa-fee-toolbar__inner">
 				<span class="flexa-fee-toolbar__label"><?php echo esc_html__( 'Editing', 'flexa-block' ); ?></span>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--save"><?php echo esc_html__( 'Save', 'flexa-block' ); ?></button>
 				<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
 				<span class="flexa-fee-toolbar__msg" aria-live="polite"></span>
+				<a class="flexa-fee-toolbar__review" target="_blank" rel="noopener" hidden><?php echo esc_html__( 'Open the copy for review', 'flexa-block' ); ?></a>
+				<button type="button" class="flexa-fee-btn flexa-fee-btn--undo" hidden><?php echo esc_html__( 'Undo', 'flexa-block' ); ?></button>
+				<button type="button" class="flexa-fee-btn flexa-fee-btn--link" hidden><?php echo esc_html__( 'Edit link', 'flexa-block' ); ?></button>
+				<button type="button" class="flexa-fee-btn flexa-fee-btn--link flexa-fee-btn--addicon" hidden><?php echo esc_html__( 'Add icon', 'flexa-block' ); ?></button>
 			</div>
+		</div>
+		<?php
+		/*
+		 * Modal shown before an in-page action would leave an unsaved edit.
+		 * Reloading or closing the tab still uses the browser's native dialog.
+		 */
+		?>
+		<div
+			class="flexa-fee-toolbar__prompt"
+			role="alertdialog"
+			aria-modal="true"
+			aria-labelledby="flexa-fee-unsaved-title"
+			aria-describedby="flexa-fee-unsaved-message"
+			hidden
+		>
+			<div class="flexa-fee-toolbar__prompt-dialog" role="document">
+				<div class="flexa-fee-toolbar__prompt-content">
+					<span class="flexa-fee-toolbar__prompt-icon" aria-hidden="true">!</span>
+					<div>
+						<h2 id="flexa-fee-unsaved-title" class="flexa-fee-toolbar__prompt-title"><?php echo esc_html__( 'Unsaved changes', 'flexa-block' ); ?></h2>
+						<p id="flexa-fee-unsaved-message" class="flexa-fee-toolbar__prompt-msg"></p>
+					</div>
+				</div>
+				<div class="flexa-fee-toolbar__prompt-actions">
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-choice="stay"><?php echo esc_html__( 'Keep editing', 'flexa-block' ); ?></button>
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--discard" data-choice="discard"><?php echo esc_html__( 'Discard changes', 'flexa-block' ); ?></button>
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--save" data-choice="save"><?php echo esc_html__( 'Save', 'flexa-block' ); ?></button>
+				</div>
+			</div>
+		</div>
+		<?php
+		/*
+		 * The link editor: where a button's, heading's or promo button's address and
+		 * "open in a new tab" are changed. A dialog of its own rather than part of
+		 * the toolbar, so it works the same whether or not text is being edited.
+		 */
+		?>
+		<div
+			class="flexa-fee-toolbar__prompt flexa-fee-linkdialog"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="flexa-fee-link-title"
+			hidden
+		>
+			<form class="flexa-fee-toolbar__prompt-dialog" novalidate>
+				<div class="flexa-fee-toolbar__prompt-content">
+					<div class="flexa-fee-linkdialog__body">
+						<h2 id="flexa-fee-link-title" class="flexa-fee-toolbar__prompt-title"><?php echo esc_html__( 'Edit link', 'flexa-block' ); ?></h2>
+						<label class="flexa-fee-linkdialog__label" for="flexa-fee-link-url"><?php echo esc_html__( 'Web address', 'flexa-block' ); ?></label>
+						<input id="flexa-fee-link-url" class="flexa-fee-linkdialog__input" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://" />
+						<label class="flexa-fee-linkdialog__check">
+							<input id="flexa-fee-link-tab" type="checkbox" />
+							<span><?php echo esc_html__( 'Open in a new tab', 'flexa-block' ); ?></span>
+						</label>
+						<p class="flexa-fee-linkdialog__hint"><?php echo esc_html__( 'Leave the address empty to remove the link.', 'flexa-block' ); ?></p>
+						<p class="flexa-fee-linkdialog__error" role="alert" hidden></p>
+					</div>
+				</div>
+				<div class="flexa-fee-toolbar__prompt-actions">
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-link="cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
+					<button type="submit" class="flexa-fee-btn flexa-fee-btn--save" data-link="apply"><?php echo esc_html__( 'Apply', 'flexa-block' ); ?></button>
+				</div>
+			</form>
+		</div>
+		<?php
+		/*
+		 * The image editor: the picture (changed from the media library) and its alt
+		 * text. A dialog like the link editor's, so it works the same whether or not
+		 * text is being edited.
+		 */
+		?>
+		<div
+			class="flexa-fee-toolbar__prompt flexa-fee-linkdialog flexa-fee-imagedialog"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="flexa-fee-image-title"
+			hidden
+		>
+			<form class="flexa-fee-toolbar__prompt-dialog" novalidate>
+				<div class="flexa-fee-toolbar__prompt-content">
+					<div class="flexa-fee-linkdialog__body">
+						<h2 id="flexa-fee-image-title" class="flexa-fee-toolbar__prompt-title"><?php echo esc_html__( 'Edit image', 'flexa-block' ); ?></h2>
+						<div class="flexa-fee-imagedialog__preview"><img alt="" /></div>
+						<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel flexa-fee-imagedialog__pick" data-image="pick"><?php echo esc_html__( 'Choose another image', 'flexa-block' ); ?></button>
+						<label class="flexa-fee-linkdialog__label" for="flexa-fee-image-alt"><?php echo esc_html__( 'Alt text', 'flexa-block' ); ?></label>
+						<input id="flexa-fee-image-alt" class="flexa-fee-linkdialog__input" type="text" autocomplete="off" />
+						<p class="flexa-fee-linkdialog__hint"><?php echo esc_html__( 'Describes the image for people who cannot see it. Leave it empty for a purely decorative image.', 'flexa-block' ); ?></p>
+						<p class="flexa-fee-linkdialog__error" role="alert" hidden></p>
+					</div>
+				</div>
+				<div class="flexa-fee-toolbar__prompt-actions">
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-image="cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
+					<button type="submit" class="flexa-fee-btn flexa-fee-btn--save" data-image="apply"><?php echo esc_html__( 'Apply', 'flexa-block' ); ?></button>
+				</div>
+			</form>
+		</div>
+		<?php
+		/*
+		 * The icon editor: an icon from the catalog (two tabs, a search), a file
+		 * from the media library, or no icon. The grid is filled the first time it
+		 * opens, from the inline-icons route.
+		 */
+		?>
+		<div
+			class="flexa-fee-toolbar__prompt flexa-fee-linkdialog flexa-fee-icondialog"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="flexa-fee-icon-title"
+			hidden
+		>
+			<form class="flexa-fee-toolbar__prompt-dialog" novalidate>
+				<div class="flexa-fee-toolbar__prompt-content">
+					<div class="flexa-fee-linkdialog__body">
+						<div class="flexa-fee-icondialog__head">
+							<h2 id="flexa-fee-icon-title" class="flexa-fee-toolbar__prompt-title"><?php echo esc_html__( 'Edit icon', 'flexa-block' ); ?></h2>
+							<span class="flexa-fee-icondialog__current" aria-hidden="true"></span>
+						</div>
+						<input class="flexa-fee-linkdialog__input flexa-fee-icondialog__search" type="search" placeholder="<?php echo esc_attr__( 'Search icons…', 'flexa-block' ); ?>" aria-label="<?php echo esc_attr__( 'Search icons', 'flexa-block' ); ?>" />
+						<div class="flexa-fee-icondialog__tabs" role="tablist">
+							<button type="button" role="tab" class="is-active" data-icon-tab="builtin"><?php echo esc_html__( 'Basic', 'flexa-block' ); ?></button>
+							<button type="button" role="tab" data-icon-tab="library"><?php echo esc_html__( 'WordPress', 'flexa-block' ); ?></button>
+						</div>
+						<div class="flexa-fee-icondialog__grid" role="listbox" aria-label="<?php echo esc_attr__( 'Icons', 'flexa-block' ); ?>"></div>
+						<div class="flexa-fee-icondialog__more">
+							<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-icon="upload"><?php echo esc_html__( 'Choose file', 'flexa-block' ); ?></button>
+							<button type="button" class="flexa-fee-btn flexa-fee-btn--discard" data-icon="none"><?php echo esc_html__( 'Remove icon', 'flexa-block' ); ?></button>
+						</div>
+						<p class="flexa-fee-linkdialog__error" role="alert" hidden></p>
+					</div>
+				</div>
+				<div class="flexa-fee-toolbar__prompt-actions">
+					<button type="button" class="flexa-fee-btn flexa-fee-btn--cancel" data-icon="cancel"><?php echo esc_html__( 'Cancel', 'flexa-block' ); ?></button>
+					<button type="submit" class="flexa-fee-btn flexa-fee-btn--save" data-icon="apply"><?php echo esc_html__( 'Apply', 'flexa-block' ); ?></button>
+				</div>
+			</form>
 		</div>
 		<?php
 	}
 
-	/* ---------------------------------------------------------------------
+	/*
+	 * ---------------------------------------------------------------------
 	 * REST
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Register the inline-edit route.
 	 */
 	public static function register_routes(): void {
+		// The icon picker's list, fetched the first time an icon is clicked, so a
+		// page does not carry hundreds of icons for every view.
+		register_rest_route(
+			self::REST_NS,
+			'/inline-icons',
+			[
+				'methods'             => 'GET',
+				'callback'            => [ __CLASS__, 'handle_icons' ],
+				'permission_callback' => static function () {
+					return current_user_can( 'edit_posts' ) && self::user_can_edit_inline();
+				},
+			]
+		);
+
 		register_rest_route(
 			self::REST_NS,
 			'/inline-edit',
@@ -748,6 +2198,45 @@ final class Inline_Editor {
 						'type'              => 'string',
 						'sanitize_callback' => 'sanitize_text_field',
 					],
+					// The template part or synced pattern the block is stored in,
+					// when it is not the viewed post. See target_for().
+					'targetId'  => [
+						'type'              => 'integer',
+						'sanitize_callback' => 'absint',
+					],
+					// Content version the page was rendered from. See
+					// store_version(). Optional so a script cached from before
+					// it existed still saves, without the check.
+					'version'   => [
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_key',
+					],
+					// ID of the log entry this save reverses (the Undo button). Only
+					// a label for the log: the save itself is checked like any other.
+					'undoOf'    => [
+						'type'              => 'string',
+						'sanitize_callback' => 'sanitize_key',
+					],
+					// A link edit: `attr` names the URL attribute and `value` is
+					// JSON {"url": "...", "newTab": true|false}. See with_link().
+					'link'      => [
+						'type'    => 'boolean',
+						'default' => false,
+					],
+					// An image edit: `attr` names the image attribute and `value` is
+					// JSON {"id": attachment ID or null to keep it, "alt": text}.
+					// Only the ID is trusted. See with_image() and Image_Source.
+					'image'     => [
+						'type'    => 'boolean',
+						'default' => false,
+					],
+					// An icon edit: `attr` names the icon attribute and `value` is
+					// JSON {"source", "name", "id"}. The markup is looked up on the
+					// server, never taken from the request. See Icon_Source.
+					'icon'      => [
+						'type'    => 'boolean',
+						'default' => false,
+					],
 					// Sanitized in the handler against the field's own allowlist.
 					'value'     => [
 						'required' => true,
@@ -778,7 +2267,48 @@ final class Inline_Editor {
 		if ( ! self::user_can_edit_inline() ) {
 			return new \WP_Error( 'flexa_role_denied', __( 'Your user role is not allowed to edit on the front end.', 'flexa-block' ), [ 'status' => 403 ] );
 		}
+		$target_id = absint( $request->get_param( 'targetId' ) );
+		if ( $target_id > 0 ) {
+			$target = self::shared_target( $target_id );
+			if ( is_wp_error( $target ) ) {
+				return $target;
+			}
+		}
 		return true;
+	}
+
+	/**
+	 * A shared store an edit may be saved to, if the current user may change it.
+	 *
+	 * Template parts need `edit_theme_options`, the same as editing them in the
+	 * Site Editor, because a change applies to every page that uses the part.
+	 * Synced patterns need the right to edit that pattern.
+	 *
+	 * @param int $target_id Post ID of the template part or synced pattern.
+	 * @return \WP_Post|\WP_Error
+	 */
+	private static function shared_target( int $target_id ) {
+		$target = get_post( $target_id );
+
+		if ( ! $target instanceof \WP_Post || ! in_array( $target->post_type, [ 'wp_template_part', 'wp_block' ], true ) ) {
+			return new \WP_Error( 'flexa_bad_target', __( 'This part of the page could not be found. Reload the page and try again.', 'flexa-block' ), [ 'status' => 404 ] );
+		}
+
+		$allowed = 'wp_template_part' === $target->post_type
+			? current_user_can( 'edit_theme_options' )
+			: current_user_can( 'edit_post', $target_id );
+
+		if ( ! $allowed ) {
+			return new \WP_Error(
+				'flexa_forbidden',
+				'wp_template_part' === $target->post_type
+					? __( 'This text is part of the site template, and your account cannot edit templates.', 'flexa-block' )
+					: __( 'This text is part of a synced pattern you do not have permission to edit.', 'flexa-block' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		return $target;
 	}
 
 	/**
@@ -810,10 +2340,46 @@ final class Inline_Editor {
 			);
 		}
 
-		$has_index = ( null !== $index_raw );
-		$field     = self::find_field( $name, $attr, $key, $has_index );
-		if ( null === $field ) {
-			return new \WP_Error( 'flexa_invalid_field', __( 'This text cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+		$is_link  = (bool) rest_sanitize_boolean( $request->get_param( 'link' ) );
+		$is_image = (bool) rest_sanitize_boolean( $request->get_param( 'image' ) );
+		$is_icon  = (bool) rest_sanitize_boolean( $request->get_param( 'icon' ) );
+		$image    = null;
+		$icon     = null;
+		if ( (int) $is_link + (int) $is_image + (int) $is_icon > 1 ) {
+			return new \WP_Error( 'flexa_invalid_field', __( 'That edit could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+		}
+		if ( $is_icon ) {
+			// An icon goes through Icon_Source: only a catalog name or a library ID.
+			$icon  = self::find_icon( $name, $attr, $key, null !== $index_raw );
+			$link  = null;
+			$field = [];
+			if ( null === $icon ) {
+				return new \WP_Error( 'flexa_invalid_field', __( 'This icon cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+		} elseif ( $is_image ) {
+			// An image goes through Image_Source, never through kses or the browser's
+			// idea of its address: only an attachment ID is accepted.
+			$image = self::find_image( $name, $attr, $key, null !== $index_raw );
+			$link  = null;
+			$field = [];
+			if ( null === $image ) {
+				return new \WP_Error( 'flexa_invalid_field', __( 'This image cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+		} elseif ( $is_link ) {
+			// A link is not a text field and never goes through kses: its value is
+			// checked by Link_Url and only ever lands in the URL attribute.
+			$link  = self::find_link( $name, $attr, $key, null !== $index_raw );
+			$field = [];
+			if ( null === $link ) {
+				return new \WP_Error( 'flexa_invalid_field', __( 'This link cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+		} else {
+			$link      = null;
+			$has_index = ( null !== $index_raw );
+			$field     = self::find_field( $name, $attr, $key, $has_index );
+			if ( null === $field ) {
+				return new \WP_Error( 'flexa_invalid_field', __( 'This text cannot be edited from the front end.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
 		}
 
 		$post = get_post( $post_id );
@@ -821,91 +2387,841 @@ final class Inline_Editor {
 			return new \WP_Error( 'flexa_not_found', __( 'The post could not be found. Try reloading the page.', 'flexa-block' ), [ 'status' => 404 ] );
 		}
 
-		$blocks = parse_blocks( $post->post_content );
-		$flat   = [];
-		self::flatten( $blocks, $flat );
-
-		$ref = null;
-		foreach ( $flat as &$candidate ) {
-			if ( ( $candidate['blockName'] ?? '' ) === $name
-				&& (string) ( $candidate['attrs']['blockId'] ?? '' ) === $block_id ) {
-				$ref = &$candidate;
-				break;
+		// Where the block is stored: the viewed post, or a template part or
+		// synced pattern shown on it. Permission for a shared store was already
+		// checked in rest_permission(); asked again here because this is the
+		// object that gets written.
+		$store     = $post;
+		$target_id = absint( $request->get_param( 'targetId' ) );
+		if ( $target_id > 0 ) {
+			$store = self::shared_target( $target_id );
+			if ( is_wp_error( $store ) ) {
+				return $store;
 			}
 		}
-		unset( $candidate );
 
-		if ( null === $ref ) {
+		// Review: an edit to a published page goes to its working copy. An open
+		// copy is the store from the start; without one the edit is checked
+		// against the page (whose content the copy will start from) and the copy
+		// is made only once there is a real change to write into it.
+		$make_copy = false;
+		if ( 0 === $target_id && self::review_enabled() && 'publish' === $post->post_status && self::load_working_copy() ) {
+			$copy_id = \Flexa\Block\MCP\Working_Copy::find( (int) $post->ID );
+			$copy    = $copy_id > 0 ? get_post( $copy_id ) : null;
+			if ( $copy instanceof \WP_Post ) {
+				if ( ! current_user_can( 'edit_post', $copy->ID ) ) {
+					return new \WP_Error( 'flexa_review_forbidden', __( 'Changes to this page are waiting for review in a copy you cannot edit.', 'flexa-block' ), [ 'status' => 403 ] );
+				}
+				$store = $copy;
+			} else {
+				$make_copy = true;
+			}
+		}
+
+		// Someone has this post open in the block editor. Their next save would
+		// overwrite this edit (the editor holds its own copy of the content), so
+		// say so now instead. The editor's lock is the signal WordPress itself
+		// uses for "someone else is editing"; a lock held by this same user is
+		// not reported by wp_check_post_lock().
+		if ( ! function_exists( 'wp_check_post_lock' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/post.php';
+		}
+		// Someone editing the page itself in the block editor does not collide with
+		// an edit that goes to a new review copy.
+		$holder = $make_copy ? false : wp_check_post_lock( (int) $store->ID );
+		if ( $holder ) {
+			$user = get_userdata( (int) $holder );
+
+			// How long the lock outlives a closed editor, as a range a person can
+			// act on. WordPress keeps the lock for this window after the last
+			// heartbeat (150 seconds by default, so "2–3 minutes"); while the
+			// editor stays open the heartbeat keeps renewing it, which is why
+			// this is phrased as "once they close it" and not as a countdown.
+			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core's own filter, read so the wait matches core's lock.
+			$window = max( 60, (int) apply_filters( 'wp_check_post_lock_window', 150 ) );
+			$low    = (int) floor( $window / MINUTE_IN_SECONDS );
+			$high   = (int) ceil( $window / MINUTE_IN_SECONDS );
+			$wait   = $low === $high
+				? sprintf(
+					/* translators: %s: number of minutes */
+					_n( 'about %s minute', 'about %s minutes', $low, 'flexa-block' ),
+					number_format_i18n( $low )
+				)
+				: sprintf(
+					/* translators: 1: lower number of minutes, 2: upper number of minutes */
+					__( 'about %1$s–%2$s minutes', 'flexa-block' ),
+					number_format_i18n( $low ),
+					number_format_i18n( $high )
+				);
+
+			return new \WP_Error(
+				'flexa_inline_locked',
+				sprintf(
+					/* translators: 1: display name of the person editing, 2: how long to wait, for example "about 2–3 minutes" */
+					__( '%1$s is editing this in the block editor right now, and their next save would overwrite yours. Once they close the editor, you can save again in %2$s. Your text stays here until then.', 'flexa-block' ),
+					$user ? $user->display_name : __( 'Someone', 'flexa-block' ),
+					$wait
+				),
+				[ 'status' => 409 ]
+			);
+		}
+
+		// The content changed after this page was rendered: saved in the editor,
+		// in another tab, or by another person. Writing now would be based on a
+		// page the person is no longer looking at.
+		$version = (string) $request->get_param( 'version' );
+		if ( '' !== $version && ! hash_equals( md5( (string) $store->post_content ), $version ) ) {
+			return new \WP_Error(
+				'flexa_inline_stale',
+				__( 'This content has changed since the page was loaded, so your edit was not saved. Copy your text if you need it, reload the page, and edit again.', 'flexa-block' ),
+				[ 'status' => 409 ]
+			);
+		}
+
+		// Find the one block delimiter this edit is about and rewrite only that.
+		// Parsing the whole post and serializing it back would also re-encode
+		// every other block, and PHP arrays cannot tell `{}` from `[]`, so a
+		// one-word edit could change empty objects anywhere on the page. See
+		// Block_Patcher.
+		$content = (string) $store->post_content;
+		$token   = Block_Patcher::locate( $content, $block_id );
+
+		if ( is_wp_error( $token ) && 'flexa_block_duplicate_block' === $token->get_error_code() ) {
+			return new \WP_Error( 'flexa_block_duplicate', __( 'Two blocks on this page share the same id, so this edit could not be matched to one of them. Open the page in the block editor and save it once, then try again.', 'flexa-block' ), [ 'status' => 409 ] );
+		}
+		if ( is_wp_error( $token ) || $token['name'] !== $name ) {
 			return new \WP_Error( 'flexa_block_not_found', __( 'This block is no longer in the post — it may have been moved or removed in the editor. Reload the page and try again.', 'flexa-block' ), [ 'status' => 404 ] );
 		}
 
-		$clean = wp_kses( $value, self::allowed_html( (string) $field['allowed'] ) );
+		// Decoded as objects, so `{}` and `[]` inside the attribute keep their
+		// shape. An attribute still equal to its block.json default is absent
+		// from the markup (Gutenberg only serializes changed attributes), so an
+		// edit to it starts from the registered default.
+		$attrs = json_decode( (string) wp_json_encode( $token['attrs'] ) );
+		$attrs = $attrs instanceof \stdClass ? $attrs : new \stdClass();
 
-		if ( ! empty( $field['cell'] ) ) {
-			// 2-axis matrix cell: attr[row]['values'][col] (comparison table).
-			$row_i = absint( $index_raw );
-			$col_i = absint( $sub_raw );
-			if ( ! isset( $ref['attrs'][ $attr ] ) || ! is_array( $ref['attrs'][ $attr ] ) ) {
-				$ref['attrs'][ $attr ] = self::default_attr_array( $name, $attr );
+		// What the log shows, and (for a link) the exact state Undo has to send back.
+		$after_json = null;
+		$undoable   = true;
+
+		if ( $is_icon ) {
+			$changed = self::with_icon( $attrs, $name, (array) $icon, null === $index_raw ? null : absint( $index_raw ), $value );
+			if ( is_wp_error( $changed ) ) {
+				return $changed;
 			}
-			if ( ! isset( $ref['attrs'][ $attr ][ $row_i ] ) || ! is_array( $ref['attrs'][ $attr ][ $row_i ] ) ) {
-				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+			$old        = $changed['old'];
+			$clean      = $changed['summary'];
+			$log_before = $changed['old_summary'];
+			$after_json = $changed['after'];
+			$undoable   = $changed['undoable'];
+		} elseif ( $is_image ) {
+			$changed = self::with_image( $attrs, $name, (array) $image, null === $index_raw ? null : absint( $index_raw ), $value );
+			if ( is_wp_error( $changed ) ) {
+				return $changed;
 			}
-			if ( ! isset( $ref['attrs'][ $attr ][ $row_i ]['values'] ) || ! is_array( $ref['attrs'][ $attr ][ $row_i ]['values'] ) ) {
-				$ref['attrs'][ $attr ][ $row_i ]['values'] = [];
+			$old        = $changed['old'];
+			$clean      = $changed['summary'];
+			$log_before = $changed['old_summary'];
+			$after_json = $changed['after'];
+			$undoable   = $changed['undoable'];
+		} elseif ( $is_link ) {
+			$changed = self::with_link( $attrs, $name, (array) $link, $value, null === $index_raw ? null : absint( $index_raw ) );
+			if ( is_wp_error( $changed ) ) {
+				return $changed;
 			}
-			$old                                             = (string) ( $ref['attrs'][ $attr ][ $row_i ]['values'][ $col_i ] ?? '' );
-			$ref['attrs'][ $attr ][ $row_i ]['values'][ $col_i ] = $clean;
-		} elseif ( ! empty( $field['repeat'] ) ) {
-			$i        = absint( $index_raw );
-			$item_key = (string) $field['key'];
-			// The array attribute is omitted from the block markup while it still
-			// equals the block.json default (Gutenberg only serializes changed
-			// attributes), so seed it from the registered default before indexing.
-			if ( ! isset( $ref['attrs'][ $attr ] ) || ! is_array( $ref['attrs'][ $attr ] ) ) {
-				$ref['attrs'][ $attr ] = self::default_attr_array( $name, $attr );
-			}
-			if ( ! isset( $ref['attrs'][ $attr ][ $i ] ) || ! is_array( $ref['attrs'][ $attr ][ $i ] ) ) {
-				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
-			}
-			$old                                      = (string) ( $ref['attrs'][ $attr ][ $i ][ $item_key ] ?? '' );
-			$ref['attrs'][ $attr ][ $i ][ $item_key ] = $clean;
-		} elseif ( ! empty( $field['object'] ) ) {
-			$obj_key = (string) $field['key'];
-			if ( ! isset( $ref['attrs'][ $attr ] ) || ! is_array( $ref['attrs'][ $attr ] ) ) {
-				$ref['attrs'][ $attr ] = self::default_attr_array( $name, $attr );
-			}
-			$old                               = (string) ( $ref['attrs'][ $attr ][ $obj_key ] ?? '' );
-			$ref['attrs'][ $attr ][ $obj_key ] = $clean;
+			$old        = $changed['old'];
+			$clean      = $changed['summary'];
+			$log_before = $changed['old_summary'];
+			$after_json = $changed['after'];
 		} else {
-			$old                   = (string) ( $ref['attrs'][ $attr ] ?? '' );
-			$ref['attrs'][ $attr ] = $clean;
+			$clean   = wp_kses( $value, self::allowed_html( (string) $field['allowed'] ) );
+			$current = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+
+			$changed = self::with_field(
+				$current,
+				$field,
+				null === $index_raw ? null : absint( $index_raw ),
+				null === $sub_raw ? null : absint( $sub_raw ),
+				$clean
+			);
+			if ( is_wp_error( $changed ) ) {
+				return $changed;
+			}
+
+			$old            = $changed['old'];
+			$log_before     = $old;
+			$attrs->{$attr} = $changed['value'];
 		}
 
-		$updated = serialize_blocks( $blocks );
+		$updated = Block_Patcher::replace( $content, $token, $attrs );
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+		if ( $updated === $content ) {
+			return rest_ensure_response(
+				[
+					'success' => true,
+					'version' => md5( $content ),
+				]
+			);
+		}
 
+		// KSES is held off for this one write. The only new data in $updated is
+		// $clean, which already went through this field's own allowlist above,
+		// and it sits inside one block's JSON encoded the way core encodes it.
+		// Everything else is the post's stored content, unchanged. Left on, the
+		// post KSES filter (for a user without unfiltered_html) runs
+		// filter_block_content(), which parses and re-serializes the whole post:
+		// exactly the round trip Block_Patcher exists to avoid, applied to every
+		// other block on the page. Core's custom-CSS stripping filter stays on;
+		// it is surgical and only touches blocks that carry `style.css`.
+		//
 		// wp_slash: wp_update_post runs wp_unslash on the content, so pre-slash it
 		// to keep backslashes/quotes in the serialized block markup intact.
-		$result = wp_update_post(
-			[
-				'ID'           => $post_id,
-				'post_content' => wp_slash( $updated ),
-			],
-			true
-		);
+		$review = null;
+		if ( $make_copy ) {
+			$copy_id = \Flexa\Block\MCP\Working_Copy::create( $post );
+			if ( is_wp_error( $copy_id ) ) {
+				return $copy_id;
+			}
+			update_post_meta( (int) $copy_id, self::REVIEW_META, 1 );
+			$copy = get_post( (int) $copy_id );
+			if ( ! $copy instanceof \WP_Post ) {
+				return new \WP_Error( 'flexa_review_failed', __( 'The copy for review could not be made.', 'flexa-block' ), [ 'status' => 500 ] );
+			}
+			// The copy starts as the page's content byte for byte, which is what
+			// $updated was computed from.
+			$store = $copy;
+		}
+		if ( 0 === $target_id && self::review_enabled() && (int) $store->ID !== (int) $post->ID ) {
+			$review = [
+				'copyId'   => (int) $store->ID,
+				'editLink' => (string) get_edit_post_link( (int) $store->ID, 'raw' ),
+				'created'  => $make_copy,
+			];
+		}
+
+		kses_remove_filters();
+		try {
+			$result = Inline_Revision_Session::update_post(
+				$store,
+				[
+					'ID'           => (int) $store->ID,
+					'post_content' => wp_slash( $updated ),
+				]
+			);
+		} finally {
+			// kses_init(), not kses_init_filters(): put back exactly what this user
+			// had, which for one with unfiltered_html is no filters at all. A finally
+			// also restores it if a save hook throws.
+			kses_init();
+		}
 
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
 
-		self::log_edit( $post_id, $name, $old, $clean );
+		// A template part or synced pattern shows on pages no cache plugin can
+		// name, so its change empties the page cache (a page's own save is left
+		// to the cache plugin, which clears that page itself).
+		if ( $target_id > 0 ) {
+			Inline_Cache::purge_all( $store );
+		}
 
-		return rest_ensure_response( [ 'success' => true ] );
+		// Logged on the post that stores the text (a pattern's history shows who
+		// edited it from any page). The old note comment is opt-in below.
+		$user     = wp_get_current_user();
+		$entry_id = wp_generate_uuid4();
+		$undo_of  = (string) $request->get_param( 'undoOf' );
+		$is_undo  = Inline_Edit_Log::has_entry( (int) $store->ID, $undo_of );
+		Inline_Edit_Log::record(
+			(int) $store->ID,
+			[
+				'entry_id'    => $entry_id,
+				'action'      => $is_undo ? 'undo' : 'edit',
+				'undo_of'     => $is_undo ? $undo_of : '',
+				'time_gmt'    => gmdate( 'Y-m-d H:i:s' ),
+				'user_id'     => (int) $user->ID,
+				'user_name'   => (string) $user->display_name,
+				'user_role'   => (string) ( $user->roles ? reset( $user->roles ) : '' ),
+				'block_name'  => $name,
+				'block_id'    => $block_id,
+				'attr'        => $attr,
+				'index'       => null === $index_raw ? null : absint( $index_raw ),
+				'subindex'    => null === $sub_raw ? null : absint( $sub_raw ),
+				'key'         => $key,
+				'store_id'    => (int) $store->ID,
+				'store_type'  => (string) $store->post_type,
+				'post_id'     => $post_id,
+				'kind'        => $is_icon ? 'icon' : ( $is_image ? 'image' : ( $is_link ? 'link' : 'text' ) ),
+				'before'      => $log_before,
+				'after'       => $clean,
+				'revision_id' => Inline_Revision_Session::baseline_id( (int) $store->ID ),
+			]
+		);
+
+		/**
+		 * Filters whether each front-end edit also leaves a "note" comment.
+		 *
+		 * Off by default: the edit history in the block editor replaces it, and
+		 * comments inflate the count shown in the admin bar.
+		 *
+		 * @param bool $enabled Default false.
+		 */
+		if ( apply_filters( 'flexa_block_inline_edit_log_as_comment', false ) ) {
+			self::log_edit( $post_id, $name, $log_before, $clean );
+		}
+
+		// The new version, read back from what was stored rather than hashed from
+		// what was sent: save filters may have changed it, and the next edit on
+		// this page is checked against the database, not against this request.
+		clean_post_cache( (int) $store->ID );
+		$saved = get_post( (int) $store->ID );
+
+		// `before` and `logId` are what the Undo button needs: the value to put
+		// back, and the entry it will say it reverses.
+		$response = [
+			'success' => true,
+			'version' => $saved instanceof \WP_Post ? md5( (string) $saved->post_content ) : '',
+			'before'  => (string) $old,
+			'logId'   => $entry_id,
+		];
+		if ( null !== $review ) {
+			$response['review'] = $review;
+		}
+
+		// For a link or an image, the state as stored (cleaned or read from the
+		// library), so the page shows what was saved and not what was asked for.
+		if ( null !== $after_json ) {
+			$response['after'] = $after_json;
+		}
+		// An image that was not from the library cannot be put back from an ID.
+		if ( ! $undoable ) {
+			$response['undo'] = false;
+		}
+
+		return rest_ensure_response( $response );
 	}
 
-	/* ---------------------------------------------------------------------
+	/**
+	 * The declaration of an editable icon, by attribute (and item key).
+	 *
+	 * @param string      $name      Block name.
+	 * @param string      $attr      Icon attribute (the list attribute for one in a list item).
+	 * @param string|null $key       Item key, for an icon in a list item.
+	 * @param bool        $has_index Whether the request names a list item.
+	 * @return array<string, mixed>|null
+	 */
+	private static function find_icon( string $name, string $attr, ?string $key, bool $has_index ): ?array {
+		$key = ( null === $key || '' === $key ) ? null : $key;
+
+		foreach ( self::icons_for( $name ) as $icon ) {
+			if ( (string) $icon['attr'] !== $attr ) {
+				continue;
+			}
+			if ( ! empty( $icon['repeat'] ) ) {
+				if ( $has_index && (string) $icon['key'] === $key ) {
+					return $icon;
+				}
+			} elseif ( ! $has_index && null === $key ) {
+				return $icon;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Apply an icon edit to a block's attributes.
+	 *
+	 * Writes source, name, markup, url and id from Icon_Source; every other key of
+	 * the icon object (its position before or after the text, say) is kept.
+	 *
+	 * @param \stdClass           $attrs Block attributes, changed in place.
+	 * @param string              $name  Block name.
+	 * @param array<string,mixed> $icon  Declaration from find_icon().
+	 * @param int|null            $index List item index, for an icon in a list item.
+	 * @param string              $value JSON: {"source", "name", "id"}.
+	 * @return array{old:string,after:string,old_summary:string,summary:string,undoable:bool}|\WP_Error
+	 */
+	private static function with_icon( \stdClass $attrs, string $name, array $icon, ?int $index, string $value ) {
+		$parsed = json_decode( $value, true );
+		if ( ! is_array( $parsed ) ) {
+			return new \WP_Error( 'flexa_icon_invalid', __( 'That icon could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+		}
+
+		$info = Icon_Source::describe(
+			is_string( $parsed['source'] ?? null ) ? $parsed['source'] : '',
+			is_string( $parsed['name'] ?? null ) ? $parsed['name'] : '',
+			isset( $parsed['id'] ) && is_numeric( $parsed['id'] ) ? (int) $parsed['id'] : 0
+		);
+		if ( is_wp_error( $info ) ) {
+			return $info;
+		}
+
+		$attr = (string) $icon['attr'];
+		$list = null;
+		$item = null;
+
+		if ( ! empty( $icon['repeat'] ) ) {
+			$list = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			if ( null === $index || ! is_array( $list ) || ! isset( $list[ $index ] ) || ! $list[ $index ] instanceof \stdClass ) {
+				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+			$item    = clone $list[ $index ];
+			$ikey    = (string) $icon['key'];
+			$current = isset( $item->{$ikey} ) && $item->{$ikey} instanceof \stdClass ? clone $item->{$ikey} : new \stdClass();
+		} else {
+			$stored  = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			$current = $stored instanceof \stdClass ? clone $stored : new \stdClass();
+		}
+
+		$str     = static function ( $v ): string {
+			return is_string( $v ) ? $v : '';
+		};
+		$before  = [
+			'source' => '' !== $str( $current->source ?? '' ) ? $str( $current->source ) : 'none',
+			'name'   => $str( $current->name ?? '' ),
+			'id'     => isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : null,
+		];
+		$old_url = $str( $current->url ?? '' );
+
+		$current->source = $info['source'];
+		$current->name   = $info['name'];
+		$current->markup = $info['markup'];
+		$current->url    = $info['url'];
+		$current->id     = $info['id'];
+
+		if ( null !== $list && null !== $item ) {
+			$item->{ (string) $icon['key']} = $current;
+			$list[ $index ]                 = $item;
+			$attrs->{$attr}                 = $list;
+		} else {
+			$attrs->{$attr} = $current;
+		}
+
+		return [
+			'old'         => (string) wp_json_encode( $before ),
+			'after'       => (string) wp_json_encode(
+				[
+					'source' => $info['source'],
+					'markup' => '' !== $info['markup'] ? HTML_Helpers::svg_kses( $info['markup'] ) : '',
+					'url'    => $info['url'],
+				]
+			),
+			'old_summary' => self::icon_summary( $before['source'], $before['name'], $old_url ),
+			'summary'     => self::icon_summary( $info['source'], $info['name'], $info['url'] ),
+			'undoable'    => Icon_Source::can_restore( $before['source'], $before['name'], (int) $before['id'] ),
+		];
+	}
+
+	/**
+	 * An icon as one line of text, for the edit log.
+	 *
+	 * @param string $source Icon source.
+	 * @param string $name   Icon name.
+	 * @param string $url    Upload address.
+	 */
+	private static function icon_summary( string $source, string $name, string $url ): string {
+		if ( 'none' === $source || '' === $source ) {
+			return '(no icon)';
+		}
+		if ( 'upload' === $source ) {
+			$path = (string) wp_parse_url( $url, PHP_URL_PATH );
+			return 'upload: ' . ( '' !== $path ? basename( $path ) : '?' );
+		}
+		return $source . ': ' . $name;
+	}
+
+	/**
+	 * The icon picker's catalog: what the picker shows, and the only icons a save accepts.
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public static function handle_icons() {
+		$out = [];
+		foreach ( Icon_Source::catalog() as $source => $icons ) {
+			$list = [];
+			foreach ( $icons as $icon_name => $markup ) {
+				$list[] = [
+					'name'   => (string) $icon_name,
+					'markup' => HTML_Helpers::svg_kses( (string) $markup ),
+				];
+			}
+			$out[ $source ] = $list;
+		}
+
+		$response = rest_ensure_response( $out );
+		$response->header( 'Cache-Control', 'private, max-age=3600' );
+		return $response;
+	}
+
+	/**
+	 * The declaration of an editable image, by attribute (and item key).
+	 *
+	 * @param string      $name      Block name.
+	 * @param string      $attr      Image attribute (the list attribute for an image in a list item).
+	 * @param string|null $key       Item key for an image in a list item.
+	 * @param bool        $has_index Whether the request names a list item.
+	 * @return array<string, mixed>|null
+	 */
+	private static function find_image( string $name, string $attr, ?string $key, bool $has_index ): ?array {
+		$key = ( null === $key || '' === $key ) ? null : $key;
+
+		foreach ( self::images_for( $name ) as $image ) {
+			if ( (string) $image['attr'] !== $attr ) {
+				continue;
+			}
+			if ( ! empty( $image['repeat'] ) ) {
+				// With a key the picture is items[i][key]; without one it is items[i].
+				$ikey = isset( $image['key'] ) && '' !== $image['key'] ? (string) $image['key'] : null;
+				if ( $has_index && $ikey === $key ) {
+					return $image;
+				}
+			} elseif ( ! $has_index && null === $key ) {
+				return $image;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Apply an image edit to a block's attributes.
+	 *
+	 * Changes the picture, its alt text, or both in one pass. A new picture is
+	 * described by Image_Source from its attachment ID alone: the same address,
+	 * size and alt text the block editor stores when it is picked there. Keys the
+	 * image object already has and this code does not know about are kept.
+	 *
+	 * @param \stdClass           $attrs Block attributes, changed in place.
+	 * @param string              $name  Block name.
+	 * @param array<string,mixed> $image Declaration from find_image().
+	 * @param int|null            $index List item index, for an image in a list item.
+	 * @param string              $value JSON: {"id": int|null, "alt": string}.
+	 * @return array{old:string,after:string,old_summary:string,summary:string,undoable:bool}|\WP_Error
+	 */
+	private static function with_image( \stdClass $attrs, string $name, array $image, ?int $index, string $value ) {
+		$parsed = json_decode( $value, true );
+		if ( ! is_array( $parsed ) ) {
+			return new \WP_Error( 'flexa_invalid_image', __( 'The image could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+		}
+
+		$new_id    = isset( $parsed['id'] ) && is_numeric( $parsed['id'] ) ? (int) $parsed['id'] : 0;
+		$alt_given = isset( $parsed['alt'] ) && is_string( $parsed['alt'] );
+		$alt       = $alt_given ? Image_Source::clean_alt( $parsed['alt'] ) : '';
+
+		$attr = (string) $image['attr'];
+		$list = null;
+		$item = null;
+
+		$bg   = null;
+		$ikey = isset( $image['key'] ) && '' !== $image['key'] ? (string) $image['key'] : '';
+
+		if ( ! empty( $image['repeat'] ) ) {
+			$list = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			if ( null === $index || ! is_array( $list ) || ! isset( $list[ $index ] ) || ! $list[ $index ] instanceof \stdClass ) {
+				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+			$item = clone $list[ $index ];
+			if ( '' === $ikey ) {
+				// The list item is the picture itself (a gallery).
+				$current = clone $item;
+			} else {
+				$current = isset( $item->{$ikey} ) && $item->{$ikey} instanceof \stdClass ? clone $item->{$ikey} : new \stdClass();
+			}
+		} elseif ( ! empty( $image['background'] ) ) {
+			// A CSS background: only a picture that is already an image background is
+			// replaced. Turning a colour or gradient into a picture is a design
+			// change for the block editor, not a front-end swap.
+			$stored = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			$bg     = $stored instanceof \stdClass ? clone $stored : new \stdClass();
+			if ( 'image' !== ( $bg->type ?? '' ) ) {
+				return new \WP_Error( 'flexa_invalid_image', __( 'This block has no background image to replace. Set one in the block editor first.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+			$current   = isset( $bg->image ) && $bg->image instanceof \stdClass ? clone $bg->image : new \stdClass();
+			$alt_given = false;
+		} else {
+			$stored  = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			$current = $stored instanceof \stdClass ? clone $stored : new \stdClass();
+		}
+
+		$alt_attr = isset( $image['alt'] ) ? (string) $image['alt'] : '';
+		$read_str = static function ( $v ): string {
+			return is_string( $v ) ? $v : '';
+		};
+
+		$old_id   = isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : null;
+		$old_url  = $read_str( $current->url ?? '' );
+		$old_alt  = $read_str( $current->alt ?? '' );
+		$override = '';
+		if ( '' !== $alt_attr ) {
+			$override = $read_str( property_exists( $attrs, $alt_attr ) ? $attrs->{$alt_attr} : self::default_attr( $name, $alt_attr ) );
+			$old_alt  = '' !== $override ? $override : $old_alt;
+		}
+
+		$changed_image = false;
+		if ( $new_id > 0 && $new_id !== $old_id ) {
+			$info = Image_Source::describe( $new_id );
+			if ( is_wp_error( $info ) ) {
+				return $info;
+			}
+			$current->id  = $info['id'];
+			$current->url = $info['url'];
+			$current->alt = $info['alt'];
+			if ( 'full' === ( $image['shape'] ?? 'basic' ) ) {
+				$current->width  = $info['width'];
+				$current->height = $info['height'];
+			}
+			// A stored caption belonged to the old picture; the block reads the new
+			// one's own caption from the library.
+			if ( ! empty( $image['caption'] ) && property_exists( $current, 'caption' ) ) {
+				$current->caption = '';
+			}
+			if ( null !== $bg ) {
+				unset( $current->alt );
+			}
+			$changed_image = true;
+		}
+
+		if ( $alt_given ) {
+			$current->alt = $alt;
+			// A separate alt attribute wins over the image's own, so it is only kept
+			// in step when the block already uses it. Writing it where there was none
+			// would leave it overriding the alt of whatever image is picked next.
+			if ( '' !== $override ) {
+				self::put_link_attr( $attrs, $name, $alt_attr, $alt );
+			}
+		}
+
+		if ( null !== $list && null !== $item ) {
+			if ( '' === $ikey ) {
+				$list[ $index ] = $current;
+			} else {
+				$item->{$ikey}  = $current;
+				$list[ $index ] = $item;
+			}
+			$attrs->{$attr} = $list;
+		} elseif ( null !== $bg ) {
+			$bg->image      = $current;
+			$attrs->{$attr} = $bg;
+		} else {
+			$attrs->{$attr} = $current;
+		}
+
+		$new_url = $read_str( $current->url ?? '' );
+		$new_alt = $alt_given ? $alt : $old_alt;
+		if ( $changed_image && ! $alt_given ) {
+			$new_alt = $read_str( $current->alt ?? '' );
+		}
+
+		// What the page should show now. The Image block renders at a size of its
+		// own, so ask WordPress for that size; other blocks use the stored address.
+		$src    = $new_url;
+		$width  = isset( $current->width ) && is_numeric( $current->width ) ? (int) $current->width : null;
+		$height = isset( $current->height ) && is_numeric( $current->height ) ? (int) $current->height : null;
+		$cur_id = isset( $current->id ) && is_numeric( $current->id ) ? (int) $current->id : 0;
+		if ( $cur_id > 0 && ! empty( $image['size'] ) ) {
+			$size_attr = (string) $image['size'];
+			$size      = $read_str( property_exists( $attrs, $size_attr ) ? $attrs->{$size_attr} : self::default_attr( $name, $size_attr ) );
+			$sized     = wp_get_attachment_image_src( $cur_id, '' !== $size ? $size : 'large' );
+			if ( is_array( $sized ) && ! empty( $sized[0] ) ) {
+				$src    = (string) $sized[0];
+				$width  = (int) $sized[1];
+				$height = (int) $sized[2];
+			}
+		}
+
+		return [
+			'old'         => (string) wp_json_encode(
+				[
+					'id'  => $old_id,
+					'alt' => $old_alt,
+				]
+			),
+			'after'       => (string) wp_json_encode(
+				[
+					'id'     => $cur_id > 0 ? $cur_id : null,
+					'src'    => $src,
+					'alt'    => $new_alt,
+					'width'  => $width,
+					'height' => $height,
+				]
+			),
+			'old_summary' => self::image_summary( $old_id, $old_url, $old_alt ),
+			'summary'     => self::image_summary( $cur_id > 0 ? $cur_id : null, $new_url, $new_alt ),
+			// An image with no library ID cannot be put back from one.
+			'undoable'    => ! $changed_image || null !== $old_id,
+		];
+	}
+
+	/**
+	 * An image as one line of text, for the edit log.
+	 *
+	 * @param int|null $id  Attachment ID, if any.
+	 * @param string   $url Image address.
+	 * @param string   $alt Alt text.
+	 */
+	private static function image_summary( ?int $id, string $url, string $alt ): string {
+		$path = (string) wp_parse_url( $url, PHP_URL_PATH );
+		$file = '' !== $path ? basename( $path ) : '';
+		$text = '' !== $file ? $file : '(no image)';
+		if ( null !== $id ) {
+			$text .= ' (#' . $id . ')';
+		}
+		if ( '' !== $alt ) {
+			$text .= ' · alt: ' . $alt;
+		}
+		return $text;
+	}
+
+	/**
+	 * The link descriptor of a text field, by the name of its URL attribute.
+	 *
+	 * @param string      $name      Block name.
+	 * @param string      $attr      URL attribute name (the list attribute for a link in a list item).
+	 * @param string|null $key       Item key, for a link inside a list item.
+	 * @param bool        $has_index Whether the request names a list item.
+	 * @return array<string, mixed>|null
+	 */
+	private static function find_link( string $name, string $attr, ?string $key = null, bool $has_index = false ): ?array {
+		$key = ( null === $key || '' === $key ) ? null : $key;
+		foreach ( self::fields_for( $name ) as $field ) {
+			if ( ! isset( $field['link']['attr'] ) || (string) $field['link']['attr'] !== $attr ) {
+				continue;
+			}
+			$item = (string) ( $field['link']['item'] ?? '' );
+			// A link inside a list item (items[i][item]) needs the item; a block
+			// attribute must come without one.
+			if ( '' !== $item ? ( $has_index && $item === $key ) : ( ! $has_index && null === $key ) ) {
+				return (array) $field['link'];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Apply a link edit to a block's attributes.
+	 *
+	 * Writes the URL attribute and, when the block has one, the target attribute
+	 * in the same pass, so changing the address and "open in a new tab" is a single
+	 * save, a single log entry and a single Undo. An attribute that ends up equal
+	 * to its block.json default is removed rather than stored, as Gutenberg does.
+	 *
+	 * @param \stdClass           $attrs Block attributes, changed in place.
+	 * @param string              $name  Block name.
+	 * @param array<string,mixed> $link  Descriptor from find_link().
+	 * @param string              $value JSON: {"url": "...", "newTab": bool}.
+	 * @param int|null            $index List item index, for a link inside a list item.
+	 * @return array{old:string,after:string,old_summary:string,summary:string}|\WP_Error
+	 */
+	private static function with_link( \stdClass $attrs, string $name, array $link, string $value, ?int $index = null ) {
+		$parsed = json_decode( $value, true );
+		if ( ! is_array( $parsed ) ) {
+			return new \WP_Error( 'flexa_invalid_link', __( 'The link could not be read. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+		}
+
+		$url = Link_Url::clean( is_string( $parsed['url'] ?? null ) ? $parsed['url'] : '' );
+		if ( is_wp_error( $url ) ) {
+			return $url;
+		}
+
+		$url_attr    = (string) $link['attr'];
+		$target_attr = (string) ( $link['target'] ?? '' );
+		$new_tab     = ! empty( $parsed['newTab'] ) && '' !== $target_attr;
+
+		// A link inside a list item: items[index][item] = { url, target, rel… }.
+		// Only url and target change; the rest of the object (rel) is kept.
+		$item_key = (string) ( $link['item'] ?? '' );
+		if ( '' !== $item_key ) {
+			$list = property_exists( $attrs, $url_attr ) ? $attrs->{$url_attr} : self::default_attr( $name, $url_attr );
+			if ( null === $index || ! is_array( $list ) || ! isset( $list[ $index ] ) || ! $list[ $index ] instanceof \stdClass ) {
+				return new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+			}
+			$row = clone $list[ $index ];
+			$obj = isset( $row->{$item_key} ) && $row->{$item_key} instanceof \stdClass ? clone $row->{$item_key} : new \stdClass();
+
+			$before = [
+				'url'    => is_string( $obj->url ?? null ) ? $obj->url : '',
+				'newTab' => '_blank' === ( $obj->{$target_attr} ?? '' ),
+			];
+			$after  = [
+				'url'    => $url,
+				'newTab' => $new_tab,
+			];
+
+			$obj->url = $url;
+			if ( '' !== $target_attr ) {
+				$obj->{$target_attr} = $new_tab ? '_blank' : '';
+			}
+			$row->{$item_key}   = $obj;
+			$list[ $index ]     = $row;
+			$attrs->{$url_attr} = $list;
+
+			return [
+				'old'         => (string) wp_json_encode( $before ),
+				'after'       => (string) wp_json_encode( $after ),
+				'old_summary' => self::link_summary( $before ),
+				'summary'     => self::link_summary( $after ),
+			];
+		}
+
+		$read = static function ( string $attr ) use ( $attrs, $name ): string {
+			$value = property_exists( $attrs, $attr ) ? $attrs->{$attr} : self::default_attr( $name, $attr );
+			return is_string( $value ) ? $value : '';
+		};
+
+		$before = [
+			'url'    => $read( $url_attr ),
+			'newTab' => '' !== $target_attr && '_blank' === $read( $target_attr ),
+		];
+		$after  = [
+			'url'    => $url,
+			'newTab' => $new_tab,
+		];
+
+		self::put_link_attr( $attrs, $name, $url_attr, $url );
+		if ( '' !== $target_attr ) {
+			self::put_link_attr( $attrs, $name, $target_attr, $new_tab ? '_blank' : '' );
+		}
+
+		return [
+			'old'         => (string) wp_json_encode( $before ),
+			'after'       => (string) wp_json_encode( $after ),
+			'old_summary' => self::link_summary( $before ),
+			'summary'     => self::link_summary( $after ),
+		];
+	}
+
+	/**
+	 * Set a string attribute, or drop it when it equals its default.
+	 *
+	 * @param \stdClass $attrs Attributes.
+	 * @param string    $name  Block name.
+	 * @param string    $attr  Attribute.
+	 * @param string    $value New value.
+	 */
+	private static function put_link_attr( \stdClass $attrs, string $name, string $attr, string $value ): void {
+		$default = self::default_attr( $name, $attr );
+		if ( ( is_string( $default ) ? $default : '' ) === $value ) {
+			unset( $attrs->{$attr} );
+			return;
+		}
+		$attrs->{$attr} = $value;
+	}
+
+	/**
+	 * A link as one line of text, for the edit log.
+	 *
+	 * @param array{url:string,newTab:bool} $state Link state.
+	 */
+	private static function link_summary( array $state ): string {
+		return $state['url'] . ( $state['newTab'] ? ' (new tab)' : '' );
+	}
+
+	/*
+	 * ---------------------------------------------------------------------
 	 * Helpers
-	 * ------------------------------------------------------------------ */
+	 * ---------------------------------------------------------------------
+	 */
 
 	/**
 	 * Resolve a registry field for a block by attribute (+ repeater key).
@@ -913,6 +3229,7 @@ final class Inline_Editor {
 	 * @param string      $name Block name.
 	 * @param string      $attr Attribute name.
 	 * @param string|null $key  Repeater item key, or null for a top-level field.
+	 * @param bool        $has_index Whether the request names a list item.
 	 * @return array<string, mixed>|null
 	 */
 	private static function find_field( string $name, string $attr, ?string $key, bool $has_index ): ?array {
@@ -943,42 +3260,123 @@ final class Inline_Editor {
 	}
 
 	/**
-	 * The block.json default for an array/object attribute (empty array if none).
+	 * The block.json default for an attribute, decoded the way stored ones are.
 	 *
 	 * Blocks omit attributes that still equal their default from the serialized
-	 * markup, so an edit to a still-default list/object must rebuild from this.
+	 * markup, so an edit to a still-default value must start from this. Passed
+	 * through JSON so maps become objects and lists stay lists, the same shape
+	 * `Block_Patcher` decodes a stored attribute into.
 	 *
 	 * @param string $name Block name.
 	 * @param string $attr Attribute name.
-	 * @return array<int|string, mixed>
+	 * @return mixed The default, or null when the block declares none.
 	 */
-	private static function default_attr_array( string $name, string $attr ): array {
+	private static function default_attr( string $name, string $attr ) {
 		if ( ! class_exists( '\WP_Block_Type_Registry' ) ) {
-			return [];
+			return null;
 		}
 		$type = \WP_Block_Type_Registry::get_instance()->get_registered( $name );
 		if ( ! $type || ! is_array( $type->attributes ) ) {
-			return [];
+			return null;
 		}
-		$schema  = $type->attributes[ $attr ] ?? null;
-		$default = is_array( $schema ) ? ( $schema['default'] ?? null ) : null;
-		return is_array( $default ) ? $default : [];
+		$schema = $type->attributes[ $attr ] ?? null;
+		if ( ! is_array( $schema ) || ! array_key_exists( 'default', $schema ) ) {
+			return null;
+		}
+		return json_decode( (string) wp_json_encode( $schema['default'] ) );
 	}
 
 	/**
-	 * Flatten a parsed block tree into a list of references (depth-first).
+	 * An attribute's value with one registry field set, and what it held before.
 	 *
-	 * @param array<int, array<string, mixed>> $blocks Parsed blocks (by ref).
-	 * @param array<int, array<string, mixed>> $flat   Accumulator (by ref).
+	 * Works on decoded JSON (objects as stdClass, lists as arrays) and returns a
+	 * new value rather than changing the one passed in. The four field shapes
+	 * mirror the registry: a cell of a 2-axis table, one key of a list item, one
+	 * key of an object attribute, or the attribute itself. Anything that does not
+	 * line up with the stored structure is refused rather than created, so an
+	 * edit can never invent a list item or leave a gap that would turn a list
+	 * into an object when it is encoded.
+	 *
+	 * @param mixed                $current Current attribute value, or its default.
+	 * @param array<string, mixed> $field   Registry field.
+	 * @param int|null             $index   List index (row for a cell), when sent.
+	 * @param int|null             $sub     Column index for a cell, when sent.
+	 * @param string               $clean   New value, already filtered.
+	 * @return array{value: mixed, old: string}|\WP_Error
 	 */
-	private static function flatten( array &$blocks, array &$flat ): void {
-		foreach ( $blocks as &$block ) {
-			$flat[] = &$block;
-			if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-				self::flatten( $block['innerBlocks'], $flat );
+	private static function with_field( $current, array $field, ?int $index, ?int $sub, string $clean ) {
+		$bad_index = new \WP_Error( 'flexa_bad_index', __( 'This list item could not be matched. Reload the page and try again.', 'flexa-block' ), [ 'status' => 400 ] );
+
+		if ( ! empty( $field['cell'] ) ) {
+			// 2-axis matrix cell: attr[row].values[col] (comparison table).
+			if ( null === $index || null === $sub || ! is_array( $current ) || ! isset( $current[ $index ] ) || ! $current[ $index ] instanceof \stdClass ) {
+				return $bad_index;
 			}
+			$row    = clone $current[ $index ];
+			$values = isset( $row->values ) && is_array( $row->values ) ? $row->values : [];
+			// The next free column may be filled; anything past it would leave a gap.
+			if ( $sub > count( $values ) ) {
+				return $bad_index;
+			}
+			$old               = self::as_text( $values[ $sub ] ?? '' );
+			$values[ $sub ]    = $clean;
+			$row->values       = array_values( $values );
+			$current[ $index ] = $row;
+
+			return [
+				'value' => $current,
+				'old'   => $old,
+			];
 		}
-		unset( $block );
+
+		if ( ! empty( $field['repeat'] ) ) {
+			if ( null === $index || ! is_array( $current ) || ! isset( $current[ $index ] ) || ! $current[ $index ] instanceof \stdClass ) {
+				return $bad_index;
+			}
+			$key               = (string) $field['key'];
+			$item              = clone $current[ $index ];
+			$old               = self::as_text( $item->{$key} ?? '' );
+			$item->{$key}      = $clean;
+			$current[ $index ] = $item;
+
+			return [
+				'value' => $current,
+				'old'   => $old,
+			];
+		}
+
+		if ( ! empty( $field['object'] ) ) {
+			// Absent, or a `{}` default that PHP handed back as `[]`: start from an
+			// empty object, as the previous array-based code started from an
+			// empty array.
+			if ( ! $current instanceof \stdClass ) {
+				$current = new \stdClass();
+			}
+			$key            = (string) $field['key'];
+			$object         = clone $current;
+			$old            = self::as_text( $object->{$key} ?? '' );
+			$object->{$key} = $clean;
+
+			return [
+				'value' => $object,
+				'old'   => $old,
+			];
+		}
+
+		return [
+			'value' => $clean,
+			'old'   => self::as_text( $current ),
+		];
+	}
+
+	/**
+	 * A stored value as text, for the edit log.
+	 *
+	 * @param mixed $value Stored value.
+	 * @return string
+	 */
+	private static function as_text( $value ): string {
+		return is_scalar( $value ) ? (string) $value : '';
 	}
 
 	/**
@@ -994,8 +3392,14 @@ final class Inline_Editor {
 			'b'      => [],
 			'i'      => [],
 			'br'     => [],
-			'span'   => [ 'style' => true, 'class' => true ],
-			'mark'   => [ 'style' => true, 'class' => true ],
+			'span'   => [
+				'style' => true,
+				'class' => true,
+			],
+			'mark'   => [
+				'style' => true,
+				'class' => true,
+			],
 			'sub'    => [],
 			'sup'    => [],
 		];
@@ -1017,12 +3421,20 @@ final class Inline_Editor {
 				// The full post allowlist (e.g. FAQ answers use wp_kses_post).
 				return wp_kses_allowed_html( 'post' );
 			case 'rich':
-				$inline['a'] = [ 'href' => [], 'target' => [], 'rel' => [] ];
+				$inline['a'] = [
+					'href'   => [],
+					'target' => [],
+					'rel'    => [],
+				];
 				return $inline;
 			case 'minimal':
 				return $minimal;
 			case 'minimal-link':
-				$minimal['a'] = [ 'href' => [], 'target' => [], 'rel' => [] ];
+				$minimal['a'] = [
+					'href'   => [],
+					'target' => [],
+					'rel'    => [],
+				];
 				return $minimal;
 			case 'inline':
 			default:
@@ -1035,14 +3447,14 @@ final class Inline_Editor {
 	 *
 	 * @param int    $post_id Post ID.
 	 * @param string $name    Block name.
-	 * @param string $old     Previous value.
-	 * @param string $new     New value.
+	 * @param string $old       Previous value.
+	 * @param string $new_value New value.
 	 */
-	private static function log_edit( int $post_id, string $name, string $old, string $new ): void {
+	private static function log_edit( int $post_id, string $name, string $old, string $new_value ): void {
 		$user  = wp_get_current_user();
 		$type  = self::slug_for( $name );
 		$old_s = mb_strimwidth( wp_strip_all_tags( $old ), 0, 80, '…' );
-		$new_s = mb_strimwidth( wp_strip_all_tags( $new ), 0, 80, '…' );
+		$new_s = mb_strimwidth( wp_strip_all_tags( $new_value ), 0, 80, '…' );
 
 		$note = sprintf(
 			/* translators: 1: block type, 2: old text, 3: new text. */

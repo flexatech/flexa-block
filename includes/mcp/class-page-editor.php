@@ -36,6 +36,7 @@ declare(strict_types=1);
 namespace Flexa\Block\MCP;
 
 use Flexa\Block\Admin\MCP_Settings;
+use Flexa\Block\Block_Patcher;
 use Flexa\Block\Import\Content_Importer;
 use Flexa\Block\Import\Import_Manager;
 use Flexa\Block\Import\Preset_Slots;
@@ -385,7 +386,7 @@ class Page_Editor {
 
 			$token = Block_Patcher::locate( $content, $block_id );
 			if ( is_wp_error( $token ) ) {
-				return $token;
+				return self::advise( $token );
 			}
 
 			$spec = Editable_Fields::spec( $token['name'], $path );
@@ -466,7 +467,7 @@ class Page_Editor {
 			// delimiter may be longer or shorter, which moves every offset after it.
 			$token = Block_Patcher::locate( $content, (string) $block_id );
 			if ( is_wp_error( $token ) ) {
-				return $token;
+				return self::advise( $token );
 			}
 
 			$effective = self::effective( $token['name'], $token['attrs'] );
@@ -476,7 +477,7 @@ class Page_Editor {
 				$segments  = explode( '.', (string) $path );
 				$effective = Block_Patcher::with_value( $effective, $segments, $set['after'] );
 				if ( is_wp_error( $effective ) ) {
-					return $effective;
+					return self::advise( $effective );
 				}
 				$touched[ $segments[0] ] = true;
 			}
@@ -490,11 +491,35 @@ class Page_Editor {
 
 			$content = Block_Patcher::replace( $content, $token, $attrs );
 			if ( is_wp_error( $content ) ) {
-				return $content;
+				return self::advise( $content );
 			}
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Turn a patcher error into this ability's own code, with advice for a client.
+	 *
+	 * `Block_Patcher` is shared with front-end editing, so its errors say only
+	 * what happened. An MCP client also needs to hear what to do next, and has
+	 * been promised `flexa_mcp_*` codes, so both are added here.
+	 *
+	 * @param \WP_Error $error Error from `Block_Patcher`.
+	 * @return \WP_Error
+	 */
+	private static function advise( \WP_Error $error ): \WP_Error {
+		$code = (string) $error->get_error_code();
+		if ( 0 !== strpos( $code, 'flexa_block_' ) ) {
+			return $error;
+		}
+
+		$message = $error->get_error_message();
+		if ( 'flexa_block_patch_unsafe' !== $code ) {
+			$message .= ' ' . __( 'Read the page again with flexa/get-editable-fields.', 'flexa-block' );
+		}
+
+		return new \WP_Error( 'flexa_mcp_' . substr( $code, strlen( 'flexa_block_' ) ), $message, $error->get_error_data() );
 	}
 
 	/**

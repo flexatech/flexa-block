@@ -139,6 +139,10 @@ interface FlexaBlockAdminData {
 	formFlow?: FlexaBlockFormFlowPromo;
 	/** MCP module state; absent on older bundles. */
 	mcp?: FlexaBlockMcpData;
+	/** Front-end edit log: site-wide list URL and retention in days. */
+	editLog?: { url: string; days: number };
+	/** Front-end review queue: its REST URL and how many copies wait. */
+	review?: { url: string; count: number };
 }
 
 /** REST endpoints for the import engine (Sample Data), from Import_Manager. */

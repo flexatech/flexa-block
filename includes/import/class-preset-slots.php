@@ -497,8 +497,9 @@ class Preset_Slots {
 		}
 
 		if ( 'url' === $type ) {
-			$url = esc_url_raw( $value, [ 'http', 'https', 'mailto', 'tel' ] );
-			if ( '' === $url ) {
+			// The same rule the front-end editor applies to a link it is given.
+			$url = \Flexa\Block\Link_Url::clean( $value );
+			if ( is_wp_error( $url ) || '' === $url ) {
 				return self::reject( $spec, __( 'that is not a web address', 'flexa-block' ) );
 			}
 			$value = $url;

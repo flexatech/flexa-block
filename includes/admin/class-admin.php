@@ -47,6 +47,14 @@ class Admin {
 			'enabled'         => true,
 			'disabled_blocks' => [],
 			'roles'           => [ 'editor' ],
+			// Edits to a published page go to a working copy for review. Off by
+			// default: front-end edits are written to the page, as before.
+			'review'          => false,
+			// Who may apply a review copy: "admin" (administrators) or "publish"
+			// (anyone who may publish the page, as for an agent's copy).
+			'review_approver' => 'admin',
+			// Whether someone who made changes in a copy may apply it themselves.
+			'review_no_self'  => false,
 		],
 	];
 
@@ -118,6 +126,9 @@ class Admin {
 				'enabled'         => isset( $ie['enabled'] ) ? (bool) $ie['enabled'] : self::DEFAULTS['inline_editor']['enabled'],
 				'disabled_blocks' => is_array( $ie['disabled_blocks'] ?? null ) ? array_values( $ie['disabled_blocks'] ) : self::DEFAULTS['inline_editor']['disabled_blocks'],
 				'roles'           => is_array( $ie['roles'] ?? null ) ? array_values( $ie['roles'] ) : self::DEFAULTS['inline_editor']['roles'],
+				'review'          => isset( $ie['review'] ) ? (bool) $ie['review'] : self::DEFAULTS['inline_editor']['review'],
+				'review_approver' => 'publish' === ( $ie['review_approver'] ?? '' ) ? 'publish' : 'admin',
+				'review_no_self'  => ! empty( $ie['review_no_self'] ),
 			],
 		];
 	}
@@ -193,11 +204,11 @@ class Admin {
 	 *
 	 * @param mixed                $input   Raw inline_editor input (or null).
 	 * @param array<string, mixed> $current Current inline_editor settings.
-	 * @return array{enabled: bool, disabled_blocks: list<string>, roles: list<string>}
+	 * @return array{enabled: bool, disabled_blocks: list<string>, roles: list<string>, review: bool}
 	 */
 	private static function sanitize_inline_editor( $input, array $current ): array {
 		if ( ! is_array( $input ) ) {
-			/** @var array{enabled: bool, disabled_blocks: list<string>, roles: list<string>} $current */
+			/** @var array{enabled: bool, disabled_blocks: list<string>, roles: list<string>, review: bool} $current */
 			return $current;
 		}
 
@@ -205,6 +216,9 @@ class Admin {
 			'enabled'         => ! empty( $input['enabled'] ),
 			'disabled_blocks' => self::sanitize_editable_slugs( $input['disabled_blocks'] ?? [] ),
 			'roles'           => self::sanitize_editor_roles( $input['roles'] ?? [] ),
+			'review'          => ! empty( $input['review'] ),
+			'review_approver' => 'publish' === ( $input['review_approver'] ?? '' ) ? 'publish' : 'admin',
+			'review_no_self'  => ! empty( $input['review_no_self'] ),
 		];
 	}
 
@@ -381,9 +395,16 @@ class Admin {
 	 * Register the top-level admin menu page.
 	 */
 	public static function register_menu(): void {
+		// A count on the menu, like updates have, while changes wait for review.
+		$waiting = \Flexa\Block\Inline_Review::count();
+		$label   = __( 'Flexa Block', 'flexa-block' );
+		if ( $waiting > 0 ) {
+			$label .= ' <span class="awaiting-mod count-' . (int) $waiting . '"><span class="pending-count">' . (int) $waiting . '</span></span>';
+		}
+
 		$hook = add_menu_page(
 			__( 'Flexa Block', 'flexa-block' ),
-			__( 'Flexa Block', 'flexa-block' ),
+			$label,
 			'manage_options',
 			self::PAGE_SLUG,
 			[ __CLASS__, 'render_page' ],
@@ -459,6 +480,14 @@ class Admin {
 				),
 				'roles'          => self::roles_for_admin(),
 				'formFlow'       => self::formflow_promo(),
+				'review'         => [
+					'url'   => esc_url_raw( rest_url( self::REST_NS . '/inline-review' ) ),
+					'count' => \Flexa\Block\Inline_Review::count(),
+				],
+				'editLog'        => [
+					'url'  => esc_url_raw( rest_url( self::REST_NS . '/inline-edit-log/all' ) ),
+					'days' => \Flexa\Block\Inline_Edit_Log::retention_days(),
+				],
 				// Sent whatever the module's state is, so the panel can explain
 				// an unsupported or switched-off site without a request of its
 				// own. Its own route handles saving.

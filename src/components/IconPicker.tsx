@@ -19,6 +19,7 @@ import { Button, BaseControl, Dropdown, Icon, TabPanel, SearchControl } from '@w
 import { MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import * as wpIcons from '@wordpress/icons';
 import type { IconValue } from '../types';
+import builtinIcons from '../shared/builtin-icons.json';
 
 /** Curated, dependency-free stroked glyphs. Class + 1em sizing baked in. */
 const strokeSvg = ( inner: JSX.Element ): JSX.Element => (
@@ -39,31 +40,23 @@ const strokeSvg = ( inner: JSX.Element ): JSX.Element => (
 	</svg>
 );
 
-const BUILTIN: Array< { name: string; svg: JSX.Element } > = [
-	{ name: 'arrow-right', svg: strokeSvg( <path d="M5 12h13M13 6l6 6-6 6" /> ) },
-	{ name: 'arrow-left', svg: strokeSvg( <path d="M19 12H6M11 6l-6 6 6 6" /> ) },
-	{ name: 'chevron-right', svg: strokeSvg( <path d="M9 6l6 6-6 6" /> ) },
-	{
-		name: 'external',
-		svg: strokeSvg(
-			<>
-				<path d="M15 4h5v5" />
-				<path d="M20 4l-8 8" />
-				<path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" />
-			</>
-		),
-	},
-	{
-		name: 'download',
-		svg: strokeSvg(
-			<>
-				<path d="M12 4v11m0 0l-4-4m4 4l4-4" />
-				<path d="M5 19h14" />
-			</>
-		),
-	},
-	{ name: 'check', svg: strokeSvg( <path d="M5 12l4 4L19 6" /> ) },
-];
+/**
+ * The curated glyphs. Their paths live in a shared data file because the
+ * front-end editor's server-side catalog (scripts/build-icon-catalog.cjs) is
+ * built from the same list, so a glyph picked in either place is the same SVG.
+ */
+const BUILTIN: Array< { name: string; svg: JSX.Element } > = (
+	builtinIcons as Array< { name: string; paths: string[] } >
+).map( ( icon ) => ( {
+	name: icon.name,
+	svg: strokeSvg(
+		<>
+			{ icon.paths.map( ( d ) => (
+				<path key={ d } d={ d } />
+			) ) }
+		</>
+	),
+} ) );
 
 /**
  * Render a resolved IconValue for editor previews — mirrors the PHP

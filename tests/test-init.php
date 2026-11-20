@@ -14,6 +14,9 @@
  */
 
 define( 'ABSPATH', dirname( __DIR__ ) . '/' );
+if ( ! defined( 'DAY_IN_SECONDS' ) ) {
+	define( 'DAY_IN_SECONDS', 86400 );
+}
 
 // Composer autoloader (PHPUnit). Present after `composer install`.
 if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
@@ -24,16 +27,271 @@ if ( file_exists( dirname( __DIR__ ) . '/vendor/autoload.php' ) ) {
  * Minimal WordPress stubs — only what the CSS core actually calls.
  * -------------------------------------------------------------------------- */
 
+$GLOBALS['flexa_test_filters'] = [];
+
+if ( ! function_exists( 'add_filter' ) ) {
+	/** Minimal filter registration for unit tests. */
+	function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
+		$GLOBALS['flexa_test_filters'][ $hook ][ (int) $priority ][] = [ $callback, (int) $accepted_args ];
+		return true;
+	}
+}
+
+if ( ! function_exists( 'remove_filter' ) ) {
+	/** Minimal filter removal for unit tests. */
+	function remove_filter( $hook, $callback, $priority = 10 ) {
+		if ( empty( $GLOBALS['flexa_test_filters'][ $hook ][ (int) $priority ] ) ) {
+			return false;
+		}
+		$removed = false;
+		foreach ( $GLOBALS['flexa_test_filters'][ $hook ][ (int) $priority ] as $index => $entry ) {
+			if ( $entry[0] === $callback ) {
+				unset( $GLOBALS['flexa_test_filters'][ $hook ][ (int) $priority ][ $index ] );
+				$removed = true;
+			}
+		}
+		return $removed;
+	}
+}
+
 if ( ! function_exists( 'apply_filters' ) ) {
-	/**
-	 * Stub: return the value unchanged (no filters in the test environment).
-	 *
-	 * @param string $hook  Hook name (ignored).
-	 * @param mixed  $value Value to return.
-	 * @return mixed
-	 */
-	function apply_filters( $hook, $value ) {
+	/** Apply callbacks registered by the test filter stubs. */
+	function apply_filters( $hook, $value, ...$args ) {
+		$priorities = $GLOBALS['flexa_test_filters'][ $hook ] ?? [];
+		ksort( $priorities );
+		foreach ( $priorities as $callbacks ) {
+			foreach ( $callbacks as $entry ) {
+				$all   = array_merge( [ $value ], $args );
+				$value = call_user_func_array( $entry[0], array_slice( $all, 0, $entry[1] ) );
+			}
+		}
 		return $value;
+	}
+}
+
+if ( ! class_exists( 'WP_Post' ) ) {
+	/** Minimal mutable post object used by revision-session tests. */
+	class WP_Post {
+		/** @var int */
+		public $ID = 0;
+
+		/** @var string */
+		public $post_type = '';
+
+		/** @var int */
+		public $post_parent = 0;
+
+		/** @var string */
+		public $post_content = '';
+
+		public function __construct( array $data = [] ) {
+			foreach ( $data as $key => $value ) {
+				$this->{$key} = $value;
+			}
+		}
+	}
+}
+
+/* Revision-session state. Reset by InlineRevisionSessionTest. */
+$GLOBALS['flexa_test_posts']             = [];
+$GLOBALS['flexa_test_transients']        = [];
+$GLOBALS['flexa_test_post_meta']         = [];
+$GLOBALS['flexa_test_revision_checks']   = [];
+$GLOBALS['flexa_test_revision_snapshots'] = [];
+$GLOBALS['flexa_test_update_filters']    = [];
+$GLOBALS['flexa_test_user_id']           = 1;
+$GLOBALS['flexa_test_revisions_enabled'] = true;
+$GLOBALS['flexa_test_update_error']      = null;
+
+if ( ! function_exists( 'get_current_user_id' ) ) {
+	function get_current_user_id() {
+		return (int) $GLOBALS['flexa_test_user_id'];
+	}
+}
+
+if ( ! function_exists( 'get_post' ) ) {
+	function get_post( $post_id ) {
+		return $GLOBALS['flexa_test_posts'][ (int) $post_id ] ?? null;
+	}
+}
+
+if ( ! function_exists( 'get_transient' ) ) {
+	function get_transient( $key ) {
+		return $GLOBALS['flexa_test_transients'][ (string) $key ]['value'] ?? false;
+	}
+}
+
+if ( ! function_exists( 'set_transient' ) ) {
+	function set_transient( $key, $value, $expiration = 0 ) {
+		$GLOBALS['flexa_test_transients'][ (string) $key ] = [
+			'value'      => $value,
+			'expiration' => (int) $expiration,
+		];
+		return true;
+	}
+}
+
+if ( ! function_exists( 'delete_transient' ) ) {
+	function delete_transient( $key ) {
+		unset( $GLOBALS['flexa_test_transients'][ (string) $key ] );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'add_post_meta' ) ) {
+	function add_post_meta( $post_id, $key, $value, $unique = false ) {
+		$GLOBALS['flexa_test_post_meta'][ (int) $post_id ][ (string) $key ] = $value;
+		return true;
+	}
+}
+
+/**
+ * Real unslashing for the meta stubs (the wp_unslash stub above is a no-op).
+ *
+ * @param mixed $value Value.
+ * @return mixed
+ */
+function flexa_test_unslash( $value ) {
+	if ( is_array( $value ) ) {
+		return array_map( 'flexa_test_unslash', $value );
+	}
+	return is_string( $value ) ? stripslashes( $value ) : $value;
+}
+
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	function wp_strip_all_tags( $text ) {
+		return trim( strip_tags( (string) preg_replace( '@<(script|style)[^>]*?>.*?</\1>@si', '', (string) $text ) ) );
+	}
+}
+
+if ( ! function_exists( 'get_post_mime_type' ) ) {
+	function get_post_mime_type( $post = null ) {
+		return $GLOBALS['flexa_test_mime'][ (int) $post ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_url' ) ) {
+	function wp_get_attachment_url( $id ) {
+		return $GLOBALS['flexa_test_attachment_urls'][ (int) $id ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_metadata' ) ) {
+	function wp_get_attachment_metadata( $id ) {
+		return $GLOBALS['flexa_test_attachment_meta'][ (int) $id ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_next_scheduled' ) ) {
+	function wp_next_scheduled( $hook ) {
+		return $GLOBALS['flexa_test_cron'][ $hook ] ?? false;
+	}
+}
+
+if ( ! function_exists( 'wp_schedule_event' ) ) {
+	function wp_schedule_event( $timestamp, $recurrence, $hook ) {
+		$GLOBALS['flexa_test_cron'][ $hook ] = $timestamp;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_unschedule_event' ) ) {
+	function wp_unschedule_event( $timestamp, $hook ) {
+		unset( $GLOBALS['flexa_test_cron'][ $hook ] );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'get_post_meta' ) ) {
+	function get_post_meta( $post_id, $key = '', $single = false ) {
+		return $GLOBALS['flexa_test_post_meta'][ (int) $post_id ][ (string) $key ] ?? '';
+	}
+}
+
+if ( ! function_exists( 'update_post_meta' ) ) {
+	// Like core, the stored value is the unslashed form of what is passed.
+	function update_post_meta( $post_id, $key, $value ) {
+		$GLOBALS['flexa_test_post_meta'][ (int) $post_id ][ (string) $key ] = flexa_test_unslash( $value );
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_slash' ) ) {
+	function wp_slash( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( 'wp_slash', $value );
+		}
+		return is_string( $value ) ? addslashes( $value ) : $value;
+	}
+}
+
+if ( ! function_exists( 'add_metadata' ) ) {
+	// Unlike add_post_meta(), stores against the exact ID given (no revision redirect).
+	function add_metadata( $meta_type, $object_id, $key, $value, $unique = false ) {
+		$GLOBALS['flexa_test_post_meta'][ (int) $object_id ][ (string) $key ] = $value;
+		return true;
+	}
+}
+
+if ( ! function_exists( 'wp_save_post_revision' ) ) {
+	function wp_save_post_revision( $post_id ) {
+		if ( ! $GLOBALS['flexa_test_revisions_enabled'] ) {
+			return null;
+		}
+
+		$post = get_post( (int) $post_id );
+		if ( ! $post instanceof WP_Post ) {
+			return null;
+		}
+
+		$latest = new WP_Post( [
+			'ID'          => 0,
+			'post_type'   => 'revision',
+			'post_parent' => (int) $post_id,
+		] );
+		$GLOBALS['flexa_test_revision_checks'][] = apply_filters(
+			'wp_save_post_revision_check_for_changes',
+			true,
+			$latest,
+			$post
+		);
+
+		$revision_id = 9000 + count( $GLOBALS['flexa_test_revision_snapshots'] );
+		$revision    = new WP_Post( [
+			'ID'           => $revision_id,
+			'post_type'    => 'revision',
+			'post_parent'  => (int) $post_id,
+			'post_content' => (string) ( $post->post_content ?? '' ),
+		] );
+		$GLOBALS['flexa_test_posts'][ $revision_id ]              = $revision;
+		$GLOBALS['flexa_test_revision_snapshots'][ $revision_id ] = $revision->post_content;
+		return $revision_id;
+	}
+}
+
+if ( ! function_exists( 'wp_update_post' ) ) {
+	function wp_update_post( $postarr, $wp_error = false ) {
+		$post_id = (int) ( $postarr['ID'] ?? 0 );
+		$post    = get_post( $post_id );
+		if ( ! $post instanceof WP_Post ) {
+			return $wp_error ? new WP_Error( 'missing_post', 'Missing post.' ) : 0;
+		}
+
+		$other = new WP_Post( [ 'ID' => $post_id + 1, 'post_type' => $post->post_type ] );
+		$GLOBALS['flexa_test_update_filters'][] = [
+			'target_general' => apply_filters( 'wp_revisions_to_keep', 10, $post ),
+			'target_dynamic' => apply_filters( "wp_{$post->post_type}_revisions_to_keep", 10, $post ),
+			'other_general'  => apply_filters( 'wp_revisions_to_keep', 10, $other ),
+			'other_dynamic'  => apply_filters( "wp_{$post->post_type}_revisions_to_keep", 10, $other ),
+		];
+
+		if ( $GLOBALS['flexa_test_update_error'] instanceof WP_Error ) {
+			return $GLOBALS['flexa_test_update_error'];
+		}
+		if ( array_key_exists( 'post_content', $postarr ) ) {
+			$post->post_content = $postarr['post_content'];
+		}
+		return $post_id;
 	}
 }
 
@@ -53,6 +311,10 @@ if ( ! function_exists( 'esc_url_raw' ) ) {
 	function esc_url_raw( $url, $protocols = [] ) {
 		$url = trim( (string) $url );
 		if ( '' === $url || ! $protocols ) {
+			return $url;
+		}
+		// No scheme to check: WordPress leaves a path, an anchor or a query as it is.
+		if ( in_array( $url[0], [ '/', '#', '?' ], true ) ) {
 			return $url;
 		}
 
@@ -154,6 +416,10 @@ if ( ! function_exists( 'current_user_can' ) ) {
 	 * @return bool
 	 */
 	function current_user_can( $capability, ...$args ) {
+		// Capabilities a test grants outright, by name.
+		if ( isset( $GLOBALS['flexa_test_caps'][ $capability ] ) ) {
+			return (bool) $GLOBALS['flexa_test_caps'][ $capability ];
+		}
 		if ( 'read_post' !== $capability ) {
 			return false;
 		}
@@ -549,10 +815,16 @@ require_once $flexa_inc . 'css-generators/class-product-related-css.php';
 require_once $flexa_inc . 'import/class-preset-slots.php';
 
 /*
- * The MCP edit path's two WordPress-free halves: finding and rewriting one
- * block delimiter in place, and the allowlist of fields that may change.
+ * Rewriting one block delimiter in place, shared by every path that edits a
+ * field of an existing block, and the MCP edit path's field allowlist. Both
+ * are WordPress-free.
  */
-require_once $flexa_inc . 'mcp/class-block-patcher.php';
+require_once $flexa_inc . 'class-link-url.php';
+require_once $flexa_inc . 'class-image-source.php';
+require_once $flexa_inc . 'class-icon-source.php';
+require_once $flexa_inc . 'class-block-patcher.php';
+require_once $flexa_inc . 'class-inline-revision-session.php';
+require_once $flexa_inc . 'class-inline-edit-log.php';
 require_once $flexa_inc . 'mcp/class-editable-fields.php';
 
 // Shared base class for block CSS tests (kept outside the scanned suite dir).

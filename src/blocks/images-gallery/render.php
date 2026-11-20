@@ -55,7 +55,11 @@ $inline_allowed = [
 	'i'      => [],
 	'br'     => [],
 	'span'   => [],
-	'a'      => [ 'href' => true, 'target' => true, 'rel' => true ],
+	'a'      => [
+		'href'   => true,
+		'target' => true,
+		'rel'    => true,
+	],
 ];
 
 // Wrapper classes.
@@ -96,7 +100,7 @@ if ( 'lightbox' === $click_action || 'media' === $click_action ) {
 
 // Build each item.
 $items_html = '';
-foreach ( $images as $image ) {
+foreach ( $images as $image_index => $image ) {
 	if ( ! is_array( $image ) ) {
 		continue;
 	}
@@ -170,7 +174,9 @@ foreach ( $images as $image ) {
 	}
 
 	$media_classes = array_merge( [ 'flexa-images-gallery__media' ], HTML_Helpers::hover_effect_classes( $hover_effect ) );
-	$items_html   .= '<div class="flexa-images-gallery__item"' . $item_data . '>'
+	// data-flexa-item (editors only): the picture's index in `images`, so the
+	// front-end editor can change this one even when earlier ones were skipped.
+	$items_html .= '<div class="flexa-images-gallery__item"' . $item_data . \Flexa\Block\Inline_Editor::item_attr( (int) $image_index ) . '>'
 		. '<figure class="' . esc_attr( implode( ' ', $media_classes ) ) . '">' . $img_html . $overlay_html . $overlay_caption . '</figure>'
 		. $below_caption
 		. '</div>';

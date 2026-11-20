@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Flexa Block – Blocks & Page Builder
  * Description:       A collection of lightweight, customizable blocks for building modern WordPress websites with the block editor.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            Flexa Tech
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FLEXA_BLOCK_VER', '2.0.0' );
+define( 'FLEXA_BLOCK_VER', '2.0.1' );
 define( 'FLEXA_BLOCK_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FLEXA_BLOCK_URL', plugin_dir_url( __FILE__ ) );
 define( 'FLEXA_BLOCK_BASENAME', plugin_basename( __FILE__ ) );
@@ -65,6 +65,14 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/class-filter-fields.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-post-filter-rest.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-form-handler.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-link-url.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-image-source.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-icon-source.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-review.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-cache.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-block-patcher.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-revision-session.php';
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-edit-log.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-editor.php';
 	// TODO(remove in vNEXT): item-style migration.
 	require_once FLEXA_BLOCK_DIR . 'includes/class-item-style-migration.php';
@@ -79,6 +87,9 @@ function flexa_block_init() {
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-formflow-promo.php';
 	require_once FLEXA_BLOCK_DIR . 'includes/admin/class-formflow-notice.php';
 
+	// Once per site: settle defaults that changed between versions (dark mode).
+	Flexa\Block\Dark_Mode_Settings::apply_install_defaults();
+
 	Flexa\Block\Block_Manager::init();
 	Flexa\Block\Addon_Blocks::init();
 	Flexa\Block\Animations::init();
@@ -86,6 +97,8 @@ function flexa_block_init() {
 	Flexa\Block\Form_Handler::init();
 	Flexa\Block\Post_Filter_REST::init();
 	Flexa\Block\Inline_Editor::init();
+	Flexa\Block\Inline_Edit_Log::init();
+	Flexa\Block\Inline_Review::init();
 	Flexa\Block\Item_Style_Migration::init(); // TODO(remove in vNEXT): item-style migration.
 	Flexa\Block\Uploads::init();
 	Flexa\Block\Rss_Feed::init();
@@ -124,7 +137,6 @@ function flexa_block_init() {
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-read-abilities.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-draft-writer.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-write-abilities.php';
-		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-block-patcher.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-editable-fields.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-working-copy.php';
 		require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-page-editor.php';
@@ -202,15 +214,27 @@ function flexa_block_mcp_runtime_enabled() {
 /**
  * Clean up what the plugin scheduled, on deactivation.
  *
- * One event today: the MCP activity log's daily sweep. A deactivated plugin
+ * Two events: the MCP activity log's daily sweep and the front-end edit log's. A deactivated plugin
  * whose cron event is still in the schedule leaves WordPress calling a hook
  * nothing listens to, every day, until someone clears it by hand.
  */
 function flexa_block_deactivate() {
 	require_once FLEXA_BLOCK_DIR . 'includes/mcp/class-activity-log.php';
 	Flexa\Block\MCP\Activity_Log::unschedule();
+	require_once FLEXA_BLOCK_DIR . 'includes/class-inline-edit-log.php';
+	Flexa\Block\Inline_Edit_Log::unschedule();
 }
 register_deactivation_hook( __FILE__, 'flexa_block_deactivate' );
+
+/**
+ * On activation: a site where the plugin has never run starts with the new
+ * defaults (dark mode off). Sites that update are settled on their next load.
+ */
+function flexa_block_activate() {
+	require_once FLEXA_BLOCK_DIR . 'includes/class-dark-mode-settings.php';
+	Flexa\Block\Dark_Mode_Settings::on_activate();
+}
+register_activation_hook( __FILE__, 'flexa_block_activate' );
 
 /**
  * Admin notice for unsupported WordPress version.

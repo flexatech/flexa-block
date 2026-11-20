@@ -10,6 +10,7 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 
 delete_option( 'flexa_block_settings' );
+delete_option( 'flexa_block_defaults_version' );
 delete_option( 'flexa_block_formflow_notice_dismissed' );
 // The shared 'flexa_formflow_promo_dismissed' flag is left in place on purpose:
 // other Flexa plugins read it, and removing this one must not bring back a
@@ -22,6 +23,10 @@ delete_option( 'flexa_block_item_style_migration_cursor' );
 // switching the module on never rides along with an unrelated settings save.
 delete_option( 'flexa_block_mcp' );
 delete_option( 'flexa_block_mcp_log' );
+
+// Front-end edit history, kept in post meta of the pages and patterns edited.
+delete_post_meta_by_key( '_flexa_block_inline_edit_log' );
+wp_clear_scheduled_hook( 'flexa_block_inline_edit_log_sweep' );
 
 // The module's transients: one per rate-limit window, one per idempotency
 // record, both named after a hash, so there is no list of keys to walk. The
