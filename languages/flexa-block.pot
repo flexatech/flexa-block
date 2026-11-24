@@ -2,7 +2,7 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Flexa Block – Blocks & Page Builder 2.0.1\n"
+"Project-Id-Version: Flexa Block – Blocks, Page Builder & AI Agents (MCP) 2.0.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/flexa-block\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,12 @@ msgstr ""
 
 #. Plugin Name of the plugin
 #: flexa-block.php
-msgid "Flexa Block – Blocks & Page Builder"
+msgid "Flexa Block – Blocks, Page Builder & AI Agents (MCP)"
 msgstr ""
 
 #. Description of the plugin
 #: flexa-block.php
-msgid "A collection of lightweight, customizable blocks for building modern WordPress websites with the block editor."
+msgid "Lightweight, customizable blocks for building WordPress sites, plus an optional MCP module so AI agents can read your design and draft pages."
 msgstr ""
 
 #. Author of the plugin

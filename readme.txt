@@ -1,15 +1,15 @@
 
-=== Flexa Block – Blocks & Page Builder ===
+=== Flexa Block – Blocks, Page Builder & AI Agents (MCP) ===
 Contributors: flexatech
 Tags: blocks, block editor, fse, container, layout
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A collection of lightweight, customizable blocks for building modern WordPress websites with the block editor.
+Lightweight, customizable blocks for building WordPress sites, plus an optional MCP module so AI agents can read your design and draft pages.
 
 == Description ==
 Flexa Block is a growing collection of modern Gutenberg blocks designed to help you build beautiful WordPress websites faster.
@@ -193,6 +193,9 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 
 == Changelog ==
 
+= 2.0.2 =
+* The plugin is now called "Flexa Block – Blocks, Page Builder & AI Agents (MCP)", and its short description mentions the optional MCP module. No code changes.
+
 = 2.0.1 =
 * Front-end editing grows up. Besides text, people allowed to edit a page can now change link addresses, pictures and their alt text (including gallery images and slide backgrounds), and icons, right on the page. Where a heading or a list row has no link yet, or a button has no icon, the toolbar offers to add one.
 * Nothing is lost by accident: moving to another text, following a link or closing the tab with unsaved changes asks first, and every save can be undone for a few seconds. A save is refused, with an explanation, if someone changed the page in the meantime or has it open in the editor.
@@ -303,6 +306,9 @@ The photographs and illustrations shown in the plugin screenshots are for demons
 * Initial release with the Container block.
 
 == Upgrade Notice ==
+
+= 2.0.2 =
+New plugin name and description only. Nothing about how your site behaves changes.
 
 = 2.0.0 =
 Adds an optional MCP module that lets an AI client you connect read your design, draft pages and edit page text. Changes to a published page wait on a copy until you apply them. It is off by default and needs WordPress 7.0 plus the MCP Adapter plugin; with it off, nothing about this release changes how your site behaves.
