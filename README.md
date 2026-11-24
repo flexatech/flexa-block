@@ -2,7 +2,7 @@
 
 A responsive Gutenberg block collection with **dark mode** support and **save-time CSS generation**, **front-end editing** (change text, links, images and icons right on the page, with an optional review step), and an optional **MCP module** for AI clients. Ships the **Container** block as the canonical architecture reference for all future blocks.
 
-- **Version:** 2.0.1
+- **Version:** 2.0.2
 - **Requires:** WordPress 6.4+, PHP 7.4+ (the MCP module needs WordPress 7.0+)
 - **License:** GPL-2.0-or-later
 
