@@ -115,7 +115,7 @@ final class FormFlow_Notice {
 		 * Claim the Dashboard slot so a sibling Flexa plugin running later on
 		 * this same hook does not print a second copy of the pitch.
 		 */
-		do_action( FormFlow_Promo::RENDERED_ACTION );
+		do_action( FormFlow_Promo::RENDERED_ACTION ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- The constant is 'flexa_formflow_promo/rendered', already prefixed.
 	}
 
 	/**
